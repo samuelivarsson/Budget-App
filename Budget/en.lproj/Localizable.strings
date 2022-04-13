@@ -1,0 +1,36 @@
+/*
+  Localizable.strings
+  Budget
+
+  Created by Samuel Ivarsson on 2022-04-12.
+  
+*/
+
+// Navigation
+"home" = "Home";
+"transactions" = "Transactions";
+"history" = "History";
+"settings" = "Settings";
+
+// Transactions View
+"addTransaction" = "Add transaction";
+
+// Settings
+"quickBalance" = "Quick balance";
+
+// Transaction Categories
+"food" = "Food";
+"fika" = "Fika";
+"transportation" = "Transportation";
+"other" = "Other";
+"savingsAccountPurchase" = "Savings Account Purchase";
+"groceries" = "Groceries";
+"saving" = "Saving";
+"savingsAccount" = "Savings Account";
+"rounding" = "Rounding";
+"swish" = "Swish";
+"buffer" = "Buffer";
+
+// Transaction Types
+"expense" = "Expense";
+"income" = "Income";

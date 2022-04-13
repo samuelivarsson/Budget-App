@@ -1,0 +1,36 @@
+/*
+  Localizable.strings
+  Budget
+
+  Created by Samuel Ivarsson on 2022-04-12.
+  
+*/
+
+// Navigation
+"home" = "Hem";
+"transactions" = "Transaktioner";
+"history" = "Historik";
+"settings" = "Inställningar";
+
+// Transactions View
+"addTransaction" = "Lägg till transaktion";
+
+// Settings
+"quickBalance" = "Snabbsaldo";
+
+// Transaction Categories
+"food" = "Mat";
+"fika" = "Fika";
+"transportation" = "transport";
+"other" = "Övrigt";
+"savingsAccountPurchase" = "Sparkonto köp";
+"groceries" = "Livsmedel";
+"saving" = "Sparande";
+"savingsAccount" = "Sparkonto";
+"rounding" = "Avrundning";
+"swish" = "Swish";
+"buffer" = "Buffert";
+
+// Transaction Types
+"expense" = "Utgift";
+"income" = "Inkomst";

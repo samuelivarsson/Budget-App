@@ -13,6 +13,18 @@
 		4DFD3D9D28073E4B00D5FFB4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9C28073E4B00D5FFB4 /* Preview Assets.xcassets */; };
 		4DFD3D9F28073E4B00D5FFB4 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9E28073E4B00D5FFB4 /* Persistence.swift */; };
 		4DFD3DA228073E4B00D5FFB4 /* Budget.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DA028073E4B00D5FFB4 /* Budget.xcdatamodeld */; };
+		4DFD3DAA2807406800D5FFB4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DA92807406800D5FFB4 /* HomeView.swift */; };
+		4DFD3DAC2807407D00D5FFB4 /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DAB2807407D00D5FFB4 /* TransactionsView.swift */; };
+		4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DAD2807409D00D5FFB4 /* HistoryView.swift */; };
+		4DFD3DB4280740E000D5FFB4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */; };
+		4DFD3DB6280740F300D5FFB4 /* QuickBalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */; };
+		4DFD3DB92807411500D5FFB4 /* TransactionsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DB82807411500D5FFB4 /* TransactionsProvider.swift */; };
+		4DFD3DBB2807412700D5FFB4 /* SettingsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DBA2807412700D5FFB4 /* SettingsProvider.swift */; };
+		4DFD3DBE2807414500D5FFB4 /* TransactionEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DBD2807414500D5FFB4 /* TransactionEnums.swift */; };
+		4DFD3DC12807424800D5FFB4 /* Transaction+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DBF2807424800D5FFB4 /* Transaction+CoreDataClass.swift */; };
+		4DFD3DC22807424800D5FFB4 /* Transaction+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DC02807424800D5FFB4 /* Transaction+CoreDataProperties.swift */; };
+		4DFD3DC52807432000D5FFB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DFD3DC72807432000D5FFB4 /* Localizable.strings */; };
+		4DFD3DCA280745D300D5FFB4 /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DC9280745D300D5FFB4 /* TransactionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +35,19 @@
 		4DFD3D9C28073E4B00D5FFB4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4DFD3D9E28073E4B00D5FFB4 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		4DFD3DA128073E4B00D5FFB4 /* Budget.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Budget.xcdatamodel; sourceTree = "<group>"; };
+		4DFD3DA92807406800D5FFB4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		4DFD3DAB2807407D00D5FFB4 /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
+		4DFD3DAD2807409D00D5FFB4 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceView.swift; sourceTree = "<group>"; };
+		4DFD3DB82807411500D5FFB4 /* TransactionsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsProvider.swift; sourceTree = "<group>"; };
+		4DFD3DBA2807412700D5FFB4 /* SettingsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsProvider.swift; sourceTree = "<group>"; };
+		4DFD3DBD2807414500D5FFB4 /* TransactionEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionEnums.swift; sourceTree = "<group>"; };
+		4DFD3DBF2807424800D5FFB4 /* Transaction+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4DFD3DC02807424800D5FFB4 /* Transaction+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4DFD3DC62807432000D5FFB4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4DFD3DC82807432200D5FFB4 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4DFD3DC9280745D300D5FFB4 /* TransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,12 +80,16 @@
 		4DFD3D9428073E4A00D5FFB4 /* Budget */ = {
 			isa = PBXGroup;
 			children = (
+				4DFD3DBC2807412D00D5FFB4 /* Model */,
+				4DFD3DB72807410100D5FFB4 /* Providers */,
+				4DFD3DA82807405D00D5FFB4 /* Views */,
 				4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */,
 				4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */,
 				4DFD3D9928073E4B00D5FFB4 /* Assets.xcassets */,
 				4DFD3D9E28073E4B00D5FFB4 /* Persistence.swift */,
 				4DFD3DA028073E4B00D5FFB4 /* Budget.xcdatamodeld */,
 				4DFD3D9B28073E4B00D5FFB4 /* Preview Content */,
+				4DFD3DC72807432000D5FFB4 /* Localizable.strings */,
 			);
 			path = Budget;
 			sourceTree = "<group>";
@@ -71,6 +100,70 @@
 				4DFD3D9C28073E4B00D5FFB4 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4DFD3DA82807405D00D5FFB4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4DFD3DAF280740B200D5FFB4 /* Home */,
+				4DFD3DB0280740BA00D5FFB4 /* Transactions */,
+				4DFD3DB1280740C700D5FFB4 /* History */,
+				4DFD3DB2280740D500D5FFB4 /* Settings */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		4DFD3DAF280740B200D5FFB4 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				4DFD3DA92807406800D5FFB4 /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		4DFD3DB0280740BA00D5FFB4 /* Transactions */ = {
+			isa = PBXGroup;
+			children = (
+				4DFD3DAB2807407D00D5FFB4 /* TransactionsView.swift */,
+				4DFD3DC9280745D300D5FFB4 /* TransactionView.swift */,
+			);
+			path = Transactions;
+			sourceTree = "<group>";
+		};
+		4DFD3DB1280740C700D5FFB4 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				4DFD3DAD2807409D00D5FFB4 /* HistoryView.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		4DFD3DB2280740D500D5FFB4 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */,
+				4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		4DFD3DB72807410100D5FFB4 /* Providers */ = {
+			isa = PBXGroup;
+			children = (
+				4DFD3DB82807411500D5FFB4 /* TransactionsProvider.swift */,
+				4DFD3DBA2807412700D5FFB4 /* SettingsProvider.swift */,
+			);
+			path = Providers;
+			sourceTree = "<group>";
+		};
+		4DFD3DBC2807412D00D5FFB4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4DFD3DBF2807424800D5FFB4 /* Transaction+CoreDataClass.swift */,
+				4DFD3DC02807424800D5FFB4 /* Transaction+CoreDataProperties.swift */,
+				4DFD3DBD2807414500D5FFB4 /* TransactionEnums.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -115,6 +208,7 @@
 			knownRegions = (
 				en,
 				Base,
+				sv,
 			);
 			mainGroup = 4DFD3D8928073E4A00D5FFB4;
 			productRefGroup = 4DFD3D9328073E4A00D5FFB4 /* Products */;
@@ -132,6 +226,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4DFD3D9D28073E4B00D5FFB4 /* Preview Assets.xcassets in Resources */,
+				4DFD3DC52807432000D5FFB4 /* Localizable.strings in Resources */,
 				4DFD3D9A28073E4B00D5FFB4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,14 +238,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DFD3DBB2807412700D5FFB4 /* SettingsProvider.swift in Sources */,
+				4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */,
+				4DFD3DCA280745D300D5FFB4 /* TransactionView.swift in Sources */,
+				4DFD3DB4280740E000D5FFB4 /* SettingsView.swift in Sources */,
 				4DFD3D9F28073E4B00D5FFB4 /* Persistence.swift in Sources */,
 				4DFD3D9828073E4A00D5FFB4 /* ContentView.swift in Sources */,
 				4DFD3DA228073E4B00D5FFB4 /* Budget.xcdatamodeld in Sources */,
+				4DFD3DB92807411500D5FFB4 /* TransactionsProvider.swift in Sources */,
+				4DFD3DBE2807414500D5FFB4 /* TransactionEnums.swift in Sources */,
+				4DFD3DC22807424800D5FFB4 /* Transaction+CoreDataProperties.swift in Sources */,
+				4DFD3DAA2807406800D5FFB4 /* HomeView.swift in Sources */,
+				4DFD3DC12807424800D5FFB4 /* Transaction+CoreDataClass.swift in Sources */,
 				4DFD3D9628073E4A00D5FFB4 /* BudgetApp.swift in Sources */,
+				4DFD3DAC2807407D00D5FFB4 /* TransactionsView.swift in Sources */,
+				4DFD3DB6280740F300D5FFB4 /* QuickBalanceView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		4DFD3DC72807432000D5FFB4 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4DFD3DC62807432000D5FFB4 /* en */,
+				4DFD3DC82807432200D5FFB4 /* sv */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		4DFD3DA328073E4B00D5FFB4 /* Debug */ = {
