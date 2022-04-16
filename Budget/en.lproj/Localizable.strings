@@ -6,16 +6,47 @@
   
 */
 
+// Sign in
+"signIn" = "Sign in";
+"signUp" = "Sign up";
+"signOut" = "Sign out";
+"signInWithGoogle" = "Sign in with Google";
+"signInAnonymously" = "Sign in anonymously";
+"or" = "or";
+"email" = "Email";
+"emailAddress" = "Email address";
+"password" = "Password";
+"noAccount" = "Don't have an account?";
+"register" = "Register";
+"pleaseEnterEmail" = "Please enter an email";
+"pleaseEnterPassword" = "Please enter a password";
+
+// Welcome
+"welcome" = "Welcome";
+
 // Navigation
 "home" = "Home";
 "transactions" = "Transactions";
 "history" = "History";
 "settings" = "Settings";
 
-// Transactions View
+// Transaction View
+"add" = "Add";
+"apply" = "Apply";
 "addTransaction" = "Add transaction";
+"editTransaction" = "Edit transaction";
+"addParticipants" = "Add participants";
+"editParticipants" = "Edit participants";
+"type" = "Type";
+"date" = "Date";
+"amount" = "Amount";
+"whatAmount" = "What amount";
+"description" = "Description";
+"shortDescription" = "A short description";
+"category" = "Category";
 
 // Settings
+"myInformation" = "My information";
 "quickBalance" = "Quick balance";
 
 // Transaction Categories
@@ -25,7 +56,7 @@
 "other" = "Other";
 "savingsAccountPurchase" = "Savings Account Purchase";
 "groceries" = "Groceries";
-"saving" = "Saving";
+"extraSaving" = "Extra saving";
 "savingsAccount" = "Savings Account";
 "rounding" = "Rounding";
 "swish" = "Swish";
@@ -34,3 +65,4 @@
 // Transaction Types
 "expense" = "Expense";
 "income" = "Income";
+"saving" = "Saving";

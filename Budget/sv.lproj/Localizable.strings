@@ -6,6 +6,24 @@
   
 */
 
+// Sign in
+"signIn" = "Logga in";
+"signUp" = "Skapa konto";
+"signOut" = "Logga ut";
+"signInWithGoogle" = "Logga in med Google";
+"signInAnonymously" = "Logga in anonymt";
+"or" = "eller";
+"email" = "Email";
+"emailAddress" = "Email adress";
+"password" = "Lösenord";
+"noAccount" = "Har du inget konto?";
+"register" = "Registrera";
+"pleaseEnterEmail" = "Vänligen ange en email";
+"pleaseEnterPassword" = "Vänligen ange ett lösenord";
+
+// Welcome
+"welcome" = "Välkommen";
+
 // Navigation
 "home" = "Hem";
 "transactions" = "Transaktioner";
@@ -13,19 +31,32 @@
 "settings" = "Inställningar";
 
 // Transactions View
+"add" = "Lägg till";
+"apply" = "Tillämpa";
 "addTransaction" = "Lägg till transaktion";
+"editTransaction" = "Redigera transaktion";
+"addParticipants" = "Lägg till deltagare";
+"editParticipants" = "Redigera deltagare";
+"type" = "Typ";
+"date" = "Datum";
+"amount" = "Belopp";
+"whatAmount" = "Vilket belopp";
+"description" = "Beskrivning";
+"shortDescription" = "En kort beskrivning";
+"category" = "Kategori";
 
 // Settings
+"myInformation" = "Mina uppgifter";
 "quickBalance" = "Snabbsaldo";
 
 // Transaction Categories
 "food" = "Mat";
 "fika" = "Fika";
-"transportation" = "transport";
+"transportation" = "Transport";
 "other" = "Övrigt";
 "savingsAccountPurchase" = "Sparkonto köp";
 "groceries" = "Livsmedel";
-"saving" = "Sparande";
+"extraSaving" = "Extra sparande";
 "savingsAccount" = "Sparkonto";
 "rounding" = "Avrundning";
 "swish" = "Swish";
@@ -34,3 +65,4 @@
 // Transaction Types
 "expense" = "Utgift";
 "income" = "Inkomst";
+"saving" = "Sparande";

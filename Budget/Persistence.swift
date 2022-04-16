@@ -19,8 +19,8 @@ struct PersistenceController {
             newTransaction.type = .expense
             newTransaction.date = Date()
             newTransaction.amount = 24.2//amountTextField.text!
-            newTransaction.info = "Test"
-            newTransaction.category = .fika
+            newTransaction.desc = "Test"
+            newTransaction.category = "fika"
         }
         do {
             try viewContext.save()

@@ -8,24 +8,45 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("welcomeScreenShown") private var welcomeScreenShown: Bool = false
+    @EnvironmentObject private var viewModel: AuthViewModel
+    
     var body: some View {
+        VStack {
+            switch viewModel.state {
+            case .signedIn:
+                if welcomeScreenShown {
+                    contentView
+                } else {
+                    WelcomeScreenView()
+                }
+            case .signedOut:
+                SignInView()
+            }
+        }
+        .onAppear {
+            viewModel.state = viewModel.getState
+        }
+    }
+    
+    private var contentView: some View {
         TabView {
             HomeView().tabItem {
                 Image(systemName: "house")
-                Text("Home")
+                Text("home")
             }
             TransactionsView().tabItem {
                 Image(systemName: "arrow.left.arrow.right")
-                Text("Transactions")
+                Text("transactions")
             }
             HistoryView().tabItem {
                 Image(systemName: "clock")
-                Text("History")
+                Text("history")
             }
             SettingsView().tabItem {
                 Image(systemName: "gear")
-                Text("Settings")
-            }
+                Text("settings")
+            }.environmentObject(viewModel)
         }
     }
 }
@@ -34,7 +55,9 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ContentView()
-            ContentView().preferredColorScheme(.dark)
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+            ContentView()
+                .preferredColorScheme(.dark)
         }
     }
 }
