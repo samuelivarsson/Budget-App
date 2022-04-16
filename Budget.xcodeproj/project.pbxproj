@@ -23,9 +23,9 @@
 		4D225539280A2EFA00C80851 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4D225538280A2EFA00C80851 /* FirebaseAuth */; };
 		4D22553B280A2EFA00C80851 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 4D22553A280A2EFA00C80851 /* FirebaseMessaging */; };
 		4D22553D280A39F600C80851 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D22553C280A39F600C80851 /* SignInView.swift */; };
-		4D225545280A4A4200C80851 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D225544280A4A4200C80851 /* Roboto-Medium.ttf */; };
 		4D63BAE52808E42C00132E44 /* TransactionCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */; };
 		4D63BAE62808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */; };
+		4DC4BDB1280B8457009E5859 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */; };
 		4DFD3D9628073E4A00D5FFB4 /* BudgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */; };
 		4DFD3D9828073E4A00D5FFB4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */; };
 		4DFD3D9A28073E4B00D5FFB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9928073E4B00D5FFB4 /* Assets.xcassets */; };
@@ -57,9 +57,9 @@
 		4D2255312809B65C00C80851 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		4D225533280A1F4500C80851 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4D22553C280A39F600C80851 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
-		4D225544280A4A4200C80851 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Medium.ttf"; path = "../../../../../../../Downloads/Roboto/Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		4DFD3D9228073E4A00D5FFB4 /* Budget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Budget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetApp.swift; sourceTree = "<group>"; };
 		4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -115,7 +115,7 @@
 		4D225543280A4A2E00C80851 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				4D225544280A4A4200C80851 /* Roboto-Medium.ttf */,
+				4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -305,7 +305,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D225545280A4A4200C80851 /* Roboto-Medium.ttf in Resources */,
+				4DC4BDB1280B8457009E5859 /* Roboto-Medium.ttf in Resources */,
 				4DFD3D9D28073E4B00D5FFB4 /* Preview Assets.xcassets in Resources */,
 				4D225534280A1F4500C80851 /* GoogleService-Info.plist in Resources */,
 				4DFD3DC52807432000D5FFB4 /* Localizable.strings in Resources */,
