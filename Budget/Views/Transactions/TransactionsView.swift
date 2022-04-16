@@ -17,13 +17,21 @@ struct TransactionsView: View {
     
     var body: some View {
         NavigationView {
-            List {
+            Form {
                 ForEach(transactions) { transaction in
-                    NavigationLink {
-                        TransactionView()
-                    } label: {
-                        Label(transaction.info!, systemImage: transaction.getImageName())
-                    }.buttonStyle(PlainButtonStyle())
+                    Section {
+                        NavigationLink {
+                            TransactionView()
+                        } label: {
+                            let amount = Utility.doubleToLocalCurrency(value: transaction.amount)
+                            Label(
+                                "\(amount), \(transaction.desc!) : \(transaction.category!)",
+                                systemImage: transaction.getImageName()
+                            )
+                        }
+                        .frame(minHeight: 50)
+                        .padding()
+                    }
                 }
                 .onDelete(perform: deleteTransactions)
             }
@@ -33,31 +41,12 @@ struct TransactionsView: View {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: addTransaction) {
+                    NavigationLink {
+                        TransactionView(add: true)
+                    } label: {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
-            }
-        }
-    }
-    
-    private func addTransaction() {
-        withAnimation {
-            let newTransaction = Transaction(context: viewContext)
-            newTransaction.id = UUID()
-            newTransaction.type = .expense
-            newTransaction.date = Date()
-            newTransaction.amount = 24.2//amountTextField.text!
-            newTransaction.info = "Test"
-            newTransaction.category = .fika
-            
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
     }

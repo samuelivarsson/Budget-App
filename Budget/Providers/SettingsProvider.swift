@@ -12,7 +12,9 @@ import SwiftUI
 
 final class SettingsProvider {
     private let settings: [Setting] = [
+        Setting(name: "myInformation", imgName: "person", view: AnyView(MyInformationView())),
         Setting(name: "quickBalance", imgName: "creditcard", view: AnyView(QuickBalanceView()))
+        
     ]
     
     func getSettings() -> [Setting] {

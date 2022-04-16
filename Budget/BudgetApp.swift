@@ -6,15 +6,28 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct BudgetApp: App {
     let persistenceController = PersistenceController.shared
+    @StateObject var viewModel = AuthViewModel()
 
+    init() {
+        setUpFirebase()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(viewModel)
         }
+    }
+}
+
+extension BudgetApp {
+    private func setUpFirebase() {
+        FirebaseApp.configure()
     }
 }

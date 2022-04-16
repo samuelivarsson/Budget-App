@@ -10,14 +10,43 @@ import SwiftUI
 private var settingsProvider = SettingsProvider()
 
 struct SettingsView: View {
+    @EnvironmentObject var viewModel: AuthViewModel
+    
     var body: some View {
         NavigationView {
-            List {
-                ForEach(settingsProvider.getSettings()) { setting in
-                    NavigationLink {
-                        setting.view
-                    } label: {
-                        Label(setting.name, systemImage: setting.imgName)
+            VStack {
+                Form {
+                    Section {
+                        NavigationLink {
+                            MyInformationView()
+                        } label: {
+                            Label {
+                                Text("myInformation")
+                            } icon: {
+                                UserPicture(user: viewModel.auth.currentUser)
+                            }
+                        }
+                        ForEach(settingsProvider.getSettings()) { setting in
+                            NavigationLink {
+                                setting.view
+                            } label: {
+                                Label(setting.name, systemImage: setting.imgName)
+                            }
+                        }
+                    }
+                    
+                    Section {
+                        Button {
+                            viewModel.signOut()
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Text("signOut")
+                                    .textCase(.uppercase)
+                                    .font(.system(size: 14).weight(.bold))
+                                Spacer()
+                            }
+                        }
                     }
                 }
             }
