@@ -26,7 +26,7 @@ struct WelcomeScreenView: View {
         NavigationView {
             TabView {
                 LoginView()
-                SetCategoriesView()
+                TransactionCategoriesView()
             }
             .navigationTitle("welcome")
             .tabViewStyle(.page)

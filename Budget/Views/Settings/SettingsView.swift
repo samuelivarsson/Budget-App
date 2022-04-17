@@ -14,38 +14,44 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                Form {
-                    Section {
-                        NavigationLink {
-                            MyInformationView()
-                        } label: {
-                            Label {
-                                Text("myInformation")
-                            } icon: {
-                                UserPicture(user: viewModel.auth.currentUser)
-                            }
-                        }
-                        ForEach(settingsProvider.getSettings()) { setting in
-                            NavigationLink {
-                                setting.view
-                            } label: {
-                                Label(setting.name, systemImage: setting.imgName)
+            Form {
+                Section {
+                    NavigationLink {
+                        MyInformationView()
+                    } label: {
+                        HStack(spacing: 20) {
+                            UserPicture(user: viewModel.auth.currentUser).clipShape(Circle())
+                                .padding(.vertical, 5)
+                            VStack(alignment: .leading) {
+                                let userName = viewModel.auth.currentUser?.displayName ?? "Guest"
+                                Text(userName).font(.headline)
+                                Text("emailNamePhone").font(.subheadline)
                             }
                         }
                     }
-                    
-                    Section {
-                        Button {
-                            viewModel.signOut()
+                    .frame(height: 60)
+                }
+                
+                Section {
+                    ForEach(settingsProvider.getSettings()) { setting in
+                        NavigationLink {
+                            setting.view
                         } label: {
-                            HStack {
-                                Spacer()
-                                Text("signOut")
-                                    .textCase(.uppercase)
-                                    .font(.system(size: 14).weight(.bold))
-                                Spacer()
-                            }
+                            Label(setting.name, systemImage: setting.imgName)
+                        }
+                    }
+                }
+                
+                Section {
+                    Button {
+                        viewModel.signOut()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("signOut")
+                                .textCase(.uppercase)
+                                .font(.system(size: 14).weight(.bold))
+                            Spacer()
                         }
                     }
                 }
@@ -59,5 +65,6 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+            .environmentObject(AuthViewModel())
     }
 }

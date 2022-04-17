@@ -46,7 +46,7 @@ struct ContentView: View {
             SettingsView().tabItem {
                 Image(systemName: "gear")
                 Text("settings")
-            }.environmentObject(viewModel)
+            }
         }
     }
 }
@@ -56,8 +56,11 @@ struct ContentView_Previews: PreviewProvider {
         Group {
             ContentView()
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+                .environmentObject(AuthViewModel())
             ContentView()
                 .preferredColorScheme(.dark)
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+                .environmentObject(AuthViewModel())
         }
     }
 }

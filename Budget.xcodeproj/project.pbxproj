@@ -13,7 +13,7 @@
 		4D02890D280B304B0053D15D /* MyInformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D02890C280B304B0053D15D /* MyInformationView.swift */; };
 		4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F05CA280793FA0030AB5B /* TransactionView.swift */; };
 		4D1E973F28085459003C8802 /* WelcomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E973E28085459003C8802 /* WelcomeScreenView.swift */; };
-		4D1E974228085626003C8802 /* SetCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974128085626003C8802 /* SetCategoriesView.swift */; };
+		4D1E974228085626003C8802 /* TransactionCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974128085626003C8802 /* TransactionCategoriesView.swift */; };
 		4D1E9744280857B6003C8802 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E9743280857B6003C8802 /* LoginView.swift */; };
 		4D1E974728085FBF003C8802 /* Transaction+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974528085FBF003C8802 /* Transaction+CoreDataClass.swift */; };
 		4D1E974828085FBF003C8802 /* Transaction+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974628085FBF003C8802 /* Transaction+CoreDataProperties.swift */; };
@@ -26,6 +26,7 @@
 		4D63BAE52808E42C00132E44 /* TransactionCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */; };
 		4D63BAE62808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */; };
 		4DC4BDB1280B8457009E5859 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */; };
+		4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */; };
 		4DFD3D9628073E4A00D5FFB4 /* BudgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */; };
 		4DFD3D9828073E4A00D5FFB4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */; };
 		4DFD3D9A28073E4B00D5FFB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9928073E4B00D5FFB4 /* Assets.xcassets */; };
@@ -50,7 +51,7 @@
 		4D02890C280B304B0053D15D /* MyInformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyInformationView.swift; sourceTree = "<group>"; };
 		4D0F05CA280793FA0030AB5B /* TransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionView.swift; sourceTree = "<group>"; };
 		4D1E973E28085459003C8802 /* WelcomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreenView.swift; sourceTree = "<group>"; };
-		4D1E974128085626003C8802 /* SetCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCategoriesView.swift; sourceTree = "<group>"; };
+		4D1E974128085626003C8802 /* TransactionCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoriesView.swift; sourceTree = "<group>"; };
 		4D1E9743280857B6003C8802 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		4D1E974528085FBF003C8802 /* Transaction+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4D1E974628085FBF003C8802 /* Transaction+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -60,6 +61,7 @@
 		4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhoneView.swift; sourceTree = "<group>"; };
 		4DFD3D9228073E4A00D5FFB4 /* Budget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Budget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetApp.swift; sourceTree = "<group>"; };
 		4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -209,8 +211,9 @@
 			children = (
 				4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */,
 				4D02890C280B304B0053D15D /* MyInformationView.swift */,
+				4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */,
 				4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */,
-				4D1E974128085626003C8802 /* SetCategoriesView.swift */,
+				4D1E974128085626003C8802 /* TransactionCategoriesView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -342,9 +345,10 @@
 				4D1E974828085FBF003C8802 /* Transaction+CoreDataProperties.swift in Sources */,
 				4D028909280B16E30053D15D /* AuthViewModel.swift in Sources */,
 				4DFD3DAC2807407D00D5FFB4 /* TransactionsView.swift in Sources */,
-				4D1E974228085626003C8802 /* SetCategoriesView.swift in Sources */,
+				4D1E974228085626003C8802 /* TransactionCategoriesView.swift in Sources */,
 				4D22553D280A39F600C80851 /* SignInView.swift in Sources */,
 				4DFD3DB6280740F300D5FFB4 /* QuickBalanceView.swift in Sources */,
+				4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

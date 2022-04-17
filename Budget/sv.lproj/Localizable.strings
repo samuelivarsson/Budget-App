@@ -11,7 +11,7 @@
 "signUp" = "Skapa konto";
 "signOut" = "Logga ut";
 "signInWithGoogle" = "Logga in med Google";
-"signInAnonymously" = "Logga in anonymt";
+"signInAsGuest" = "Logga in som gäst";
 "or" = "eller";
 "email" = "Email";
 "emailAddress" = "Email adress";
@@ -47,6 +47,12 @@
 
 // Settings
 "myInformation" = "Mina uppgifter";
+"emailNamePhone" = "Email, Namn, Telefon";
+"name" = "Namn";
+"phone" = "Telefon";
+"editPhone" = "Redigera telefonnummer";
+"yourPhone" = "Ditt telefonnummer";
+"transactionCategories" = "Transaktionskategorier";
 "quickBalance" = "Snabbsaldo";
 
 // Transaction Categories

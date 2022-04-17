@@ -41,9 +41,9 @@ struct SignInView: View {
                 HStack {
                     Image(systemName: "person").padding()
                     Spacer()
-                    Text("signInAnonymously")
+                    Text("signInAsGuest")
                     Spacer()
-                }
+                } // TESTA MED LABEL
                 .font(Font.system(size: 14).bold())
                 .foregroundColor(.white)
                 .frame(width: 300, height: 48)

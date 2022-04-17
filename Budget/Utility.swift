@@ -59,6 +59,8 @@ struct UserPicture: View {
             NetworkImage(url: user.photoURL, failImage: failImage)
         } else {
             failImage
+                .resizable()
+                .aspectRatio(contentMode: .fit)
         }
     }
 }
@@ -77,6 +79,8 @@ struct NetworkImage: View {
                 .aspectRatio(contentMode: .fit)
         } else {
             failImage
+                .resizable()
+                .aspectRatio(contentMode: .fit)
         }
     }
 }

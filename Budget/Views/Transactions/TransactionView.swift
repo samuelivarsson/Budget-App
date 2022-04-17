@@ -26,29 +26,29 @@ struct TransactionView: View {
     var add: Bool = false
     
     var body: some View {
-        NavigationView {
-            Form {
-                Section(add ? "addTransaction" : "editTransaction") {
-                    typeView
-                    categoryView
-                    descriptionView
-                    amountView
-                    datePicker
+        Form {
+            Section {
+                typeView
+                categoryView
+                descriptionView
+                amountView
+                datePicker
+            }
+            
+            Section(add ? "addParticipants" : "editParticipants") {
+                Text("Hej")
+            }
+            
+            Section {
+                Button(add ? "add" : "apply") {
+                    addTransaction()
+                    presentationMode.wrappedValue.dismiss()
                 }
-                
-                Section(add ? "addParticipants" : "editParticipants") {
-                    Text("Hej")
-                }
-                
-                Section {
-                    Button(add ? "add" : "apply") {
-                        addTransaction()
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                }
+                .frame(maxWidth: .infinity, alignment: .center)
             }
         }
+        .navigationTitle(add ? "addTransaction" : "editTransaction")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private var typeView: some View {
@@ -175,5 +175,6 @@ struct TransactionView: View {
 struct TransactionView_Previews: PreviewProvider {
     static var previews: some View {
         TransactionView()
+            .environmentObject(AuthViewModel())
     }
 }
