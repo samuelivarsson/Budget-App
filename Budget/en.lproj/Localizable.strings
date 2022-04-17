@@ -16,10 +16,15 @@
 "email" = "Email";
 "emailAddress" = "Email address";
 "password" = "Password";
+"confirmPassword" = "Confirm password";
 "noAccount" = "Don't have an account?";
 "register" = "Register";
 "pleaseEnterEmail" = "Please enter an email";
 "pleaseEnterPassword" = "Please enter a password";
+
+// Sign up
+"fullName" = "Full name";
+"passwordNotMatching" = "The passwords doesn't match!";
 
 // Welcome
 "welcome" = "Welcome";

@@ -23,6 +23,7 @@
 		4D225539280A2EFA00C80851 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4D225538280A2EFA00C80851 /* FirebaseAuth */; };
 		4D22553B280A2EFA00C80851 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 4D22553A280A2EFA00C80851 /* FirebaseMessaging */; };
 		4D22553D280A39F600C80851 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D22553C280A39F600C80851 /* SignInView.swift */; };
+		4D4B3E6C280C4AB100B78860 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4B3E6B280C4AB100B78860 /* SignUpView.swift */; };
 		4D63BAE52808E42C00132E44 /* TransactionCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */; };
 		4D63BAE62808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */; };
 		4DC4BDB1280B8457009E5859 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */; };
@@ -58,6 +59,7 @@
 		4D2255312809B65C00C80851 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		4D225533280A1F4500C80851 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4D22553C280A39F600C80851 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		4D4B3E6B280C4AB100B78860 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				4D22553C280A39F600C80851 /* SignInView.swift */,
+				4D4B3E6B280C4AB100B78860 /* SignUpView.swift */,
 				4D02890A280B196B0053D15D /* GoogleSignInButton.swift */,
 			);
 			path = SignIn;
@@ -339,6 +342,7 @@
 				4DFD3DBE2807414500D5FFB4 /* TransactionType.swift in Sources */,
 				4DFD3DAA2807406800D5FFB4 /* HomeView.swift in Sources */,
 				4D1E9744280857B6003C8802 /* LoginView.swift in Sources */,
+				4D4B3E6C280C4AB100B78860 /* SignUpView.swift in Sources */,
 				4D2255322809B65C00C80851 /* Utility.swift in Sources */,
 				4D63BAE62808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift in Sources */,
 				4DFD3D9628073E4A00D5FFB4 /* BudgetApp.swift in Sources */,

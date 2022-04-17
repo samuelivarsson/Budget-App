@@ -84,3 +84,48 @@ struct NetworkImage: View {
         }
     }
 }
+
+// A generic TextField with icon
+struct IconTextField: View {
+    @Binding var text: String
+    var imgName: String
+    var placeHolderText: LocalizedStringKey
+    var disableAutocorrection: Bool = false
+    var autoCapitalization: TextInputAutocapitalization = .words
+    
+    var body: some View {
+        HStack {
+            Image(systemName: imgName).foregroundColor(.secondary)
+            TextField(placeHolderText, text: $text)
+                .disableAutocorrection(disableAutocorrection)
+                .textInputAutocapitalization(autoCapitalization)
+        }
+    }
+}
+
+// A generic field for entering a password
+struct PasswordField: View {
+    @Binding var password: String
+    
+    @State private var showPassword = false
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "lock").foregroundColor(.secondary)
+            if showPassword {
+                TextField("password", text: $password)
+                    .disableAutocorrection(true)
+                    .textInputAutocapitalization(.none)
+            } else {
+                SecureField("password", text: $password)
+                    .disableAutocorrection(true)
+                    .textInputAutocapitalization(.none)
+            }
+            Button {
+                self.showPassword.toggle()
+            } label: {
+                Image(systemName: "eye").foregroundColor(.secondary)
+            }
+        }
+    }
+}

@@ -16,10 +16,15 @@
 "email" = "Email";
 "emailAddress" = "Email adress";
 "password" = "Lösenord";
+"confirmPassword" = "Bekräfta lösenord";
 "noAccount" = "Har du inget konto?";
 "register" = "Registrera";
 "pleaseEnterEmail" = "Vänligen ange en email";
 "pleaseEnterPassword" = "Vänligen ange ett lösenord";
+
+// Sign up
+"fullName" = "Fullständigt namn";
+"passwordNotMatching" = "Lösenorden stämmer inte överens!";
 
 // Welcome
 "welcome" = "Välkommen";
