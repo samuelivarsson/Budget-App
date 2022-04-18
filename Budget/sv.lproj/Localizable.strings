@@ -25,6 +25,7 @@
 // Sign up
 "fullName" = "Fullständigt namn";
 "passwordNotMatching" = "Lösenorden stämmer inte överens!";
+"pleaseEnterName" = "Vänligen ange ditt namn";
 
 // Welcome
 "welcome" = "Välkommen";

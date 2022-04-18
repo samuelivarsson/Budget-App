@@ -8,10 +8,12 @@
 import Foundation
 import Firebase
 import GoogleSignIn
+import SwiftUI
 
 class AuthViewModel: ObservableObject {
     @Published var state: SignInState = .signedOut
     let auth = Auth.auth()
+    var errorHandling: ErrorHandling?
     
     var getState: SignInState {
         return auth.currentUser != nil ? .signedIn : .signedOut
@@ -24,23 +26,27 @@ class AuthViewModel: ObservableObject {
     
     func signIn(email: String, password: String) {
         auth.signIn(withEmail: email, password: password) { [weak self] result, error in
-            guard result != nil, error == nil else {
+            guard let self = self else { return }
+            if let error = error {
                 print("Something went wrong when signing in!")
-                print(error!.localizedDescription)
+                print(error.localizedDescription)
+                guard let errorHandling = self.errorHandling else { return }
+                errorHandling.handle(error: error)
                 return
             }
             
             // Success
             DispatchQueue.main.async {
-                self?.state = .signedIn
+                self.state = .signedIn
             }
         }
     }
     
     func signIn() {
         if GIDSignIn.sharedInstance.hasPreviousSignIn() {
-            GIDSignIn.sharedInstance.restorePreviousSignIn { [unowned self] user, error in
-                authenticateUser(for: user, with: error)
+            GIDSignIn.sharedInstance.restorePreviousSignIn { [weak self] user, error in
+                guard let self = self else { return }
+                self.authenticateUser(for: user, with: error)
             }
         } else {
             guard let clientID = FirebaseApp.app()?.options.clientID else { return }
@@ -50,8 +56,9 @@ class AuthViewModel: ObservableObject {
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
             guard let rootViewController = windowScene.windows.first?.rootViewController else { return }
             
-            GIDSignIn.sharedInstance.signIn(with: configuration, presenting: rootViewController) { [unowned self] user, error in
-                authenticateUser(for: user, with: error)
+            GIDSignIn.sharedInstance.signIn(with: configuration, presenting: rootViewController) { [weak self] user, error in
+                guard let self = self else { return }
+                self.authenticateUser(for: user, with: error)
             }
         }
     }
@@ -59,6 +66,8 @@ class AuthViewModel: ObservableObject {
     private func authenticateUser(for user: GIDGoogleUser?, with error: Error?) {
         if let error = error {
             print(error.localizedDescription)
+            guard let errorHandling = self.errorHandling else { return }
+            errorHandling.handle(error: error)
             return
         }
         
@@ -66,9 +75,13 @@ class AuthViewModel: ObservableObject {
         
         let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: authentication.accessToken)
         
-        auth.signIn(with: credential) { [unowned self] (_, error) in
+        auth.signIn(with: credential) { [weak self] _, error in
+            guard let self = self else { return }
+            
             if let error = error {
                 print(error.localizedDescription)
+                guard let errorHandling = self.errorHandling else { return }
+                errorHandling.handle(error: error)
             } else {
                 self.state = .signedIn
             }
@@ -77,28 +90,55 @@ class AuthViewModel: ObservableObject {
     
     func signInAnonymously() {
         auth.signInAnonymously { [weak self] authResult, error in
+            guard let self = self else { return }
+            
             if let error = error {
                 print(error.localizedDescription)
+                guard let errorHandling = self.errorHandling else { return }
+                errorHandling.handle(error: error)
                 return
             }
             
             // Success
             DispatchQueue.main.async {
-                self?.state = .signedIn
+                self.state = .signedIn
             }
         }
     }
     
-    func signUp(email: String, password: String) {
+    func signUp(email: String, password: String, name: String) {
         auth.createUser(withEmail: email, password: password) { [weak self] result, error in
-            guard result != nil, error == nil else {
+            guard let self = self else { return }
+            
+            if let error = error {
                 print("Something went wrong when signing up!")
+                print(error.localizedDescription)
+                guard let errorHandling = self.errorHandling else { return }
+                errorHandling.handle(error: error)
                 return
             }
             
             // Success
             DispatchQueue.main.async {
-                self?.state = .signedIn
+                guard let changeRequest = self.auth.currentUser?.createProfileChangeRequest() else {
+                    print("Couldn't create profile change request!")
+                    return
+                }
+                changeRequest.displayName = name
+                changeRequest.commitChanges { [weak self] error in
+                    guard let self = self else { return }
+                    if let error = error {
+                        print(error.localizedDescription)
+                        guard let errorHandling = self.errorHandling else { return }
+                        errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
+                    DispatchQueue.main.async {
+                        self.state = .signedIn
+                    }
+                }
             }
         }
     }
@@ -112,6 +152,8 @@ class AuthViewModel: ObservableObject {
             state = .signedOut
         } catch {
             print(error.localizedDescription)
+            guard let errorHandling = self.errorHandling else { return }
+            errorHandling.handle(error: error)
         }
     }
 }

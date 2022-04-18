@@ -11,9 +11,9 @@ struct SignUpView: View {
     @State private var fullName = ""
     @State private var email = ""
     @State private var password = ""
-    @State private var confirmPassword = ""
     
     @EnvironmentObject var viewModel: AuthViewModel
+    @EnvironmentObject var errorHandling: ErrorHandling
     
     private var width: CGFloat = 300
     private var height: CGFloat = 48
@@ -32,7 +32,8 @@ struct SignUpView: View {
             
             VStack(alignment: .leading, spacing: 0) {
                 Text("email").font(aboveFont).padding(2)
-                IconTextField(text: $email, imgName: "at", placeHolderText: "email", disableAutocorrection: true, autoCapitalization: .never)
+                IconTextField(text: $email, imgName: "at", placeHolderText: "email", disableAutocorrection: true, autoCapitalization: .never, keyboardType: .emailAddress)
+                    .keyboardType(.emailAddress)
                     .padding()
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(cornerRadius)
@@ -47,6 +48,10 @@ struct SignUpView: View {
             }
             
             Button {
+                guard !fullName.isEmpty else {
+                    print("pleaseEnterName")
+                    return
+                }
                 guard !email.isEmpty else {
                     print("pleaseEnterEmail")
                     return
@@ -55,14 +60,10 @@ struct SignUpView: View {
                     print("pleaseEnterPassword")
                     return
                 }
-                guard confirmPassword.contains(password) else {
-                    print("passwordNotMatching")
-                    return
-                }
                 
-                viewModel.signIn(email: email, password: password)
+                viewModel.signUp(email: email, password: password, name: fullName)
             } label: {
-                Text("signIn")
+                Text("signUp")
                     .font(Font.system(size: 14).bold())
                     .foregroundColor(.white)
                     .frame(width: width, height: height)

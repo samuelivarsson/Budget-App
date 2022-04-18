@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import FirebaseAuth
 
+/// Offers useful utilities
 class Utility {
     static func doubleToLocalCurrency(value: Double) -> String {
         let currencyFormatter: NumberFormatter = NumberFormatter()
@@ -22,6 +23,7 @@ class Utility {
     }
 }
 
+/// Create a color with hex-code
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
@@ -49,7 +51,7 @@ extension Color {
     }
 }
 
-// A generic view that shows a users profile picture.
+/// A generic view that shows a users profile picture.
 struct UserPicture: View {
     let user: User?
     let failImage = Image(systemName: "person.circle")
@@ -65,7 +67,7 @@ struct UserPicture: View {
     }
 }
 
-// A generic view that shows images from the network.
+/// A generic view that shows images from the network.
 struct NetworkImage: View {
     let url: URL?
     let failImage: Image
@@ -85,25 +87,28 @@ struct NetworkImage: View {
     }
 }
 
-// A generic TextField with icon
+/// A generic TextField with icon
 struct IconTextField: View {
     @Binding var text: String
     var imgName: String
     var placeHolderText: LocalizedStringKey
     var disableAutocorrection: Bool = false
     var autoCapitalization: TextInputAutocapitalization = .words
+    var keyboardType: UIKeyboardType = .default
     
     var body: some View {
         HStack {
             Image(systemName: imgName).foregroundColor(.secondary)
             TextField(placeHolderText, text: $text)
+                .keyboardType(keyboardType)
                 .disableAutocorrection(disableAutocorrection)
                 .textInputAutocapitalization(autoCapitalization)
         }
+        .frame(height: 20)
     }
 }
 
-// A generic field for entering a password
+/// A generic field for entering a password
 struct PasswordField: View {
     @Binding var password: String
     
@@ -127,5 +132,6 @@ struct PasswordField: View {
                 Image(systemName: "eye").foregroundColor(.secondary)
             }
         }
+        .frame(height: 20)
     }
 }

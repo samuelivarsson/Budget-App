@@ -22,6 +22,7 @@ struct BudgetApp: App {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(viewModel)
+                .withErrorHandling()
         }
     }
 }

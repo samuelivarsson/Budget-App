@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @AppStorage("welcomeScreenShown") private var welcomeScreenShown: Bool = false
     @EnvironmentObject private var viewModel: AuthViewModel
+    @EnvironmentObject private var errorHandling: ErrorHandling
     
     var body: some View {
         VStack {
@@ -26,6 +27,7 @@ struct ContentView: View {
         }
         .onAppear {
             viewModel.state = viewModel.getState
+            viewModel.errorHandling = errorHandling
         }
     }
     

@@ -25,6 +25,7 @@
 // Sign up
 "fullName" = "Full name";
 "passwordNotMatching" = "The passwords doesn't match!";
+"pleaseEnterName" = "Please enter your name";
 
 // Welcome
 "welcome" = "Welcome";

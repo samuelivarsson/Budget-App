@@ -10,7 +10,6 @@ import SwiftUI
 struct SignInView: View {
     @State private var email = ""
     @State private var password = ""
-    @State private var showPassword = false
     
     @EnvironmentObject private var viewModel: AuthViewModel
     
@@ -68,8 +67,7 @@ struct SignInView: View {
                 VStack {
                     VStack(alignment: .leading, spacing: 0) {
                         Text("email").font(aboveFont).padding(2)
-                        IconTextField(text: $email, imgName: "at", placeHolderText: "email", disableAutocorrection: true, autoCapitalization: .never)
-                            .frame(height: 20)
+                        IconTextField(text: $email, imgName: "at", placeHolderText: "email", disableAutocorrection: true, autoCapitalization: .never, keyboardType: .emailAddress)
                             .padding()
                             .background(Color(.secondarySystemBackground))
                             .cornerRadius(cornerRadius)
@@ -78,7 +76,6 @@ struct SignInView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         Text("password").font(aboveFont).padding(2)
                         PasswordField(password: $password)
-                            .frame(height: 20)
                             .padding()
                             .background(Color(.secondarySystemBackground))
                             .cornerRadius(cornerRadius)
