@@ -6,13 +6,21 @@
   
 */
 
+// Common words
+"or" = "or";
+"add" = "Add";
+"apply" = "Apply";
+"type" = "Type";
+"date" = "Date";
+"amount" = "Amount";
+"category" = "Category";
+
 // Sign in
 "signIn" = "Sign in";
 "signUp" = "Sign up";
 "signOut" = "Sign out";
 "signInWithGoogle" = "Sign in with Google";
 "signInAsGuest" = "Sign in as guest";
-"or" = "or";
 "email" = "Email";
 "emailAddress" = "Email address";
 "password" = "Password";
@@ -21,6 +29,10 @@
 "register" = "Register";
 "pleaseEnterEmail" = "Please enter an email";
 "pleaseEnterPassword" = "Please enter a password";
+
+// Sign out as guest warning
+"signOut?" = "Do you want to sign out?";
+"signOutAsGuestImplication" = "You are about to sign out of your guest account. Once signed out, all account settings will be lost. Transactions will still be saved on your phones memory untill uninstallation of the app.";
 
 // Sign up
 "fullName" = "Full name";
@@ -37,19 +49,13 @@
 "settings" = "Settings";
 
 // Transaction View
-"add" = "Add";
-"apply" = "Apply";
 "addTransaction" = "Add transaction";
 "editTransaction" = "Edit transaction";
 "addParticipants" = "Add participants";
 "editParticipants" = "Edit participants";
-"type" = "Type";
-"date" = "Date";
-"amount" = "Amount";
 "whatAmount" = "What amount";
 "description" = "Description";
 "shortDescription" = "A short description";
-"category" = "Category";
 
 // Settings
 "myInformation" = "My information";

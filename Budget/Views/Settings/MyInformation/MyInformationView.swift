@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MyInformationView: View {
     @EnvironmentObject private var viewModel: AuthViewModel
+    @State private var signOutAsGuestPressed: Bool = false
     
     var body: some View {
         Form {
@@ -38,9 +39,35 @@ struct MyInformationView: View {
                     }
                 }
             }
+            
+            Section {
+                Button(role: .destructive) {
+                    guard let user = viewModel.auth.currentUser else { return }
+                    if user.isAnonymous {
+                        signOutAsGuestPressed = true
+                        return
+                    }
+                    viewModel.signOut()
+                } label: {
+                    HStack {
+                        Spacer()
+                        Text("signOut")
+                            .textCase(.uppercase)
+                            .font(.system(size: 14).weight(.bold))
+                        Spacer()
+                    }
+                }
+            }
         }
         .navigationTitle("myInformation")
         .navigationBarTitleDisplayMode(.inline)
+        .alert("signOut?", isPresented: $signOutAsGuestPressed) {
+            Button("signOut", role: .destructive) {
+                viewModel.signOut()
+            }
+        } message: {
+            Text("signOutAsGuestImplication")
+        }
     }
 }
 

@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-private var settingsProvider = SettingsProvider()
-
 struct SettingsView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     
@@ -35,32 +33,11 @@ struct SettingsView: View {
                 }
                 
                 Section {
-                    ForEach(settingsProvider.getSettings()) { setting in
-                        NavigationLink {
-                            setting.view
-                        } label: {
-                            Label(setting.name, systemImage: setting.imgName)
-                        }
-                    }
-                }
-                
-                Section {
-                    Button {
-                        viewModel.signOut()
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Text("signOut")
-                                .textCase(.uppercase)
-                                .font(.system(size: 14).weight(.bold))
-                            Spacer()
-                        }
-                    }
+                    SettingsRowsView()
                 }
             }
             .navigationTitle("settings")
         }
-        .navigationViewStyle(.stack)
     }
 }
 
