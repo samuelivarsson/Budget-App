@@ -48,6 +48,12 @@
 "history" = "History";
 "settings" = "Settings";
 
+// Home View
+"notifications" = "Notifications";
+"readAll" = "Read all";
+"markAsRead" = "Mark as read";
+"markAllAsRead" = "Mark all as read";
+
 // Transaction View
 "addTransaction" = "Add transaction";
 "editTransaction" = "Edit transaction";
@@ -66,6 +72,17 @@
 "yourPhone" = "Your phone number";
 "transactionCategories" = "Transaction categories";
 "quickBalance" = "Quick balance";
+
+// Friends View
+"friends" = "Friends";
+"friendsName" = "Friend's name";
+"friendsPhone" = "Friend's phone";
+"addFriend" = "Add friend";
+"editFriend" = "Edit friend";
+"addUserByEmail" = "Add Budget user by email";
+"userEmail" = "The user's email";
+"addFriendManually" = "Add friend manually";
+"connectFriend" = "Connect friend to a user account";
 
 // Transaction Categories
 "food" = "Food";

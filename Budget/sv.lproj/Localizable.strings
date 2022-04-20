@@ -48,6 +48,12 @@
 "history" = "Historik";
 "settings" = "Inställningar";
 
+// Home View
+"notifications" = "Notifikationer";
+"readAll" = "Läs alla";
+"markAsRead" = "Markera som läst";
+"markAllAsRead" = "Markera alla som lästa";
+
 // Transactions View
 "addTransaction" = "Lägg till transaktion";
 "editTransaction" = "Redigera transaktion";
@@ -66,6 +72,17 @@
 "yourPhone" = "Ditt telefonnummer";
 "transactionCategories" = "Transaktionskategorier";
 "quickBalance" = "Snabbsaldo";
+
+// Friends View
+"friends" = "Vänner";
+"friendsName" = "Vännens namn";
+"friendsPhone" = "Vännens telefon";
+"addFriend" = "Lägg till vän";
+"editFriend" = "Redigera vän";
+"addUserByEmail" = "Lägg till Budget användare med email";
+"userEmail" = "Användarens email";
+"addFriendManually" = "Lägg till vän manuellt";
+"connectFriend" = "Koppla vän till ett användarkonto";
 
 // Transaction Categories
 "food" = "Mat";
