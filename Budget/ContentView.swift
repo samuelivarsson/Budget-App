@@ -27,10 +27,6 @@ struct ContentView: View {
             }
         }
         .navigationViewStyle(.stack)
-        .onAppear {
-            authViewModel.errorHandling = errorHandling
-            fsViewModel.errorHandling = errorHandling
-        }
     }
     
     private var content: some View {

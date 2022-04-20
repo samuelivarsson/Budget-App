@@ -20,6 +20,7 @@ struct ConnectFriendView: View {
     private var friends: FetchedResults<Friend>
     
     @State private var email: String = ""
+    @State private var connectFriendLoading: Bool = false
     
     private var friend: Friend
     
@@ -32,6 +33,9 @@ struct ConnectFriendView: View {
         Form {
             Section {
                 TextField("email", text: $email, prompt: Text("userEmail"))
+                    .keyboardType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
             } header: {
                 Text("email")
             }
@@ -39,9 +43,12 @@ struct ConnectFriendView: View {
             Section {
                 HStack {
                     Spacer()
-                    Button("apply") {
-                        connectFriendToUser(userEmail: email)
-                        presentationMode.wrappedValue.dismiss()
+                    if connectFriendLoading {
+                        ProgressView()
+                    } else {
+                        Button("apply") {
+                            connectFriendToUser(userEmail: email)
+                        }
                     }
                     Spacer()
                 }
@@ -54,17 +61,25 @@ struct ConnectFriendView: View {
     }
     
     private func connectFriendToUser(userEmail: String) {
-        guard email != authViewModel.auth.currentUser?.email else {
+        guard email.lowercased() != authViewModel.auth.currentUser?.email?.lowercased() else {
             errorHandling.handle(error: InputError.addYourself)
             return
         }
         
-        fsViewModel.getUserFromEmail(email: userEmail) { user in
+        connectFriendLoading = true
+        
+        fsViewModel.getUserFromEmail(email: userEmail) { user, error in
+            connectFriendLoading = false
+            if let error = error {
+                errorHandling.handle(error: error)
+                return
+            }
             guard let user = user else {
                 errorHandling.handle(error: UserError.noUserWithEmail)
                 return
             }
             
+            // Success
             friend.name = user["name"] as? String ?? ""
             friend.phone = user["phone"] as? String ?? ""
             friend.email = user["email"] as? String ?? ""
@@ -73,6 +88,9 @@ struct ConnectFriendView: View {
             
             do {
                 try viewContext.save()
+                
+                // Success
+                presentationMode.wrappedValue.dismiss()
             } catch {
                 errorHandling.handle(error: error)
             }

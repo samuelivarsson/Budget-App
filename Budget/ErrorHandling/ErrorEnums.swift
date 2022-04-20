@@ -95,12 +95,24 @@ extension ApplicationError: LocalizedError {
 }
 
 enum InputError: Error {
+    case noEmail
+    case noPassword
+    case noName
+    case noPhone
     case addYourself
 }
 
 extension InputError: LocalizedError {
     public var errorDescription: String? {
         switch self {
+        case .noEmail:
+            return NSLocalizedString("pleaseEnterEmail", comment: "Input Error")
+        case .noPassword:
+            return NSLocalizedString("pleaseEnterPassword", comment: "Input Error")
+        case .noName:
+            return NSLocalizedString("pleaseEnterName", comment: "Input Error")
+        case .noPhone:
+            return NSLocalizedString("pleaseEnterPhone", comment: "Input Error")
         case .addYourself:
             return NSLocalizedString("addYourself", comment: "Input Error")
         }

@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct SignInView: View {
+    @EnvironmentObject private var viewModel: AuthViewModel
+    @EnvironmentObject private var errorHandling: ErrorHandling
+    
     @State private var email = ""
     @State private var password = ""
-    
-    @EnvironmentObject private var viewModel: AuthViewModel
     
     private var width: CGFloat = 300
     private var height: CGFloat = 48
@@ -26,7 +27,11 @@ struct SignInView: View {
             
                 // Sign in with Google
                 Button {
-                    viewModel.signIn()
+                    viewModel.signIn() { error in
+                        if let error = error {
+                            errorHandling.handle(error: error)
+                        }
+                    }
                 } label: {
                     Label {
                         Text("signInWithGoogle")
@@ -43,7 +48,11 @@ struct SignInView: View {
                 
                 // Sign in anonymously
                 Button {
-                    viewModel.signInAnonymously()
+                    viewModel.signInAnonymously() { error in
+                        if let error = error {
+                            errorHandling.handle(error: error)
+                        }
+                    }
                 } label: {
                     Label {
                         Text("signInAsGuest")
@@ -83,15 +92,19 @@ struct SignInView: View {
                     
                     Button {
                         guard !email.isEmpty else {
-                            print("pleaseEnterEmail")
+                            errorHandling.handle(error: InputError.noEmail)
                             return
                         }
                         guard !password.isEmpty else {
-                            print("pleaseEnterPassword")
+                            errorHandling.handle(error: InputError.noPassword)
                             return
                         }
                         
-                        viewModel.signIn(email: email, password: password)
+                        viewModel.signIn(email: email, password: password) { error in
+                            if let error = error {
+                                errorHandling.handle(error: error)
+                            }
+                        }
                     } label: {
                         Text("signIn")
                             .font(Font.system(size: 14).bold())
