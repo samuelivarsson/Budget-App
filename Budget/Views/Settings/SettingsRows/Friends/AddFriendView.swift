@@ -12,6 +12,7 @@ struct AddFriendView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
     
     @State private var email: String = ""
@@ -92,6 +93,7 @@ struct AddFriendView: View {
             newFriend.phone = phone
             newFriend.email = email
             newFriend.uid = uid
+            newFriend.custom = email == nil
             
             do {
                 try viewContext.save()
@@ -102,6 +104,11 @@ struct AddFriendView: View {
     }
     
     private func addUserAsFriend(email: String) {
+        guard email != authViewModel.auth.currentUser?.email else {
+            errorHandling.handle(error: InputError.addYourself)
+            return
+        }
+        
         fsViewModel.getUserFromEmail(email: email) { user in
             addUserLoading = false
             if let user = user {

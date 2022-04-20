@@ -116,3 +116,4 @@
 "applicationError" = "Applikations error";
 "unexpectedNil" = "Ett oväntat nil dök upp";
 "pleaseTryAgain" = "Vänligen försök igen";
+"addYourself" = "Du kan inte lägga till dig själv som vän";

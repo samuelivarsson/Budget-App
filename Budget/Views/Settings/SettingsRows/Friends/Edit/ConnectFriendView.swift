@@ -10,6 +10,9 @@ import SwiftUI
 struct ConnectFriendView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var fsViewModel: FirestoreViewModel
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Friend.name, ascending: true)],
@@ -37,7 +40,7 @@ struct ConnectFriendView: View {
                 HStack {
                     Spacer()
                     Button("apply") {
-                        addUserAsFriendAndConnect()
+                        connectFriendToUser(userEmail: email)
                         presentationMode.wrappedValue.dismiss()
                     }
                     Spacer()
@@ -50,8 +53,30 @@ struct ConnectFriendView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
     
-    private func addUserAsFriendAndConnect() {
+    private func connectFriendToUser(userEmail: String) {
+        guard email != authViewModel.auth.currentUser?.email else {
+            errorHandling.handle(error: InputError.addYourself)
+            return
+        }
         
+        fsViewModel.getUserFromEmail(email: userEmail) { user in
+            guard let user = user else {
+                errorHandling.handle(error: UserError.noUserWithEmail)
+                return
+            }
+            
+            friend.name = user["name"] as? String ?? ""
+            friend.phone = user["phone"] as? String ?? ""
+            friend.email = user["email"] as? String ?? ""
+            friend.uid = user["uid"] as? String ?? ""
+            friend.custom = false
+            
+            do {
+                try viewContext.save()
+            } catch {
+                errorHandling.handle(error: error)
+            }
+        }
     }
 }
 

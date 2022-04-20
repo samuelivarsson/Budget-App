@@ -116,3 +116,4 @@
 "applicationError" = "Application error";
 "unexpectedNil" = "An unexpected nil turned up";
 "pleaseTryAgain" = "Please try again";
+"addYourself" = "You can't add yourself as a friend";

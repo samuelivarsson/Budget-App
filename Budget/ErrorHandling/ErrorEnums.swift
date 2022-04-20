@@ -93,3 +93,17 @@ extension ApplicationError: LocalizedError {
         }
     }
 }
+
+enum InputError: Error {
+    case addYourself
+}
+
+extension InputError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .addYourself:
+            return NSLocalizedString("addYourself", comment: "Input Error")
+        }
+    }
+}
+
