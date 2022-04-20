@@ -6,20 +6,38 @@
   
 */
 
+// Common words
+"or" = "eller";
+"add" = "Lägg till";
+"apply" = "Tillämpa";
+"type" = "Typ";
+"date" = "Datum";
+"amount" = "Belopp";
+"category" = "Kategori";
+
 // Sign in
 "signIn" = "Logga in";
 "signUp" = "Skapa konto";
 "signOut" = "Logga ut";
 "signInWithGoogle" = "Logga in med Google";
-"signInAnonymously" = "Logga in anonymt";
-"or" = "eller";
+"signInAsGuest" = "Logga in som gäst";
 "email" = "Email";
 "emailAddress" = "Email adress";
 "password" = "Lösenord";
+"confirmPassword" = "Bekräfta lösenord";
 "noAccount" = "Har du inget konto?";
 "register" = "Registrera";
 "pleaseEnterEmail" = "Vänligen ange en email";
 "pleaseEnterPassword" = "Vänligen ange ett lösenord";
+
+// Sign out as guest warning
+"signOut?" = "Vill du logga ut?";
+"signOutAsGuestImplication" = "Du är påväg att logga ut från ditt gästkonto. Om du loggar ut kommer alla dina kontoinställningar att förloras. Transaktioner och andra inställningar kommer fortfarande vara sparade på din telefons minne tills du avinstallerar appen.";
+
+// Sign up
+"fullName" = "Fullständigt namn";
+"passwordNotMatching" = "Lösenorden stämmer inte överens!";
+"pleaseEnterName" = "Vänligen ange ditt namn";
 
 // Welcome
 "welcome" = "Välkommen";
@@ -30,24 +48,41 @@
 "history" = "Historik";
 "settings" = "Inställningar";
 
+// Home View
+"notifications" = "Notifikationer";
+"readAll" = "Läs alla";
+"markAsRead" = "Markera som läst";
+"markAllAsRead" = "Markera alla som lästa";
+
 // Transactions View
-"add" = "Lägg till";
-"apply" = "Tillämpa";
 "addTransaction" = "Lägg till transaktion";
 "editTransaction" = "Redigera transaktion";
 "addParticipants" = "Lägg till deltagare";
 "editParticipants" = "Redigera deltagare";
-"type" = "Typ";
-"date" = "Datum";
-"amount" = "Belopp";
 "whatAmount" = "Vilket belopp";
 "description" = "Beskrivning";
 "shortDescription" = "En kort beskrivning";
-"category" = "Kategori";
 
 // Settings
 "myInformation" = "Mina uppgifter";
+"emailNamePhone" = "Email, Namn, Telefon";
+"name" = "Namn";
+"phone" = "Telefon";
+"editPhone" = "Redigera telefonnummer";
+"yourPhone" = "Ditt telefonnummer";
+"transactionCategories" = "Transaktionskategorier";
 "quickBalance" = "Snabbsaldo";
+
+// Friends View
+"friends" = "Vänner";
+"friendsName" = "Vännens namn";
+"friendsPhone" = "Vännens telefon";
+"addFriend" = "Lägg till vän";
+"editFriend" = "Redigera vän";
+"addUserByEmail" = "Lägg till Budget användare med email";
+"userEmail" = "Användarens email";
+"addFriendManually" = "Lägg till vän manuellt";
+"connectFriend" = "Koppla vän till ett användarkonto";
 
 // Transaction Categories
 "food" = "Mat";
@@ -66,3 +101,11 @@
 "expense" = "Utgift";
 "income" = "Inkomst";
 "saving" = "Sparande";
+
+// Errors
+"error" = "Error";
+"imageFetchError" = "Bilden hämtades inte";
+"networkProblem" = "Det kan vara ett problem med din internetanslutning";
+"checkConnectionTryAgain" = "Kontrollera din anslutning och försök igen";
+"noUser" = "Du är inte inloggad";
+"youreOffline" = "Du är offline";

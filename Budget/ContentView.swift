@@ -10,13 +10,14 @@ import SwiftUI
 struct ContentView: View {
     @AppStorage("welcomeScreenShown") private var welcomeScreenShown: Bool = false
     @EnvironmentObject private var viewModel: AuthViewModel
+    @EnvironmentObject private var errorHandling: ErrorHandling
     
     var body: some View {
         VStack {
             switch viewModel.state {
             case .signedIn:
                 if welcomeScreenShown {
-                    contentView
+                    content
                 } else {
                     WelcomeScreenView()
                 }
@@ -24,12 +25,14 @@ struct ContentView: View {
                 SignInView()
             }
         }
+        .navigationViewStyle(.stack)
         .onAppear {
             viewModel.state = viewModel.getState
+            viewModel.errorHandling = errorHandling
         }
     }
     
-    private var contentView: some View {
+    private var content: some View {
         TabView {
             HomeView().tabItem {
                 Image(systemName: "house")
@@ -46,7 +49,7 @@ struct ContentView: View {
             SettingsView().tabItem {
                 Image(systemName: "gear")
                 Text("settings")
-            }.environmentObject(viewModel)
+            }
         }
     }
 }
@@ -56,8 +59,13 @@ struct ContentView_Previews: PreviewProvider {
         Group {
             ContentView()
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+                .environmentObject(AuthViewModel())
+                .environmentObject(ErrorHandling())
             ContentView()
                 .preferredColorScheme(.dark)
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+                .environmentObject(AuthViewModel())
+                .environmentObject(ErrorHandling())
         }
     }
 }

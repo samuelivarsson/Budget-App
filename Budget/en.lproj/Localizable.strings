@@ -6,20 +6,38 @@
   
 */
 
+// Common words
+"or" = "or";
+"add" = "Add";
+"apply" = "Apply";
+"type" = "Type";
+"date" = "Date";
+"amount" = "Amount";
+"category" = "Category";
+
 // Sign in
 "signIn" = "Sign in";
 "signUp" = "Sign up";
 "signOut" = "Sign out";
 "signInWithGoogle" = "Sign in with Google";
-"signInAnonymously" = "Sign in anonymously";
-"or" = "or";
+"signInAsGuest" = "Sign in as guest";
 "email" = "Email";
 "emailAddress" = "Email address";
 "password" = "Password";
+"confirmPassword" = "Confirm password";
 "noAccount" = "Don't have an account?";
 "register" = "Register";
 "pleaseEnterEmail" = "Please enter an email";
 "pleaseEnterPassword" = "Please enter a password";
+
+// Sign out as guest warning
+"signOut?" = "Do you want to sign out?";
+"signOutAsGuestImplication" = "You are about to sign out of your guest account. Once signed out, all account settings will be lost. Transactions will still be saved on your phones memory untill uninstallation of the app.";
+
+// Sign up
+"fullName" = "Full name";
+"passwordNotMatching" = "The passwords doesn't match!";
+"pleaseEnterName" = "Please enter your name";
 
 // Welcome
 "welcome" = "Welcome";
@@ -30,24 +48,41 @@
 "history" = "History";
 "settings" = "Settings";
 
+// Home View
+"notifications" = "Notifications";
+"readAll" = "Read all";
+"markAsRead" = "Mark as read";
+"markAllAsRead" = "Mark all as read";
+
 // Transaction View
-"add" = "Add";
-"apply" = "Apply";
 "addTransaction" = "Add transaction";
 "editTransaction" = "Edit transaction";
 "addParticipants" = "Add participants";
 "editParticipants" = "Edit participants";
-"type" = "Type";
-"date" = "Date";
-"amount" = "Amount";
 "whatAmount" = "What amount";
 "description" = "Description";
 "shortDescription" = "A short description";
-"category" = "Category";
 
 // Settings
 "myInformation" = "My information";
+"emailNamePhone" = "Email, Name, Phone";
+"name" = "Name";
+"phone" = "Phone";
+"editPhone" = "Edit phone number";
+"yourPhone" = "Your phone number";
+"transactionCategories" = "Transaction categories";
 "quickBalance" = "Quick balance";
+
+// Friends View
+"friends" = "Friends";
+"friendsName" = "Friend's name";
+"friendsPhone" = "Friend's phone";
+"addFriend" = "Add friend";
+"editFriend" = "Edit friend";
+"addUserByEmail" = "Add Budget user by email";
+"userEmail" = "The user's email";
+"addFriendManually" = "Add friend manually";
+"connectFriend" = "Connect friend to a user account";
 
 // Transaction Categories
 "food" = "Food";
@@ -66,3 +101,11 @@
 "expense" = "Expense";
 "income" = "Income";
 "saving" = "Saving";
+
+// Errors
+"error" = "Error";
+"imageFetchError" = "Failed to fetch image";
+"networkProblem" = "There might be a problem with your internet connection";
+"checkConnectionTryAgain" = "Check your connection and try again";
+"noUser" = "You are not signed in";
+"youreOffline" = "You are offline";

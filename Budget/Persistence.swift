@@ -13,14 +13,19 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
+        for i in 0..<10 {
             let newTransaction = Transaction(context: viewContext)
             newTransaction.id = UUID()
             newTransaction.type = .expense
             newTransaction.date = Date()
-            newTransaction.amount = 24.2//amountTextField.text!
+            newTransaction.amount = 24.2
             newTransaction.desc = "Test"
             newTransaction.category = "fika"
+            
+            let newFriend = Friend(context: viewContext)
+            newFriend.id = UUID()
+            newFriend.name = "Friend \(i)"
+            newFriend.phone = "070123010\(i)"
         }
         do {
             try viewContext.save()

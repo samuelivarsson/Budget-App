@@ -12,6 +12,7 @@ import CoreData
 struct TransactionView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var errorHandling: ErrorHandling
     
     @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)],
                 animation: .default)
@@ -23,32 +24,47 @@ struct TransactionView: View {
     @State private var amountText = ""
     @State private var date = Date()
     
-    var add: Bool = false
+    var add: Bool
+    
+    init(add: Bool = false) {
+        self.add = add
+    }
+    
+    init(transaction: Transaction) {
+        self.add = false
+        self._type = State(initialValue: transaction.type)
+        self._category = State(initialValue: transaction.category ?? "")
+        self._descriptionText = State(initialValue: transaction.desc ?? "")
+        self._amountText = State(initialValue: String(transaction.amount))
+        self._date = State(initialValue: transaction.date!)
+    }
     
     var body: some View {
-        NavigationView {
-            Form {
-                Section(add ? "addTransaction" : "editTransaction") {
-                    typeView
-                    categoryView
-                    descriptionView
-                    amountView
-                    datePicker
+        Form {
+            Section {
+                typeView
+                categoryView
+                descriptionView
+                amountView
+                datePicker
+            }
+            
+            Section(add ? "addParticipants" : "editParticipants") {
+                // TODO - Create functionality to add participants
+                Text("Hej")
+            }
+            
+            Section {
+                Button(add ? "add" : "apply") {
+                    // TODO - Edit transaction instead of creating new
+                    addTransaction()
+                    presentationMode.wrappedValue.dismiss()
                 }
-                
-                Section(add ? "addParticipants" : "editParticipants") {
-                    Text("Hej")
-                }
-                
-                Section {
-                    Button(add ? "add" : "apply") {
-                        addTransaction()
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                }
+                .frame(maxWidth: .infinity, alignment: .center)
             }
         }
+        .navigationTitle(add ? "addTransaction" : "editTransaction")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private var typeView: some View {
@@ -145,7 +161,9 @@ struct TransactionView: View {
     private var datePicker: some View {
         DatePicker("date", selection: $date)
             .onAppear {
-                date = Date()
+                if add {
+                    date = Date()
+                }
             }
     }
     
@@ -163,10 +181,7 @@ struct TransactionView: View {
             do {
                 try viewContext.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                errorHandling.handle(error: error)
             }
         }
     }
@@ -175,5 +190,6 @@ struct TransactionView: View {
 struct TransactionView_Previews: PreviewProvider {
     static var previews: some View {
         TransactionView()
+            .environmentObject(AuthViewModel())
     }
 }

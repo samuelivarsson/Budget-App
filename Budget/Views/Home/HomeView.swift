@@ -14,6 +14,15 @@ struct HomeView: View {
                 Color.red
             }
             .navigationTitle("home")
+            .toolbar {
+                ToolbarItem {
+                    NavigationLink {
+                        NotificationsView()
+                    } label: {
+                        Image(systemName: "bell")
+                    }
+                }
+            }
         }
     }
 }

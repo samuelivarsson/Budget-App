@@ -7,26 +7,16 @@
 
 import SwiftUI
 
-//extension UserDefaults {
-//    var welcomeScreenShown: Bool {
-//        get {
-//            return (UserDefaults.standard.value(forKey: "welcomeScreenShown") as? Bool) ?? false
-//        }
-//        set {
-//            UserDefaults.standard.setValue(newValue, forKey: "welcomeScreenShown")
-//        }
-//    }
-//}
-
 struct WelcomeScreenView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject private var errorHandling: ErrorHandling
     @AppStorage("welcomeScreenShown") private var welcomeScreenShown: Bool = false
     
     var body: some View {
         NavigationView {
             TabView {
                 LoginView()
-                SetCategoriesView()
+                TransactionCategoriesView()
             }
             .navigationTitle("welcome")
             .tabViewStyle(.page)
@@ -41,7 +31,6 @@ struct WelcomeScreenView: View {
                 }
             }
             .onAppear {
-//                UserDefaults.standard.welcomeScreenShown = true
                 addCategories()
             }
         }
@@ -104,10 +93,7 @@ struct WelcomeScreenView: View {
         do {
             try viewContext.save()
         } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            errorHandling.handle(error: error)
         }
     }
 }

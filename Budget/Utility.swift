@@ -7,8 +7,11 @@
 
 import Foundation
 import SwiftUI
+import Firebase
 import FirebaseAuth
+import FirebaseCore
 
+/// Offers useful utilities
 class Utility {
     static func doubleToLocalCurrency(value: Double) -> String {
         let currencyFormatter: NumberFormatter = NumberFormatter()
@@ -22,6 +25,7 @@ class Utility {
     }
 }
 
+/// Create a color with hex-code
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
@@ -49,34 +53,96 @@ extension Color {
     }
 }
 
-// A generic view that shows a users profile picture.
-struct UserPicture: View {
-    let user: User?
-    let failImage = Image(systemName: "person.circle")
-    
-    var body: some View {
-        if let user = user {
-            NetworkImage(url: user.photoURL, failImage: failImage)
-        } else {
-            failImage
-        }
-    }
-}
-
-// A generic view that shows images from the network.
+/// A generic view that shows images from the network.
 struct NetworkImage: View {
+    @EnvironmentObject private var errorHandling: ErrorHandling
     let url: URL?
     let failImage: Image
     
     var body: some View {
-        if let url = url,
-           let data = try? Data(contentsOf: url),
-           let uiImage = UIImage(data: data) {
-            Image(uiImage: uiImage)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
+        if let url = url, let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+           Image(uiImage: uiImage)
+               .resizable()
+               .aspectRatio(contentMode: .fit)
         } else {
             failImage
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .onAppear {
+                    errorHandling.handle(error: NetworkError.imageFetch)
+                }
         }
+    }
+}
+
+/// A generic view that shows a users profile picture.
+struct UserPicture: View {
+    @EnvironmentObject private var errorHandling: ErrorHandling
+    let user: User?
+    var failImage = Image(systemName: "person.circle")
+    
+    var body: some View {
+        if let user = user {
+            if user.isAnonymous {
+                failImage
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } else {
+                NetworkImage(url: user.photoURL, failImage: failImage)
+            }
+        } else {
+            failImage
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        }
+    }
+}
+
+/// A generic TextField with icon
+struct IconTextField: View {
+    @Binding var text: String
+    var imgName: String
+    var placeHolderText: LocalizedStringKey
+    var disableAutocorrection: Bool = false
+    var autoCapitalization: TextInputAutocapitalization = .words
+    var keyboardType: UIKeyboardType = .default
+    
+    var body: some View {
+        HStack {
+            Image(systemName: imgName).foregroundColor(.secondary)
+            TextField(placeHolderText, text: $text)
+                .keyboardType(keyboardType)
+                .disableAutocorrection(disableAutocorrection)
+                .textInputAutocapitalization(autoCapitalization)
+        }
+        .frame(height: 20)
+    }
+}
+
+/// A generic field for entering a password
+struct PasswordField: View {
+    @Binding var password: String
+    
+    @State private var showPassword = false
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "lock").foregroundColor(.secondary)
+            if showPassword {
+                TextField("password", text: $password)
+                    .disableAutocorrection(true)
+                    .textInputAutocapitalization(.none)
+            } else {
+                SecureField("password", text: $password)
+                    .disableAutocorrection(true)
+                    .textInputAutocapitalization(.none)
+            }
+            Button {
+                self.showPassword.toggle()
+            } label: {
+                Image(systemName: "eye").foregroundColor(.secondary)
+            }
+        }
+        .frame(height: 20)
     }
 }

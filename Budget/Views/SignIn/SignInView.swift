@@ -11,105 +11,122 @@ struct SignInView: View {
     @State private var email = ""
     @State private var password = ""
     
-    @EnvironmentObject var viewModel: AuthViewModel
+    @EnvironmentObject private var viewModel: AuthViewModel
+    
+    private var width: CGFloat = 300
+    private var height: CGFloat = 48
+    private var cornerRadius: CGFloat = 5
+    private var googleBlue: Color = Color(hex: "#4285F4")
+    private var aboveFont: Font = .footnote
     
     var body: some View {
-        VStack(spacing: 30) {
-            Text("signIn").font(.largeTitle).padding(.bottom, 40)
-        
-            // Sign in with Google
-            Button {
-                viewModel.signIn()
-            } label: {
-                HStack {
-                    Image("google-logo")
-                    Spacer()
-                    Text("signInWithGoogle")
-                    Spacer()
-                }
-                .font(Font.system(size: 14).bold())
-                .foregroundColor(.white)
-                .frame(width: 300, height: 48)
-                .background(Color(hex: "#4285F4"))
-                .cornerRadius(5)
-            }
+        NavigationView {
+            VStack(spacing: 30) {
+                Text("signIn").font(.largeTitle).padding(.bottom, 40)
             
-            // Sign in anonymously
-            Button {
-                viewModel.signInAnonymously()
-            } label: {
-                HStack {
-                    Image(systemName: "person").padding()
-                    Spacer()
-                    Text("signInAnonymously")
-                    Spacer()
-                }
-                .font(Font.system(size: 14).bold())
-                .foregroundColor(.white)
-                .frame(width: 300, height: 48)
-                .background(Color.secondary)
-                .cornerRadius(5)
-            }
-            
-            HStack {
-                VStack { Divider() }
-                Text("or").foregroundColor(.secondary)
-                VStack { Divider() }
-            }
-            
-            VStack {
-                TextField("email", text: $email)
-                    .disableAutocorrection(true)
-                    .textInputAutocapitalization(.none)
-                    .padding()
-                    .background(Color(.secondarySystemBackground))
-
-                SecureField("password", text: $password)
-                    .disableAutocorrection(true)
-                    .textInputAutocapitalization(.none)
-                    .padding()
-                    .background(Color(.secondarySystemBackground))
-                
+                // Sign in with Google
                 Button {
-                    guard !email.isEmpty else {
-                        print("pleaseEnterEmail")
-                        return
-                    }
-                    guard !password.isEmpty else {
-                        print("pleaseEnterPassword")
-                        return
-                    }
-                    
-                    viewModel.signIn(email: email, password: password)
+                    viewModel.signIn()
                 } label: {
-                    Text("signIn")
-                        .font(Font.system(size: 14).bold())
-                        .foregroundColor(.white)
-                        .frame(width: 300, height: 48)
-                        .background(Color(hex: "#4285F4"))
-                        .cornerRadius(5)
+                    Label {
+                        Text("signInWithGoogle")
+                        Spacer()
+                    } icon: {
+                        Image("google-logo")
+                    }
+                    .font(Font.system(size: 14).bold())
+                    .foregroundColor(.white)
+                    .frame(width: width, height: height)
+                    .background(googleBlue)
+                    .cornerRadius(cornerRadius)
                 }
-                .padding(.top, 20)
-            }
-            
-            Divider()
-            
-            HStack {
-                Text("noAccount")
-                    .foregroundColor(.secondary)
-                Button("register") {
+                
+                // Sign in anonymously
+                Button {
+                    viewModel.signInAnonymously()
+                } label: {
+                    Label {
+                        Text("signInAsGuest")
+                        Spacer()
+                    } icon: {
+                        Image(systemName: "person").padding()
+                    }
+                    .font(Font.system(size: 14).bold())
+                    .foregroundColor(.white)
+                    .frame(width: width, height: height)
+                    .background(Color.secondary)
+                    .cornerRadius(cornerRadius)
+                }
+                
+                HStack {
+                    VStack { Divider() }
+                    Text("or").foregroundColor(.secondary)
+                    VStack { Divider() }
+                }
+                
+                VStack {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("email").font(aboveFont).padding(2)
+                        IconTextField(text: $email, imgName: "at", placeHolderText: "email", disableAutocorrection: true, autoCapitalization: .never, keyboardType: .emailAddress)
+                            .padding()
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(cornerRadius)
+                    }
+
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("password").font(aboveFont).padding(2)
+                        PasswordField(password: $password)
+                            .padding()
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(cornerRadius)
+                    }
                     
+                    Button {
+                        guard !email.isEmpty else {
+                            print("pleaseEnterEmail")
+                            return
+                        }
+                        guard !password.isEmpty else {
+                            print("pleaseEnterPassword")
+                            return
+                        }
+                        
+                        viewModel.signIn(email: email, password: password)
+                    } label: {
+                        Text("signIn")
+                            .font(Font.system(size: 14).bold())
+                            .foregroundColor(.white)
+                            .frame(width: width, height: height)
+                            .background(googleBlue)
+                            .cornerRadius(cornerRadius)
+                    }
+                    .padding(.top, 20)
                 }
+                
+                Divider()
+                
+                HStack {
+                    Text("noAccount")
+                        .foregroundColor(.secondary)
+                    NavigationLink("register") {
+                        SignUpView()
+                    }
+                    .foregroundColor(googleBlue)
+                }
+                
+                Spacer()
             }
+            .frame(width: width)
         }
-        .frame(width: 300)
     }
 }
 
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
         SignInView()
+            .environmentObject(AuthViewModel())
         SignInView()
+            .environmentObject(AuthViewModel())
             .preferredColorScheme(.dark)
     }
 }
