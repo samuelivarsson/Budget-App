@@ -13,7 +13,6 @@ import SwiftUI
 class AuthViewModel: ObservableObject {
     @Published var state: SignInState = .signedOut
     let auth = Auth.auth()
-    var errorHandling: ErrorHandling = ErrorHandling()
     
     init() {
         self._state = Published(initialValue: self.auth.currentUser != nil ? .signedIn : .signedOut)
@@ -28,15 +27,10 @@ class AuthViewModel: ObservableObject {
         case signedOut
     }
     
-    func signIn(email: String, password: String) {
-        auth.signIn(withEmail: email, password: password) { [weak self] result, error in
-            guard let self = self else { return }
-            if let error = error {
-                print("Something went wrong when signing in!")
-                print(error.localizedDescription)
-                self.errorHandling.handle(error: error)
-                return
-            }
+    func signIn(email: String, password: String, completion: @escaping (Error?) -> Void) {
+        auth.signIn(withEmail: email, password: password) { _, error in
+            completion(error)
+            guard error == nil else { return }
             
             // Success
             DispatchQueue.main.async {
@@ -45,11 +39,17 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    func signIn() {
+    func signIn(completion: @escaping (Error?) -> Void) {
         if GIDSignIn.sharedInstance.hasPreviousSignIn() {
             GIDSignIn.sharedInstance.restorePreviousSignIn { [weak self] user, error in
+                guard error == nil else {
+                    completion(error)
+                    return
+                }
                 guard let self = self else { return }
-                self.authenticateUser(for: user, with: error)
+                self.authenticateUser(for: user) { error in
+                    completion(error)
+                }
             }
         } else {
             guard let clientID = FirebaseApp.app()?.options.clientID else { return }
@@ -60,44 +60,38 @@ class AuthViewModel: ObservableObject {
             guard let rootViewController = windowScene.windows.first?.rootViewController else { return }
             
             GIDSignIn.sharedInstance.signIn(with: configuration, presenting: rootViewController) { [weak self] user, error in
+                guard error == nil else {
+                    completion(error)
+                    return
+                }
                 guard let self = self else { return }
-                self.authenticateUser(for: user, with: error)
+                
+                self.authenticateUser(for: user) { error in
+                    completion(error)
+                }
             }
         }
     }
     
-    private func authenticateUser(for user: GIDGoogleUser?, with error: Error?) {
-        if let error = error {
-            print(error.localizedDescription)
-            self.errorHandling.handle(error: error)
-            return
-        }
-        
+    private func authenticateUser(for user: GIDGoogleUser?, completion: @escaping (Error?) -> Void) {
         guard let authentication = user?.authentication, let idToken = authentication.idToken else { return }
         
         let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: authentication.accessToken)
         
         auth.signIn(with: credential) { [weak self] _, error in
+            completion(error)
             guard let self = self else { return }
+            guard error == nil else { return }
             
-            if let error = error {
-                print(error.localizedDescription)
-                self.errorHandling.handle(error: error)
-            } else {
-                self.state = .signedIn
-            }
+            self.state = .signedIn
         }
     }
     
-    func signInAnonymously() {
+    func signInAnonymously(completion: @escaping (Error?) -> Void) {
         auth.signInAnonymously { [weak self] authResult, error in
+            completion(error)
             guard let self = self else { return }
-            
-            if let error = error {
-                print(error.localizedDescription)
-                self.errorHandling.handle(error: error)
-                return
-            }
+            guard error == nil else { return }
             
             // Success
             DispatchQueue.main.async {
@@ -106,31 +100,23 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    func signUp(email: String, password: String, name: String) {
+    func signUp(email: String, password: String, name: String, completion: @escaping (Error?) -> Void) {
         auth.createUser(withEmail: email, password: password) { [weak self] result, error in
+            completion(error)
             guard let self = self else { return }
-            
-            if let error = error {
-                print("Something went wrong when signing up!")
-                print(error.localizedDescription)
-                self.errorHandling.handle(error: error)
-                return
-            }
+            guard error == nil else { return }
             
             // Success
             DispatchQueue.main.async {
                 guard let changeRequest = self.auth.currentUser?.createProfileChangeRequest() else {
-                    self.errorHandling.handle(error: AccountError.notSignedIn)
+                    completion(AccountError.notSignedIn)
                     return
                 }
                 changeRequest.displayName = name
                 changeRequest.commitChanges { [weak self] error in
+                    completion(error)
+                    guard error == nil else { return }
                     guard let self = self else { return }
-                    if let error = error {
-                        print(error.localizedDescription)
-                        self.errorHandling.handle(error: error)
-                        return
-                    }
                     
                     // Success
                     DispatchQueue.main.async {
@@ -141,16 +127,17 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    func signOut() {
+    func signOut(completion: @escaping (Error?) -> Void) {
         GIDSignIn.sharedInstance.signOut()
         
         do {
             try auth.signOut()
             
             state = .signedOut
+            completion(nil)
         } catch {
             print(error.localizedDescription)
-            self.errorHandling.handle(error: error)
+            completion(error)
         }
     }
 }

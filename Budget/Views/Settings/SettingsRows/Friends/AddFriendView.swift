@@ -20,8 +20,6 @@ struct AddFriendView: View {
     @State private var phone: String = ""
     @State private var addUserLoading: Bool = false
     
-    let db = Firestore.firestore()
-    
     var body: some View {
         Form {
             Section("addUserByEmail") {
@@ -33,7 +31,6 @@ struct AddFriendView: View {
                     } else {
                         Button("add") {
                             addUserAsFriend(email: email)
-                            addUserLoading = true
                         }
                     }
                     Spacer()
@@ -104,22 +101,33 @@ struct AddFriendView: View {
     }
     
     private func addUserAsFriend(email: String) {
-        guard email != authViewModel.auth.currentUser?.email else {
+        guard email.lowercased() != authViewModel.auth.currentUser?.email?.lowercased() else {
             errorHandling.handle(error: InputError.addYourself)
             return
         }
         
-        fsViewModel.getUserFromEmail(email: email) { user in
+        addUserLoading = true
+        
+        fsViewModel.getUserFromEmail(email: email) { user, error in
             addUserLoading = false
-            if let user = user {
-                addFriend(
-                    name: user["name"] as? String ?? "",
-                    phone: user["phone"] as? String ?? "",
-                    email: user["email"] as? String,
-                    uid: user["uid"] as? String
-                )
-                presentationMode.wrappedValue.dismiss()
+            if let error = error {
+                errorHandling.handle(error: error)
+                return
             }
+            guard let user = user else {
+                errorHandling.handle(error: ApplicationError.unexpectedNil)
+                return
+            }
+            
+            // Success
+            addFriend(
+                name: user["name"] as? String ?? "",
+                phone: user["phone"] as? String ?? "",
+                email: user["email"] as? String,
+                uid: user["uid"] as? String
+            )
+            
+            presentationMode.wrappedValue.dismiss()
         }
     }
 }

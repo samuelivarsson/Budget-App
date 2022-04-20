@@ -27,8 +27,6 @@
 "confirmPassword" = "Bekräfta lösenord";
 "noAccount" = "Har du inget konto?";
 "register" = "Registrera";
-"pleaseEnterEmail" = "Vänligen ange en email";
-"pleaseEnterPassword" = "Vänligen ange ett lösenord";
 
 // Sign out as guest warning
 "signOut?" = "Vill du logga ut?";
@@ -117,3 +115,7 @@
 "unexpectedNil" = "Ett oväntat nil dök upp";
 "pleaseTryAgain" = "Vänligen försök igen";
 "addYourself" = "Du kan inte lägga till dig själv som vän";
+"pleaseEnterEmail" = "Vänligen ange en email adress";
+"pleaseEnterPassword" = "Vänligen ange ett lösenord";
+"pleaseEnterName" = "Vänligen ange ett namn";
+"pleaseEnterPhone" = "Vänligen ange ett telefonnummer";

@@ -27,8 +27,6 @@
 "confirmPassword" = "Confirm password";
 "noAccount" = "Don't have an account?";
 "register" = "Register";
-"pleaseEnterEmail" = "Please enter an email";
-"pleaseEnterPassword" = "Please enter a password";
 
 // Sign out as guest warning
 "signOut?" = "Do you want to sign out?";
@@ -117,3 +115,7 @@
 "unexpectedNil" = "An unexpected nil turned up";
 "pleaseTryAgain" = "Please try again";
 "addYourself" = "You can't add yourself as a friend";
+"pleaseEnterEmail" = "Please enter an email";
+"pleaseEnterPassword" = "Please enter a password";
+"pleaseEnterName" = "Please enter a name";
+"pleaseEnterPhone" = "Please enter a phone number";

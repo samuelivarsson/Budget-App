@@ -49,19 +49,23 @@ struct SignUpView: View {
             
             Button {
                 guard !fullName.isEmpty else {
-                    print("pleaseEnterName")
+                    errorHandling.handle(error: InputError.noName)
                     return
                 }
                 guard !email.isEmpty else {
-                    print("pleaseEnterEmail")
+                    errorHandling.handle(error: InputError.noEmail)
                     return
                 }
                 guard !password.isEmpty else {
-                    print("pleaseEnterPassword")
+                    errorHandling.handle(error: InputError.noPassword)
                     return
                 }
                 
-                viewModel.signUp(email: email, password: password, name: fullName)
+                viewModel.signUp(email: email, password: password, name: fullName) { error in
+                    if let error = error {
+                        errorHandling.handle(error: error)
+                    }
+                }
             } label: {
                 Text("signUp")
                     .font(Font.system(size: 14).bold())
