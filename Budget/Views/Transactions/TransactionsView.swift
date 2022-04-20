@@ -21,7 +21,7 @@ struct TransactionsView: View {
                 ForEach(transactions) { transaction in
                     Section {
                         NavigationLink {
-                            TransactionView()
+                            TransactionView(transaction: transaction)
                         } label: {
                             let amount = Utility.doubleToLocalCurrency(value: transaction.amount)
                             Label(
@@ -69,6 +69,7 @@ struct TransactionsView: View {
 
 struct TransactionsView_Previews: PreviewProvider {
     static var previews: some View {
-        TransactionsView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        TransactionsView()
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

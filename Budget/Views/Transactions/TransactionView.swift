@@ -23,7 +23,20 @@ struct TransactionView: View {
     @State private var amountText = ""
     @State private var date = Date()
     
-    var add: Bool = false
+    var add: Bool
+    
+    init(add: Bool = false) {
+        self.add = add
+    }
+    
+    init(transaction: Transaction) {
+        self.add = false
+        self._type = State(initialValue: transaction.type)
+        self._category = State(initialValue: transaction.category ?? "")
+        self._descriptionText = State(initialValue: transaction.desc ?? "")
+        self._amountText = State(initialValue: String(transaction.amount))
+        self._date = State(initialValue: transaction.date!)
+    }
     
     var body: some View {
         Form {
@@ -36,11 +49,13 @@ struct TransactionView: View {
             }
             
             Section(add ? "addParticipants" : "editParticipants") {
+                // TODO - Create functionality to add participants
                 Text("Hej")
             }
             
             Section {
                 Button(add ? "add" : "apply") {
+                    // TODO - Edit transaction instead of creating new
                     addTransaction()
                     presentationMode.wrappedValue.dismiss()
                 }
@@ -145,7 +160,9 @@ struct TransactionView: View {
     private var datePicker: some View {
         DatePicker("date", selection: $date)
             .onAppear {
-                date = Date()
+                if add {
+                    date = Date()
+                }
             }
     }
     
