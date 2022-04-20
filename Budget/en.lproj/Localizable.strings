@@ -78,3 +78,11 @@
 "expense" = "Expense";
 "income" = "Income";
 "saving" = "Saving";
+
+// Errors
+"error" = "Error";
+"imageFetchError" = "Failed to fetch image";
+"networkProblem" = "There might be a problem with your internet connection";
+"checkConnectionTryAgain" = "Check your connection and try again";
+"noUser" = "You are not signed in";
+"youreOffline" = "You are offline";

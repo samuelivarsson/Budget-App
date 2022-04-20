@@ -20,8 +20,10 @@ struct SettingsView: View {
                         MyInformationView()
                     } label: {
                         HStack(spacing: 20) {
-                            UserPicture(user: viewModel.auth.currentUser).clipShape(Circle())
+                            UserPicture(user: viewModel.auth.currentUser)
+                                .clipShape(Circle())
                                 .padding(.vertical, 5)
+                            
                             VStack(alignment: .leading) {
                                 let userName = viewModel.auth.currentUser?.displayName ?? "Guest"
                                 Text(userName).font(.headline)
@@ -66,5 +68,6 @@ struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
             .environmentObject(AuthViewModel())
+            .environmentObject(ErrorHandling())
     }
 }

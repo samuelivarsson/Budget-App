@@ -36,5 +36,6 @@ struct EditPhoneView: View {
 struct EditPhoneView_Previews: PreviewProvider {
     static var previews: some View {
         EditPhoneView()
+            .environmentObject(AuthViewModel())
     }
 }

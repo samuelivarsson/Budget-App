@@ -78,3 +78,11 @@
 "expense" = "Utgift";
 "income" = "Inkomst";
 "saving" = "Sparande";
+
+// Errors
+"error" = "Error";
+"imageFetchError" = "Bilden hämtades inte";
+"networkProblem" = "Det kan vara ett problem med din internetanslutning";
+"checkConnectionTryAgain" = "Kontrollera din anslutning och försök igen";
+"noUser" = "Du är inte inloggad";
+"youreOffline" = "Du är offline";

@@ -121,7 +121,8 @@ class AuthViewModel: ObservableObject {
             // Success
             DispatchQueue.main.async {
                 guard let changeRequest = self.auth.currentUser?.createProfileChangeRequest() else {
-                    print("Couldn't create profile change request!")
+                    guard let errorHandling = self.errorHandling else { return }
+                    errorHandling.handle(error: AccountError.noUser)
                     return
                 }
                 changeRequest.displayName = name

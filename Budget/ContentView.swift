@@ -17,7 +17,7 @@ struct ContentView: View {
             switch viewModel.state {
             case .signedIn:
                 if welcomeScreenShown {
-                    contentView
+                    content
                 } else {
                     WelcomeScreenView()
                 }
@@ -25,13 +25,14 @@ struct ContentView: View {
                 SignInView()
             }
         }
+        .navigationViewStyle(.stack)
         .onAppear {
             viewModel.state = viewModel.getState
             viewModel.errorHandling = errorHandling
         }
     }
     
-    private var contentView: some View {
+    private var content: some View {
         TabView {
             HomeView().tabItem {
                 Image(systemName: "house")
@@ -59,10 +60,12 @@ struct ContentView_Previews: PreviewProvider {
             ContentView()
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(AuthViewModel())
+                .environmentObject(ErrorHandling())
             ContentView()
                 .preferredColorScheme(.dark)
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(AuthViewModel())
+                .environmentObject(ErrorHandling())
         }
     }
 }

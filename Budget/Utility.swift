@@ -7,7 +7,9 @@
 
 import Foundation
 import SwiftUI
+import Firebase
 import FirebaseAuth
+import FirebaseCore
 
 /// Offers useful utilities
 class Utility {
@@ -51,34 +53,43 @@ extension Color {
     }
 }
 
-/// A generic view that shows a users profile picture.
-struct UserPicture: View {
-    let user: User?
-    let failImage = Image(systemName: "person.circle")
-    
-    var body: some View {
-        if let user = user {
-            NetworkImage(url: user.photoURL, failImage: failImage)
-        } else {
-            failImage
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-        }
-    }
-}
-
 /// A generic view that shows images from the network.
 struct NetworkImage: View {
+    @EnvironmentObject private var errorHandling: ErrorHandling
     let url: URL?
     let failImage: Image
     
     var body: some View {
-        if let url = url,
-           let data = try? Data(contentsOf: url),
-           let uiImage = UIImage(data: data) {
-            Image(uiImage: uiImage)
+        if let url = url, let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+           Image(uiImage: uiImage)
+               .resizable()
+               .aspectRatio(contentMode: .fit)
+        } else {
+            failImage
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                .onAppear {
+                    errorHandling.handle(error: NetworkError.imageFetch)
+                }
+        }
+    }
+}
+
+/// A generic view that shows a users profile picture.
+struct UserPicture: View {
+    @EnvironmentObject private var errorHandling: ErrorHandling
+    let user: User?
+    var failImage = Image(systemName: "person.circle")
+    
+    var body: some View {
+        if let user = user {
+            if user.isAnonymous {
+                failImage
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } else {
+                NetworkImage(url: user.photoURL, failImage: failImage)
+            }
         } else {
             failImage
                 .resizable()
