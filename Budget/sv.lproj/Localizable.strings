@@ -76,13 +76,16 @@
 // Friends View
 "friends" = "Vänner";
 "friendsName" = "Vännens namn";
-"friendsPhone" = "Vännens telefon";
+"friendsPhone" = "Vännens telefonnummer";
 "addFriend" = "Lägg till vän";
 "editFriend" = "Redigera vän";
+"editFriendName" = "Redigera vännens namn";
+"editFriendPhone" = "Redigera vännens telefonnummer";
 "addUserByEmail" = "Lägg till Budget användare med email";
 "userEmail" = "Användarens email";
 "addFriendManually" = "Lägg till vän manuellt";
 "connectFriend" = "Koppla vän till ett användarkonto";
+"connectFriendConsequence" = "Att koppla en vän till ett användarkonto resulterar i att vännens namn och telefonnummer ändras till användarens namn och telefonnummer.";
 
 // Transaction Categories
 "food" = "Mat";
@@ -107,5 +110,9 @@
 "imageFetchError" = "Bilden hämtades inte";
 "networkProblem" = "Det kan vara ett problem med din internetanslutning";
 "checkConnectionTryAgain" = "Kontrollera din anslutning och försök igen";
-"noUser" = "Du är inte inloggad";
+"notSignedIn" = "Du är inte inloggad";
 "youreOffline" = "Du är offline";
+"noUserWithEmail" = "Det finns ingen användare med den angivna email adressen";
+"applicationError" = "Applikations error";
+"unexpectedNil" = "Ett oväntat nil dök upp";
+"pleaseTryAgain" = "Vänligen försök igen";

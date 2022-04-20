@@ -9,12 +9,13 @@ import SwiftUI
 
 struct ContentView: View {
     @AppStorage("welcomeScreenShown") private var welcomeScreenShown: Bool = false
-    @EnvironmentObject private var viewModel: AuthViewModel
     @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var fsViewModel: FirestoreViewModel
     
     var body: some View {
         VStack {
-            switch viewModel.state {
+            switch authViewModel.state {
             case .signedIn:
                 if welcomeScreenShown {
                     content
@@ -27,8 +28,8 @@ struct ContentView: View {
         }
         .navigationViewStyle(.stack)
         .onAppear {
-            viewModel.state = viewModel.getState
-            viewModel.errorHandling = errorHandling
+            authViewModel.errorHandling = errorHandling
+            fsViewModel.errorHandling = errorHandling
         }
     }
     

@@ -13,7 +13,11 @@ import SwiftUI
 class AuthViewModel: ObservableObject {
     @Published var state: SignInState = .signedOut
     let auth = Auth.auth()
-    var errorHandling: ErrorHandling?
+    var errorHandling: ErrorHandling = ErrorHandling()
+    
+    init() {
+        self._state = Published(initialValue: self.auth.currentUser != nil ? .signedIn : .signedOut)
+    }
     
     var getState: SignInState {
         return auth.currentUser != nil ? .signedIn : .signedOut
@@ -30,8 +34,7 @@ class AuthViewModel: ObservableObject {
             if let error = error {
                 print("Something went wrong when signing in!")
                 print(error.localizedDescription)
-                guard let errorHandling = self.errorHandling else { return }
-                errorHandling.handle(error: error)
+                self.errorHandling.handle(error: error)
                 return
             }
             
@@ -66,8 +69,7 @@ class AuthViewModel: ObservableObject {
     private func authenticateUser(for user: GIDGoogleUser?, with error: Error?) {
         if let error = error {
             print(error.localizedDescription)
-            guard let errorHandling = self.errorHandling else { return }
-            errorHandling.handle(error: error)
+            self.errorHandling.handle(error: error)
             return
         }
         
@@ -80,8 +82,7 @@ class AuthViewModel: ObservableObject {
             
             if let error = error {
                 print(error.localizedDescription)
-                guard let errorHandling = self.errorHandling else { return }
-                errorHandling.handle(error: error)
+                self.errorHandling.handle(error: error)
             } else {
                 self.state = .signedIn
             }
@@ -94,8 +95,7 @@ class AuthViewModel: ObservableObject {
             
             if let error = error {
                 print(error.localizedDescription)
-                guard let errorHandling = self.errorHandling else { return }
-                errorHandling.handle(error: error)
+                self.errorHandling.handle(error: error)
                 return
             }
             
@@ -113,16 +113,14 @@ class AuthViewModel: ObservableObject {
             if let error = error {
                 print("Something went wrong when signing up!")
                 print(error.localizedDescription)
-                guard let errorHandling = self.errorHandling else { return }
-                errorHandling.handle(error: error)
+                self.errorHandling.handle(error: error)
                 return
             }
             
             // Success
             DispatchQueue.main.async {
                 guard let changeRequest = self.auth.currentUser?.createProfileChangeRequest() else {
-                    guard let errorHandling = self.errorHandling else { return }
-                    errorHandling.handle(error: AccountError.noUser)
+                    self.errorHandling.handle(error: AccountError.notSignedIn)
                     return
                 }
                 changeRequest.displayName = name
@@ -130,8 +128,7 @@ class AuthViewModel: ObservableObject {
                     guard let self = self else { return }
                     if let error = error {
                         print(error.localizedDescription)
-                        guard let errorHandling = self.errorHandling else { return }
-                        errorHandling.handle(error: error)
+                        self.errorHandling.handle(error: error)
                         return
                     }
                     
@@ -153,8 +150,7 @@ class AuthViewModel: ObservableObject {
             state = .signedOut
         } catch {
             print(error.localizedDescription)
-            guard let errorHandling = self.errorHandling else { return }
-            errorHandling.handle(error: error)
+            self.errorHandling.handle(error: error)
         }
     }
 }

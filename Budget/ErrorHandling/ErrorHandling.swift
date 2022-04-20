@@ -24,10 +24,8 @@ class ErrorHandling: ObservableObject {
     @Published var currentAlert: ErrorAlert?
     @Published var presentError: Bool = false
     private var currentTask: DispatchWorkItem?
-    
-    private let errorTime: TimeInterval = 8
 
-    func handle(error: Error) {
+    func handle(error: Error, duration: TimeInterval = 8) {
         let nsError = error as NSError
         currentAlert = ErrorAlert(
             message: nsError.localizedDescription,
@@ -36,7 +34,7 @@ class ErrorHandling: ObservableObject {
             dismissAction: dismissError
         )
         animateAndDelayWithSeconds(0, presentError: true)
-        currentTask = animateAndDelayWithSeconds(errorTime, presentError: false)
+        currentTask = animateAndDelayWithSeconds(duration, presentError: false)
     }
     
     func dismissError() {
@@ -57,30 +55,6 @@ class ErrorHandling: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: task)
         
         return task
-    }
-}
-
-struct HandleErrorsByShowingAlertViewModifier: ViewModifier {
-    @StateObject var errorHandling = ErrorHandling()
-
-    func body(content: Content) -> some View {
-        content
-            .environmentObject(errorHandling)
-            // Applying the alert for error handling using a background element
-            // is a workaround, if the alert would be applied directly,
-            // other .alert modifiers inside of content would not work anymore
-            .background(
-                EmptyView()
-                    .alert(item: $errorHandling.currentAlert) { currentAlert in
-                        Alert(
-                            title: Text("Error"),
-                            message: Text(currentAlert.message),
-                            dismissButton: .default(Text("Ok")) {
-                                currentAlert.dismissAction?()
-                            }
-                        )
-                    }
-            )
     }
 }
 

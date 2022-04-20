@@ -11,7 +11,8 @@ import Firebase
 @main
 struct BudgetApp: App {
     let persistenceController = PersistenceController.shared
-    @StateObject var viewModel = AuthViewModel()
+    @StateObject var authViewModel = AuthViewModel()
+    @StateObject var fsViewModel = FirestoreViewModel()
 
     init() {
         setUpFirebase()
@@ -21,8 +22,9 @@ struct BudgetApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(viewModel)
                 .withErrorHandling()
+                .environmentObject(authViewModel)
+                .environmentObject(fsViewModel)
         }
     }
 }

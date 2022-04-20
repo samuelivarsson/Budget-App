@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E258" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Friend" representedClassName="Friend" syncable="YES">
+        <attribute name="custom" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="phone" attributeType="String" defaultValueString=""/>
+        <attribute name="uid" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Transaction" representedClassName="Transaction" syncable="YES">
         <attribute name="amount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -21,7 +24,7 @@
         <attribute name="useSavingsAccount" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="Friend" positionX="-63" positionY="54" width="128" height="74"/>
+        <element name="Friend" positionX="-63" positionY="54" width="128" height="119"/>
         <element name="Transaction" positionX="-63" positionY="-9" width="128" height="119"/>
         <element name="TransactionCategory" positionX="-63" positionY="36" width="128" height="104"/>
     </elements>
