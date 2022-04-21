@@ -20,7 +20,13 @@ struct FriendDetailView: View {
     
     var body: some View {
         Form {
-            Section("editFriend") {
+            Section {
+                VStack {
+                    // TODO - Add picture and name, requires that image is saved on database
+                }
+            }
+            
+            Section {
                 NavigationLink {
                     EditFriendNameView(friend: friend)
                 } label: {
@@ -48,6 +54,8 @@ struct FriendDetailView: View {
                         Text(friend.email ?? "")
                     }
                 }
+            } footer: {
+                Text("onlyNonCustom")
             }
         }
         .navigationTitle("editFriend")

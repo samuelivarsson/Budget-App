@@ -100,6 +100,8 @@ struct AddFriendView: View {
         }
     }
     
+    // TODO - Can't add user more than once
+    // TODO - Send friend request?
     private func addUserAsFriend(email: String) {
         guard email.lowercased() != authViewModel.auth.currentUser?.email?.lowercased() else {
             errorHandling.handle(error: InputError.addYourself)

@@ -84,6 +84,7 @@
 "addFriendManually" = "Lägg till vän manuellt";
 "connectFriend" = "Koppla vän till ett användarkonto";
 "connectFriendConsequence" = "Att koppla en vän till ett användarkonto resulterar i att vännens namn och telefonnummer ändras till användarens namn och telefonnummer.";
+"onlyNonCustom" = "Endast vänner som är kopplade till ett användarkonto kommer att få notiser av dig.";
 
 // Transaction Categories
 "food" = "Mat";

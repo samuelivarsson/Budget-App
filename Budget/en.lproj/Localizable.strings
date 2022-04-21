@@ -84,6 +84,7 @@
 "addFriendManually" = "Add friend manually";
 "connectFriend" = "Connect friend to a user account";
 "connectFriendConsequence" = "Connecting a friend to a user account will result in the name and phone number of the friend changing to that of the user.";
+"onlyNonCustom" = "Only friends that is connected to a user account will get notifications from you.";
 
 // Transaction Categories
 "food" = "Food";
