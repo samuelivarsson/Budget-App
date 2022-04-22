@@ -100,6 +100,7 @@ enum InputError: Error {
     case noName
     case noPhone
     case addYourself
+    case userIsAlreadyFriend
 }
 
 extension InputError: LocalizedError {
@@ -115,6 +116,8 @@ extension InputError: LocalizedError {
             return NSLocalizedString("pleaseEnterPhone", comment: "Input Error")
         case .addYourself:
             return NSLocalizedString("addYourself", comment: "Input Error")
+        case .userIsAlreadyFriend:
+            return NSLocalizedString("userIsAlreadyFriend", comment: "Input Error")
         }
     }
 }

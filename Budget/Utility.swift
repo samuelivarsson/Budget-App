@@ -23,10 +23,24 @@ class Utility {
         }
         return result
     }
+    
+    static func uploadProfilePicture(image: Image) {
+        
+    }
 }
 
 /// Create a color with hex-code
 extension Color {
+    #if os(macOS)
+    static let background = Color(NSColor.windowBackgroundColor)
+    static let secondaryBackground = Color(NSColor.underPageBackgroundColor)
+    static let tertiaryBackground = Color(NSColor.controlBackgroundColor)
+    #else
+    static let background = Color(UIColor.systemBackground)
+    static let secondaryBackground = Color(UIColor.secondarySystemBackground)
+    static let tertiaryBackground = Color(UIColor.tertiarySystemBackground)
+    #endif
+    
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
@@ -53,24 +67,44 @@ extension Color {
     }
 }
 
+// Make background colors easily accessible
+//extension Color {
+//
+//}
+
 /// A generic view that shows images from the network.
 struct NetworkImage: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     let url: URL?
     let failImage: Image
+    var fit = true
     
     var body: some View {
         if let url = url, let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
-           Image(uiImage: uiImage)
-               .resizable()
-               .aspectRatio(contentMode: .fit)
+            if fit {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } else {
+                Image(uiImage: uiImage)
+                    .onAppear {
+                        print(uiImage.size)
+                    }
+            }
         } else {
-            failImage
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .onAppear {
-                    errorHandling.handle(error: NetworkError.imageFetch)
-                }
+            if fit {
+                failImage
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .onAppear {
+                        errorHandling.handle(error: NetworkError.imageFetch)
+                    }
+            } else {
+                failImage
+                    .onAppear {
+                        errorHandling.handle(error: NetworkError.imageFetch)
+                    }
+            }
         }
     }
 }
@@ -80,20 +114,29 @@ struct UserPicture: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     let user: User?
     var failImage = Image(systemName: "person.circle")
+    var fit = true
     
     var body: some View {
         if let user = user {
-            if user.isAnonymous {
+            if !user.isAnonymous {
+                NetworkImage(url: user.photoURL, failImage: failImage, fit: fit)
+            } else {
+                if fit {
+                    failImage
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                } else {
+                    failImage
+                }
+            }
+        } else {
+            if fit {
                 failImage
                     .resizable()
                     .aspectRatio(contentMode: .fit)
             } else {
-                NetworkImage(url: user.photoURL, failImage: failImage)
+                failImage
             }
-        } else {
-            failImage
-                .resizable()
-                .aspectRatio(contentMode: .fit)
         }
     }
 }
@@ -144,5 +187,23 @@ struct PasswordField: View {
             }
         }
         .frame(height: 20)
+    }
+}
+
+/// View for picking an image from the user's photolibrary
+struct ImagePicker: UIViewControllerRepresentable {
+    var sourceType: UIImagePickerController.SourceType = .photoLibrary
+ 
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
+ 
+        let imagePicker = UIImagePickerController()
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = sourceType
+ 
+        return imagePicker
+    }
+ 
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
+ 
     }
 }

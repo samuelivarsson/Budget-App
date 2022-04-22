@@ -12,7 +12,7 @@ struct SignUpView: View {
     @State private var email = ""
     @State private var password = ""
     
-    @EnvironmentObject var viewModel: AuthViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var errorHandling: ErrorHandling
     
     private var width: CGFloat = 300
@@ -61,7 +61,7 @@ struct SignUpView: View {
                     return
                 }
                 
-                viewModel.signUp(email: email, password: password, name: fullName) { error in
+                authViewModel.signUp(email: email, password: password, name: fullName) { error in
                     if let error = error {
                         errorHandling.handle(error: error)
                     }

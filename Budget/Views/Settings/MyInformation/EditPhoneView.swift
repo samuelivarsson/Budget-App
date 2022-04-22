@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditPhoneView: View {
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
-    @EnvironmentObject private var viewModel: AuthViewModel
+    @EnvironmentObject private var authViewModel: AuthViewModel
     @State private var phoneText: String = ""
     
     var body: some View {
@@ -19,6 +19,7 @@ struct EditPhoneView: View {
             }
             
             Button {
+                // TODO - Apply the phone number
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 HStack {

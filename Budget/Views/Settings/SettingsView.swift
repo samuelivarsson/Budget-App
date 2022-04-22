@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject var viewModel: AuthViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
         NavigationView {
@@ -18,12 +18,12 @@ struct SettingsView: View {
                         MyInformationView()
                     } label: {
                         HStack(spacing: 20) {
-                            UserPicture(user: viewModel.auth.currentUser)
+                            UserPicture(user: authViewModel.auth.currentUser)
                                 .clipShape(Circle())
                                 .padding(.vertical, 5)
                             
                             VStack(alignment: .leading) {
-                                let userName = viewModel.auth.currentUser?.displayName ?? "Guest"
+                                let userName = authViewModel.auth.currentUser?.displayName ?? "Guest"
                                 Text(userName).font(.headline)
                                 Text("emailNamePhone").font(.subheadline)
                             }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SignInView: View {
-    @EnvironmentObject private var viewModel: AuthViewModel
+    @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var errorHandling: ErrorHandling
     
     @State private var email = ""
@@ -27,7 +27,7 @@ struct SignInView: View {
             
                 // Sign in with Google
                 Button {
-                    viewModel.signIn() { error in
+                    authViewModel.signIn() { error in
                         if let error = error {
                             errorHandling.handle(error: error)
                         }
@@ -48,7 +48,7 @@ struct SignInView: View {
                 
                 // Sign in anonymously
                 Button {
-                    viewModel.signInAnonymously() { error in
+                    authViewModel.signInAnonymously() { error in
                         if let error = error {
                             errorHandling.handle(error: error)
                         }
@@ -100,7 +100,7 @@ struct SignInView: View {
                             return
                         }
                         
-                        viewModel.signIn(email: email, password: password) { error in
+                        authViewModel.signIn(email: email, password: password) { error in
                             if let error = error {
                                 errorHandling.handle(error: error)
                             }

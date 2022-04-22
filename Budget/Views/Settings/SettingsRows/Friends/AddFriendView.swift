@@ -15,6 +15,10 @@ struct AddFriendView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
     
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)],
+                  animation: .default)
+    private var friends: FetchedResults<Friend>
+    
     @State private var email: String = ""
     @State private var name: String = ""
     @State private var phone: String = ""
@@ -100,11 +104,16 @@ struct AddFriendView: View {
         }
     }
     
-    // TODO - Can't add user more than once
     // TODO - Send friend request?
     private func addUserAsFriend(email: String) {
+        // You can't add yourself as friend
         guard email.lowercased() != authViewModel.auth.currentUser?.email?.lowercased() else {
             errorHandling.handle(error: InputError.addYourself)
+            return
+        }
+        // A user can only be one of your friends
+        guard !friends.contains(where: { $0.email == email }) else {
+            errorHandling.handle(error: InputError.userIsAlreadyFriend)
             return
         }
         

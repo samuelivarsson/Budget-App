@@ -120,3 +120,4 @@
 "pleaseEnterPassword" = "Vänligen ange ett lösenord";
 "pleaseEnterName" = "Vänligen ange ett namn";
 "pleaseEnterPhone" = "Vänligen ange ett telefonnummer";
+"userIsAlreadyFriend" = "Den här användaren är redan din vän";

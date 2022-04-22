@@ -11,6 +11,9 @@ struct FriendDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var authViewModel: AuthViewModel
+    
+    @State private var isShowPhotoLibrary = false
     
     private var friend: Friend
     
@@ -20,12 +23,21 @@ struct FriendDetailView: View {
     
     var body: some View {
         Form {
-            Section {
+            HStack {
+                Spacer()
                 VStack {
                     // TODO - Add picture and name, requires that image is saved on database
+                    UserPicture(user: authViewModel.auth.currentUser)
+                        .clipShape(Circle())
+                        .frame(height: 150)
+                    
+                    Text(friend.name ?? "")
+                        .font(.headline)
                 }
-            }
-            
+                Spacer()
+            }.listRowBackground(Color.background)
+            // TODO - change to extension background everywhere
+
             Section {
                 NavigationLink {
                     EditFriendNameView(friend: friend)
@@ -67,5 +79,6 @@ struct FriendDetailView_Previews: PreviewProvider {
     static var previews: some View {
         FriendDetailView(friend: Friend())
             .environmentObject(ErrorHandling())
+            .environmentObject(AuthViewModel())
     }
 }
