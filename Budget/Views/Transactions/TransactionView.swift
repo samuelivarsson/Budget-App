@@ -24,7 +24,8 @@ struct TransactionView: View {
     @State private var amountText = ""
     @State private var date = Date()
     
-    var add: Bool
+    private var add: Bool
+    private var transaction: Transaction?
     
     init(add: Bool = false) {
         self.add = add
@@ -32,6 +33,7 @@ struct TransactionView: View {
     
     init(transaction: Transaction) {
         self.add = false
+        self.transaction = transaction
         self._type = State(initialValue: transaction.type)
         self._category = State(initialValue: transaction.category ?? "")
         self._descriptionText = State(initialValue: transaction.desc ?? "")
@@ -55,12 +57,19 @@ struct TransactionView: View {
             }
             
             Section {
-                Button(add ? "add" : "apply") {
-                    // TODO - Edit transaction instead of creating new
-                    addTransaction()
-                    presentationMode.wrappedValue.dismiss()
+                if add {
+                    Button("add") {
+                        addTransaction()
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                } else {
+                    Button("apply") {
+                        editTransaction()
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
             }
         }
         .navigationTitle(add ? "addTransaction" : "editTransaction")
@@ -177,6 +186,28 @@ struct TransactionView: View {
             let amount = amountText.replacingOccurrences(of: ",", with: ".")
             newTransaction.amount = Double(amount) ?? 0
             newTransaction.date = date
+            
+            do {
+                try viewContext.save()
+            } catch {
+                errorHandling.handle(error: error)
+            }
+        }
+    }
+    
+    private func editTransaction() {
+        withAnimation {
+            guard let transaction = transaction else {
+                errorHandling.handle(error: ApplicationError.unexpectedNil)
+                return
+            }
+            
+            transaction.type = type
+            transaction.category = category
+            transaction.desc = descriptionText
+            let amount = amountText.replacingOccurrences(of: ",", with: ".")
+            transaction.amount = Double(amount) ?? 0
+            transaction.date = date
             
             do {
                 try viewContext.save()

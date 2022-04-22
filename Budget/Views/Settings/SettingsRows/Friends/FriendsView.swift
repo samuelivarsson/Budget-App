@@ -21,7 +21,7 @@ struct FriendsView: View {
             ForEach(friends) { friend in
                 Section {
                     NavigationLink {
-                        FriendView(friend: friend)
+                        FriendDetailView(friend: friend)
                     } label: {
                         VStack(alignment: .leading) {
                             if let name = friend.name, let phone = friend.phone {
@@ -47,7 +47,7 @@ struct FriendsView: View {
             }
             ToolbarItem {
                 NavigationLink {
-                    FriendView(add: true)
+                    AddFriendView()
                 } label: {
                     Label("Add Item", systemImage: "plus")
                 }

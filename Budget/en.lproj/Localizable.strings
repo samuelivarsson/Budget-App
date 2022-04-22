@@ -27,8 +27,6 @@
 "confirmPassword" = "Confirm password";
 "noAccount" = "Don't have an account?";
 "register" = "Register";
-"pleaseEnterEmail" = "Please enter an email";
-"pleaseEnterPassword" = "Please enter a password";
 
 // Sign out as guest warning
 "signOut?" = "Do you want to sign out?";
@@ -36,7 +34,7 @@
 
 // Sign up
 "fullName" = "Full name";
-"passwordNotMatching" = "The passwords doesn't match!";
+"passwordNotMatching" = "The passwords doesn't match";
 "pleaseEnterName" = "Please enter your name";
 
 // Welcome
@@ -76,13 +74,17 @@
 // Friends View
 "friends" = "Friends";
 "friendsName" = "Friend's name";
-"friendsPhone" = "Friend's phone";
+"friendsPhone" = "Friend's phone number";
 "addFriend" = "Add friend";
 "editFriend" = "Edit friend";
+"editFriendName" = "Edit name of friend";
+"editFriendPhone" = "Edit phone number of friend";
 "addUserByEmail" = "Add Budget user by email";
 "userEmail" = "The user's email";
 "addFriendManually" = "Add friend manually";
 "connectFriend" = "Connect friend to a user account";
+"connectFriendConsequence" = "Connecting a friend to a user account will result in the name and phone number of the friend changing to that of the user.";
+"onlyNonCustom" = "Only friends that is connected to a user account will get notifications from you.";
 
 // Transaction Categories
 "food" = "Food";
@@ -107,5 +109,14 @@
 "imageFetchError" = "Failed to fetch image";
 "networkProblem" = "There might be a problem with your internet connection";
 "checkConnectionTryAgain" = "Check your connection and try again";
-"noUser" = "You are not signed in";
+"notSignedIn" = "You are not signed in";
 "youreOffline" = "You are offline";
+"noUserWithEmail" = "There is no user with that email";
+"applicationError" = "Application error";
+"unexpectedNil" = "An unexpected nil turned up";
+"pleaseTryAgain" = "Please try again";
+"addYourself" = "You can't add yourself as a friend";
+"pleaseEnterEmail" = "Please enter an email";
+"pleaseEnterPassword" = "Please enter a password";
+"pleaseEnterName" = "Please enter a name";
+"pleaseEnterPhone" = "Please enter a phone number";

@@ -30,14 +30,12 @@
 		4D63BAE52808E42C00132E44 /* TransactionCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */; };
 		4D63BAE62808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */; };
 		4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D68FC38280E3B3C00B9C5E4 /* FriendsView.swift */; };
-		4D68FC3D280E409A00B9C5E4 /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D68FC3C280E409A00B9C5E4 /* FriendView.swift */; };
-		4D68FC40280E415C00B9C5E4 /* Friend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D68FC3E280E415C00B9C5E4 /* Friend+CoreDataClass.swift */; };
-		4D68FC41280E415C00B9C5E4 /* Friend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D68FC3F280E415C00B9C5E4 /* Friend+CoreDataProperties.swift */; };
 		4D68FC45280E4A1800B9C5E4 /* ConnectFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D68FC44280E4A1800B9C5E4 /* ConnectFriendView.swift */; };
 		4D6AC16D280CD86C00B8EA41 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6AC16C280CD86C00B8EA41 /* ErrorHandling.swift */; };
 		4D6AC16F280CDF2E00B8EA41 /* TryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6AC16E280CDF2E00B8EA41 /* TryButton.swift */; };
 		4DC4BDB1280B8457009E5859 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */; };
 		4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */; };
+		4DFA1E61281041940065197D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4DFA1E60281041940065197D /* FirebaseFirestore */; };
 		4DFD3D9628073E4A00D5FFB4 /* BudgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */; };
 		4DFD3D9828073E4A00D5FFB4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */; };
 		4DFD3D9A28073E4B00D5FFB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9928073E4B00D5FFB4 /* Assets.xcassets */; };
@@ -51,6 +49,13 @@
 		4DFD3DB6280740F300D5FFB4 /* QuickBalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */; };
 		4DFD3DBE2807414500D5FFB4 /* TransactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */; };
 		4DFD3DC52807432000D5FFB4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DFD3DC72807432000D5FFB4 /* Localizable.strings */; };
+		4DFF75A4281066BF00C40FF6 /* FirestoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75A3281066BF00C40FF6 /* FirestoreViewModel.swift */; };
+		4DFF75A72810691800C40FF6 /* Friend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75A52810691800C40FF6 /* Friend+CoreDataClass.swift */; };
+		4DFF75A82810691800C40FF6 /* Friend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75A62810691800C40FF6 /* Friend+CoreDataProperties.swift */; };
+		4DFF75AC28106E3100C40FF6 /* AddFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75AB28106E3100C40FF6 /* AddFriendView.swift */; };
+		4DFF75B12810739E00C40FF6 /* EditFriendNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75B02810739E00C40FF6 /* EditFriendNameView.swift */; };
+		4DFF75B32810772B00C40FF6 /* EditFriendPhoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75B22810772B00C40FF6 /* EditFriendPhoneView.swift */; };
+		4DFF75B5281077E500C40FF6 /* FriendDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75B4281077E500C40FF6 /* FriendDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,9 +79,6 @@
 		4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4D68FC38280E3B3C00B9C5E4 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
-		4D68FC3C280E409A00B9C5E4 /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
-		4D68FC3E280E415C00B9C5E4 /* Friend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataClass.swift"; sourceTree = "<group>"; };
-		4D68FC3F280E415C00B9C5E4 /* Friend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4D68FC44280E4A1800B9C5E4 /* ConnectFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectFriendView.swift; sourceTree = "<group>"; };
 		4D6AC16C280CD86C00B8EA41 /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
 		4D6AC16E280CDF2E00B8EA41 /* TryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TryButton.swift; sourceTree = "<group>"; };
@@ -97,6 +99,13 @@
 		4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionType.swift; sourceTree = "<group>"; };
 		4DFD3DC62807432000D5FFB4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4DFD3DC82807432200D5FFB4 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4DFF75A3281066BF00C40FF6 /* FirestoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreViewModel.swift; sourceTree = "<group>"; };
+		4DFF75A52810691800C40FF6 /* Friend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4DFF75A62810691800C40FF6 /* Friend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4DFF75AB28106E3100C40FF6 /* AddFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendView.swift; sourceTree = "<group>"; };
+		4DFF75B02810739E00C40FF6 /* EditFriendNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendNameView.swift; sourceTree = "<group>"; };
+		4DFF75B22810772B00C40FF6 /* EditFriendPhoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendPhoneView.swift; sourceTree = "<group>"; };
+		4DFF75B4281077E500C40FF6 /* FriendDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +116,7 @@
 				4D22553B280A2EFA00C80851 /* FirebaseMessaging in Frameworks */,
 				4D028906280AE3310053D15D /* GoogleSignIn in Frameworks */,
 				4D225537280A2EFA00C80851 /* FirebaseAnalytics in Frameworks */,
+				4DFA1E61281041940065197D /* FirebaseFirestore in Frameworks */,
 				4D225539280A2EFA00C80851 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,9 +172,10 @@
 		4D68FC3B280E408300B9C5E4 /* Friends */ = {
 			isa = PBXGroup;
 			children = (
+				4DFF75AF2810738500C40FF6 /* Edit */,
 				4D68FC38280E3B3C00B9C5E4 /* FriendsView.swift */,
-				4D68FC3C280E409A00B9C5E4 /* FriendView.swift */,
-				4D68FC44280E4A1800B9C5E4 /* ConnectFriendView.swift */,
+				4DFF75B4281077E500C40FF6 /* FriendDetailView.swift */,
+				4DFF75AB28106E3100C40FF6 /* AddFriendView.swift */,
 			);
 			path = Friends;
 			sourceTree = "<group>";
@@ -211,7 +222,7 @@
 				4D225543280A4A2E00C80851 /* Fonts */,
 				4DFD3DBC2807412D00D5FFB4 /* Model */,
 				4DFD3DA82807405D00D5FFB4 /* Views */,
-				4D028908280B16E30053D15D /* AuthViewModel.swift */,
+				4DFF75A22810669600C40FF6 /* ViewModels */,
 				4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */,
 				4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */,
 				4DFD3D9E28073E4B00D5FFB4 /* Persistence.swift */,
@@ -287,8 +298,8 @@
 		4DFD3DBC2807412D00D5FFB4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4D68FC3E280E415C00B9C5E4 /* Friend+CoreDataClass.swift */,
-				4D68FC3F280E415C00B9C5E4 /* Friend+CoreDataProperties.swift */,
+				4DFF75A52810691800C40FF6 /* Friend+CoreDataClass.swift */,
+				4DFF75A62810691800C40FF6 /* Friend+CoreDataProperties.swift */,
 				4D1E974528085FBF003C8802 /* Transaction+CoreDataClass.swift */,
 				4D1E974628085FBF003C8802 /* Transaction+CoreDataProperties.swift */,
 				4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */,
@@ -296,6 +307,25 @@
 				4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		4DFF75A22810669600C40FF6 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				4D028908280B16E30053D15D /* AuthViewModel.swift */,
+				4DFF75A3281066BF00C40FF6 /* FirestoreViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		4DFF75AF2810738500C40FF6 /* Edit */ = {
+			isa = PBXGroup;
+			children = (
+				4DFF75B02810739E00C40FF6 /* EditFriendNameView.swift */,
+				4DFF75B22810772B00C40FF6 /* EditFriendPhoneView.swift */,
+				4D68FC44280E4A1800B9C5E4 /* ConnectFriendView.swift */,
+			);
+			path = Edit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -319,6 +349,7 @@
 				4D225538280A2EFA00C80851 /* FirebaseAuth */,
 				4D22553A280A2EFA00C80851 /* FirebaseMessaging */,
 				4D028905280AE3310053D15D /* GoogleSignIn */,
+				4DFA1E60281041940065197D /* FirebaseFirestore */,
 			);
 			productName = Budget;
 			productReference = 4DFD3D9228073E4A00D5FFB4 /* Budget.app */;
@@ -382,26 +413,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DFF75AC28106E3100C40FF6 /* AddFriendView.swift in Sources */,
 				4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */,
 				4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */,
-				4D68FC41280E415C00B9C5E4 /* Friend+CoreDataProperties.swift in Sources */,
 				4D3563A5280E102E007B83B0 /* SettingsRowsView.swift in Sources */,
 				4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */,
 				4D3563A3280DC39D007B83B0 /* ErrorEnums.swift in Sources */,
 				4D423DB0280F680300565641 /* NotificationsView.swift in Sources */,
 				4D63BAE52808E42C00132E44 /* TransactionCategory+CoreDataClass.swift in Sources */,
 				4DFD3DB4280740E000D5FFB4 /* SettingsView.swift in Sources */,
-				4D68FC3D280E409A00B9C5E4 /* FriendView.swift in Sources */,
 				4DFD3D9F28073E4B00D5FFB4 /* Persistence.swift in Sources */,
 				4DFD3D9828073E4A00D5FFB4 /* ContentView.swift in Sources */,
 				4D1E974728085FBF003C8802 /* Transaction+CoreDataClass.swift in Sources */,
 				4D02890B280B196B0053D15D /* GoogleSignInButton.swift in Sources */,
+				4DFF75B5281077E500C40FF6 /* FriendDetailView.swift in Sources */,
+				4DFF75B12810739E00C40FF6 /* EditFriendNameView.swift in Sources */,
+				4DFF75B32810772B00C40FF6 /* EditFriendPhoneView.swift in Sources */,
 				4D6AC16D280CD86C00B8EA41 /* ErrorHandling.swift in Sources */,
 				4DFD3DA228073E4B00D5FFB4 /* Budget.xcdatamodeld in Sources */,
 				4D02890D280B304B0053D15D /* MyInformationView.swift in Sources */,
 				4D1E973F28085459003C8802 /* WelcomeScreenView.swift in Sources */,
 				4DFD3DBE2807414500D5FFB4 /* TransactionType.swift in Sources */,
-				4D68FC40280E415C00B9C5E4 /* Friend+CoreDataClass.swift in Sources */,
 				4DFD3DAA2807406800D5FFB4 /* HomeView.swift in Sources */,
 				4D1E9744280857B6003C8802 /* LoginView.swift in Sources */,
 				4D4B3E6C280C4AB100B78860 /* SignUpView.swift in Sources */,
@@ -410,12 +442,15 @@
 				4D63BAE62808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift in Sources */,
 				4D6AC16F280CDF2E00B8EA41 /* TryButton.swift in Sources */,
 				4DFD3D9628073E4A00D5FFB4 /* BudgetApp.swift in Sources */,
+				4DFF75A72810691800C40FF6 /* Friend+CoreDataClass.swift in Sources */,
 				4D1E974828085FBF003C8802 /* Transaction+CoreDataProperties.swift in Sources */,
 				4D028909280B16E30053D15D /* AuthViewModel.swift in Sources */,
+				4DFF75A82810691800C40FF6 /* Friend+CoreDataProperties.swift in Sources */,
 				4DFD3DAC2807407D00D5FFB4 /* TransactionsView.swift in Sources */,
 				4D1E974228085626003C8802 /* TransactionCategoriesView.swift in Sources */,
 				4D22553D280A39F600C80851 /* SignInView.swift in Sources */,
 				4DFD3DB6280740F300D5FFB4 /* QuickBalanceView.swift in Sources */,
+				4DFF75A4281066BF00C40FF6 /* FirestoreViewModel.swift in Sources */,
 				4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -439,6 +474,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -499,6 +535,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -542,6 +579,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -552,6 +590,7 @@
 		4DFD3DA628073E4B00D5FFB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -673,6 +712,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4D225535280A2EFA00C80851 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseMessaging;
+		};
+		4DFA1E60281041940065197D /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D225535280A2EFA00C80851 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 

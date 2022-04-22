@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MyInformationView: View {
+    @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var viewModel: AuthViewModel
     @State private var signOutAsGuestPressed: Bool = false
     
@@ -47,7 +48,11 @@ struct MyInformationView: View {
                         signOutAsGuestPressed = true
                         return
                     }
-                    viewModel.signOut()
+                    viewModel.signOut() { error in
+                        if let error = error {
+                            errorHandling.handle(error: error)
+                        }
+                    }
                 } label: {
                     HStack {
                         Spacer()
@@ -63,7 +68,11 @@ struct MyInformationView: View {
         .navigationBarTitleDisplayMode(.inline)
         .alert("signOut?", isPresented: $signOutAsGuestPressed) {
             Button("signOut", role: .destructive) {
-                viewModel.signOut()
+                viewModel.signOut() { error in
+                    if let error = error {
+                        errorHandling.handle(error: error)
+                    }
+                }
             }
         } message: {
             Text("signOutAsGuestImplication")

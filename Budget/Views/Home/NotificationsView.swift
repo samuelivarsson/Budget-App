@@ -18,33 +18,12 @@ struct UserNotification {
     let type: NotificationType
 }
 
-struct TestUser: Identifiable, Hashable {
-    let id = UUID()
-    let name: String?
-    let phone: String?
-}
-
 struct NotificationsView: View {
     private var notifications: [UserNotification]?
     
-//    let db = Firestore.firestore()
-    @State private var tests: [TestUser] = []
-    
     var body: some View {
-        List(tests, id: \.self) { test in
-            Text(test.name ?? "what")
-        }
-        .onAppear {
-//            db.collection("Users").getDocuments() { querySnapshot, err in
-//                if let err = err {
-//                    print("Error getting documents: \(err)")
-//                    tests = [TestUser(name: "error", phone: "000")]
-//                } else {
-//                    for document in querySnapshot!.documents {
-//                        print("\(document.documentID) => \(document.data())")
-//                    }
-//                }
-//            }
+        List {
+            
         }
         .navigationTitle("notifications")
         .navigationBarTitleDisplayMode(.inline)
@@ -58,20 +37,6 @@ struct NotificationsView: View {
             }
         }
     }
-    
-//    private func test() {
-//        db.collection("users").getDocuments() { querySnapshot, err in
-//            if let err = err {
-//                print("Error getting documents: \(err)")
-//                self._tests = []
-//            } else {
-//                for document in querySnapshot!.documents {
-//                    print("\(document.documentID) => \(document.data())")
-//                }
-//                self._tests = []
-//            }
-//        }
-//    }
     
     private func markAllAsRead() {
         
