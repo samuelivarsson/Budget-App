@@ -14,6 +14,7 @@
 "date" = "Date";
 "amount" = "Amount";
 "category" = "Category";
+"loadMore" = "Load more";
 
 // Sign in
 "signIn" = "Sign in";
@@ -68,6 +69,8 @@
 "phone" = "Phone";
 "editPhone" = "Edit phone number";
 "yourPhone" = "Your phone number";
+"general" = "General";
+"monthStartsOn" = "Month starts on";
 "transactionCategories" = "Transaction categories";
 "quickBalance" = "Quick balance";
 

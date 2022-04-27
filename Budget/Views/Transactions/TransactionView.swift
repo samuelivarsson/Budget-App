@@ -176,6 +176,7 @@ struct TransactionView: View {
             }
     }
     
+    // TODO - Add to firebase
     private func addTransaction() {
         withAnimation {
             let newTransaction = Transaction(context: viewContext)

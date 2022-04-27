@@ -10,6 +10,7 @@ import SwiftUI
 struct FriendDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
     
@@ -35,8 +36,8 @@ struct FriendDetailView: View {
                         .font(.headline)
                 }
                 Spacer()
-            }.listRowBackground(Color.background)
-            // TODO - change to extension background everywhere
+            }
+            .listRowBackground(colorScheme == .dark ? Color.background : Color.secondaryBackground)
 
             Section {
                 NavigationLink {

@@ -26,7 +26,7 @@ struct SignUpView: View {
                 Text("fullName").font(aboveFont).padding(2)
                 IconTextField(text: $fullName, imgName: "person", placeHolderText: "fullName")
                     .padding()
-                    .background(Color(.secondarySystemBackground))
+                    .background(Color.secondaryBackground)
                     .cornerRadius(cornerRadius)
             }
             
@@ -35,7 +35,7 @@ struct SignUpView: View {
                 IconTextField(text: $email, imgName: "at", placeHolderText: "email", disableAutocorrection: true, autoCapitalization: .never, keyboardType: .emailAddress)
                     .keyboardType(.emailAddress)
                     .padding()
-                    .background(Color(.secondarySystemBackground))
+                    .background(Color.secondaryBackground)
                     .cornerRadius(cornerRadius)
             }
 
@@ -43,7 +43,7 @@ struct SignUpView: View {
                 Text("password").font(aboveFont).padding(2)
                 PasswordField(password: $password)
                     .padding()
-                    .background(Color(.secondarySystemBackground))
+                    .background(Color.secondaryBackground)
                     .cornerRadius(cornerRadius)
             }
             

@@ -13,6 +13,7 @@ import FirebaseCore
 
 /// Offers useful utilities
 class Utility {
+    /// Converts a double to a string representing the value as a currency
     static func doubleToLocalCurrency(value: Double) -> String {
         let currencyFormatter: NumberFormatter = NumberFormatter()
         currencyFormatter.usesGroupingSeparator = true
@@ -24,8 +25,45 @@ class Utility {
         return result
     }
     
+    // TODO
     static func uploadProfilePicture(image: Image) {
         
+    }
+    
+    /// Get the current budget period based on when the user wants to start and end the budget-month
+    static func getBudgetPeriod(monthsBack: Int = 0, monthStartsOn: Int) -> (Date, Date) {
+        var fromDate: Date
+        var toDate: Date
+        let calendar = Calendar.current
+        let referenceDate = calendar.date(byAdding: .month, value: -monthsBack, to: Date()) ?? Date()
+        
+        if calendar.dateComponents([.day], from: referenceDate).day! < monthStartsOn {
+            var dayComponent = DateComponents()
+            dayComponent.day = monthStartsOn
+            toDate = calendar.nextDate(
+                after: referenceDate,
+                matching: dayComponent,
+                matchingPolicy: .nextTime,
+                repeatedTimePolicy: .first,
+                direction: .backward
+            ) ?? Date()
+
+            fromDate = calendar.date( byAdding: .month, value: -1, to: toDate) ?? Date()
+        } else {
+            var dayComponent = DateComponents()
+            dayComponent.day = monthStartsOn
+            fromDate = calendar.nextDate(
+                after: referenceDate,
+                matching: dayComponent,
+                matchingPolicy: .nextTime,
+                repeatedTimePolicy: .last,
+                direction: .backward
+            ) ?? Date()
+            
+            toDate = calendar.date(byAdding: .month, value: 1, to: fromDate) ?? Date()
+        }
+        
+        return (fromDate, toDate)
     }
 }
 

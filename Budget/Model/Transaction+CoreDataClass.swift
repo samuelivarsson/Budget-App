@@ -14,9 +14,9 @@ public class Transaction: NSManagedObject {
     func getImageName() -> String {
         switch type {
         case .expense:
-            return "minus.circle.fill"
+            return "arrow.down.square.fill"
         case .income:
-            return "plus.circle.fill"
+            return "arrow.up.square.fill"
         case .saving:
             return "circle.circle"
         }

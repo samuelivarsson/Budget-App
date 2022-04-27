@@ -18,6 +18,11 @@ struct Setting: Identifiable {
 struct SettingsRowsView: View {
     private let settings: [Setting] = [
         Setting(
+            name: "general",
+            imgName: "gear",
+            view: AnyView(GeneralSettingsView())
+        ),
+        Setting(
             name: "friends",
             imgName: "person.2",
             view: AnyView(FriendsView())

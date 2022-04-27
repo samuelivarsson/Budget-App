@@ -22,7 +22,7 @@ struct ErrorAlert: Identifiable {
 
 class ErrorHandling: ObservableObject {
     @Published var currentAlert: ErrorAlert?
-    @Published var presentError: Bool = false
+    @Published var showError: Bool = false
     private var currentTask: DispatchWorkItem?
 
     func handle(error: Error, duration: TimeInterval = 8) {
@@ -33,23 +33,23 @@ class ErrorHandling: ObservableObject {
             recovery: nsError.localizedRecoverySuggestion,
             dismissAction: dismissError
         )
-        animateAndDelayWithSeconds(0, presentError: true)
-        currentTask = animateAndDelayWithSeconds(duration, presentError: false)
+        animateAndDelayWithSeconds(0, showError: true)
+        currentTask = animateAndDelayWithSeconds(duration, showError: false)
     }
     
     func dismissError() {
-        animateAndDelayWithSeconds(0, presentError: false)
+        animateAndDelayWithSeconds(0, showError: false)
         guard let currentTask = currentTask else { return }
         currentTask.cancel()
         self.currentTask = nil
     }
     
     @discardableResult
-    private func animateAndDelayWithSeconds(_ seconds: TimeInterval, presentError: Bool) -> DispatchWorkItem {
+    private func animateAndDelayWithSeconds(_ seconds: TimeInterval, showError: Bool) -> DispatchWorkItem {
         let task = DispatchWorkItem { [weak self] in
             withAnimation {
                 guard let self = self else { return }
-                self.presentError = presentError
+                self.showError = showError
             }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: task)
@@ -116,7 +116,7 @@ struct HandleErrorsByShowingBoxOnTopViewModifier: ViewModifier {
             content
                 .environmentObject(errorHandling)
             VStack {
-                if errorHandling.presentError {
+                if errorHandling.showError {
                     errorLabel.transition(.asymmetric(insertion: .fadeAndSlide, removal: .fadeAndSlide))
                     Spacer()
                 }

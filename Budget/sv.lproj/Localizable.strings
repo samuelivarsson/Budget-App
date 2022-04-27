@@ -14,6 +14,7 @@
 "date" = "Datum";
 "amount" = "Belopp";
 "category" = "Kategori";
+"loadMore" = "Ladda mer";
 
 // Sign in
 "signIn" = "Logga in";
@@ -68,6 +69,8 @@
 "phone" = "Telefon";
 "editPhone" = "Redigera telefonnummer";
 "yourPhone" = "Ditt telefonnummer";
+"general" = "Allmänt";
+"monthStartsOn" = "Månad börjar på";
 "transactionCategories" = "Transaktionskategorier";
 "quickBalance" = "Snabbsaldo";
 

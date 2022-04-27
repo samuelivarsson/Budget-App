@@ -49,6 +49,8 @@ struct AddFriendView: View {
                     presentationMode.wrappedValue.dismiss()
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
+                
+                
             }
         }
         .navigationTitle("addFriend")
