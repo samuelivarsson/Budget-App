@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  Budget
+
+  Created by Samuel Ivarsson on 2022-04-29.
+  
+*/
+
+NSCameraUsageDescription = "The camera is used by this app to take pictures for your profile picture";

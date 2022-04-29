@@ -140,4 +140,17 @@ class AuthViewModel: ObservableObject {
             completion(error)
         }
     }
+    
+    func changeProfilePicture(url: URL, completion: @escaping (Error?) -> Void) {
+        if let changeRequest = auth.currentUser?.createProfileChangeRequest() {
+            changeRequest.photoURL = url
+            changeRequest.commitChanges { error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                completion(nil)
+            }
+        }
+    }
 }

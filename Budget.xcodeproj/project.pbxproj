@@ -33,6 +33,8 @@
 		4D63BAE62808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */; };
 		4D6530562817645B00641570 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6530552817645B00641570 /* GeneralSettingsView.swift */; };
 		4D653059281764E100641570 /* MonthStartsOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D653058281764E100641570 /* MonthStartsOnView.swift */; };
+		4D653063281B590100641570 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D653061281B590100641570 /* InfoPlist.strings */; };
+		4D65306A281B60BA00641570 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D653069281B60BA00641570 /* ImagePicker.swift */; };
 		4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D68FC38280E3B3C00B9C5E4 /* FriendsView.swift */; };
 		4D68FC45280E4A1800B9C5E4 /* ConnectFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D68FC44280E4A1800B9C5E4 /* ConnectFriendView.swift */; };
 		4D6AC16D280CD86C00B8EA41 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6AC16C280CD86C00B8EA41 /* ErrorHandling.swift */; };
@@ -83,6 +85,9 @@
 		4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4D6530552817645B00641570 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		4D653058281764E100641570 /* MonthStartsOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthStartsOnView.swift; sourceTree = "<group>"; };
+		4D653062281B590100641570 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Budget/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4D653068281B5A3900641570 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = Budget/sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4D653069281B60BA00641570 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		4D68FC38280E3B3C00B9C5E4 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
 		4D68FC44280E4A1800B9C5E4 /* ConnectFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectFriendView.swift; sourceTree = "<group>"; };
 		4D6AC16C280CD86C00B8EA41 /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
@@ -162,6 +167,7 @@
 			children = (
 				4D02890C280B304B0053D15D /* MyInformationView.swift */,
 				4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */,
+				4D653069281B60BA00641570 /* ImagePicker.swift */,
 			);
 			path = MyInformation;
 			sourceTree = "<group>";
@@ -233,7 +239,6 @@
 		4DFD3D9428073E4A00D5FFB4 /* Budget */ = {
 			isa = PBXGroup;
 			children = (
-				4D028907280AE3590053D15D /* Info.plist */,
 				4D6AC170280CDF7700B8EA41 /* ErrorHandling */,
 				4D225543280A4A2E00C80851 /* Fonts */,
 				4DFD3DBC2807412D00D5FFB4 /* Model */,
@@ -246,8 +251,10 @@
 				4DFD3D9928073E4B00D5FFB4 /* Assets.xcassets */,
 				4DFD3DA028073E4B00D5FFB4 /* Budget.xcdatamodeld */,
 				4D225533280A1F4500C80851 /* GoogleService-Info.plist */,
-				4DFD3D9B28073E4B00D5FFB4 /* Preview Content */,
+				4D028907280AE3590053D15D /* Info.plist */,
+				4D653061281B590100641570 /* InfoPlist.strings */,
 				4DFD3DC72807432000D5FFB4 /* Localizable.strings */,
+				4DFD3D9B28073E4B00D5FFB4 /* Preview Content */,
 			);
 			path = Budget;
 			sourceTree = "<group>";
@@ -416,6 +423,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4DC4BDB1280B8457009E5859 /* Roboto-Medium.ttf in Resources */,
+				4D653063281B590100641570 /* InfoPlist.strings in Resources */,
 				4DFD3D9D28073E4B00D5FFB4 /* Preview Assets.xcassets in Resources */,
 				4D225534280A1F4500C80851 /* GoogleService-Info.plist in Resources */,
 				4DFD3DC52807432000D5FFB4 /* Localizable.strings in Resources */,
@@ -433,6 +441,7 @@
 				4DFF75AC28106E3100C40FF6 /* AddFriendView.swift in Sources */,
 				4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */,
 				4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */,
+				4D65306A281B60BA00641570 /* ImagePicker.swift in Sources */,
 				4D3563A5280E102E007B83B0 /* SettingsRowsView.swift in Sources */,
 				4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */,
 				4D6530562817645B00641570 /* GeneralSettingsView.swift in Sources */,
@@ -477,6 +486,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		4D653061281B590100641570 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4D653062281B590100641570 /* en */,
+				4D653068281B5A3900641570 /* sv */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		4DFD3DC72807432000D5FFB4 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -612,6 +630,7 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Budget/Preview Content\"";
@@ -632,6 +651,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -643,6 +663,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Budget/Preview Content\"";
@@ -663,6 +684,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

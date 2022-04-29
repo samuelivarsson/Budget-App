@@ -73,6 +73,8 @@
 "monthStartsOn" = "Month starts on";
 "transactionCategories" = "Transaction categories";
 "quickBalance" = "Quick balance";
+"takePicture" = "Take a picture";
+"choosePicture" = "Choose picture";
 
 // Friends View
 "friends" = "Friends";

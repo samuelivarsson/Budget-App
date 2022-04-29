@@ -73,6 +73,8 @@
 "monthStartsOn" = "Månad börjar på";
 "transactionCategories" = "Transaktionskategorier";
 "quickBalance" = "Snabbsaldo";
+"takePicture" = "Ta ett foto";
+"choosePicture" = "Välj bild";
 
 // Friends View
 "friends" = "Vänner";
@@ -124,3 +126,6 @@
 "pleaseEnterName" = "Vänligen ange ett namn";
 "pleaseEnterPhone" = "Vänligen ange ett telefonnummer";
 "userIsAlreadyFriend" = "Den här användaren är redan din vän";
+
+// Info.plist
+"cameraUsageDescription" = "";

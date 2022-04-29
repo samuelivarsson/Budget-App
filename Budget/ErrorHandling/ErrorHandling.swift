@@ -27,6 +27,7 @@ class ErrorHandling: ObservableObject {
 
     func handle(error: Error, duration: TimeInterval = 8) {
         let nsError = error as NSError
+        print(nsError.localizedDescription)
         currentAlert = ErrorAlert(
             message: nsError.localizedDescription,
             reason: nsError.localizedFailureReason,

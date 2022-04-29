@@ -11,10 +11,9 @@ struct FriendDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     @Environment(\.colorScheme) var colorScheme
+    
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
-    
-    @State private var isShowPhotoLibrary = false
     
     private var friend: Friend
     

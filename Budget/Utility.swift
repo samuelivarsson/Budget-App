@@ -10,6 +10,7 @@ import SwiftUI
 import Firebase
 import FirebaseAuth
 import FirebaseCore
+import FirebaseStorage
 
 /// Offers useful utilities
 class Utility {
@@ -25,9 +26,33 @@ class Utility {
         return result
     }
     
-    // TODO
-    static func uploadProfilePicture(image: Image) {
-        
+    static func uploadMedia(image: UIImage, completion: @escaping (_ url: URL?, _ error: Error?) -> Void) {
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        guard let uid = Auth.auth().currentUser?.uid else {
+            completion(nil, ApplicationError.unexpectedNil)
+            return
+        }
+        let imageRef = storageRef.child("users/\(uid)/profilePicture.png")
+        if let uploadData = image.jpegData(compressionQuality: 0.5) {
+            imageRef.putData(uploadData, metadata: nil) { metadata, error in
+                if let error = error {
+                    completion(nil, error)
+                    return
+                }
+                imageRef.downloadURL { url, error in
+                    if let error = error {
+                        completion(nil, error)
+                        return
+                    }
+                    
+                    // Success
+                    completion(url, nil)
+                }
+            }
+        } else {
+            completion(nil, ApplicationError.unexpectedNil)
+        }
     }
     
     /// Get the current budget period based on when the user wants to start and end the budget-month
@@ -67,7 +92,6 @@ class Utility {
     }
 }
 
-/// Create a color with hex-code
 extension Color {
     #if os(macOS)
     static let background = Color(NSColor.windowBackgroundColor)
@@ -79,6 +103,7 @@ extension Color {
     static let tertiaryBackground = Color(UIColor.tertiarySystemBackground)
     #endif
     
+    /// Create a color with hex-code
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
@@ -105,43 +130,45 @@ extension Color {
     }
 }
 
-// Make background colors easily accessible
-//extension Color {
-//
-//}
-
 /// A generic view that shows images from the network.
 struct NetworkImage: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     let url: URL?
     let failImage: Image
-    var fit = true
+    var fill = true
     
     var body: some View {
-        if let url = url, let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
-            if fit {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+        if let url = url {
+            if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                if fill {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } else {
+                    Image(uiImage: uiImage)
+                }
             } else {
-                Image(uiImage: uiImage)
-                    .onAppear {
-                        print(uiImage.size)
-                    }
+                if fill {
+                    failImage
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .onAppear {
+                            errorHandling.handle(error: NetworkError.imageFetch)
+                        }
+                } else {
+                    failImage
+                        .onAppear {
+                            errorHandling.handle(error: NetworkError.imageFetch)
+                        }
+                }
             }
         } else {
-            if fit {
+            if fill {
                 failImage
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .onAppear {
-                        errorHandling.handle(error: NetworkError.imageFetch)
-                    }
+                    .aspectRatio(contentMode: .fill)
             } else {
                 failImage
-                    .onAppear {
-                        errorHandling.handle(error: NetworkError.imageFetch)
-                    }
             }
         }
     }
@@ -152,26 +179,26 @@ struct UserPicture: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     let user: User?
     var failImage = Image(systemName: "person.circle")
-    var fit = true
+    var fill = true
     
     var body: some View {
         if let user = user {
             if !user.isAnonymous {
-                NetworkImage(url: user.photoURL, failImage: failImage, fit: fit)
+                NetworkImage(url: user.photoURL, failImage: failImage, fill: fill)
             } else {
-                if fit {
+                if fill {
                     failImage
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .aspectRatio(contentMode: .fill)
                 } else {
                     failImage
                 }
             }
         } else {
-            if fit {
+            if fill {
                 failImage
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
             } else {
                 failImage
             }
@@ -225,23 +252,5 @@ struct PasswordField: View {
             }
         }
         .frame(height: 20)
-    }
-}
-
-/// View for picking an image from the user's photolibrary
-struct ImagePicker: UIViewControllerRepresentable {
-    var sourceType: UIImagePickerController.SourceType = .photoLibrary
- 
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
- 
-        let imagePicker = UIImagePickerController()
-        imagePicker.allowsEditing = false
-        imagePicker.sourceType = sourceType
- 
-        return imagePicker
-    }
- 
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
- 
     }
 }

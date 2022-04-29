@@ -8,12 +8,48 @@
 import SwiftUI
 
 struct MyInformationView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
+    
     @State private var signOutAsGuestPressed: Bool = false
+    @State private var isShowPhotoChoices = false
+    @State private var isShowPhotoLibrary = false
+    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
+    @State private var image = UIImage()
     
     var body: some View {
         Form {
+            Section {
+                HStack {
+                    Spacer()
+                    ZStack {
+                        // TODO - Save image somehow so it doesnt have to load everytime
+                        // TODO - Update image in SettingsView and MyInformationView when new picture has been uploaded
+                        UserPicture(user: authViewModel.auth.currentUser)
+                            .frame(width: 150, height: 150)
+                            .clipShape(Circle())
+                        VStack {
+                            Spacer()
+                            HStack {
+                                Spacer()
+                                Button {
+                                    isShowPhotoChoices = true
+                                } label: {
+                                    Image(systemName: "camera")
+                                        .padding(5)
+                                }
+                            }
+                        }
+                    }
+                    .frame(width: 150, height: 150)
+                    Spacer()
+                }
+                .listRowBackground(colorScheme == .dark ? Color.background : Color.secondaryBackground)
+                
+            }
+            
             Section {
                 HStack {
                     Text("email")
@@ -66,6 +102,31 @@ struct MyInformationView: View {
         }
         .navigationTitle("myInformation")
         .navigationBarTitleDisplayMode(.inline)
+        .confirmationDialog("", isPresented: $isShowPhotoChoices) {
+            Button {
+                sourceType = .camera
+                isShowPhotoLibrary = true
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("takePicture")
+                    Spacer()
+                }
+            }
+            Button {
+                sourceType = .photoLibrary
+                isShowPhotoLibrary = true
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("choosePicture")
+                    Spacer()
+                }
+            }
+        }
+        .sheet(isPresented: $isShowPhotoLibrary) {
+            ImagePicker(selectedImage: self.$image, sourceType: sourceType)
+        }
         .alert("signOut?", isPresented: $signOutAsGuestPressed) {
             Button("signOut", role: .destructive) {
                 authViewModel.signOut() { error in

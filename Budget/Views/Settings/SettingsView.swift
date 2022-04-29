@@ -19,8 +19,8 @@ struct SettingsView: View {
                     } label: {
                         HStack(spacing: 20) {
                             UserPicture(user: authViewModel.auth.currentUser)
+                                .frame(width: 50, height: 50)
                                 .clipShape(Circle())
-                                .padding(.vertical, 5)
                             
                             VStack(alignment: .leading) {
                                 let userName = authViewModel.auth.currentUser?.displayName ?? "Guest"
