@@ -106,7 +106,7 @@ struct AddFriendView: View {
         }
     }
     
-    // TODO - Send friend request?
+    // QTODO - Send friend request?
     private func addUserAsFriend(email: String) {
         // You can't add yourself as friend
         guard email.lowercased() != authViewModel.auth.currentUser?.email?.lowercased() else {
@@ -128,7 +128,9 @@ struct AddFriendView: View {
                 return
             }
             guard let user = user else {
-                errorHandling.handle(error: ApplicationError.unexpectedNil)
+                let info = "Found nil when extracting user in addUserAsFriend in AddFriendView"
+                print(info)
+                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                 return
             }
             

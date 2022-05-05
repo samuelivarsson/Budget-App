@@ -14,6 +14,10 @@ struct FriendDetailView: View {
     
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var friendsViewModel: FriendsViewModel
+    
+    @State private var uiImage: UIImage?
+    @State private var pictureLoading = false
     
     private var friend: Friend
     
@@ -26,10 +30,15 @@ struct FriendDetailView: View {
             HStack {
                 Spacer()
                 VStack {
-                    // TODO - Add picture and name, requires that image is saved on database
-                    UserPicture(user: authViewModel.auth.currentUser)
-                        .clipShape(Circle())
-                        .frame(height: 150)
+                    // TODO - Check box if user is connected
+                    if self.pictureLoading {
+                        ProgressView()
+                            .frame(width: 150, height: 150)
+                    } else {
+                        ProfilePicture(uiImage: uiImage, failImage: Image(systemName: "person.circle"))
+                            .frame(width: 150, height: 150)
+                            .clipShape(Circle())
+                    }
                     
                     Text(friend.name ?? "")
                         .font(.headline)
@@ -72,6 +81,34 @@ struct FriendDetailView: View {
         }
         .navigationTitle("editFriend")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            guard let uid = self.friend.uid else {
+                let info = "Found nil when extracting uid in onAppear in FriendDetailView"
+                print(info)
+                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                return
+            }
+            if let image = self.friendsViewModel.friendPictures[uid] {
+                self.uiImage = image
+                return
+            }
+            self.pictureLoading = true
+            Utility.getProfilePictureFromUID(uid: uid) { image, error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                guard let image = image else {
+                    let info = "Found nil when extracting image in onAppear in FriendDetailView"
+                    print(info)
+                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                    return
+                }
+                self.uiImage = image
+                self.friendsViewModel.friendPictures[uid] = image
+                self.pictureLoading = false
+            }
+        }
     }
 }
 
@@ -80,5 +117,6 @@ struct FriendDetailView_Previews: PreviewProvider {
         FriendDetailView(friend: Friend())
             .environmentObject(ErrorHandling())
             .environmentObject(AuthViewModel())
+            .environmentObject(FriendsViewModel())
     }
 }

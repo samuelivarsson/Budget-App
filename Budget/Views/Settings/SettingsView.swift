@@ -18,7 +18,7 @@ struct SettingsView: View {
                         MyInformationView()
                     } label: {
                         HStack(spacing: 20) {
-                            UserPicture(user: authViewModel.auth.currentUser)
+                            ProfilePicture(uiImage: authViewModel.profilePicture, failImage: Image(systemName: "person.circle"))
                                 .frame(width: 50, height: 50)
                                 .clipShape(Circle())
                             

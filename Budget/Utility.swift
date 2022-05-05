@@ -26,11 +26,30 @@ class Utility {
         return result
     }
     
+    /// Fetches an image from an url and returns a UIImage
+    static func getImageFromURL(url: URL?, completion: @escaping (_ uiImage: UIImage?, _ error: Error?) -> Void) {
+        guard let url = url else {
+            let info = "Found nil when extracting url in getImageFromURL in Utility"
+            print(info)
+            completion(nil, ApplicationError.unexpectedNil(info))
+            return
+        }
+        guard let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) else {
+            completion(nil, NetworkError.imageFetch)
+            return
+        }
+        
+        completion(uiImage, nil)
+    }
+    
+    /// Takes a UIImage and uploads it to FirebaseStorage, returns the URL of the uploaded image
     static func uploadMedia(image: UIImage, completion: @escaping (_ url: URL?, _ error: Error?) -> Void) {
         let storage = Storage.storage()
         let storageRef = storage.reference()
         guard let uid = Auth.auth().currentUser?.uid else {
-            completion(nil, ApplicationError.unexpectedNil)
+            let info = "Found nil when extracting uid in uploadMedia in Utility"
+            print(info)
+            completion(nil, ApplicationError.unexpectedNil(info))
             return
         }
         let imageRef = storageRef.child("users/\(uid)/profilePicture.png")
@@ -51,7 +70,47 @@ class Utility {
                 }
             }
         } else {
-            completion(nil, ApplicationError.unexpectedNil)
+            let info = "Failed to turn image into jpegData in uploadMedia in TransactionView"
+            print(info)
+            completion(nil, ApplicationError.unexpectedNil(info))
+        }
+    }
+    
+    static func getProfilePictureFromUID(uid: String?, completion: @escaping (UIImage?, Error?) -> Void) {
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        guard let uid = uid else {
+            let info = "Found nil when extracting uid in getProfilePictureFromUID in TransactionView"
+            print(info)
+            completion(nil, ApplicationError.unexpectedNil(info))
+            return
+        }
+        let imageRef = storageRef.child("users/\(uid)/profilePicture.png")
+        imageRef.downloadURL { url, error in
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+            guard let url = url else {
+                let info = "Found nil when extracting url in getProfilePictureFromUID in TransactionView"
+                print(info)
+                completion(nil, ApplicationError.unexpectedNil(info))
+                return
+            }
+            getImageFromURL(url: url) { uiImage, error in
+                if let error = error {
+                    completion(nil, error)
+                    return
+                }
+                guard let uiImage = uiImage else {
+                    let info = "Found nil when extracting uiImage in getProfilePictureFromUID in TransactionView"
+                    print(info)
+                    completion(nil, ApplicationError.unexpectedNil(info))
+                    return
+                }
+                
+                completion(uiImage, nil)
+            }
         }
     }
     
@@ -130,69 +189,20 @@ extension Color {
     }
 }
 
-/// A generic view that shows images from the network.
-struct NetworkImage: View {
-    @EnvironmentObject private var errorHandling: ErrorHandling
-    let url: URL?
+/// A view that shows an optional UIImage, if nil, its shows the failImage.
+struct ProfilePicture: View {
+    let uiImage: UIImage?
     let failImage: Image
-    var fill = true
+    let fill: Bool = true
     
     var body: some View {
-        if let url = url {
-            if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
-                if fill {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } else {
-                    Image(uiImage: uiImage)
-                }
-            } else {
-                if fill {
-                    failImage
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .onAppear {
-                            errorHandling.handle(error: NetworkError.imageFetch)
-                        }
-                } else {
-                    failImage
-                        .onAppear {
-                            errorHandling.handle(error: NetworkError.imageFetch)
-                        }
-                }
-            }
-        } else {
+        if let uiImage = uiImage {
             if fill {
-                failImage
+                Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } else {
-                failImage
-            }
-        }
-    }
-}
-
-/// A generic view that shows a users profile picture.
-struct UserPicture: View {
-    @EnvironmentObject private var errorHandling: ErrorHandling
-    let user: User?
-    var failImage = Image(systemName: "person.circle")
-    var fill = true
-    
-    var body: some View {
-        if let user = user {
-            if !user.isAnonymous {
-                NetworkImage(url: user.photoURL, failImage: failImage, fill: fill)
-            } else {
-                if fill {
-                    failImage
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } else {
-                    failImage
-                }
+                Image(uiImage: uiImage)
             }
         } else {
             if fill {

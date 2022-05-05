@@ -10,6 +10,7 @@ import SwiftUI
 struct SignInView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var fsViewModel: FirestoreViewModel
     
     @State private var email = ""
     @State private var password = ""
@@ -29,7 +30,34 @@ struct SignInView: View {
                 Button {
                     authViewModel.signIn() { error in
                         if let error = error {
-                            errorHandling.handle(error: error)
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
+                        guard let user = authViewModel.auth.currentUser else {
+                            let info = "Couldn't extract uid from user when signing in with google"
+                            print(info)
+                            self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                            return
+                        }
+                        fsViewModel.setUser(user: user) { error in
+                            if let error = error {
+                                self.errorHandling.handle(error: error)
+                                return
+                            }
+                            
+                            // Success
+                            print("Successfully updated user in firestore")
+                            self.fsViewModel.setPhoneDict(user: user) { error in
+                                if let error = error {
+                                    self.errorHandling.handle(error: error)
+                                    return
+                                }
+                                
+                                // Success
+                                print("Successfully updated phone variable")
+                            }
                         }
                     }
                 } label: {
@@ -50,8 +78,11 @@ struct SignInView: View {
                 Button {
                     authViewModel.signInAnonymously() { error in
                         if let error = error {
-                            errorHandling.handle(error: error)
+                            self.errorHandling.handle(error: error)
+                            return
                         }
+                        
+                        // Success
                     }
                 } label: {
                     Label {
@@ -102,7 +133,34 @@ struct SignInView: View {
                         
                         authViewModel.signIn(email: email, password: password) { error in
                             if let error = error {
-                                errorHandling.handle(error: error)
+                                self.errorHandling.handle(error: error)
+                                return
+                            }
+                            
+                            // Success
+                            guard let user = authViewModel.auth.currentUser else {
+                                let info = "Couldn't extract uid from user when signing in"
+                                print(info)
+                                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                                return
+                            }
+                            fsViewModel.setUser(user: user) { error in
+                                if let error = error {
+                                    self.errorHandling.handle(error: error)
+                                    return
+                                }
+                                
+                                // Success
+                                print("Successfully updated user in firestore")
+                                self.fsViewModel.setPhoneDict(user: user) { error in
+                                    if let error = error {
+                                        self.errorHandling.handle(error: error)
+                                        return
+                                    }
+                                    
+                                    // Success
+                                    print("Successfully updated phone dictionary")
+                                }
                             }
                         }
                     } label: {

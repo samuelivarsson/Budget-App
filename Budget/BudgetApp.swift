@@ -13,6 +13,7 @@ struct BudgetApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var fsViewModel = FirestoreViewModel()
+    @StateObject var friendsViewModel = FriendsViewModel()
 
     init() {
         setUpFirebase()
@@ -25,6 +26,7 @@ struct BudgetApp: App {
                 .withErrorHandling()
                 .environmentObject(authViewModel)
                 .environmentObject(fsViewModel)
+                .environmentObject(friendsViewModel)
         }
     }
 }

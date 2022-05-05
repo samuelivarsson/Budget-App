@@ -12,8 +12,9 @@ struct SignUpView: View {
     @State private var email = ""
     @State private var password = ""
     
-    @EnvironmentObject var authViewModel: AuthViewModel
-    @EnvironmentObject var errorHandling: ErrorHandling
+    @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var fsViewModel: FirestoreViewModel
     
     private var width: CGFloat = 300
     private var height: CGFloat = 48
@@ -64,6 +65,16 @@ struct SignUpView: View {
                 authViewModel.signUp(email: email, password: password, name: fullName) { error in
                     if let error = error {
                         errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    fsViewModel.setUser(user: authViewModel.auth.currentUser) { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
                     }
                 }
             } label: {

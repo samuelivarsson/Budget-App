@@ -12,6 +12,7 @@ struct MyInformationView: View {
     
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var fsViewModel: FirestoreViewModel
     
     @State private var signOutAsGuestPressed: Bool = false
     @State private var isShowPhotoChoices = false
@@ -25,9 +26,7 @@ struct MyInformationView: View {
                 HStack {
                     Spacer()
                     ZStack {
-                        // TODO - Save image somehow so it doesnt have to load everytime
-                        // TODO - Update image in SettingsView and MyInformationView when new picture has been uploaded
-                        UserPicture(user: authViewModel.auth.currentUser)
+                        ProfilePicture(uiImage: authViewModel.profilePicture, failImage: Image(systemName: "person.circle"))
                             .frame(width: 150, height: 150)
                             .clipShape(Circle())
                         VStack {
@@ -65,14 +64,21 @@ struct MyInformationView: View {
                     Text(userName).foregroundColor(.secondary)
                 }
                 
-                HStack {
-                    Text("phone")
-                    Spacer()
-                    let phone = authViewModel.auth.currentUser?.phoneNumber ?? ""
-                    NavigationLink {
-                        EditPhoneView()
-                    } label: {
-                        Text(phone).foregroundColor(.secondary)
+                NavigationLink {
+                    EditPhoneView()
+                } label: {
+                    HStack {
+                        Text("phone")
+                        Spacer()
+                        if let user = authViewModel.auth.currentUser {
+                            if let phone = self.fsViewModel.phone[user.uid] {
+                                Text(phone).foregroundColor(.secondary)
+                            } else {
+                                Text("Something went wrong: Code 2001")
+                            }
+                        } else {
+                            Text("Something went wrong: Code 2002")
+                        }
                     }
                 }
             }
@@ -139,6 +145,16 @@ struct MyInformationView: View {
             Text("signOutAsGuestImplication")
         }
     }
+    
+//    private func updatePhone() {
+//        guard let phone = self.fsViewModel.userDict["phone"] as? String else {
+//            let info = "Found nil when extracting phone in updatePhone in MyInformationView"
+//            self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+//            return
+//        }
+//
+//        self.phone = phone
+//    }
 }
 
 struct MyInformationView_Previews: PreviewProvider {

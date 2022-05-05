@@ -53,7 +53,7 @@ struct TransactionView: View {
             
             Section(add ? "addParticipants" : "editParticipants") {
                 // TODO - Create functionality to add participants
-                Text("Hej")
+                ParticipantsView()
             }
             
             Section {
@@ -177,6 +177,7 @@ struct TransactionView: View {
     }
     
     // TODO - Add to firebase
+    // QTODO - Use custom structs for all firebase stuff
     private func addTransaction() {
         withAnimation {
             let newTransaction = Transaction(context: viewContext)
@@ -199,7 +200,9 @@ struct TransactionView: View {
     private func editTransaction() {
         withAnimation {
             guard let transaction = transaction else {
-                errorHandling.handle(error: ApplicationError.unexpectedNil)
+                let info = "Found nil when extracting transaction in editTransaction in TransactionView"
+                print(info)
+                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                 return
             }
             

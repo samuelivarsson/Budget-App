@@ -41,6 +41,9 @@
 		4D6AC16F280CDF2E00B8EA41 /* TryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6AC16E280CDF2E00B8EA41 /* TryButton.swift */; };
 		4DC4BDB1280B8457009E5859 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */; };
 		4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */; };
+		4DDA445D282354B90045C58E /* TransactionsGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDA445C282354B90045C58E /* TransactionsGroupView.swift */; };
+		4DF808B4281ECDBC00E19A8D /* ParticipantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF808B3281ECDBC00E19A8D /* ParticipantsView.swift */; };
+		4DF808B6282178AC00E19A8D /* FriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF808B5282178AC00E19A8D /* FriendsViewModel.swift */; };
 		4DFD3D9628073E4A00D5FFB4 /* BudgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */; };
 		4DFD3D9828073E4A00D5FFB4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */; };
 		4DFD3D9A28073E4B00D5FFB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9928073E4B00D5FFB4 /* Assets.xcassets */; };
@@ -94,6 +97,9 @@
 		4D6AC16E280CDF2E00B8EA41 /* TryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TryButton.swift; sourceTree = "<group>"; };
 		4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhoneView.swift; sourceTree = "<group>"; };
+		4DDA445C282354B90045C58E /* TransactionsGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsGroupView.swift; sourceTree = "<group>"; };
+		4DF808B3281ECDBC00E19A8D /* ParticipantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantsView.swift; sourceTree = "<group>"; };
+		4DF808B5282178AC00E19A8D /* FriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewModel.swift; sourceTree = "<group>"; };
 		4DFD3D9228073E4A00D5FFB4 /* Budget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Budget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetApp.swift; sourceTree = "<group>"; };
 		4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -293,7 +299,9 @@
 			isa = PBXGroup;
 			children = (
 				4DFD3DAB2807407D00D5FFB4 /* TransactionsView.swift */,
+				4DDA445C282354B90045C58E /* TransactionsGroupView.swift */,
 				4D0F05CA280793FA0030AB5B /* TransactionView.swift */,
+				4DF808B3281ECDBC00E19A8D /* ParticipantsView.swift */,
 			);
 			path = Transactions;
 			sourceTree = "<group>";
@@ -337,6 +345,7 @@
 			children = (
 				4D028908280B16E30053D15D /* AuthViewModel.swift */,
 				4DFF75A3281066BF00C40FF6 /* FirestoreViewModel.swift */,
+				4DF808B5282178AC00E19A8D /* FriendsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -438,6 +447,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DDA445D282354B90045C58E /* TransactionsGroupView.swift in Sources */,
 				4DFF75AC28106E3100C40FF6 /* AddFriendView.swift in Sources */,
 				4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */,
 				4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */,
@@ -452,6 +462,7 @@
 				4DFD3D9F28073E4B00D5FFB4 /* Persistence.swift in Sources */,
 				4DFD3D9828073E4A00D5FFB4 /* ContentView.swift in Sources */,
 				4D1E974728085FBF003C8802 /* Transaction+CoreDataClass.swift in Sources */,
+				4DF808B4281ECDBC00E19A8D /* ParticipantsView.swift in Sources */,
 				4D02890B280B196B0053D15D /* GoogleSignInButton.swift in Sources */,
 				4DFF75B5281077E500C40FF6 /* FriendDetailView.swift in Sources */,
 				4DFF75B12810739E00C40FF6 /* EditFriendNameView.swift in Sources */,
@@ -461,6 +472,7 @@
 				4D02890D280B304B0053D15D /* MyInformationView.swift in Sources */,
 				4D1E973F28085459003C8802 /* WelcomeScreenView.swift in Sources */,
 				4DFD3DBE2807414500D5FFB4 /* TransactionType.swift in Sources */,
+				4DF808B6282178AC00E19A8D /* FriendsViewModel.swift in Sources */,
 				4DFD3DAA2807406800D5FFB4 /* HomeView.swift in Sources */,
 				4D653059281764E100641570 /* MonthStartsOnView.swift in Sources */,
 				4D1E9744280857B6003C8802 /* LoginView.swift in Sources */,

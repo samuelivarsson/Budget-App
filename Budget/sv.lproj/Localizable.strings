@@ -126,6 +126,5 @@
 "pleaseEnterName" = "Vänligen ange ett namn";
 "pleaseEnterPhone" = "Vänligen ange ett telefonnummer";
 "userIsAlreadyFriend" = "Den här användaren är redan din vän";
-
-// Info.plist
-"cameraUsageDescription" = "";
+"phoneTooShort" = "Telefonnumret du angav är för kort";
+"documentNotExist" = "Dokumentet som du försökte hämta finns inte";

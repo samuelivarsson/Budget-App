@@ -41,6 +41,19 @@ extension NetworkError: LocalizedError {
     }
 }
 
+enum FirestoreError: Error {
+    case documentNotExist
+}
+
+extension FirestoreError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .documentNotExist:
+            return NSLocalizedString("documentNotExist", comment: "Firestore Error")
+        }
+    }
+}
+
 enum AccountError: Error {
     case notSignedIn
 }
@@ -68,14 +81,14 @@ extension UserError: LocalizedError {
 }
 
 enum ApplicationError: Error {
-    case unexpectedNil
+    case unexpectedNil(String)
 }
 
 extension ApplicationError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .unexpectedNil:
-            return NSLocalizedString("applicationError", comment: "Application Error")
+        case .unexpectedNil(let info):
+            return NSLocalizedString("applicationError", comment: "Application Error") + ": \(info)"
         }
     }
     
@@ -99,6 +112,7 @@ enum InputError: Error {
     case noPassword
     case noName
     case noPhone
+    case phoneTooShort
     case addYourself
     case userIsAlreadyFriend
 }
@@ -114,6 +128,8 @@ extension InputError: LocalizedError {
             return NSLocalizedString("pleaseEnterName", comment: "Input Error")
         case .noPhone:
             return NSLocalizedString("pleaseEnterPhone", comment: "Input Error")
+        case .phoneTooShort:
+            return NSLocalizedString("phoneTooShort", comment: "Input Error")
         case .addYourself:
             return NSLocalizedString("addYourself", comment: "Input Error")
         case .userIsAlreadyFriend:

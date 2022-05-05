@@ -126,3 +126,5 @@
 "pleaseEnterName" = "Please enter a name";
 "pleaseEnterPhone" = "Please enter a phone number";
 "userIsAlreadyFriend" = "This user is already your friend";
+"phoneTooShort" = "The phone number you entered is too short";
+"documentNotExist" = "The document does not exist";
