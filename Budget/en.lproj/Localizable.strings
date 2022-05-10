@@ -31,7 +31,7 @@
 
 // Sign out as guest warning
 "signOut?" = "Do you want to sign out?";
-"signOutAsGuestImplication" = "You are about to sign out of your guest account. Once signed out, all account settings will be lost. Transactions will still be saved on your phones memory untill uninstallation of the app.";
+"signOutAsGuestImplication" = "You are about to sign out of your guest account. Once signed out, all account settings will be lost. Transactions will still be saved on your phones memory until uninstallation of the app.";
 
 // Sign up
 "fullName" = "Full name";

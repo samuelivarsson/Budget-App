@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct TransactionsGroupView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -27,9 +28,10 @@ struct TransactionsGroupView: View {
         self._transactions = FetchRequest(
             sortDescriptors: [NSSortDescriptor(key: "date", ascending: false)],
             predicate: NSPredicate(
-                format: "(date >= %@) AND (date <= %@)",
+                format: "(date >= %@) AND (date <= %@) AND ((creator == %@) OR (creator == 'createdByGuest'))",
                 from as CVarArg,
-                to as CVarArg
+                to as CVarArg,
+                Auth.auth().currentUser?.uid ?? ""
             ),
             animation: .default
         )
@@ -45,7 +47,7 @@ struct TransactionsGroupView: View {
                         } label: {
                             let amount = Utility.doubleToLocalCurrency(value: transaction.amount)
                             Label(
-                                "\(amount), \(transaction.desc!) : \(transaction.category!)",
+                                "\(amount), \(transaction.desc!) : \(transaction.category!)\nCreator: \(transaction.creator ?? "pppp")",
                                 systemImage: transaction.getImageName()
                             )
                         }

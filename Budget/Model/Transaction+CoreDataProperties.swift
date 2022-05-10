@@ -21,6 +21,7 @@ extension Transaction {
     @NSManaged public var date: Date?
     @NSManaged public var id: UUID?
     @NSManaged public var desc: String?
+    @NSManaged public var creator: String?
     @NSManaged public var type: TransactionType
 
 }

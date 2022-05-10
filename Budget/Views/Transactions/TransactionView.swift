@@ -12,7 +12,9 @@ import CoreData
 struct TransactionView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
     @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var authViewModel: AuthViewModel
     
     @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)],
                 animation: .default)
@@ -188,6 +190,10 @@ struct TransactionView: View {
             let amount = amountText.replacingOccurrences(of: ",", with: ".")
             newTransaction.amount = Double(amount) ?? 0
             newTransaction.date = date
+            
+            if let user = authViewModel.auth.currentUser {
+                newTransaction.creator = user.isAnonymous ? "createdByGuest" : user.uid
+            }
             
             do {
                 try viewContext.save()

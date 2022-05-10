@@ -129,7 +129,7 @@ class Utility {
                 matching: dayComponent,
                 matchingPolicy: .nextTime,
                 repeatedTimePolicy: .first,
-                direction: .backward
+                direction: .forward
             ) ?? Date()
 
             fromDate = calendar.date( byAdding: .month, value: -1, to: toDate) ?? Date()
@@ -143,10 +143,10 @@ class Utility {
                 repeatedTimePolicy: .last,
                 direction: .backward
             ) ?? Date()
-            
+
             toDate = calendar.date(byAdding: .month, value: 1, to: fromDate) ?? Date()
         }
-        
+
         return (fromDate, toDate)
     }
 }
