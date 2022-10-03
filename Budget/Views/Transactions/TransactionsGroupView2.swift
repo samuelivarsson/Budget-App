@@ -8,10 +8,11 @@
 import SwiftUI
 import FirebaseAuth
 
-struct TransactionsGroupView: View {
+struct TransactionsGroupView2: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var errorHandling: ErrorHandling
-    @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
+    
+    @FetchRequest private var transactions: FetchedResults<Transaction2>
     
     @State private var showChildren: Bool = false
     
@@ -23,19 +24,30 @@ struct TransactionsGroupView: View {
         self.from = from
         self.to = to
         self._showChildren = State(initialValue: showChildren)
+        
+        self._transactions = FetchRequest(
+            sortDescriptors: [NSSortDescriptor(key: "date", ascending: false)],
+            predicate: NSPredicate(
+                format: "(date >= %@) AND (date <= %@) AND ((creator == %@) OR (creator == 'createdByGuest'))",
+                from as CVarArg,
+                to as CVarArg,
+                Auth.auth().currentUser?.uid ?? ""
+            ),
+            animation: .default
+        )
     }
     
     var body: some View {
         Section {
             if showChildren {
-                ForEach(transactionsViewModel.transactions.filter({$0.date >= from && $0.date <= to})) { transaction in
+                ForEach(transactions) { transaction in
                     Section {
                         NavigationLink {
-                            TransactionView(transaction: transaction)
+//                            TransactionView(transaction: transaction)
                         } label: {
                             let amount = Utility.doubleToLocalCurrency(value: transaction.amount)
                             Label(
-                                "\(amount), \(transaction.desc) : \(transaction.category)\nCreator: \(transaction.creator)",
+                                "\(amount), \(transaction.desc!) : \(transaction.category!)\nCreator: \(transaction.creator!)",
                                 systemImage: transaction.getImageName()
                             )
                         }
@@ -72,15 +84,12 @@ struct TransactionsGroupView: View {
     
     private func deleteTransactions(offsets: IndexSet) {
         withAnimation {
-            offsets.map { self.transactionsViewModel.transactions[$0] }.forEach { transaction in
-                transaction.delete { error in
-                    if let error = error {
-                        self.errorHandling.handle(error: error)
-                        return
-                    }
-                    
-                    // Success
-                }
+            offsets.map { transactions[$0] }.forEach(viewContext.delete)
+
+            do {
+                try viewContext.save()
+            } catch {
+                errorHandling.handle(error: error)
             }
         }
     }

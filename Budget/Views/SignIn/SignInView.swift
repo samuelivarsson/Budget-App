@@ -11,6 +11,8 @@ struct SignInView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
+    @EnvironmentObject private var storageViewModel: StorageViewModel
+    @EnvironmentObject private var userViewModel: UserViewModel
     
     @State private var email = ""
     @State private var password = ""
@@ -28,38 +30,7 @@ struct SignInView: View {
             
                 // Sign in with Google
                 Button {
-                    authViewModel.signIn() { error in
-                        if let error = error {
-                            self.errorHandling.handle(error: error)
-                            return
-                        }
-                        
-                        // Success
-                        guard let user = authViewModel.auth.currentUser else {
-                            let info = "Couldn't extract uid from user when signing in with google"
-                            print(info)
-                            self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                            return
-                        }
-                        fsViewModel.setUser(user: user) { error in
-                            if let error = error {
-                                self.errorHandling.handle(error: error)
-                                return
-                            }
-                            
-                            // Success
-                            print("Successfully updated user in firestore")
-                            self.fsViewModel.setPhoneDict(user: user) { error in
-                                if let error = error {
-                                    self.errorHandling.handle(error: error)
-                                    return
-                                }
-                                
-                                // Success
-                                print("Successfully updated phone variable")
-                            }
-                        }
-                    }
+                    signInWithGoogle()
                 } label: {
                     Label {
                         Text("signInWithGoogle")
@@ -76,14 +47,7 @@ struct SignInView: View {
                 
                 // Sign in anonymously
                 Button {
-                    authViewModel.signInAnonymously() { error in
-                        if let error = error {
-                            self.errorHandling.handle(error: error)
-                            return
-                        }
-                        
-                        // Success
-                    }
+                    signInAnonymously()
                 } label: {
                     Label {
                         Text("signInAsGuest")
@@ -122,47 +86,7 @@ struct SignInView: View {
                     }
                     
                     Button {
-                        guard !email.isEmpty else {
-                            errorHandling.handle(error: InputError.noEmail)
-                            return
-                        }
-                        guard !password.isEmpty else {
-                            errorHandling.handle(error: InputError.noPassword)
-                            return
-                        }
-                        
-                        authViewModel.signIn(email: email, password: password) { error in
-                            if let error = error {
-                                self.errorHandling.handle(error: error)
-                                return
-                            }
-                            
-                            // Success
-                            guard let user = authViewModel.auth.currentUser else {
-                                let info = "Couldn't extract uid from user when signing in"
-                                print(info)
-                                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                                return
-                            }
-                            fsViewModel.setUser(user: user) { error in
-                                if let error = error {
-                                    self.errorHandling.handle(error: error)
-                                    return
-                                }
-                                
-                                // Success
-                                print("Successfully updated user in firestore")
-                                self.fsViewModel.setPhoneDict(user: user) { error in
-                                    if let error = error {
-                                        self.errorHandling.handle(error: error)
-                                        return
-                                    }
-                                    
-                                    // Success
-                                    print("Successfully updated phone dictionary")
-                                }
-                            }
-                        }
+                        signInWithEmail()
                     } label: {
                         Text("signIn")
                             .font(Font.system(size: 14).bold())
@@ -188,6 +112,126 @@ struct SignInView: View {
                 Spacer()
             }
             .frame(width: width)
+        }
+    }
+    
+    private func signInWithGoogle() {
+        authViewModel.signIn() { error in
+            if let error = error {
+                self.errorHandling.handle(error: error)
+                return
+            }
+            
+            // Success
+            guard let user = authViewModel.auth.currentUser else {
+                let info = "Couldn't extract uid from user when signing in with google"
+                print(info)
+                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                return
+            }
+            fsViewModel.setUser(user: user) { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+                print("Successfully updated user in firestore")
+                self.fsViewModel.setPhoneDict(user: user) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
+                    print("Successfully updated phone variable")
+                    self.storageViewModel.fetchProfilePicture { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
+                        print("Successfully set profile picture")
+                        self.userViewModel.fetchData { error in
+                            if let error = error {
+                                self.errorHandling.handle(error: error)
+                                return
+                            }
+                            
+                            // Success
+                            print("Successfully set user in UserViewModel")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func signInAnonymously() {
+        authViewModel.signInAnonymously() { error in
+            if let error = error {
+                self.errorHandling.handle(error: error)
+                return
+            }
+            
+            // Success
+        }
+    }
+    
+    private func signInWithEmail() {
+        guard !email.isEmpty else {
+            errorHandling.handle(error: InputError.noEmail)
+            return
+        }
+        guard !password.isEmpty else {
+            errorHandling.handle(error: InputError.noPassword)
+            return
+        }
+        
+        authViewModel.signIn(email: email, password: password) { error in
+            if let error = error {
+                self.errorHandling.handle(error: error)
+                return
+            }
+            
+            // Success
+            self.fsViewModel.setUser(user: authViewModel.auth.currentUser) { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+                print("Successfully updated user in firestore")
+                self.fsViewModel.setPhoneDict(user: authViewModel.auth.currentUser) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
+                    print("Successfully updated phone dictionary")
+                    self.storageViewModel.fetchProfilePicture { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
+                        print("Successfully set profile picture")
+                        self.userViewModel.fetchData { error in
+                            if let error = error {
+                                self.errorHandling.handle(error: error)
+                                return
+                            }
+                            
+                            // Success
+                            print("Successfully set user in UserViewModel")
+                        }
+                    }
+                }
+            }
         }
     }
 }

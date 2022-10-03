@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject private var storageViewModel: StorageViewModel
     
     var body: some View {
         NavigationView {
@@ -18,7 +19,7 @@ struct SettingsView: View {
                         MyInformationView()
                     } label: {
                         HStack(spacing: 20) {
-                            ProfilePicture(uiImage: authViewModel.profilePicture, failImage: Image(systemName: "person.circle"))
+                            ProfilePicture(uiImage: storageViewModel.profilePicture, failImage: Image(systemName: "person.circle"))
                                 .frame(width: 50, height: 50)
                                 .clipShape(Circle())
                             

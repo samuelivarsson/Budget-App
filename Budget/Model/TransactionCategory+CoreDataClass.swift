@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-@objc(TransactionCategory)
-public class TransactionCategory: NSManagedObject {
+@objc(TransactionCategory2)
+public class TransactionCategory2: NSManagedObject {
 
 }

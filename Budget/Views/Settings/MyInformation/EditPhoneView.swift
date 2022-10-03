@@ -63,15 +63,9 @@ struct EditPhoneView: View {
             self.errorHandling.handle(error: InputError.phoneTooShort)
             return
         }
-        guard let user = authViewModel.auth.currentUser else {
-            let info = "Found nil when extracting user in updatePhone in EditPhoneView"
-            print(info)
-            self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-            return
-        }
         
         self.isLoading = true
-        fsViewModel.updatePhone(with: phoneText, user: user) { error in
+        self.fsViewModel.updatePhone(with: phoneText, user: authViewModel.auth.currentUser) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
                 return

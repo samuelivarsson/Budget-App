@@ -11,6 +11,7 @@ struct ContentView: View {
     @AppStorage("welcomeScreenShown") private var welcomeScreenShown: Bool = false
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
     
     var body: some View {
@@ -27,6 +28,16 @@ struct ContentView: View {
             }
         }
         .navigationViewStyle(.stack)
+        .onAppear {
+            self.userViewModel.fetchData { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+            }
+        }
     }
     
     private var content: some View {

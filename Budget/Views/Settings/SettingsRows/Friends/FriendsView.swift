@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct FriendsView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -13,7 +14,8 @@ struct FriendsView: View {
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Friend.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)],
+        predicate: NSPredicate(format: "creator == %@", Auth.auth().currentUser?.uid ?? ""),
         animation: .default)
     private var friends: FetchedResults<Friend>
     

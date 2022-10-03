@@ -14,7 +14,7 @@ struct PersistenceController {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         for i in 0..<10 {
-            let newTransaction = Transaction(context: viewContext)
+            let newTransaction = Transaction2(context: viewContext)
             newTransaction.id = UUID()
             newTransaction.type = .expense
             newTransaction.date = Date()

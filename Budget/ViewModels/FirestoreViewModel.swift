@@ -24,9 +24,6 @@ class FirestoreViewModel: ObservableObject {
                 // Success
                 print("Successfully set phone dictionary at init in FirestoreViewModel")
             }
-        } else {
-            let info = "Found nil when extracting user in init in FirestoreViewModel"
-            print("Error when initializing FirestoreViewModel: \(info)")
         }
     }
     
@@ -74,29 +71,155 @@ class FirestoreViewModel: ObservableObject {
         }
     }
     
-    func setUser(user: User?, completion: @escaping (Error?) -> Void) {
+    func setUser(user: Firebase.User?, completion: @escaping (Error?) -> Void) {
         guard let user = user else {
             completion(AccountError.notSignedIn)
             return
         }
         
-        let userData: [String: Any] = [
-            "name": user.displayName ?? "",
-            "email": user.email ?? "",
-            "uid": user.uid
-        ]
-        db.collection("Users").document(user.uid).setData(userData, merge: true) { error in
+        db.collection("Users").document(user.uid).getDocument { snapshot, error in
             if let error = error {
                 completion(error)
                 return
             }
             
-            // Success
-            completion(nil)
+            let documentReference = self.db.collection("Users").document(user.uid)
+            
+            if snapshot!.exists {
+                let userData: [String: Any] = [
+                    "name": user.displayName ?? "",
+                    "email": user.email ?? "",
+                    "uid": user.uid
+                ]
+                documentReference.setData(userData, merge: true) { error in
+                    if let error = error {
+                        completion(error)
+                        return
+                    }
+                    
+                    // Success
+                    print("uid: \(user.uid)")
+                    completion(nil)
+                    return
+                }
+            } else {
+                let userData: User = User(
+                    name: user.displayName ?? "",
+                    email: user.email ?? "",
+                    phone: "",
+                    friends: [],
+                    transactionCategories: self.defaultTransactionCategories(),
+                    uid: user.uid
+                )
+                do {
+                    try documentReference.setData(from: userData) { error in
+                        if let error = error {
+                            completion(error)
+                            return
+                        }
+                        
+                        // Success
+                        completion(nil)
+                    }
+                } catch {
+                    completion(error)
+                }
+            }
         }
     }
     
-    func setPhoneDict(user: User, completion: @escaping (Error?) -> Void) {
+    private func defaultTransactionCategories() -> [TransactionCategory] {
+        let food = TransactionCategory(
+            name: "food",
+            type: .expense,
+            useSavingsAccount: false,
+            useBuffer: false
+        )
+
+        let fika = TransactionCategory(
+            name: "fika",
+            type: .expense,
+            useSavingsAccount: false,
+            useBuffer: false
+        )
+
+        let transportation = TransactionCategory(
+            name: "transportation",
+            type: .expense,
+            useSavingsAccount: false,
+            useBuffer: false
+        )
+
+        let other = TransactionCategory(
+            name: "other",
+            type: .expense,
+            useSavingsAccount: false,
+            useBuffer: false
+        )
+
+        let savingsAccountPurchase = TransactionCategory(
+            name: "savingsAccountPurchase",
+            type: .expense,
+            useSavingsAccount: true,
+            useBuffer: false
+        )
+        
+        let groceries = TransactionCategory(
+            name: "groceries",
+            type: .expense,
+            useSavingsAccount: false,
+            useBuffer: false
+        )
+
+        let extraSaving = TransactionCategory(
+            name: "extraSaving",
+            type: .saving,
+            useSavingsAccount: false,
+            useBuffer: false
+        )
+        
+        let savingsAccount = TransactionCategory(
+            name: "savingsAccount",
+            type: .income,
+            useSavingsAccount: true,
+            useBuffer: false
+        )
+        
+        let swish = TransactionCategory(
+            name: "swish",
+            type: .income,
+            useSavingsAccount: false,
+            useBuffer: false
+        )
+
+        let buffer = TransactionCategory(
+            name: "buffer",
+            type: .income,
+            useSavingsAccount: false,
+            useBuffer: true
+        )
+
+        return [
+            food,
+            fika,
+            transportation,
+            other,
+            savingsAccountPurchase,
+            groceries,
+            extraSaving,
+            savingsAccount,
+            swish,
+            buffer
+        ]
+    }
+
+    
+    func setPhoneDict(user: Firebase.User?, completion: @escaping (Error?) -> Void) {
+        guard let user = user else {
+            completion(AccountError.notSignedIn)
+            return
+        }
+        
         self.getUserFromUID(uid: user.uid) { userDict, error in
             if let error = error {
                 completion(error)
@@ -105,13 +228,14 @@ class FirestoreViewModel: ObservableObject {
             
             // Success
             guard let userDict = userDict else {
-                let info = "Found nil when extracting user in getPhone in FirestoreViewModel"
+                let info = "Found nil when extracting user in setPhoneDict in FirestoreViewModel"
                 print(info)
                 completion(ApplicationError.unexpectedNil(info))
                 return
             }
+            
             guard let phone = userDict["phone"] as? String else {
-                let info = "Found nil when extracting phone in getPhone in FirestoreViewModel"
+                let info = "Found nil when extracting phone in setPhoneDict in FirestoreViewModel"
                 print(info)
                 completion(ApplicationError.unexpectedNil(info))
                 return
@@ -121,13 +245,15 @@ class FirestoreViewModel: ObservableObject {
         }
     }
     
-    func updatePhone(with phoneText: String, user: User, completion: @escaping (Error?) -> Void) {
-        let userData: [String: Any] = [
-            "name": user.displayName ?? "",
-            "phone": phoneText,
-            "email": user.email ?? "",
-            "uid": user.uid
-        ]
+    func updatePhone(with phoneText: String, user: Firebase.User?, completion: @escaping (Error?) -> Void) {
+        guard let user = user else {
+            let info = "Found nil when extracting user in updatePhone in FirestoreViewModel"
+            print("info")
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+
+        let userData: [String: Any] = ["phone": phoneText]
         db.collection("Users").document(user.uid).setData(userData, merge: true) { error in
             if let error = error {
                 completion(error)

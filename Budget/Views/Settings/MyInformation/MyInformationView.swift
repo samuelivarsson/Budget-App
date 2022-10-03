@@ -13,6 +13,9 @@ struct MyInformationView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
+    @EnvironmentObject private var storageViewModel: StorageViewModel
+    @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     
     @State private var signOutAsGuestPressed: Bool = false
     @State private var isShowPhotoChoices = false
@@ -26,7 +29,7 @@ struct MyInformationView: View {
                 HStack {
                     Spacer()
                     ZStack {
-                        ProfilePicture(uiImage: authViewModel.profilePicture, failImage: Image(systemName: "person.circle"))
+                        ProfilePicture(uiImage: storageViewModel.profilePicture, failImage: Image(systemName: "person.circle"))
                             .frame(width: 150, height: 150)
                             .clipShape(Circle())
                         VStack {
@@ -71,10 +74,14 @@ struct MyInformationView: View {
                         Text("phone")
                         Spacer()
                         if let user = authViewModel.auth.currentUser {
-                            if let phone = self.fsViewModel.phone[user.uid] {
-                                Text(phone).foregroundColor(.secondary)
+                            if user.isAnonymous {
+                                Text("")
                             } else {
-                                Text("Something went wrong: Code 2001")
+                                if let phone = self.fsViewModel.phone[user.uid] {
+                                    Text(phone).foregroundColor(.secondary)
+                                } else {
+                                    Text("Something went wrong: Code 2001")
+                                }
                             }
                         } else {
                             Text("Something went wrong: Code 2002")
@@ -85,16 +92,7 @@ struct MyInformationView: View {
             
             Section {
                 Button(role: .destructive) {
-                    guard let user = authViewModel.auth.currentUser else { return }
-                    if user.isAnonymous {
-                        signOutAsGuestPressed = true
-                        return
-                    }
-                    authViewModel.signOut() { error in
-                        if let error = error {
-                            errorHandling.handle(error: error)
-                        }
-                    }
+                    signOut()
                 } label: {
                     HStack {
                         Spacer()
@@ -146,15 +144,33 @@ struct MyInformationView: View {
         }
     }
     
-//    private func updatePhone() {
-//        guard let phone = self.fsViewModel.userDict["phone"] as? String else {
-//            let info = "Found nil when extracting phone in updatePhone in MyInformationView"
-//            self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-//            return
-//        }
-//
-//        self.phone = phone
-//    }
+    private func signOut() {
+        guard let user = authViewModel.auth.currentUser else { return }
+        if user.isAnonymous {
+            signOutAsGuestPressed = true
+            return
+        }
+        self.authViewModel.signOut() { error in
+            if let error = error {
+                self.errorHandling.handle(error: error)
+                return
+            }
+            
+            // Success
+            self.storageViewModel.profilePicture = nil
+            self.detachListeners()
+        }
+    }
+    
+    private func detachListeners() {
+        let listeners = [self.userViewModel.listener, self.transactionsViewModel.listener]
+        
+        listeners.forEach { listener in
+            if let listener = listener {
+                listener.remove()
+            }
+        }
+    }
 }
 
 struct MyInformationView_Previews: PreviewProvider {

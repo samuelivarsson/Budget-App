@@ -15,6 +15,7 @@ struct ImagePicker: UIViewControllerRepresentable {
     
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var storageViewModel: StorageViewModel
     
     @Binding var selectedImage: UIImage
     
@@ -45,7 +46,7 @@ struct ImagePicker: UIViewControllerRepresentable {
                 return
             }
             if let url = url {
-                self.authViewModel.changeProfilePicture(url: url) { error in
+                self.storageViewModel.changeProfilePicture(url: url) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return

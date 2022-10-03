@@ -56,6 +56,7 @@ extension FirestoreError: LocalizedError {
 
 enum AccountError: Error {
     case notSignedIn
+    case noPhotoURL
 }
 
 extension AccountError: LocalizedError {
@@ -63,6 +64,8 @@ extension AccountError: LocalizedError {
         switch self {
         case .notSignedIn:
             return NSLocalizedString("notSignedIn", comment: "Account Error")
+        case .noPhotoURL:
+            return NSLocalizedString("noPhotoURL", comment: "Account Error")
         }
     }
 }

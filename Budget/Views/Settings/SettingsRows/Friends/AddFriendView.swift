@@ -88,20 +88,38 @@ struct AddFriendView: View {
         }
     }
     
-    private func addFriend(name: String, phone: String, email: String? = nil, uid: String? = nil) {
+    private func addFriend(name: String, phone: String) {
         withAnimation {
             let newFriend = Friend(context: viewContext)
             newFriend.id = UUID()
             newFriend.name = name
             newFriend.phone = phone
-            newFriend.email = email
-            newFriend.uid = uid
-            newFriend.custom = email == nil
+            newFriend.custom = true
+            newFriend.creator = self.authViewModel.auth.currentUser?.uid ?? ""
             
             do {
                 try viewContext.save()
             } catch {
-                errorHandling.handle(error: error)
+                self.errorHandling.handle(error: error)
+            }
+        }
+    }
+    
+    private func addFriend(user: [String: Any]) {
+        withAnimation {
+            let newFriend = Friend(context: viewContext)
+            newFriend.id = UUID()
+            newFriend.name = user["name"] as? String ?? ""
+            newFriend.phone = user["phone"] as? String ?? ""
+            newFriend.email = user["email"] as? String
+            newFriend.uid = user["uid"] as? String
+            newFriend.custom = false
+            newFriend.creator = self.authViewModel.auth.currentUser?.uid ?? ""
+            
+            do {
+                try viewContext.save()
+            } catch {
+                self.errorHandling.handle(error: error)
             }
         }
     }
@@ -110,21 +128,21 @@ struct AddFriendView: View {
     private func addUserAsFriend(email: String) {
         // You can't add yourself as friend
         guard email.lowercased() != authViewModel.auth.currentUser?.email?.lowercased() else {
-            errorHandling.handle(error: InputError.addYourself)
+            self.errorHandling.handle(error: InputError.addYourself)
             return
         }
         // A user can only be one of your friends
-        guard !friends.contains(where: { $0.email == email }) else {
-            errorHandling.handle(error: InputError.userIsAlreadyFriend)
+        guard !friends.contains(where: { $0.email?.lowercased() ?? "" == email.lowercased() }) else {
+            self.errorHandling.handle(error: InputError.userIsAlreadyFriend)
             return
         }
         
-        addUserLoading = true
+        self.addUserLoading = true
         
-        fsViewModel.getUserFromEmail(email: email) { user, error in
-            addUserLoading = false
+        self.fsViewModel.getUserFromEmail(email: email) { user, error in
+            self.addUserLoading = false
             if let error = error {
-                errorHandling.handle(error: error)
+                self.errorHandling.handle(error: error)
                 return
             }
             guard let user = user else {
@@ -135,12 +153,7 @@ struct AddFriendView: View {
             }
             
             // Success
-            addFriend(
-                name: user["name"] as? String ?? "",
-                phone: user["phone"] as? String ?? "",
-                email: user["email"] as? String,
-                uid: user["uid"] as? String
-            )
+            self.addFriend(user: user)
             
             presentationMode.wrappedValue.dismiss()
         }

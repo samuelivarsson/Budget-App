@@ -15,19 +15,23 @@ struct TransactionView: View {
     
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
+    @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var firestoreViewModel: FirestoreViewModel
     
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)],
-                animation: .default)
-    private var transactionCategories: FetchedResults<TransactionCategory>
+//    @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)],
+//                animation: .default)
+//    private var transactionCategories: FetchedResults<TransactionCategory>
     
     @State private var type: TransactionType = .expense
     @State private var category: String = ""
     @State private var descriptionText = ""
     @State private var amountText = ""
     @State private var date = Date()
+    @State private var participants: [String] = []
     
     private var add: Bool
     private var transaction: Transaction?
+    @State private var transactionCategories: [TransactionCategory] = []
     
     init(add: Bool = false) {
         self.add = add
@@ -37,10 +41,10 @@ struct TransactionView: View {
         self.add = false
         self.transaction = transaction
         self._type = State(initialValue: transaction.type)
-        self._category = State(initialValue: transaction.category ?? "")
-        self._descriptionText = State(initialValue: transaction.desc ?? "")
+        self._category = State(initialValue: transaction.category)
+        self._descriptionText = State(initialValue: transaction.desc)
         self._amountText = State(initialValue: String(transaction.amount))
-        self._date = State(initialValue: transaction.date!)
+        self._date = State(initialValue: transaction.date)
     }
     
     var body: some View {
@@ -76,6 +80,19 @@ struct TransactionView: View {
         }
         .navigationTitle(add ? "addTransaction" : "editTransaction")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            if let user = self.userViewModel.user {
+                if let transactionCategories = user.transactionCategories {
+                    self.transactionCategories = transactionCategories
+                } else {
+                    let info = "Found nil when extracting transactionCategories in onAppear in TransactionView"
+                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                }
+            } else {
+                let info = "Found nil when extracting user in onAppear in TransactionView"
+                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+            }
+        }
     }
     
     private var typeView: some View {
@@ -90,8 +107,8 @@ struct TransactionView: View {
     private var categoryView: some View {
         HStack(spacing: 30) {
             Text("category")
-            Spacer().frame(maxWidth: .infinity)
-            let list = transactionCategories.filter {$0.type == type}
+            Spacer()
+            let list = self.transactionCategories.filter {$0.type == type}
             switch type {
             case .expense:
                 CategoryPicker(list: list, category: $category)
@@ -109,9 +126,9 @@ struct TransactionView: View {
         @Binding var category: String
         
         var body: some View {
-            Picker("category", selection: $category) {
+            Picker("", selection: $category) {
                 ForEach(list) { category in
-                    Text(LocalizedStringKey(category.name!)).tag(category.name!)
+                    Text(LocalizedStringKey(category.name)).tag(category.name)
                 }
             }
             .pickerStyle(.menu)
@@ -120,11 +137,8 @@ struct TransactionView: View {
                     print("There are no categories!")
                     return
                 }
-                guard let name = first.name else {
-                    print("Failed to get the name of the category!")
-                    return
-                }
-                category = name
+                
+                category = first.name
             }
         }
     }
@@ -182,36 +196,43 @@ struct TransactionView: View {
     // QTODO - Use custom structs for all firebase stuff
     private func addTransaction() {
         withAnimation {
-            let newTransaction = Transaction(context: viewContext)
-            newTransaction.id = UUID()
-            newTransaction.type = type
-            newTransaction.category = category
-            newTransaction.desc = descriptionText
-            let amount = amountText.replacingOccurrences(of: ",", with: ".")
-            newTransaction.amount = Double(amount) ?? 0
-            newTransaction.date = date
-            
             if let user = authViewModel.auth.currentUser {
-                newTransaction.creator = user.isAnonymous ? "createdByGuest" : user.uid
-            }
-            
-            do {
-                try viewContext.save()
-            } catch {
-                errorHandling.handle(error: error)
+                let creator = user.isAnonymous ? "createdByGuest" : user.uid
+                let newTransaction = Transaction(
+                    amount: Double(amountText.replacingOccurrences(of: ",", with: ".")) ?? 0,
+                    category: category,
+                    date: date,
+                    desc: descriptionText,
+                    creator: creator,
+                    participants: [creator],
+                    type: type
+                )
+                
+                do {
+                    let _ = try self.firestoreViewModel.db.collection("Transactions").addDocument(from: newTransaction) { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
+                    }
+                } catch {
+                    self.errorHandling.handle(error: error)
+                }
             }
         }
     }
     
     private func editTransaction() {
         withAnimation {
-            guard let transaction = transaction else {
+            guard var transaction = transaction else {
                 let info = "Found nil when extracting transaction in editTransaction in TransactionView"
                 print(info)
                 self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                 return
             }
-            
+
             transaction.type = type
             transaction.category = category
             transaction.desc = descriptionText
@@ -219,10 +240,12 @@ struct TransactionView: View {
             transaction.amount = Double(amount) ?? 0
             transaction.date = date
             
+            // TODO - Fix participants
+            
             do {
-                try viewContext.save()
+                try self.firestoreViewModel.db.collection("Transactions").document(transaction.id ?? "").setData(from: transaction)
             } catch {
-                errorHandling.handle(error: error)
+                self.errorHandling.handle(error: error)
             }
         }
     }

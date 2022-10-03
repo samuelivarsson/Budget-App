@@ -12,21 +12,11 @@ import SwiftUI
 
 class AuthViewModel: ObservableObject {
     @Published var state: SignInState = .signedOut
-    @Published var profilePicture: UIImage?
     
     let auth = Auth.auth()
     
     init() {
         self._state = Published(initialValue: self.auth.currentUser != nil ? .signedIn : .signedOut)
-        self.setProfilePicture() { error in
-            if let error = error {
-                print("Error when initializing AuthViewModel: \(error.localizedDescription)")
-                return
-            }
-            
-            // Success
-            print("Successfully set profilePicture at init in AuthViewModel")
-        }
     }
     
     var getState: SignInState {
@@ -48,16 +38,7 @@ class AuthViewModel: ObservableObject {
             // Success
             DispatchQueue.main.async {
                 self.state = .signedIn
-                self.setProfilePicture() { error in
-                    if let error = error {
-                        completion(error)
-                        return
-                    }
-                    
-                    // Success
-                    print("Successfully set profilePicture")
-                    completion(nil)
-                }
+                completion(nil)
             }
         }
     }
@@ -86,24 +67,32 @@ class AuthViewModel: ObservableObject {
             }
         } else {
             guard let clientID = FirebaseApp.app()?.options.clientID else {
-                completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting clientID in signIn in AuthViewModel"))
+                let info = "Found unexpected nil when extracting clientID in signIn in AuthViewModel"
+                print(info)
+                completion(ApplicationError.unexpectedNil(info))
                 return
             }
             
             let configuration = GIDConfiguration(clientID: clientID)
             
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-                completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting windowScene in signIn in AuthViewModel"))
+                let info = "Found unexpected nil when extracting windowScene in signIn in AuthViewModel"
+                print(info)
+                completion(ApplicationError.unexpectedNil(info))
                 return
             }
             guard let rootViewController = windowScene.windows.first?.rootViewController else {
-                completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting rootViewController in signIn in AuthViewModel"))
+                let info = "Found unexpected nil when extracting rootViewController in signIn in AuthViewModel"
+                print(info)
+                completion(ApplicationError.unexpectedNil(info))
                 return
             }
             
             GIDSignIn.sharedInstance.signIn(with: configuration, presenting: rootViewController) { [weak self] user, error in
                 guard let self = self else {
-                    completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting self in signIn in AuthViewModel (2)"))
+                    let info = "Found unexpected nil when extracting self in signIn in AuthViewModel (2)"
+                    print(info)
+                    completion(ApplicationError.unexpectedNil(info))
                     return
                 }
                 if let error = error {
@@ -126,7 +115,9 @@ class AuthViewModel: ObservableObject {
     
     private func authenticateUser(for user: GIDGoogleUser?, completion: @escaping (Error?) -> Void) {
         guard let authentication = user?.authentication, let idToken = authentication.idToken else {
-            completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting authentication in authenticateUser in AuthViewModel"))
+            let info = "Found unexpected nil when extracting authentication in authenticateUser in AuthViewModel"
+            print(info)
+            completion(ApplicationError.unexpectedNil(info))
             return
         }
         
@@ -134,7 +125,9 @@ class AuthViewModel: ObservableObject {
         
         auth.signIn(with: credential) { [weak self] _, error in
             guard let self = self else {
-                completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting self in authenticateUser in AuthViewModel"))
+                let info = "Found unexpected nil when extracting self in authenticateUser in AuthViewModel"
+                print(info)
+                completion(ApplicationError.unexpectedNil(info))
                 return
             }
             if let error = error {
@@ -142,24 +135,18 @@ class AuthViewModel: ObservableObject {
                 return
             }
             
+            // Success
             self.state = .signedIn
-            self.setProfilePicture() { error in
-                if let error = error {
-                    completion(error)
-                    return
-                }
-                
-                // Success
-                print("Successfully set profilePicture")
-                completion(nil)
-            }
+            completion(nil)
         }
     }
     
     func signInAnonymously(completion: @escaping (Error?) -> Void) {
         auth.signInAnonymously { [weak self] authResult, error in
             guard let self = self else {
-                completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting self in signInAnonymously in AuthViewModel"))
+                let info = "Found unexpected nil when extracting self in signInAnonymously in AuthViewModel"
+                print(info)
+                completion(ApplicationError.unexpectedNil(info))
                 return	
             }
             if let error = error {
@@ -178,7 +165,9 @@ class AuthViewModel: ObservableObject {
     func signUp(email: String, password: String, name: String, completion: @escaping (Error?) -> Void) {
         auth.createUser(withEmail: email, password: password) { [weak self] result, error in
             guard let self = self else {
-                completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting self in signUp in AuthViewModel (1)"))
+                let info = "Found unexpected nil when extracting self in signUp in AuthViewModel (1)"
+                print(info)
+                completion(ApplicationError.unexpectedNil(info))
                 return
             }
             if let error = error {
@@ -195,7 +184,9 @@ class AuthViewModel: ObservableObject {
                 changeRequest.displayName = name
                 changeRequest.commitChanges { [weak self] error in
                     guard let self = self else {
-                        completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting self in signUp in AuthViewModel (2)"))
+                        let info = "Found unexpected nil when extracting self in signUp in AuthViewModel (2)"
+                        print(info)
+                        completion(ApplicationError.unexpectedNil(info))
                         return
                     }
                     if let error = error {
@@ -206,15 +197,7 @@ class AuthViewModel: ObservableObject {
                     // Success
                     DispatchQueue.main.async {
                         self.state = .signedIn
-                        self.setProfilePicture() { error in
-                            if let error = error {
-                                completion(error)
-                                return
-                            }
-                            
-                            // Success
-                            completion(nil)
-                        }
+                        completion(nil)
                     }
                 }
             }
@@ -229,61 +212,9 @@ class AuthViewModel: ObservableObject {
             
             state = .signedOut
             completion(nil)
-            self.profilePicture = nil
         } catch {
             print(error.localizedDescription)
             completion(error)
-        }
-    }
-    
-    func changeProfilePicture(url: URL, completion: @escaping (Error?) -> Void) {
-        if let changeRequest = auth.currentUser?.createProfileChangeRequest() {
-            changeRequest.photoURL = url
-            changeRequest.commitChanges { error in
-                if let error = error {
-                    completion(error)
-                    return
-                }
-                completion(nil)
-                self.setProfilePicture() { error in
-                    if let error = error {
-                        completion(error)
-                    }
-                }
-            }
-        }
-    }
-    
-    func setProfilePicture(completion: @escaping (Error?) -> Void) {
-        guard let user = auth.currentUser else {
-            let info = "Found nil when extracting user in setProfilePicture in AuthViewModel"
-            print(info)
-            completion(ApplicationError.unexpectedNil(info))
-            return
-        }
-        guard let url = user.photoURL else {
-            let info = "Found nil when extracting url in setProfilePicture in AuthViewModel, this can be ignored if the user hasn't uploaded a profile picture yet"
-            print(info)
-            completion(ApplicationError.unexpectedNil(info))
-            return
-        }
-        
-        Utility.getImageFromURL(url: url) { [weak self] uiImage, error in
-            guard let self = self else {
-                let info = "Found nil when extracting self in setProfilePicture in AuthViewModel"
-                print(info)
-                completion(ApplicationError.unexpectedNil(info))
-                return
-            }
-            if let error = error {
-                print(error.localizedDescription)
-                completion(error)
-                return
-            }
-            
-            // Success
-            self.profilePicture = uiImage
-            completion(nil)
         }
     }
     
@@ -292,5 +223,4 @@ class AuthViewModel: ObservableObject {
     // QTODO - Delete user
     // QTODO - If user is updated elsewhere, the change isn't seen until re-login
     // https://firebase.google.com/docs/auth/ios/manage-users
-    
 }

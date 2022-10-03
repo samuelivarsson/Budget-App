@@ -34,12 +34,14 @@ class Utility {
             completion(nil, ApplicationError.unexpectedNil(info))
             return
         }
-        guard let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) else {
-            completion(nil, NetworkError.imageFetch)
-            return
+        DispatchQueue.global().async {
+            guard let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) else {
+                completion(nil, NetworkError.imageFetch)
+                return
+            }
+            
+            completion(uiImage, nil)
         }
-        
-        completion(uiImage, nil)
     }
     
     /// Takes a UIImage and uploads it to FirebaseStorage, returns the URL of the uploaded image

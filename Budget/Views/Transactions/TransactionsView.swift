@@ -10,6 +10,9 @@ import SwiftUI
 struct TransactionsView: View {
     @Environment(\.colorScheme) var colorScheme
     
+    @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
+    
     @AppStorage("monthStartsOn") var monthStartsOn = 25
     @State private var groupDates: [(Date, Date)] = []
     @State private var level: Int = 1
@@ -45,6 +48,16 @@ struct TransactionsView: View {
                     } label: {
                         Label("Add Item", systemImage: "plus")
                     }
+                }
+            }
+            .onAppear {
+                self.transactionsViewModel.fetchData { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
                 }
             }
         }

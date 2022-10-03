@@ -14,6 +14,9 @@ struct BudgetApp: App {
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var fsViewModel = FirestoreViewModel()
     @StateObject var friendsViewModel = FriendsViewModel()
+    @StateObject var storageViewModel = StorageViewModel()
+    @StateObject var userViewModel = UserViewModel()
+    @StateObject var transactionsViewModel = TransactionsViewModel()
 
     init() {
         setUpFirebase()
@@ -27,6 +30,9 @@ struct BudgetApp: App {
                 .environmentObject(authViewModel)
                 .environmentObject(fsViewModel)
                 .environmentObject(friendsViewModel)
+                .environmentObject(storageViewModel)
+                .environmentObject(userViewModel)
+                .environmentObject(transactionsViewModel)
         }
     }
 }

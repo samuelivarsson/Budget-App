@@ -22,6 +22,7 @@ extension Friend {
     @NSManaged public var phone: String?
     @NSManaged public var uid: String?
     @NSManaged public var custom: Bool
+    @NSManaged public var creator: String?
 
 }
 

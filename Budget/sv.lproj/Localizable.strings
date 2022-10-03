@@ -103,6 +103,9 @@
 "rounding" = "Avrundning";
 "swish" = "Swish";
 "buffer" = "Buffert";
+"useSavingsAccount" = "Använd sparkonto";
+"useBuffer" = "Använd buffert";
+"noCategoriesFound" = "Du har inga transaktionskategorier!";
 
 // Transaction Types
 "expense" = "Utgift";
@@ -128,3 +131,4 @@
 "userIsAlreadyFriend" = "Den här användaren är redan din vän";
 "phoneTooShort" = "Telefonnumret du angav är för kort";
 "documentNotExist" = "Dokumentet som du försökte hämta finns inte";
+"noPhotoURL" = "Hittade nil vid extrahering av profilbilden, detta kan ignoreras om användaren inte har laddat up en profilbild än";

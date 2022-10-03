@@ -103,6 +103,9 @@
 "rounding" = "Rounding";
 "swish" = "Swish";
 "buffer" = "Buffer";
+"useSavingsAccount" = "Use savings account";
+"useBuffer" = "Use buffer";
+"noCategoriesFound" = "You have no transaction categories!";
 
 // Transaction Types
 "expense" = "Expense";
@@ -128,3 +131,4 @@
 "userIsAlreadyFriend" = "This user is already your friend";
 "phoneTooShort" = "The phone number you entered is too short";
 "documentNotExist" = "The document does not exist";
+"noPhotoURL" = "Found nil when extracting url in setProfilePicture in AuthViewModel, this can be ignored if the user hasn't uploaded a profile picture yet";

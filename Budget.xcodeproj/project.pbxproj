@@ -11,22 +11,25 @@
 		4D02890B280B196B0053D15D /* GoogleSignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D02890A280B196B0053D15D /* GoogleSignInButton.swift */; };
 		4D02890D280B304B0053D15D /* MyInformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D02890C280B304B0053D15D /* MyInformationView.swift */; };
 		4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F05CA280793FA0030AB5B /* TransactionView.swift */; };
+		4D12984B28E4A33900BDCAA8 /* TransactionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */; };
 		4D18ABC32813155E00B39744 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABC22813155E00B39744 /* FirebaseAnalytics */; };
 		4D18ABC52813155E00B39744 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABC42813155E00B39744 /* FirebaseAuth */; };
 		4D18ABC72813155E00B39744 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABC62813155E00B39744 /* FirebaseFirestore */; };
 		4D18ABC92813155E00B39744 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABC82813155E00B39744 /* FirebaseMessaging */; };
 		4D18ABCB2813155E00B39744 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABCA2813155E00B39744 /* FirebaseStorage */; };
 		4D18ABCE2813163B00B39744 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABCD2813163B00B39744 /* GoogleSignIn */; };
+		4D1E5E9C28E9C9FA0054CF2F /* TransactionCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E5E9B28E9C9FA0054CF2F /* TransactionCategoryView.swift */; };
 		4D1E973F28085459003C8802 /* WelcomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E973E28085459003C8802 /* WelcomeScreenView.swift */; };
 		4D1E974228085626003C8802 /* TransactionCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974128085626003C8802 /* TransactionCategoriesView.swift */; };
 		4D1E9744280857B6003C8802 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E9743280857B6003C8802 /* LoginView.swift */; };
-		4D1E974728085FBF003C8802 /* Transaction+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974528085FBF003C8802 /* Transaction+CoreDataClass.swift */; };
-		4D1E974828085FBF003C8802 /* Transaction+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974628085FBF003C8802 /* Transaction+CoreDataProperties.swift */; };
+		4D1E974728085FBF003C8802 /* Transaction2+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974528085FBF003C8802 /* Transaction2+CoreDataClass.swift */; };
+		4D1E974828085FBF003C8802 /* Transaction2+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974628085FBF003C8802 /* Transaction2+CoreDataProperties.swift */; };
 		4D2255322809B65C00C80851 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2255312809B65C00C80851 /* Utility.swift */; };
 		4D225534280A1F4500C80851 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D225533280A1F4500C80851 /* GoogleService-Info.plist */; };
 		4D22553D280A39F600C80851 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D22553C280A39F600C80851 /* SignInView.swift */; };
 		4D3563A3280DC39D007B83B0 /* ErrorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */; };
 		4D3563A5280E102E007B83B0 /* SettingsRowsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3563A4280E102E007B83B0 /* SettingsRowsView.swift */; };
+		4D40510828E8B3950043D844 /* TransactionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D40510728E8B3950043D844 /* TransactionCategory.swift */; };
 		4D423DB0280F680300565641 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D423DAF280F680300565641 /* NotificationsView.swift */; };
 		4D4B3E6C280C4AB100B78860 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4B3E6B280C4AB100B78860 /* SignUpView.swift */; };
 		4D63BAE52808E42C00132E44 /* TransactionCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */; };
@@ -39,6 +42,12 @@
 		4D68FC45280E4A1800B9C5E4 /* ConnectFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D68FC44280E4A1800B9C5E4 /* ConnectFriendView.swift */; };
 		4D6AC16D280CD86C00B8EA41 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6AC16C280CD86C00B8EA41 /* ErrorHandling.swift */; };
 		4D6AC16F280CDF2E00B8EA41 /* TryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6AC16E280CDF2E00B8EA41 /* TryButton.swift */; };
+		4D7ADA50282ACBB80051460B /* StorageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */; };
+		4D7ADA52282BCABB0051460B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA51282BCABB0051460B /* User.swift */; };
+		4D7ADA54282C54420051460B /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA53282C54420051460B /* UserViewModel.swift */; };
+		4D7ADA56282C6D540051460B /* FirebaseFirestoreSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 4D7ADA55282C6D540051460B /* FirebaseFirestoreSwift-Beta */; };
+		4D7ADA5828D78E990051460B /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA5728D78E990051460B /* Transaction.swift */; };
+		4D7ADA5A28E357540051460B /* TransactionsGroupView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA5928E357540051460B /* TransactionsGroupView2.swift */; };
 		4DC4BDB1280B8457009E5859 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */; };
 		4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */; };
 		4DDA445D282354B90045C58E /* TransactionsGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDA445C282354B90045C58E /* TransactionsGroupView.swift */; };
@@ -72,16 +81,19 @@
 		4D02890A280B196B0053D15D /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		4D02890C280B304B0053D15D /* MyInformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyInformationView.swift; sourceTree = "<group>"; };
 		4D0F05CA280793FA0030AB5B /* TransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionView.swift; sourceTree = "<group>"; };
+		4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsViewModel.swift; sourceTree = "<group>"; };
+		4D1E5E9B28E9C9FA0054CF2F /* TransactionCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoryView.swift; sourceTree = "<group>"; };
 		4D1E973E28085459003C8802 /* WelcomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreenView.swift; sourceTree = "<group>"; };
 		4D1E974128085626003C8802 /* TransactionCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoriesView.swift; sourceTree = "<group>"; };
 		4D1E9743280857B6003C8802 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		4D1E974528085FBF003C8802 /* Transaction+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+CoreDataClass.swift"; sourceTree = "<group>"; };
-		4D1E974628085FBF003C8802 /* Transaction+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		4D1E974528085FBF003C8802 /* Transaction2+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction2+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4D1E974628085FBF003C8802 /* Transaction2+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transaction2+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4D2255312809B65C00C80851 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		4D225533280A1F4500C80851 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4D22553C280A39F600C80851 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorEnums.swift; sourceTree = "<group>"; };
 		4D3563A4280E102E007B83B0 /* SettingsRowsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowsView.swift; sourceTree = "<group>"; };
+		4D40510728E8B3950043D844 /* TransactionCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategory.swift; sourceTree = "<group>"; };
 		4D423DAF280F680300565641 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		4D4B3E6B280C4AB100B78860 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionCategory+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -95,6 +107,11 @@
 		4D68FC44280E4A1800B9C5E4 /* ConnectFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectFriendView.swift; sourceTree = "<group>"; };
 		4D6AC16C280CD86C00B8EA41 /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
 		4D6AC16E280CDF2E00B8EA41 /* TryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TryButton.swift; sourceTree = "<group>"; };
+		4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageViewModel.swift; sourceTree = "<group>"; };
+		4D7ADA51282BCABB0051460B /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		4D7ADA53282C54420051460B /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
+		4D7ADA5728D78E990051460B /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		4D7ADA5928E357540051460B /* TransactionsGroupView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsGroupView2.swift; sourceTree = "<group>"; };
 		4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhoneView.swift; sourceTree = "<group>"; };
 		4DDA445C282354B90045C58E /* TransactionsGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsGroupView.swift; sourceTree = "<group>"; };
@@ -131,6 +148,7 @@
 			files = (
 				4D18ABC92813155E00B39744 /* FirebaseMessaging in Frameworks */,
 				4D18ABC32813155E00B39744 /* FirebaseAnalytics in Frameworks */,
+				4D7ADA56282C6D540051460B /* FirebaseFirestoreSwift-Beta in Frameworks */,
 				4D18ABC52813155E00B39744 /* FirebaseAuth in Frameworks */,
 				4D18ABCB2813155E00B39744 /* FirebaseStorage in Frameworks */,
 				4D18ABC72813155E00B39744 /* FirebaseFirestore in Frameworks */,
@@ -300,6 +318,7 @@
 			children = (
 				4DFD3DAB2807407D00D5FFB4 /* TransactionsView.swift */,
 				4DDA445C282354B90045C58E /* TransactionsGroupView.swift */,
+				4D7ADA5928E357540051460B /* TransactionsGroupView2.swift */,
 				4D0F05CA280793FA0030AB5B /* TransactionView.swift */,
 				4DF808B3281ECDBC00E19A8D /* ParticipantsView.swift */,
 			);
@@ -322,6 +341,7 @@
 				4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */,
 				4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */,
 				4D1E974128085626003C8802 /* TransactionCategoriesView.swift */,
+				4D1E5E9B28E9C9FA0054CF2F /* TransactionCategoryView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -331,11 +351,14 @@
 			children = (
 				4DFF75A52810691800C40FF6 /* Friend+CoreDataClass.swift */,
 				4DFF75A62810691800C40FF6 /* Friend+CoreDataProperties.swift */,
-				4D1E974528085FBF003C8802 /* Transaction+CoreDataClass.swift */,
-				4D1E974628085FBF003C8802 /* Transaction+CoreDataProperties.swift */,
+				4D1E974528085FBF003C8802 /* Transaction2+CoreDataClass.swift */,
+				4D1E974628085FBF003C8802 /* Transaction2+CoreDataProperties.swift */,
 				4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */,
 				4D63BAE32808E42C00132E44 /* TransactionCategory+CoreDataClass.swift */,
 				4D63BAE42808E42C00132E44 /* TransactionCategory+CoreDataProperties.swift */,
+				4D7ADA51282BCABB0051460B /* User.swift */,
+				4D7ADA5728D78E990051460B /* Transaction.swift */,
+				4D40510728E8B3950043D844 /* TransactionCategory.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -346,6 +369,9 @@
 				4D028908280B16E30053D15D /* AuthViewModel.swift */,
 				4DFF75A3281066BF00C40FF6 /* FirestoreViewModel.swift */,
 				4DF808B5282178AC00E19A8D /* FriendsViewModel.swift */,
+				4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */,
+				4D7ADA53282C54420051460B /* UserViewModel.swift */,
+				4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -383,6 +409,7 @@
 				4D18ABC82813155E00B39744 /* FirebaseMessaging */,
 				4D18ABCA2813155E00B39744 /* FirebaseStorage */,
 				4D18ABCD2813163B00B39744 /* GoogleSignIn */,
+				4D7ADA55282C6D540051460B /* FirebaseFirestoreSwift-Beta */,
 			);
 			productName = Budget;
 			productReference = 4DFD3D9228073E4A00D5FFB4 /* Budget.app */;
@@ -396,7 +423,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1330;
-				LastUpgradeCheck = 1330;
+				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					4DFD3D9128073E4A00D5FFB4 = {
 						CreatedOnToolsVersion = 13.3.1;
@@ -449,28 +476,33 @@
 			files = (
 				4DDA445D282354B90045C58E /* TransactionsGroupView.swift in Sources */,
 				4DFF75AC28106E3100C40FF6 /* AddFriendView.swift in Sources */,
+				4D7ADA52282BCABB0051460B /* User.swift in Sources */,
 				4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */,
 				4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */,
 				4D65306A281B60BA00641570 /* ImagePicker.swift in Sources */,
 				4D3563A5280E102E007B83B0 /* SettingsRowsView.swift in Sources */,
+				4D12984B28E4A33900BDCAA8 /* TransactionsViewModel.swift in Sources */,
 				4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */,
 				4D6530562817645B00641570 /* GeneralSettingsView.swift in Sources */,
 				4D3563A3280DC39D007B83B0 /* ErrorEnums.swift in Sources */,
+				4D1E5E9C28E9C9FA0054CF2F /* TransactionCategoryView.swift in Sources */,
 				4D423DB0280F680300565641 /* NotificationsView.swift in Sources */,
 				4D63BAE52808E42C00132E44 /* TransactionCategory+CoreDataClass.swift in Sources */,
 				4DFD3DB4280740E000D5FFB4 /* SettingsView.swift in Sources */,
 				4DFD3D9F28073E4B00D5FFB4 /* Persistence.swift in Sources */,
 				4DFD3D9828073E4A00D5FFB4 /* ContentView.swift in Sources */,
-				4D1E974728085FBF003C8802 /* Transaction+CoreDataClass.swift in Sources */,
+				4D1E974728085FBF003C8802 /* Transaction2+CoreDataClass.swift in Sources */,
 				4DF808B4281ECDBC00E19A8D /* ParticipantsView.swift in Sources */,
 				4D02890B280B196B0053D15D /* GoogleSignInButton.swift in Sources */,
 				4DFF75B5281077E500C40FF6 /* FriendDetailView.swift in Sources */,
 				4DFF75B12810739E00C40FF6 /* EditFriendNameView.swift in Sources */,
 				4DFF75B32810772B00C40FF6 /* EditFriendPhoneView.swift in Sources */,
+				4D7ADA5828D78E990051460B /* Transaction.swift in Sources */,
 				4D6AC16D280CD86C00B8EA41 /* ErrorHandling.swift in Sources */,
 				4DFD3DA228073E4B00D5FFB4 /* Budget.xcdatamodeld in Sources */,
 				4D02890D280B304B0053D15D /* MyInformationView.swift in Sources */,
 				4D1E973F28085459003C8802 /* WelcomeScreenView.swift in Sources */,
+				4D7ADA54282C54420051460B /* UserViewModel.swift in Sources */,
 				4DFD3DBE2807414500D5FFB4 /* TransactionType.swift in Sources */,
 				4DF808B6282178AC00E19A8D /* FriendsViewModel.swift in Sources */,
 				4DFD3DAA2807406800D5FFB4 /* HomeView.swift in Sources */,
@@ -483,12 +515,15 @@
 				4D6AC16F280CDF2E00B8EA41 /* TryButton.swift in Sources */,
 				4DFD3D9628073E4A00D5FFB4 /* BudgetApp.swift in Sources */,
 				4DFF75A72810691800C40FF6 /* Friend+CoreDataClass.swift in Sources */,
-				4D1E974828085FBF003C8802 /* Transaction+CoreDataProperties.swift in Sources */,
+				4D1E974828085FBF003C8802 /* Transaction2+CoreDataProperties.swift in Sources */,
 				4D028909280B16E30053D15D /* AuthViewModel.swift in Sources */,
 				4DFF75A82810691800C40FF6 /* Friend+CoreDataProperties.swift in Sources */,
+				4D7ADA5A28E357540051460B /* TransactionsGroupView2.swift in Sources */,
+				4D40510828E8B3950043D844 /* TransactionCategory.swift in Sources */,
 				4DFD3DAC2807407D00D5FFB4 /* TransactionsView.swift in Sources */,
 				4D1E974228085626003C8802 /* TransactionCategoriesView.swift in Sources */,
 				4D22553D280A39F600C80851 /* SignInView.swift in Sources */,
+				4D7ADA50282ACBB80051460B /* StorageViewModel.swift in Sources */,
 				4DFD3DB6280740F300D5FFB4 /* QuickBalanceView.swift in Sources */,
 				4DFF75A4281066BF00C40FF6 /* FirestoreViewModel.swift in Sources */,
 				4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */,
@@ -523,7 +558,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = arm64;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -584,7 +619,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = arm64;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -775,6 +810,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4D18ABCC2813163B00B39744 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		4D7ADA55282C6D540051460B /* FirebaseFirestoreSwift-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D18ABC12813155E00B39744 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseFirestoreSwift-Beta";
 		};
 /* End XCSwiftPackageProductDependency section */
 

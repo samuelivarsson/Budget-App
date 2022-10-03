@@ -15,6 +15,7 @@ struct SignUpView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
+    @EnvironmentObject private var storageViewModel: StorageViewModel
     
     private var width: CGFloat = 300
     private var height: CGFloat = 48
@@ -49,34 +50,7 @@ struct SignUpView: View {
             }
             
             Button {
-                guard !fullName.isEmpty else {
-                    errorHandling.handle(error: InputError.noName)
-                    return
-                }
-                guard !email.isEmpty else {
-                    errorHandling.handle(error: InputError.noEmail)
-                    return
-                }
-                guard !password.isEmpty else {
-                    errorHandling.handle(error: InputError.noPassword)
-                    return
-                }
-                
-                authViewModel.signUp(email: email, password: password, name: fullName) { error in
-                    if let error = error {
-                        errorHandling.handle(error: error)
-                        return
-                    }
-                    
-                    fsViewModel.setUser(user: authViewModel.auth.currentUser) { error in
-                        if let error = error {
-                            self.errorHandling.handle(error: error)
-                            return
-                        }
-                        
-                        // Success
-                    }
-                }
+                signUp()
             } label: {
                 Text("signUp")
                     .font(Font.system(size: 14).bold())
@@ -90,6 +64,63 @@ struct SignUpView: View {
         .frame(width: width)
         .navigationTitle("signUp")
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    private func signUp() {
+        guard !fullName.isEmpty else {
+            errorHandling.handle(error: InputError.noName)
+            return
+        }
+        guard !email.isEmpty else {
+            errorHandling.handle(error: InputError.noEmail)
+            return
+        }
+        guard !password.isEmpty else {
+            errorHandling.handle(error: InputError.noPassword)
+            return
+        }
+        
+        authViewModel.signUp(email: email, password: password, name: fullName) { error in
+            if let error = error {
+                errorHandling.handle(error: error)
+                return
+            }
+
+            // Success
+            fsViewModel.setUser(user: authViewModel.auth.currentUser) { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+                print("Successfully added user document to firestore")
+                self.fsViewModel.updatePhone(with: "", user: authViewModel.auth.currentUser) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                }
+                self.fsViewModel.setPhoneDict(user: authViewModel.auth.currentUser) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
+                    print("Successfully set phone dictionary")
+                    self.storageViewModel.fetchProfilePicture { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
+                        print("Successfully set profile picture")
+                    }
+                }
+            }
+        }
     }
 }
 

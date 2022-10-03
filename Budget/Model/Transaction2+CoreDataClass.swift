@@ -9,8 +9,8 @@
 import Foundation
 import CoreData
 
-@objc(Transaction)
-public class Transaction: NSManagedObject {
+@objc(Transaction2)
+public class Transaction2: NSManagedObject {
     func getImageName() -> String {
         switch type {
         case .expense:

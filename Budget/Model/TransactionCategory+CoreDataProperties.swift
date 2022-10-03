@@ -10,10 +10,10 @@ import Foundation
 import CoreData
 
 
-extension TransactionCategory {
+extension TransactionCategory2 {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<TransactionCategory> {
-        return NSFetchRequest<TransactionCategory>(entityName: "TransactionCategory")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<TransactionCategory2> {
+        return NSFetchRequest<TransactionCategory2>(entityName: "TransactionCategory2")
     }
 
     @NSManaged public var name: String?
@@ -24,6 +24,6 @@ extension TransactionCategory {
 
 }
 
-extension TransactionCategory : Identifiable {
+extension TransactionCategory2 : Identifiable {
 
 }
