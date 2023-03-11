@@ -61,7 +61,7 @@ class StorageViewModel: ObservableObject {
             return
         }
         guard let url = user.photoURL else {
-            print(AccountError.noPhotoURL.localizedDescription)
+            print("Error in fetchProfilePicture in StorageViewModel (1): \n\(AccountError.noPhotoURL.localizedDescription)")
             completion(nil)
             return
         }
@@ -74,7 +74,7 @@ class StorageViewModel: ObservableObject {
                 return
             }
             if let error = error {
-                print(error.localizedDescription)
+                print("Error in fetchProfilePicture in StorageViewModel (2): \n\(error.localizedDescription)")
                 completion(error)
                 return
             }

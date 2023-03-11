@@ -5,12 +5,11 @@
 //  Created by Samuel Ivarsson on 2022-04-14.
 //
 
-import SwiftUI
 import Combine
 import CoreData
+import SwiftUI
 
 struct TransactionView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @EnvironmentObject private var errorHandling: ErrorHandling
@@ -18,87 +17,108 @@ struct TransactionView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var firestoreViewModel: FirestoreViewModel
     
-//    @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)],
-//                animation: .default)
-//    private var transactionCategories: FetchedResults<TransactionCategory>
+    @State private var transaction: Transaction
+    @State private var transactionCategories: [TransactionCategory] = .init()
+    @FocusState var isInputActive: Bool
     
-    @State private var type: TransactionType = .expense
-    @State private var category: String = ""
-    @State private var descriptionText = ""
-    @State private var amountText = ""
-    @State private var date = Date()
-    @State private var participants: [String] = []
+    private var action: TransactionAction
     
-    private var add: Bool
-    private var transaction: Transaction?
-    @State private var transactionCategories: [TransactionCategory] = []
-    
-    init(add: Bool = false) {
-        self.add = add
+    init(action: TransactionAction) {
+        self.action = action
+        let category = TransactionCategory(
+            name: "food",
+            type: TransactionType.expense,
+            useSavingsAccount: false,
+            useBuffer: false
+        )
+        let transaction = Transaction(
+            totalAmount: 0,
+            category: category,
+            date: Date.now,
+            desc: "",
+            creator: "",
+            payer: "",
+            participants: [],
+            type: TransactionType.expense
+        )
+        self._transaction = State(initialValue: transaction)
     }
     
-    init(transaction: Transaction) {
-        self.add = false
-        self.transaction = transaction
-        self._type = State(initialValue: transaction.type)
-        self._category = State(initialValue: transaction.category)
-        self._descriptionText = State(initialValue: transaction.desc)
-        self._amountText = State(initialValue: String(transaction.amount))
-        self._date = State(initialValue: transaction.date)
+    init(transaction: Transaction, myId: String) {
+        self._transaction = State(initialValue: transaction)
+        self.action = transaction.creator == myId ? .edit : .view
     }
     
     var body: some View {
         Form {
             Section {
-                typeView
-                categoryView
-                descriptionView
-                amountView
-                datePicker
+                self.typeView
+                self.categoryView
+                self.descriptionView
+                self.amountView
+                self.datePicker
             }
             
-            Section(add ? "addParticipants" : "editParticipants") {
-                // TODO - Create functionality to add participants
-                ParticipantsView()
+            Section(participantText) {
+                ParticipantsView(totalAmount: self.$transaction.totalAmount, splitEvenly: self.$transaction.splitEvenly, participants: self.$transaction.participants, payer: self.$transaction.payer, isInputActive: self.$isInputActive)
             }
             
             Section {
-                if add {
+                if self.action == .add {
                     Button("add") {
-                        addTransaction()
-                        presentationMode.wrappedValue.dismiss()
+                        self.addTransaction()
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
-                } else {
+                } else if self.action == .edit {
                     Button("apply") {
-                        editTransaction()
-                        presentationMode.wrappedValue.dismiss()
+                        self.editTransaction()
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
         }
-        .navigationTitle(add ? "addTransaction" : "editTransaction")
+        .navigationTitle(self.titleText)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
+        .onLoad {
             if let user = self.userViewModel.user {
-                if let transactionCategories = user.transactionCategories {
-                    self.transactionCategories = transactionCategories
-                } else {
-                    let info = "Found nil when extracting transactionCategories in onAppear in TransactionView"
-                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                if self.transaction.participants.count < 1 {
+                    self.transaction.participants = [Participant(me: true, userId: user.id, userName: user.name)]
                 }
+                if self.transaction.payer == "" {
+                    self.transaction.payer = self.transaction.participants[0].id
+                }
+                self.transactionCategories = user.transactionCategories
             } else {
-                let info = "Found nil when extracting user in onAppear in TransactionView"
+                let info = "Found nil when extracting user in onLoad in TransactionView"
                 self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
             }
         }
     }
     
+    private var titleText: LocalizedStringKey {
+        if self.action == .add {
+            return "addTransaction"
+        } else if action == .edit {
+            return "editTransaction"
+        } else {
+            return "details"
+        }
+    }
+    
+    private var participantText: LocalizedStringKey {
+        if self.action == .add {
+            return "addParticipants"
+        } else if action == .edit {
+            return "editParticipants"
+        } else {
+            return "details"
+        }
+    }
+    
     private var typeView: some View {
-        Picker("type", selection: $type) {
+        Picker("type", selection: self.$transaction.type) {
             ForEach(TransactionType.allCases, id: \.self) { type in
-                Text(type.description())
+                Text(type.description()).tag(type)
             }
         }
         .pickerStyle(.segmented)
@@ -106,39 +126,20 @@ struct TransactionView: View {
     
     private var categoryView: some View {
         HStack(spacing: 30) {
-            Text("category")
-            Spacer()
-            let list = self.transactionCategories.filter {$0.type == type}
-            switch type {
-            case .expense:
-                CategoryPicker(list: list, category: $category)
-            case .income:
-                CategoryPicker(list: list, category: $category)
-            case .saving:
-                CategoryPicker(list: list, category: $category)
-            }
-            
-        }
-    }
-    
-    private struct CategoryPicker: View {
-        var list: [TransactionCategory]
-        @Binding var category: String
-        
-        var body: some View {
-            Picker("", selection: $category) {
+            let list = self.transactionCategories.filter { $0.type == self.transaction.type }
+            Picker("category", selection: self.$transaction.category) {
                 ForEach(list) { category in
-                    Text(LocalizedStringKey(category.name)).tag(category.name)
+                    Text(LocalizedStringKey(category.name)).tag(category)
                 }
             }
             .pickerStyle(.menu)
-            .onAppear {
+            .onLoad {
                 guard let first = list.first else {
                     print("There are no categories!")
                     return
                 }
-                
-                category = first.name
+
+                self.transaction.category = first
             }
         }
     }
@@ -146,104 +147,113 @@ struct TransactionView: View {
     private var descriptionView: some View {
         HStack(spacing: 30) {
             Text("description")
-            TextField("description", text: $descriptionText, prompt: Text("shortDescription"))
+            TextField("description", text: self.$transaction.desc, prompt: Text("shortDescription"))
                 .multilineTextAlignment(.trailing)
+                .focused(self.$isInputActive)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+
+                        Button("Done") {
+                            self.isInputActive = false
+                        }
+                    }
+                }
         }
     }
     
     private var amountView: some View {
-        HStack(spacing: 30) {
+        HStack(spacing: 5) {
             Text("amount")
-            TextField("0", text: $amountText)
+            TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$transaction.totalAmount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
-                .onReceive(Just(amountText)) { newValue in
-                    // Only allow numbers and decimal separators
-                    let filtered = newValue.filter { "0123456789,.".contains($0) }
-                    if filtered != newValue {
-                        self.amountText = filtered
-                        return
-                    }
-                    
-                    // Only allow one decimal separator
-                    let decimalSeparatorCount = newValue.filter { ",.".contains($0) }.count
-                    if decimalSeparatorCount > 1 {
-                        self.amountText = String(newValue.dropLast())
-                        return
-                    }
-                    
-                    // Only allow 2 decimals
-                    let replaced = newValue.replacingOccurrences(of: ",", with: ".")
-                    if let separatorIndex = replaced.firstIndex(of: ".") {
-                        if replaced[separatorIndex...].count > 3 {
-                            self.amountText = String(newValue.dropLast())
+                .focused(self.$isInputActive)
+                .onChange(of: self.transaction.totalAmount) { newValue in
+                    self.transaction.totalAmount = Utility.doubleToTwoDecimals(value: newValue)
+                    // If splitEvenly is true, divide the total amount evenly among the participants
+                    if self.transaction.splitEvenly {
+                        let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: newValue / Double(self.transaction.participants.count))
+                        var val = newValue
+                        for i in (0 ..< self.transaction.participants.count).reversed() {
+                            self.transaction.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
+                            val -= amountPerParticipant
                         }
                     }
                 }
+            Text(Utility.currencyFormatter.currencySymbol)
         }
     }
     
     private var datePicker: some View {
-        DatePicker("date", selection: $date)
-            .onAppear {
-                if add {
-                    date = Date()
+        DatePicker("date", selection: self.$transaction.date)
+            .onLoad {
+                if self.action == .add {
+                    self.transaction.date = Date()
                 }
             }
     }
     
-    // TODO - Add to firebase
-    // QTODO - Use custom structs for all firebase stuff
+    private func addParticipantIds() {
+        transaction.participantIds = .init()
+        transaction.participants.forEach { participant in
+            self.transaction.participantIds.append(participant.userId)
+        }
+    }
+    
     private func addTransaction() {
         withAnimation {
-            if let user = authViewModel.auth.currentUser {
-                let creator = user.isAnonymous ? "createdByGuest" : user.uid
-                let newTransaction = Transaction(
-                    amount: Double(amountText.replacingOccurrences(of: ",", with: ".")) ?? 0,
-                    category: category,
-                    date: date,
-                    desc: descriptionText,
-                    creator: creator,
-                    participants: [creator],
-                    type: type
-                )
-                
-                do {
-                    let _ = try self.firestoreViewModel.db.collection("Transactions").addDocument(from: newTransaction) { error in
-                        if let error = error {
-                            self.errorHandling.handle(error: error)
-                            return
-                        }
-                        
-                        // Success
+            guard let user = authViewModel.auth.currentUser else {
+                let info = "Found nil when extracting user in addTransaction in TransactionView"
+                print(info)
+                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                return
+            }
+            let totalAmount = Utility.doubleToTwoDecimals(value: self.transaction.participants.reduce(0) { result, participant in
+                result + participant.amount
+            })
+            guard self.transaction.totalAmount == totalAmount else {
+                self.errorHandling.handle(error: InputError.totalAmountMisMatch)
+                print(self.transaction.totalAmount)
+                print(totalAmount)
+                return
+            }
+            
+            let creator = user.isAnonymous ? "createdByGuest" : user.uid
+            self.transaction.creator = creator
+            self.addParticipantIds()
+            
+            do {
+                let _ = try self.firestoreViewModel.db.collection("Transactions").addDocument(from: self.transaction) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
                     }
-                } catch {
-                    self.errorHandling.handle(error: error)
+                        
+                    // Success
+                    self.presentationMode.wrappedValue.dismiss()
                 }
+            } catch {
+                self.errorHandling.handle(error: error)
             }
         }
     }
     
     private func editTransaction() {
         withAnimation {
-            guard var transaction = transaction else {
-                let info = "Found nil when extracting transaction in editTransaction in TransactionView"
-                print(info)
-                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+            let totalAmount = self.transaction.participants.reduce(0) { result, participant in
+                result + participant.amount
+            }
+            guard self.transaction.totalAmount == totalAmount else {
+                self.errorHandling.handle(error: InputError.totalAmountMisMatch)
                 return
             }
-
-            transaction.type = type
-            transaction.category = category
-            transaction.desc = descriptionText
-            let amount = amountText.replacingOccurrences(of: ",", with: ".")
-            transaction.amount = Double(amount) ?? 0
-            transaction.date = date
             
-            // TODO - Fix participants
+            self.addParticipantIds()
             
             do {
-                try self.firestoreViewModel.db.collection("Transactions").document(transaction.id ?? "").setData(from: transaction)
+                try self.firestoreViewModel.db.collection("Transactions").document(self.transaction.documentId ?? "").setData(from: self.transaction)
+                self.presentationMode.wrappedValue.dismiss()
             } catch {
                 self.errorHandling.handle(error: error)
             }
@@ -251,9 +261,9 @@ struct TransactionView: View {
     }
 }
 
-struct TransactionView_Previews: PreviewProvider {
-    static var previews: some View {
-        TransactionView()
-            .environmentObject(AuthViewModel())
-    }
-}
+// struct TransactionView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        TransactionView()
+//            .environmentObject(AuthViewModel())
+//    }
+// }

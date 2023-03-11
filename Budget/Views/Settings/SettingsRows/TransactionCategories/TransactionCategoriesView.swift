@@ -14,26 +14,22 @@ struct TransactionCategoriesView: View {
     
     var body: some View {
         Form {
-            if var user = self.userViewModel.user {
-                if var transactionCategories = user.transactionCategories {
-                    ForEach(TransactionType.allCases, id: \.self) { type in
-                        Section {
-                            var sortedTG = transactionCategories.filter({$0.type == type}).sorted(by: {$0.name.lowercased() < $1.name.lowercased()})
-                            ForEach(sortedTG) { transactionCategory in
-                                NavigationLink {
-                                    TransactionCategoryView(transactionCategory: transactionCategory)
-                                } label: {
-                                    Text(LocalizedStringKey(transactionCategory.name))
-                                }
-                            }.onDelete(perform: { indexSet in
-                                self.deleteTransactionCategory(offsets: indexSet, transactionCategories: sortedTG)
-                            })
-                        } header: {
-                            Text(type.description())
-                        }
+            if let user = self.userViewModel.user {
+                ForEach(TransactionType.allCases, id: \.self) { type in
+                    Section {
+                        let filteredTG = user.transactionCategories.filter({ $0.type == type })
+                        ForEach(filteredTG) { transactionCategory in
+                            NavigationLink {
+                                TransactionCategoryView(transactionCategory: transactionCategory)
+                            } label: {
+                                Text(LocalizedStringKey(transactionCategory.name))
+                            }
+                        }.onDelete(perform: { indexSet in
+                            self.deleteTransactionCategory(offsets: indexSet, transactionCategories: filteredTG)
+                        })
+                    } header: {
+                        Text(type.description())
                     }
-                } else {
-                    Text("noCategoriesFound")
                 }
             } else {
                 Text("No user found!")

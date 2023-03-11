@@ -5,8 +5,8 @@
 //  Created by Samuel Ivarsson on 2022-09-28.
 //
 
-import Foundation
 import Firebase
+import Foundation
 
 class TransactionsViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
@@ -17,12 +17,12 @@ class TransactionsViewModel: ObservableObject {
     
     func fetchData(completion: @escaping (Error?) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {
-            let info = "Found nil when extracting uid in fetchData in UserViewModel"
+            let info = "Found nil when extracting uid in fetchData in TransactionsViewModel"
             print(info)
             completion(ApplicationError.unexpectedNil(info))
             return
         }
-        self.listener = db.collection("Transactions").whereField("participants", arrayContains: uid)
+        listener = db.collection("Transactions").whereField("participantIds", arrayContains: uid).order(by: "date", descending: true)
             .addSnapshotListener { querySnapshot, error in
                 guard let documents = querySnapshot?.documents else {
                     print("Error fetching documents: \(error!)")
@@ -31,7 +31,6 @@ class TransactionsViewModel: ObservableObject {
                 }
                 
                 do {
-                    
                     let data: [Transaction] = try documents.map { snapshot in
                         try snapshot.data(as: Transaction.self)
                     }
@@ -43,6 +42,15 @@ class TransactionsViewModel: ObservableObject {
                     print("Something went wrong when fetching transactions documents: \(error)")
                     completion(error)
                 }
+            }
+    }
+    
+    func getSpent(user: User, transactionCategoryAmount: TransactionCategoryAmount) -> Double {
+        var total: Double = 0
+        self.transactions.forEach { transaction in
+            total += transaction.getShare(user: user)
         }
+        
+        return total
     }
 }

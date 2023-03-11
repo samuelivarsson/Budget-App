@@ -8,17 +8,18 @@
 import SwiftUI
 
 struct EditFriendPhoneView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
     @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var userViewModel: UserViewModel
     
+    @State private var friend: CustomFriend = CustomFriend(name: "", phone: "")
     @State private var phone: String = ""
+    @State private var applyLoading = false
     
-    private var friend: Friend
-    
-    init(friend: Friend) {
-        self.friend = friend
-        self._phone = State(initialValue: friend.phone ?? "")
+    init(customFriend: CustomFriend) {
+        self.friend = customFriend
+        self._phone = State(initialValue: customFriend.name)
     }
     
     var body: some View {
@@ -29,9 +30,14 @@ struct EditFriendPhoneView: View {
             
             HStack {
                 Spacer()
-                Button("apply") {
-                    editFriend()
-                    presentationMode.wrappedValue.dismiss()
+                Button {
+                    self.editFriend()
+                } label: {
+                    if self.applyLoading {
+                        ProgressView()
+                    } else {
+                        Text("apply")
+                    }
                 }
                 Spacer()
             }
@@ -41,19 +47,25 @@ struct EditFriendPhoneView: View {
     }
     
     private func editFriend() {
-        friend.phone = phone
+        self.applyLoading = true
+        self.friend.phone = phone
         
-        do {
-            try viewContext.save()
-        } catch {
-            errorHandling.handle(error: error)
+        self.userViewModel.editCustomFriend(friend: self.friend) { error in
+            self.applyLoading = false
+            if let error = error {
+                self.errorHandling.handle(error: error)
+                return
+            }
+            
+            // Success
+            self.presentationMode.wrappedValue.dismiss()
         }
     }
 }
 
 struct EditFriendPhoneView_Previews: PreviewProvider {
     static var previews: some View {
-        EditFriendPhoneView(friend: Friend())
+        EditFriendPhoneView(customFriend: CustomFriend(name: "", phone: ""))
             .environmentObject(ErrorHandling())
     }
 }

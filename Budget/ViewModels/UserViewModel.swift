@@ -5,12 +5,15 @@
 //  Created by Samuel Ivarsson on 2022-05-11.
 //
 
-import Foundation
 import Firebase
+import FirebaseFirestore
+import Foundation
 
 class UserViewModel: ObservableObject {
     @Published var user: User?
-    @Published var friends: [User] = [User]()
+    @Published var friends: [User] = .init()
+    @Published var favouriteIds: [String] = .init()
+    @Published var friendRequests: [String] = .init()
     
     private var db = Firestore.firestore()
     
@@ -23,57 +26,130 @@ class UserViewModel: ObservableObject {
             completion(ApplicationError.unexpectedNil(info))
             return
         }
-        self.listener = db.collection("Users").document(uid).addSnapshotListener { documentSnapshot, error in
-            guard let document = documentSnapshot else {
-                // If querySnapshot is nil then error is not nil
-                print("Error fetching document: \(error!)")
-                completion(error!)
+        self.db.collection("Users").document(uid).getDocument { snapshot, error in
+            if let error = error {
+                completion(error)
                 return
             }
+            guard let snapshot = snapshot, snapshot.exists else {
+                completion(FirestoreError.documentNotExist)
+                return
+            }
+            self.listener = self.db.collection("Users").document(uid).addSnapshotListener { documentSnapshot, error in
+                guard let document = documentSnapshot else {
+                    // If querySnapshot is nil then error is not nil
+                    print("Error fetching document: \(error!)")
+                    completion(error!)
+                    return
+                }
 
-            // Succes
-            do {
-                let data = try document.data(as: User.self)
-                
-                // Success
-                print("Successfully set user in UserViewModel")
-                self.user = data
-                
-                // TODO - Move this to a separate function and make the friends array to a dict
-                print("data friends: \(data.friends)")
-                if data.friends.count > 0 {
-                    for friendReference in data.friends {
-                        friendReference.getDocument { friendSnapshot, error in
-                            guard let friendSnapshot = friendSnapshot else {
-                                completion(error!)
+                // Succes
+                do {
+                    let data = try document.data(as: User.self)
+                    
+                    // Success
+                    print("Successfully set user in UserViewModel")
+                    self.user = data
+                    self.sortTransactionCategories { error in
+                        if let error = error {
+                            completion(error)
+                            return
+                        }
+                        
+                        // Success
+                        print("Successfully sorted transaction categories in UserViewModel")
+                        self.setFriends(from: data) { error in
+                            if let error = error {
+                                completion(error)
                                 return
                             }
                             
-                            do {
-                                let friend = try friendSnapshot.data(as: User.self)
-                                print(friend)
-                                self.friends.append(friend)
-                                print("self friends2: \(self.friends)")
-                                completion(nil)
-                            } catch {
-                                print("Something went wrong when fetching friend document: \(error)")
-                                completion(error)
-                            }
+                            // Success
+                            print("Successfully set friends in UserViewModel")
+                            completion(nil)
                         }
                     }
-                } else {
-                    completion(nil)
+                } catch {
+                    print("No document with id \(uid) found, error message: \(error)")
+                    completion(error)
                 }
-            } catch {
-                print("No document with id \(uid) found, error message: \(error)")
-                completion(error)
             }
         }
     }
     
-    func setUserData(user: User, completion: @escaping (Error?) -> (Void)) {
+    func setFriends(from data: User, completion: @escaping (Error?) -> Void) {
+        if data.friends.count < 1 {
+            self.friends = [User]()
+            self.friendRequests = [String]()
+            completion(nil)
+            return
+        }
+        
+        var friendsIds = [String]()
+        self.friendRequests = [String]()
+        data.friends.forEach { friend in
+            switch friend.status {
+            case .requested:
+                self.friendRequests.append(friend.documentReference.documentID)
+            case .friends:
+                friendsIds.append(friend.documentReference.documentID)
+                if friend.favourite { self.favouriteIds.append(friend.id) }
+            }
+        }
+        
+        if friendsIds.count < 1 {
+            self.friends = [User]()
+            completion(nil)
+            return
+        }
+        
+        self.db.collection("Users").whereField(FieldPath.documentID(), in: friendsIds).getDocuments { querySnapshot, error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            guard let documents = querySnapshot?.documents else {
+                completion(FirestoreError.documentNotExist)
+                return
+            }
+                    
+            // Success
+            var exit = false
+            let newFriends = documents.compactMap { queryDocumentSnapshot in
+                do {
+                    return try queryDocumentSnapshot.data(as: User.self)
+                } catch {
+                    print("Something went wrong when fetching friend document: \(error)")
+                    print("Friend: ")
+                    print("\n\(queryDocumentSnapshot.data())")
+                    completion(error)
+                    exit = true
+                    return nil
+                }
+            }
+            if exit {
+                return
+            }
+            self.friends = newFriends.sorted(by: { $0.name.lowercased() < $1.name.lowercased() })
+            completion(nil)
+        }
+    }
+    
+    func sortTransactionCategories(completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in sortTransactionCategories in UserViewModel"
+            print(info)
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        user.transactionCategories = user.transactionCategories.sorted(by: { $0.name.lowercased() < $1.name.lowercased() })
+        self.user = user
+        completion(nil)
+    }
+    
+    func setUserData(user: User, completion: @escaping (Error?) -> Void) {
         do {
-            try self.db.collection("Users").document(user.uid).setData(from: user, merge: true) { error in
+            try self.db.collection("Users").document(user.id).setData(from: user, merge: true) { error in
                 if let error = error {
                     completion(error)
                     return
@@ -87,39 +163,358 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    func addTransactionCategory(newTG: TransactionCategory, completion: @escaping (Error?) -> (Void)) {
+    func getUser(from uid: String, completion: @escaping (User?, Error?) -> Void) {
+        self.db.collection("Users").document(uid).getDocument { snapshot, error in
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+            
+            // Success
+            do {
+                let user = try snapshot?.data(as: User.self)
+                completion(user, nil)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+    
+    func addTransactionCategory(newTG: TransactionCategory, completion: @escaping (Error?) -> Void) {
         guard var user = self.user else {
             let info = "Found nil when extracting user in addTransactionCategory in UserViewModel"
             completion(ApplicationError.unexpectedNil(info))
             return
         }
         
-        user.transactionCategories = (user.transactionCategories ?? []) + [newTG]
+        user.transactionCategories = user.transactionCategories + [newTG]
         
-        setUserData(user: user, completion: completion)
+        self.setUserData(user: user, completion: completion)
     }
     
-    func editTransactionCategory(oldTG: TransactionCategory, newTG: TransactionCategory, completion: @escaping (Error?) -> (Void)) {
+    func editTransactionCategory(newTG: TransactionCategory, completion: @escaping (Error?) -> Void) {
         guard var user = self.user else {
             let info = "Found nil when extracting user in editTransactionCategory in UserViewModel"
             completion(ApplicationError.unexpectedNil(info))
             return
         }
         
-        user.transactionCategories = (user.transactionCategories?.filter({$0.id != oldTG.id}) ?? []) + [newTG]
+        user.transactionCategories = user.transactionCategories.filter { $0.id != newTG.id } + [newTG]
         
-        setUserData(user: user, completion: completion)
+        self.setUserData(user: user, completion: completion)
     }
     
-    func deleteTransactionCategory(transactionCategory: TransactionCategory, completion: @escaping (Error?) -> (Void)) {
+    func deleteTransactionCategory(transactionCategory: TransactionCategory, completion: @escaping (Error?) -> Void) {
         guard var user = self.user else {
             let info = "Found nil when extracting user in deleteTransactionCategory in UserViewModel"
             completion(ApplicationError.unexpectedNil(info))
             return
         }
         
-        user.transactionCategories = user.transactionCategories?.filter({$0.id != transactionCategory.id}) ?? []
+        user.transactionCategories = user.transactionCategories.filter { $0.id != transactionCategory.id }
         
-        setUserData(user: user, completion: completion)
+        self.setUserData(user: user, completion: completion)
+    }
+    
+    func getTransactionCategory(id: String) -> TransactionCategory {
+        let errorCategory = TransactionCategory(name: "error", type: .expense, useSavingsAccount: false, useBuffer: false)
+        guard let user = self.user else {
+            let info = "Found nil when extracting user in getTransactionCategory in UserViewModel"
+            print(info)
+            return errorCategory
+        }
+        
+        let category = user.transactionCategories.first { $0.id == id }
+        return category ?? errorCategory
+    }
+    
+    func addTransactionCategoryAmount(newTGA: TransactionCategoryAmount, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in addTransactionCategory in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        user.budget.transactionCategoryAmounts = user.budget.transactionCategoryAmounts + [newTGA]
+        
+        self.setUserData(user: user, completion: completion)
+    }
+    
+    func editTransactionCategoryAmount(newTGA: TransactionCategoryAmount, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in editTransactionCategory in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        user.budget.transactionCategoryAmounts = user.budget.transactionCategoryAmounts.filter { $0.id != newTGA.id } + [newTGA]
+        
+        self.setUserData(user: user, completion: completion)
+    }
+    
+    func deleteTransactionCategoryAmount(transactionCategoryAmount: TransactionCategoryAmount, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in deleteTransactionCategory in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        user.budget.transactionCategoryAmounts = user.budget.transactionCategoryAmounts.filter { $0.id != transactionCategoryAmount.id }
+        
+        self.setUserData(user: user, completion: completion)
+    }
+    
+    func addFriendRequest(friend: User, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in addFriend in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        // Create Friend object of the friend with .requested status
+        let newFriend = Friend(documentReference: self.db.collection("Users").document(friend.id))
+        // Add the friend to our friend list
+        user.friends = user.friends + [newFriend]
+        
+        // Update our user data
+        self.setUserData(user: user) { error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // Success
+            completion(nil)
+        }
+    }
+    
+    func acceptFriendRequest(notification: Notification, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in deleteFriend in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        let friendUid = notification.from
+        // Make the new friend to a Friend object
+        let newFriend = Friend(
+            documentReference: self.db.collection("Users").document(friendUid),
+            status: .friends
+        )
+        // Add the friend to our friend list
+        user.friends = user.friends + [newFriend]
+        
+        // Update our user data
+        self.setUserData(user: user) { error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // Success
+            // Create a Friend object of ourselves
+            let myDocRef = self.db.collection("Users").document(user.id)
+            let meFriend = Friend(documentReference: myDocRef, status: .friends)
+            
+            // Get User object of the friend
+            self.getUser(from: friendUid) { friend, error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                guard var friend = friend else {
+                    let info = "Found nil when extracting user in deleteFriend in UserViewModel"
+                    completion(ApplicationError.unexpectedNil(info))
+                    return
+                }
+                
+                // Success
+                // Add ourselves to their friend list
+                friend.friends = friend.friends.filter { $0.documentReference.documentID != user.id } + [meFriend]
+                
+                // Update their user data
+                self.setUserData(user: friend) { error in
+                    if let error = error {
+                        completion(error)
+                        return
+                    }
+                    
+                    // Success
+                    completion(nil)
+                }
+            }
+        }
+    }
+    
+    func denyFriendRequest(notification: Notification, completion: @escaping (Error?) -> Void) {
+        guard let user = self.user else {
+            let info = "Found nil when extracting user in deleteFriend in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        let friendUid = notification.from
+        
+        // Get User object of the friend
+        self.getUser(from: friendUid) { friend, error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            guard var friend = friend else {
+                let info = "Found nil when extracting user in deleteFriend in UserViewModel"
+                completion(ApplicationError.unexpectedNil(info))
+                return
+            }
+            
+            // Success
+            // Remove ourselves from their friend list
+            friend.friends = friend.friends.filter { $0.documentReference.documentID != user.id }
+            
+            // Update their user data
+            self.setUserData(user: friend) { error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                
+                // Success
+                completion(nil)
+            }
+        }
+    }
+    
+    func cancelFriendRequest(friend: User, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in deleteFriend in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        // Remove friend from friend list
+        user.friends = user.friends.filter { $0.documentReference.documentID != friend.id }
+        // Update our user data
+        self.setUserData(user: user, completion: completion)
+    }
+    
+    func deleteFriend(friend: User, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in deleteFriend in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        // Remove friend from friend list
+        user.friends = user.friends.filter { $0.documentReference.documentID != friend.id }
+        // Update our user data
+        self.setUserData(user: user, completion: completion)
+    }
+    
+    func addCustomFriend(friend: CustomFriend, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in editCustomFriend in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        // Add friend to friend list
+        user.customFriends = user.customFriends + [friend]
+        // Update our user data
+        self.setUserData(user: user, completion: completion)
+    }
+    
+    func editCustomFriend(friend: CustomFriend, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in editCustomFriend in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        // Remove and then add new version of the friend to friend list
+        user.customFriends = user.customFriends.filter { $0.id != friend.id } + [friend]
+        // Update our user data
+        self.setUserData(user: user, completion: completion)
+    }
+    
+    func deleteCustomFriend(customFriend: CustomFriend, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in deleteFriend in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        // Remove friend from friend list
+        user.customFriends = user.customFriends.filter { $0.id != customFriend.id }
+        // Update our user data
+        self.setUserData(user: user, completion: completion)
+    }
+    
+    func isUserFriend(uid: String) -> Bool {
+        return self.friends.contains { $0.id == uid }
+    }
+    
+    func isUserRequested(uid: String) -> Bool {
+        return self.friendRequests.contains(uid)
+    }
+    
+    func isFriendFavourite(user: User) -> Bool {
+        return self.favouriteIds.contains(user.id)
+    }
+    
+    func getFavouriteFriends() -> [User] {
+        return self.friends.filter(self.isFriendFavourite)
+    }
+    
+    func getFriendsSorted() -> [User] {
+        return self.friends.sorted(by: { friend1, friend2 -> Bool in
+            if self.isFriendFavourite(user: friend1) != self.isFriendFavourite(user: friend2) {
+                return self.isFriendFavourite(user: friend1)
+            } else {
+                return friend1.name < friend2.name
+            }
+        })
+    }
+    
+    func getCustomFriends() -> [CustomFriend] {
+        return self.user?.customFriends ?? []
+    }
+    
+    func getCustomFriendsSorted() -> [CustomFriend] {
+        return self.getCustomFriends().sorted(by: { friend1, friend2 -> Bool in
+            friend1.name < friend2.name
+        })
+    }
+    
+    func getAllFriendsSorted(exceptFor: [Participant] = []) -> [any Named] {
+        let sortedFriends: [any Named] = self.getFriendsSorted() + self.getCustomFriendsSorted()
+        if exceptFor.isEmpty {
+            return sortedFriends
+        }
+        return sortedFriends.filter { friend in
+            !exceptFor.contains {$0.userId == friend.id}
+        }
+    }
+    
+    func getUser(errorHandling: ErrorHandling) -> User {
+        guard let user = self.user else {
+            let info = "Found nil when extracting user in getUser in UserViewModel"
+            errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+            return User.getDefault()
+        }
+        
+        return user
+    }
+    
+    func setIncome(income: Double, completion: @escaping (Error?) -> Void) {
+        guard var user = self.user else {
+            let info = "Found nil when extracting user in setIncome in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        // Update the income
+        user.budget.income = income
+        // Update our user data
+        self.setUserData(user: user, completion: completion)
+        
     }
 }

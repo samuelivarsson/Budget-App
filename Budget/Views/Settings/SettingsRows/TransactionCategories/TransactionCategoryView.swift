@@ -20,6 +20,7 @@ struct TransactionCategoryView: View {
     @State private var type: TransactionType = .expense
     @State private var useSavingsAccount: Bool = false
     @State private var useBuffer: Bool = false
+    @FocusState var isInputActive: Bool
     
     private var add: Bool = false
     private var transactionCategory: TransactionCategory?
@@ -40,14 +41,15 @@ struct TransactionCategoryView: View {
         Form {
             Section {
                 HStack {
-                    Text("Name")
+                    Text("name")
                     Spacer()
-                    TextField("", text: $name).multilineTextAlignment(.trailing)
+                    TextField("", text: self.$name).multilineTextAlignment(.trailing)
+                        .focused(self.$isInputActive)
                 }
                 HStack {
-                    Text("Type")
+                    Text("type")
                     Spacer()
-                    Picker("", selection: $type) {
+                    Picker("", selection: self.$type) {
                         ForEach(TransactionType.allCases, id: \.self) { type in
                             Text(type.description())
                         }
@@ -56,26 +58,24 @@ struct TransactionCategoryView: View {
                 HStack {
                     Text("useSavingsAccount")
                     Spacer()
-                    Toggle("", isOn: $useSavingsAccount)
+                    Toggle("", isOn: self.$useSavingsAccount)
                 }
                 HStack {
                     Text("useBuffer")
                     Spacer()
-                    Toggle("", isOn: $useBuffer)
+                    Toggle("", isOn: self.$useBuffer)
                 }
             }
             
             Section {
-                if add {
+                if self.add {
                     Button("add") {
-                        addTransactionCategory()
-                        presentationMode.wrappedValue.dismiss()
+                        self.addTransactionCategory()
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     Button("apply") {
                         editTransactionCategory()
-                        presentationMode.wrappedValue.dismiss()
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
@@ -98,7 +98,7 @@ struct TransactionCategoryView: View {
             }
             
             // Success
-            print("hej")
+            self.presentationMode.wrappedValue.dismiss()
         }
     }
     
@@ -117,13 +117,14 @@ struct TransactionCategoryView: View {
             useBuffer: self.useBuffer
         )
         
-        self.userViewModel.editTransactionCategory(oldTG: oldTG, newTG: newTG) { error in
+        self.userViewModel.editTransactionCategory(newTG: newTG) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
                 return
             }
             
             // Success
+            self.presentationMode.wrappedValue.dismiss()
         }
     }
 }

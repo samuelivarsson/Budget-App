@@ -33,12 +33,17 @@ struct SettingsRowsView: View {
             view: AnyView(QuickBalanceView())
         ),
         Setting(
+            name: "budget",
+            imgName: "creditcard",
+            view: AnyView(BudgetView())
+        ),
+        Setting(
             name: "transactionCategories",
             imgName: "arrow.left.arrow.right",
             view: AnyView(TransactionCategoriesView())
         )
     ]
-    
+
     var body: some View {
         ForEach(settings) { setting in
             NavigationLink {

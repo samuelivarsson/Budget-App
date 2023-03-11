@@ -40,15 +40,15 @@ struct EditPhoneView: View {
         }
         .navigationTitle("editPhone")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
+        .onLoad {
             guard let user = authViewModel.auth.currentUser else {
-                let info = "Found nil when extracting user in onAppear in EditPhoneView"
+                let info = "Found nil when extracting user in onLoad in EditPhoneView"
                 print(info)
                 self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                 return
             }
             guard let phone = self.fsViewModel.phone[user.uid] else {
-                let info = "Found nil when extracting phone in onAppear in EditPhoneView"
+                let info = "Found nil when extracting phone in onLoad in EditPhoneView"
                 print(info)
                 self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                 return

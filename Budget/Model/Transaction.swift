@@ -5,22 +5,27 @@
 //  Created by Samuel Ivarsson on 2022-09-18.
 //
 
-import Foundation
 import Firebase
 import FirebaseFirestoreSwift
+import Foundation
 
 struct Transaction: Identifiable, Codable {
-    @DocumentID var id: String? = UUID().uuidString
-    var amount: Double
-    var category: String
+    @DocumentID var documentId: String? = UUID().uuidString
+    var totalAmount: Double
+    var category: TransactionCategory
     var date: Date
     var desc: String
     var creator: String
-    var participants: [String]
+    var payer: String
+    var participants: [Participant]
+    var participantIds: [String] = .init()
     var type: TransactionType
+    var splitEvenly: Bool = true
+
+    var id: String { documentId ?? "" }
     
     func getImageName() -> String {
-        switch self.type {
+        switch type {
         case .expense:
             return "arrow.down.square.fill"
         case .income:
@@ -31,19 +36,30 @@ struct Transaction: Identifiable, Codable {
     }
     
     func delete(completion: @escaping (Error?) -> Void) {
-        guard let transactionID = self.id else {
+        guard let transactionID = documentId else {
             completion(ApplicationError.unexpectedNil("Found nil when extracting id in delete in Transaction"))
             return
         }
         
         let db = Firestore.firestore()
-        db.collection("Transactions").document(transactionID).delete() { error in
+        db.collection("Transactions").document(transactionID).delete { error in
             if let error = error {
                 completion(error)
+                return
             }
             
             // Success
             completion(nil)
         }
+    }
+    
+    func getShare(user: User) -> Double {
+        for participant in participants {
+            if participant.userId == user.id {
+                return participant.amount
+            }
+        }
+        
+        return 0.0
     }
 }

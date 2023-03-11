@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-@objc
 public enum TransactionType: Int16, CaseIterable, Codable {
     case expense
     case income

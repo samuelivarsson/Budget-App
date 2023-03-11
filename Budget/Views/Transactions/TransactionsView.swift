@@ -44,13 +44,13 @@ struct TransactionsView: View {
                 }
                 ToolbarItem {
                     NavigationLink {
-                        TransactionView(add: true)
+                        TransactionView(action: .add)
                     } label: {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
             }
-            .onAppear {
+            .onLoad {
                 self.transactionsViewModel.fetchData { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
@@ -67,6 +67,5 @@ struct TransactionsView: View {
 struct TransactionsView_Previews: PreviewProvider {
     static var previews: some View {
         TransactionsView()
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

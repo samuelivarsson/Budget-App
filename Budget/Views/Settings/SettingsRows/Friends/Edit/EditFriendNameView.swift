@@ -8,17 +8,18 @@
 import SwiftUI
 
 struct EditFriendNameView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
     @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var userViewModel: UserViewModel
     
+    @State private var friend: CustomFriend = CustomFriend(name: "", phone: "")
     @State private var name: String = ""
+    @State private var applyLoading = false
     
-    private var friend: Friend
-    
-    init(friend: Friend) {
-        self.friend = friend
-        self._name = State(initialValue: friend.name ?? "")
+    init(customFriend: CustomFriend) {
+        self.friend = customFriend
+        self._name = State(initialValue: customFriend.name)
     }
     
     var body: some View {
@@ -29,9 +30,14 @@ struct EditFriendNameView: View {
             
             HStack {
                 Spacer()
-                Button("apply") {
-                    editFriend()
-                    presentationMode.wrappedValue.dismiss()
+                Button {
+                    self.editFriend()
+                } label: {
+                    if self.applyLoading {
+                        ProgressView()
+                    } else {
+                        Text("apply")
+                    }
                 }
                 Spacer()
             }
@@ -41,19 +47,25 @@ struct EditFriendNameView: View {
     }
     
     private func editFriend() {
-        friend.name = name
+        self.applyLoading = true
+        self.friend.name = name
         
-        do {
-            try viewContext.save()
-        } catch {
-            errorHandling.handle(error: error)
+        self.userViewModel.editCustomFriend(friend: self.friend) { error in
+            self.applyLoading = false
+            if let error = error {
+                self.errorHandling.handle(error: error)
+                return
+            }
+            
+            // Success
+            self.presentationMode.wrappedValue.dismiss()
         }
     }
 }
 
 struct EditFriendNameView_Previews: PreviewProvider {
     static var previews: some View {
-        EditFriendNameView(friend: Friend())
+        EditFriendNameView(customFriend: CustomFriend(name: "", phone: ""))
             .environmentObject(ErrorHandling())
     }
 }

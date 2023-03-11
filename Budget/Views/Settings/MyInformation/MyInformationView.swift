@@ -136,6 +136,7 @@ struct MyInformationView: View {
                 authViewModel.signOut() { error in
                     if let error = error {
                         errorHandling.handle(error: error)
+                        return
                     }
                 }
             }
@@ -145,7 +146,12 @@ struct MyInformationView: View {
     }
     
     private func signOut() {
-        guard let user = authViewModel.auth.currentUser else { return }
+        guard let user = authViewModel.auth.currentUser else {
+            let info = "Found nil when extracting user in signOut in MyInformationView"
+            self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+            print(info)
+            return
+        }
         if user.isAnonymous {
             signOutAsGuestPressed = true
             return
@@ -157,8 +163,10 @@ struct MyInformationView: View {
             }
             
             // Success
-            self.storageViewModel.profilePicture = nil
-            self.detachListeners()
+            DispatchQueue.main.async {
+                self.detachListeners()
+                self.storageViewModel.profilePicture = nil
+            }
         }
     }
     

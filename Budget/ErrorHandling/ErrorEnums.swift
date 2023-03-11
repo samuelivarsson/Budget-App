@@ -118,6 +118,7 @@ enum InputError: Error {
     case phoneTooShort
     case addYourself
     case userIsAlreadyFriend
+    case totalAmountMisMatch
 }
 
 extension InputError: LocalizedError {
@@ -137,6 +138,8 @@ extension InputError: LocalizedError {
             return NSLocalizedString("addYourself", comment: "Input Error")
         case .userIsAlreadyFriend:
             return NSLocalizedString("userIsAlreadyFriend", comment: "Input Error")
+        case .totalAmountMisMatch:
+            return NSLocalizedString("totalAmountMisMatch", comment: "Input Error")
         }
     }
 }

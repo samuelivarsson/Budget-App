@@ -26,6 +26,8 @@ struct SignInView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 30) {
+                Spacer()
+                
                 Text("signIn").font(.largeTitle).padding(.bottom, 40)
             
                 // Sign in with Google
@@ -160,7 +162,8 @@ struct SignInView: View {
                             }
                             
                             // Success
-                            print("Successfully set user in UserViewModel")
+                            print("Successfully set user in signInWithGoogle")
+                            self.authViewModel.state = .signedIn
                         }
                     }
                 }
@@ -176,6 +179,7 @@ struct SignInView: View {
             }
             
             // Success
+            self.authViewModel.state = .signedIn
         }
     }
     
@@ -227,7 +231,8 @@ struct SignInView: View {
                             }
                             
                             // Success
-                            print("Successfully set user in UserViewModel")
+                            print("Successfully set user in signInWithEmail")
+                            self.authViewModel.state = .signedIn
                         }
                     }
                 }

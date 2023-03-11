@@ -16,6 +16,7 @@ struct SignUpView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
     @EnvironmentObject private var storageViewModel: StorageViewModel
+    @EnvironmentObject private var userViewModel: UserViewModel
     
     private var width: CGFloat = 300
     private var height: CGFloat = 48
@@ -117,6 +118,18 @@ struct SignUpView: View {
                         
                         // Success
                         print("Successfully set profile picture")
+                        self.userViewModel.fetchData { error in
+                            if let error = error {
+                                self.errorHandling.handle(error: error)
+                                return
+                            }
+                            
+                            // Success
+                            print("Successfully added listener in UserViewModel")
+                            DispatchQueue.main.async {
+                                self.authViewModel.state = .signedIn
+                            }
+                        }
                     }
                 }
             }

@@ -12,6 +12,7 @@ struct TransactionsGroupView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
+    @EnvironmentObject private var userViewModel: UserViewModel
     
     @State private var showChildren: Bool = false
     
@@ -28,14 +29,14 @@ struct TransactionsGroupView: View {
     var body: some View {
         Section {
             if showChildren {
-                ForEach(transactionsViewModel.transactions.filter({$0.date >= from && $0.date <= to})) { transaction in
+                ForEach(transactionsViewModel.transactions.filter({ $0.date >= from && $0.date <= to })) { transaction in
                     Section {
                         NavigationLink {
-                            TransactionView(transaction: transaction)
+                            TransactionView(transaction: transaction, myId: self.userViewModel.user?.id ?? "")
                         } label: {
-                            let amount = Utility.doubleToLocalCurrency(value: transaction.amount)
+                            let amount = Utility.doubleToLocalCurrency(value: transaction.totalAmount)
                             Label(
-                                "\(amount), \(transaction.desc) : \(transaction.category)\nCreator: \(transaction.creator)",
+                                "\(amount), \(transaction.desc) : \(transaction.category.name)\nCreator: \(transaction.creator)",
                                 systemImage: transaction.getImageName()
                             )
                         }

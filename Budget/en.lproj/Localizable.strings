@@ -15,6 +15,7 @@
 "amount" = "Amount";
 "category" = "Category";
 "loadMore" = "Load more";
+"details" = "Details";
 
 // Sign in
 "signIn" = "Sign in";
@@ -52,15 +53,33 @@
 "readAll" = "Read all";
 "markAsRead" = "Mark as read";
 "markAllAsRead" = "Mark all as read";
+"accept" = "Accept";
+"deny" = "Deny";
+"friendRequest" = "Friend request";
+"friendRequestAccepted" = "Friend request accepted";
+"friendRequestDenied" = "Friend request denied";
+"hasAddedYouToTransaction" = "has added you to a transaction";
+"youHaveNoNotifications" = "You have no notifications!";
+
+// Years, months etc abbreviations
+"shortYears" = "y";
+"shortMonths" = "m";
+"shortWeeks" = "w";
+"shortDays" = "d";
+"shortHours" = "h";
+"shortMinutes" = "min";
+"shortSeconds" = "sec";
 
 // Transaction View
 "addTransaction" = "Add transaction";
 "editTransaction" = "Edit transaction";
 "addParticipants" = "Add participants";
 "editParticipants" = "Edit participants";
+"participants" = "Participants";
 "whatAmount" = "What amount";
 "description" = "Description";
 "shortDescription" = "A short description";
+"payer" = "Payer";
 
 // Settings
 "myInformation" = "My information";
@@ -71,10 +90,17 @@
 "yourPhone" = "Your phone number";
 "general" = "General";
 "monthStartsOn" = "Month starts on";
+"transactionCategory" = "Transaction category";
 "transactionCategories" = "Transaction categories";
 "quickBalance" = "Quick balance";
 "takePicture" = "Take a picture";
 "choosePicture" = "Choose picture";
+"custom" = "Custom";
+"percentageOfRemaining" = "Percentage of remaining";
+"transactionCategoryAmountNote" = "This allows you to choose what ceiling you want for each category in your budget. Choosing custom allows you to pick a percentage of your remaining money for this category. The remaining money is the money remaining after all overheads, your savings included";
+"transactionCategoryAmount" = "Transaction category amount";
+"transactionCategoryAmounts" = "Transaction category amounts";
+"budget" = "Budget";
 
 // Friends View
 "friends" = "Friends";
@@ -90,6 +116,9 @@
 "connectFriend" = "Connect friend to a user account";
 "connectFriendConsequence" = "Connecting a friend to a user account will result in the name and phone number of the friend changing to that of the user.";
 "onlyNonCustom" = "Only friends that is connected to a user account will get notifications from you.";
+"searchForUser" = "Search for a user";
+"userName" = "User name";
+"customFriends" = "Custom friends";
 
 // Transaction Categories
 "food" = "Food";
@@ -106,6 +135,8 @@
 "useSavingsAccount" = "Use savings account";
 "useBuffer" = "Use buffer";
 "noCategoriesFound" = "You have no transaction categories!";
+"splitEvenly" = "Split evenly";
+"me" = "Me";
 
 // Transaction Types
 "expense" = "Expense";
@@ -129,6 +160,7 @@
 "pleaseEnterName" = "Please enter a name";
 "pleaseEnterPhone" = "Please enter a phone number";
 "userIsAlreadyFriend" = "This user is already your friend";
+"totalAmountMisMatch" = "The total amount does not match the amount of the participants";
 "phoneTooShort" = "The phone number you entered is too short";
 "documentNotExist" = "The document does not exist";
 "noPhotoURL" = "Found nil when extracting url in setProfilePicture in AuthViewModel, this can be ignored if the user hasn't uploaded a profile picture yet";

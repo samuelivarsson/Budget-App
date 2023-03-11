@@ -15,6 +15,7 @@
 "amount" = "Belopp";
 "category" = "Kategori";
 "loadMore" = "Ladda mer";
+"details" = "Detaljer";
 
 // Sign in
 "signIn" = "Logga in";
@@ -52,15 +53,33 @@
 "readAll" = "Läs alla";
 "markAsRead" = "Markera som läst";
 "markAllAsRead" = "Markera alla som lästa";
+"accept" = "Acceptera";
+"deny" = "Neka";
+"friendRequest" = "Vänförfrågan";
+"friendRequestAccepted" = "Vänförfrågan accepterad";
+"friendRequestDenied" = "Vänförfrågan nekad";
+"hasAddedYouToTransaction" = "har lagt till dig i en transaktion";
+"youHaveNoNotifications" = "Du har inga notifikationer!";
+
+// Years, months etc abbreviations
+"shortYears" = "å";
+"shortMonths" = "m";
+"shortWeeks" = "v";
+"shortDays" = "d";
+"shortHours" = "tim";
+"shortMinutes" = "min";
+"shortSeconds" = "sek";
 
 // Transactions View
 "addTransaction" = "Lägg till transaktion";
 "editTransaction" = "Redigera transaktion";
 "addParticipants" = "Lägg till deltagare";
 "editParticipants" = "Redigera deltagare";
+"participants" = "Deltagare";
 "whatAmount" = "Vilket belopp";
 "description" = "Beskrivning";
 "shortDescription" = "En kort beskrivning";
+"payer" = "Betalare";
 
 // Settings
 "myInformation" = "Mina uppgifter";
@@ -71,10 +90,17 @@
 "yourPhone" = "Ditt telefonnummer";
 "general" = "Allmänt";
 "monthStartsOn" = "Månad börjar på";
+"transactionCategory" = "Transactionskategori";
 "transactionCategories" = "Transaktionskategorier";
 "quickBalance" = "Snabbsaldo";
 "takePicture" = "Ta ett foto";
 "choosePicture" = "Välj bild";
+"custom" = "Anpassad";
+"percentageOfRemaining" = "Procent av resterande";
+"transactionCategoryAmountNote" = "Här kan du välja vad varje kategori ska ha för tak i din budget. Om du väljer anpassad så kan du välja hur många procent av dina resterande pengar som ska gå till kategorin. De resterande pengarna är de pengar som blir över efter alla fasta kostnader, inklusive ditt sparande.";
+"transactionCategoryAmount" = "Transaktionskategoribelopp";
+"transactionCategoryAmounts" = "Transaktionskategoribelopp";
+"budget" = "Budget";
 
 // Friends View
 "friends" = "Vänner";
@@ -90,6 +116,9 @@
 "connectFriend" = "Koppla vän till ett användarkonto";
 "connectFriendConsequence" = "Att koppla en vän till ett användarkonto resulterar i att vännens namn och telefonnummer ändras till användarens namn och telefonnummer.";
 "onlyNonCustom" = "Endast vänner som är kopplade till ett användarkonto kommer att få notiser av dig.";
+"searchForUser" = "Sök efter en användare";
+"userName" = "Användarnamn";
+"customFriends" = "Anpassade vänner";
 
 // Transaction Categories
 "food" = "Mat";
@@ -106,6 +135,8 @@
 "useSavingsAccount" = "Använd sparkonto";
 "useBuffer" = "Använd buffert";
 "noCategoriesFound" = "Du har inga transaktionskategorier!";
+"splitEvenly" = "Dela jämnt";
+"me" = "Jag";
 
 // Transaction Types
 "expense" = "Utgift";
@@ -129,6 +160,7 @@
 "pleaseEnterName" = "Vänligen ange ett namn";
 "pleaseEnterPhone" = "Vänligen ange ett telefonnummer";
 "userIsAlreadyFriend" = "Den här användaren är redan din vän";
+"totalAmountMisMatch" = "Det totala beloppet matchar inte beloppet från deltagarna";
 "phoneTooShort" = "Telefonnumret du angav är för kort";
 "documentNotExist" = "Dokumentet som du försökte hämta finns inte";
 "noPhotoURL" = "Hittade nil vid extrahering av profilbilden, detta kan ignoreras om användaren inte har laddat up en profilbild än";

@@ -8,7 +8,7 @@
 import Foundation
 import Firebase
 
-struct TransactionCategory: Identifiable, Codable {
+struct TransactionCategory: Identifiable, Codable, Hashable {
     var id = UUID().uuidString
     var name: String
     var type: TransactionType

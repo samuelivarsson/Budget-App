@@ -5,8 +5,8 @@
 //  Created by Samuel Ivarsson on 2022-04-16.
 //
 
-import Foundation
 import Firebase
+import Foundation
 import GoogleSignIn
 import SwiftUI
 
@@ -16,7 +16,7 @@ class AuthViewModel: ObservableObject {
     let auth = Auth.auth()
     
     init() {
-        self._state = Published(initialValue: self.auth.currentUser != nil ? .signedIn : .signedOut)
+        self._state = Published(initialValue: auth.currentUser != nil ? .signedIn : .signedOut)
     }
     
     var getState: SignInState {
@@ -36,10 +36,7 @@ class AuthViewModel: ObservableObject {
             }
             
             // Success
-            DispatchQueue.main.async {
-                self.state = .signedIn
-                completion(nil)
-            }
+            completion(nil)
         }
     }
     
@@ -47,7 +44,9 @@ class AuthViewModel: ObservableObject {
         if GIDSignIn.sharedInstance.hasPreviousSignIn() {
             GIDSignIn.sharedInstance.restorePreviousSignIn { [weak self] user, error in
                 guard let self = self else {
-                    completion(ApplicationError.unexpectedNil("Found unexpected nil when extracting self in signIn in AuthViewModel (1)"))
+                    let info = "Found unexpected nil when extracting self in signIn in AuthViewModel (1)"
+                    print(info)
+                    completion(ApplicationError.unexpectedNil(info))
                     return
                 }
                 guard error == nil else {
@@ -65,50 +64,52 @@ class AuthViewModel: ObservableObject {
                     completion(nil)
                 }
             }
-        } else {
-            guard let clientID = FirebaseApp.app()?.options.clientID else {
-                let info = "Found unexpected nil when extracting clientID in signIn in AuthViewModel"
+            
+            return
+        }
+        
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            let info = "Found unexpected nil when extracting clientID in signIn in AuthViewModel"
+            print(info)
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+            
+        let configuration = GIDConfiguration(clientID: clientID)
+            
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+            let info = "Found unexpected nil when extracting windowScene in signIn in AuthViewModel"
+            print(info)
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        guard let rootViewController = windowScene.windows.first?.rootViewController else {
+            let info = "Found unexpected nil when extracting rootViewController in signIn in AuthViewModel"
+            print(info)
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+            
+        GIDSignIn.sharedInstance.signIn(with: configuration, presenting: rootViewController) { [weak self] user, error in
+            guard let self = self else {
+                let info = "Found unexpected nil when extracting self in signIn in AuthViewModel (2)"
                 print(info)
                 completion(ApplicationError.unexpectedNil(info))
                 return
             }
-            
-            let configuration = GIDConfiguration(clientID: clientID)
-            
-            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-                let info = "Found unexpected nil when extracting windowScene in signIn in AuthViewModel"
-                print(info)
-                completion(ApplicationError.unexpectedNil(info))
+            if let error = error {
+                completion(error)
                 return
             }
-            guard let rootViewController = windowScene.windows.first?.rootViewController else {
-                let info = "Found unexpected nil when extracting rootViewController in signIn in AuthViewModel"
-                print(info)
-                completion(ApplicationError.unexpectedNil(info))
-                return
-            }
-            
-            GIDSignIn.sharedInstance.signIn(with: configuration, presenting: rootViewController) { [weak self] user, error in
-                guard let self = self else {
-                    let info = "Found unexpected nil when extracting self in signIn in AuthViewModel (2)"
-                    print(info)
-                    completion(ApplicationError.unexpectedNil(info))
-                    return
-                }
+                
+            self.authenticateUser(for: user) { error in
                 if let error = error {
                     completion(error)
                     return
                 }
-                
-                self.authenticateUser(for: user) { error in
-                    if let error = error {
-                        completion(error)
-                        return
-                    }
                     
-                    // Success
-                    completion(nil)
-                }
+                // Success
+                completion(nil)
             }
         }
     }
@@ -123,47 +124,31 @@ class AuthViewModel: ObservableObject {
         
         let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: authentication.accessToken)
         
-        auth.signIn(with: credential) { [weak self] _, error in
-            guard let self = self else {
-                let info = "Found unexpected nil when extracting self in authenticateUser in AuthViewModel"
-                print(info)
-                completion(ApplicationError.unexpectedNil(info))
-                return
-            }
+        auth.signIn(with: credential) { _, error in
             if let error = error {
                 completion(error)
                 return
             }
             
             // Success
-            self.state = .signedIn
             completion(nil)
         }
     }
     
     func signInAnonymously(completion: @escaping (Error?) -> Void) {
-        auth.signInAnonymously { [weak self] authResult, error in
-            guard let self = self else {
-                let info = "Found unexpected nil when extracting self in signInAnonymously in AuthViewModel"
-                print(info)
-                completion(ApplicationError.unexpectedNil(info))
-                return	
-            }
+        auth.signInAnonymously { _, error in
             if let error = error {
                 completion(error)
                 return
             }
             
             // Success
-            DispatchQueue.main.async {
-                self.state = .signedIn
-                completion(nil)
-            }
+            completion(nil)
         }
     }
     
     func signUp(email: String, password: String, name: String, completion: @escaping (Error?) -> Void) {
-        auth.createUser(withEmail: email, password: password) { [weak self] result, error in
+        auth.createUser(withEmail: email, password: password) { [weak self] _, error in
             guard let self = self else {
                 let info = "Found unexpected nil when extracting self in signUp in AuthViewModel (1)"
                 print(info)
@@ -182,23 +167,14 @@ class AuthViewModel: ObservableObject {
                     return
                 }
                 changeRequest.displayName = name
-                changeRequest.commitChanges { [weak self] error in
-                    guard let self = self else {
-                        let info = "Found unexpected nil when extracting self in signUp in AuthViewModel (2)"
-                        print(info)
-                        completion(ApplicationError.unexpectedNil(info))
-                        return
-                    }
+                changeRequest.commitChanges { error in
                     if let error = error {
                         completion(error)
                         return
                     }
                     
                     // Success
-                    DispatchQueue.main.async {
-                        self.state = .signedIn
-                        completion(nil)
-                    }
+                    completion(nil)
                 }
             }
         }
@@ -210,7 +186,9 @@ class AuthViewModel: ObservableObject {
         do {
             try auth.signOut()
             
-            state = .signedOut
+            DispatchQueue.main.async {
+                self.state = .signedOut
+            }
             completion(nil)
         } catch {
             print(error.localizedDescription)

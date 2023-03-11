@@ -10,13 +10,13 @@ import Firebase
 
 @main
 struct BudgetApp: App {
-    let persistenceController = PersistenceController.shared
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var fsViewModel = FirestoreViewModel()
     @StateObject var friendsViewModel = FriendsViewModel()
     @StateObject var storageViewModel = StorageViewModel()
     @StateObject var userViewModel = UserViewModel()
     @StateObject var transactionsViewModel = TransactionsViewModel()
+    @StateObject var notificationsViewModel = NotificationsViewModel()
 
     init() {
         setUpFirebase()
@@ -25,7 +25,6 @@ struct BudgetApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .withErrorHandling()
                 .environmentObject(authViewModel)
                 .environmentObject(fsViewModel)
@@ -33,6 +32,7 @@ struct BudgetApp: App {
                 .environmentObject(storageViewModel)
                 .environmentObject(userViewModel)
                 .environmentObject(transactionsViewModel)
+                .environmentObject(notificationsViewModel)
         }
     }
 }

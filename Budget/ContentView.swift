@@ -13,6 +13,7 @@ struct ContentView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
+    @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     
     var body: some View {
         VStack {
@@ -28,16 +29,6 @@ struct ContentView: View {
             }
         }
         .navigationViewStyle(.stack)
-        .onAppear {
-            self.userViewModel.fetchData { error in
-                if let error = error {
-                    self.errorHandling.handle(error: error)
-                    return
-                }
-                
-                // Success
-            }
-        }
     }
     
     private var content: some View {
@@ -59,6 +50,24 @@ struct ContentView: View {
                 Text("settings")
             }
         }
+        .onLoad {
+            self.userViewModel.fetchData { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+            }
+            self.notificationsViewModel.fetchData { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+            }
+        }
     }
 }
 
@@ -66,12 +75,10 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ContentView()
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(AuthViewModel())
                 .environmentObject(ErrorHandling())
             ContentView()
                 .preferredColorScheme(.dark)
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(AuthViewModel())
                 .environmentObject(ErrorHandling())
         }

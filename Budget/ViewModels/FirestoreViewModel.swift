@@ -89,7 +89,7 @@ class FirestoreViewModel: ObservableObject {
                 let userData: [String: Any] = [
                     "name": user.displayName ?? "",
                     "email": user.email ?? "",
-                    "uid": user.uid
+                    "id": user.uid
                 ]
                 documentReference.setData(userData, merge: true) { error in
                     if let error = error {
@@ -98,18 +98,20 @@ class FirestoreViewModel: ObservableObject {
                     }
                     
                     // Success
-                    print("uid: \(user.uid)")
+                    print("id: \(user.uid)")
                     completion(nil)
                     return
                 }
             } else {
                 let userData: User = User(
+                    id: user.uid,
                     name: user.displayName ?? "",
                     email: user.email ?? "",
                     phone: "",
+                    budget: Budget(accounts: [], income: 0, savingsPercentage: 0.5, transactionCategoryAmounts: [], overheads: [], overheadAccount: Account(name: "Overheads", type: .overhead)),
                     friends: [],
-                    transactionCategories: self.defaultTransactionCategories(),
-                    uid: user.uid
+                    customFriends: [],
+                    transactionCategories: self.defaultTransactionCategories()
                 )
                 do {
                     try documentReference.setData(from: userData) { error in
@@ -119,7 +121,15 @@ class FirestoreViewModel: ObservableObject {
                         }
                         
                         // Success
-                        completion(nil)
+                        documentReference.updateData(["keywordsForLookup": userData.keywordsForLookup]) { error in
+                            if let error = error {
+                                completion(error)
+                                return
+                            }
+                            
+                            // Success
+                            completion(nil)
+                        }
                     }
                 } catch {
                     completion(error)
@@ -248,7 +258,7 @@ class FirestoreViewModel: ObservableObject {
     func updatePhone(with phoneText: String, user: Firebase.User?, completion: @escaping (Error?) -> Void) {
         guard let user = user else {
             let info = "Found nil when extracting user in updatePhone in FirestoreViewModel"
-            print("info")
+            print(info)
             completion(ApplicationError.unexpectedNil(info))
             return
         }
