@@ -98,12 +98,7 @@ struct FriendRequestView: View {
             }
             
             // Success
-            guard let myName = self.userViewModel.user?.name else {
-                let info = "Found nil when extracting myName in acceptFriendRequest in NotificationsView"
-                print(info)
-                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                return
-            }
+            let myName = self.userViewModel.user.name
             
             self.notificationsViewModel.acceptFriendRequest(notification: self.notification, myName: myName) { error in
                 if let error = error {

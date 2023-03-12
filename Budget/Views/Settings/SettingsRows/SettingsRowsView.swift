@@ -34,7 +34,7 @@ struct SettingsRowsView: View {
         ),
         Setting(
             name: "budget",
-            imgName: "creditcard",
+            imgName: "dollarsign",
             view: AnyView(BudgetView())
         ),
         Setting(

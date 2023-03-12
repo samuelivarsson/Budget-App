@@ -26,9 +26,9 @@ struct FriendsView: View {
                 Text("friends")
             }
             
-            if (self.userViewModel.user?.customFriends ?? []).count > 0 {
+            if (self.userViewModel.user.customFriends).count > 0 {
                 Section {
-                    ForEach(self.userViewModel.user?.customFriends ?? []) { friend in
+                    ForEach(self.userViewModel.user.customFriends) { friend in
                         CustomFriendView(friend: friend, rowHeight: self.rowHeight)
                     }
                     .onDelete(perform: deleteCustomFriends)
@@ -69,12 +69,7 @@ struct FriendsView: View {
     }
     
     private func deleteCustomFriends(offsets: IndexSet) {
-        guard let user = self.userViewModel.user else {
-            let info = "Found nil when extracting user in deleteCustomFriends in FriendsView"
-            print(info)
-            self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-            return
-        }
+        let user = self.userViewModel.user
         withAnimation {
             offsets.map { user.customFriends[$0] }.forEach { customFriend in
                 self.userViewModel.deleteCustomFriend(customFriend: customFriend) { error in

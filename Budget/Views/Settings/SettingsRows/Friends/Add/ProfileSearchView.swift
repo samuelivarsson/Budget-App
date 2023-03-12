@@ -115,12 +115,7 @@ struct ProfileBarView: View {
     }
     
     private func addUser(user: User) {
-        guard let myUser = self.userViewModel.user else {
-            let info = "Found nil when extracting myUser in addUser in ProfileSearchView"
-            print(info)
-            self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-            return
-        }
+        let myUser = self.userViewModel.user
         // You can't add yourself as friend
         guard user.id != myUser.id else {
             self.errorHandling.handle(error: InputError.addYourself)
@@ -187,12 +182,7 @@ struct ProfileBarView: View {
             }
             
             // Success
-            guard let myName = self.userViewModel.user?.name else {
-                let info = "Found nil when extracting myName in acceptFriendRequest in NotificationsView"
-                print(info)
-                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                return
-            }
+            let myName = self.userViewModel.user.name
             
             self.notificationsViewModel.acceptFriendRequest(notification: notification, myName: myName) { error in
                 if let error = error {

@@ -16,7 +16,7 @@ struct TransactionCategoryAmount: Identifiable, Codable, Hashable {
     var customPercentage: Double = 0
     
     func getCustomAmount(budget: Budget) -> Double {
-        return self.customPercentage * budget.getRemaining()
+        return self.customPercentage * 0.01 * budget.getRemaining()
     }
     
     func getRealAmount(budget: Budget) -> Double {

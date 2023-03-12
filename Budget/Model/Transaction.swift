@@ -10,7 +10,7 @@ import FirebaseFirestoreSwift
 import Foundation
 
 struct Transaction: Identifiable, Codable {
-    @DocumentID var documentId: String? = UUID().uuidString
+    @DocumentID var documentId: String?
     var totalAmount: Double
     var category: TransactionCategory
     var date: Date

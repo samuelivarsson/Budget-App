@@ -12,29 +12,29 @@ struct HomeView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
-
+    
     var body: some View {
         NavigationView {
             Form {
-                let user = self.userViewModel.getUser(errorHandling: self.errorHandling)
-                let budget = user.budget
+                let user = self.userViewModel.user
                 Section {
                     HStack {
                         Text("income")
                         Spacer()
-//                        let income = "\(budget.income)"
-//                        Text(income)
+                        let income = "\(user.budget.income)"
+                        Text(income)
                     }
                 }
+                .redacted(when: !self.userViewModel.firstLoadFinished)
 
                 Section {
-                    ForEach(budget.transactionCategoryAmounts) { transactionCategoryAmount in
+                    ForEach(user.budget.transactionCategoryAmounts) { transactionCategoryAmount in
                         HStack {
                             let name = NSLocalizedString(transactionCategoryAmount.categoryName, comment: "")
                             Text(name)
-                            
+
                             let spent = self.transactionsViewModel.getSpent(user: user, transactionCategoryAmount: transactionCategoryAmount)
-                            var amount = transactionCategoryAmount.getRealAmount(budget: budget)
+                            let amount = transactionCategoryAmount.getRealAmount(budget: user.budget)
 
                             ProgressView(value: spent, total: amount)
                                 .padding()
@@ -54,6 +54,17 @@ struct HomeView: View {
                     }
                 }
             }
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func redacted(when condition: Bool) -> some View {
+        if !condition {
+            unredacted()
+        } else {
+            redacted(reason: .placeholder)
         }
     }
 }

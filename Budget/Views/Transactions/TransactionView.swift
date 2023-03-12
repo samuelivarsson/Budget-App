@@ -80,25 +80,21 @@ struct TransactionView: View {
         .navigationTitle(self.titleText)
         .navigationBarTitleDisplayMode(.inline)
         .onLoad {
-            if let user = self.userViewModel.user {
-                if self.transaction.participants.count < 1 {
-                    self.transaction.participants = [Participant(me: true, userId: user.id, userName: user.name)]
-                }
-                if self.transaction.payer == "" {
-                    self.transaction.payer = self.transaction.participants[0].id
-                }
-                self.transactionCategories = user.transactionCategories
-            } else {
-                let info = "Found nil when extracting user in onLoad in TransactionView"
-                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+            let user = self.userViewModel.user
+            if self.transaction.participants.count < 1 {
+                self.transaction.participants = [Participant(me: true, userId: user.id, userName: user.name)]
             }
+            if self.transaction.payer == "" {
+                self.transaction.payer = self.transaction.participants[0].id
+            }
+            self.transactionCategories = user.transactionCategories
         }
     }
     
     private var titleText: LocalizedStringKey {
         if self.action == .add {
             return "addTransaction"
-        } else if action == .edit {
+        } else if self.action == .edit {
             return "editTransaction"
         } else {
             return "details"
@@ -108,7 +104,7 @@ struct TransactionView: View {
     private var participantText: LocalizedStringKey {
         if self.action == .add {
             return "addParticipants"
-        } else if action == .edit {
+        } else if self.action == .edit {
             return "editParticipants"
         } else {
             return "details"

@@ -36,11 +36,16 @@ struct TransactionCategoryAmountView: View {
                     
                     Spacer()
                     
-                    Picker("", selection: self.$categoryAmount.categoryId) {
-                        ForEach(self.userViewModel.user?.transactionCategories ?? []) { category in
-                            let name = NSLocalizedString(category.name, comment: "")
-                            Text(name).tag(category.id)
+                    if self.add {
+                        Picker("", selection: self.$categoryAmount.categoryId) {
+                            ForEach(self.userViewModel.user.transactionCategories) { category in
+                                let name = NSLocalizedString(category.name, comment: "")
+                                Text(name).tag(category.id)
+                            }
                         }
+                    } else {
+                        let name = NSLocalizedString(self.categoryAmount.categoryName, comment: "")
+                        Text(name)
                     }
                 }
                 
@@ -50,8 +55,8 @@ struct TransactionCategoryAmountView: View {
                     Spacer()
                         
                     if self.categoryAmount.custom {
-                        let user = self.userViewModel.getUser(errorHandling: self.errorHandling)
-                        let amount: String = "\(self.categoryAmount.getCustomAmount(budget: user.budget)))"
+                        let user = self.userViewModel.user
+                        let amount: String = "\(self.categoryAmount.getCustomAmount(budget: user.budget))"
                         Text(amount)
                     } else {
                         TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$categoryAmount.amount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
@@ -77,7 +82,7 @@ struct TransactionCategoryAmountView: View {
                         
                         Spacer()
                         
-                        TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$categoryAmount.amount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
+                        TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$categoryAmount.customPercentage, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .focused(self.$isInputActive)

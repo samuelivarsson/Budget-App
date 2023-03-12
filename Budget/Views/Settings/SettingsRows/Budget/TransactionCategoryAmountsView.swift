@@ -16,7 +16,8 @@ struct TransactionCategoryAmountsView: View {
             if let user = self.userViewModel.user {
                 ForEach(TransactionType.allCases, id: \.self) { type in
                     Section {
-                        let filteredTGA = user.budget.transactionCategoryAmounts.filter { self.userViewModel.getTransactionCategory(id: $0.categoryId).type == type }
+                        let sortedTGA = user.budget.transactionCategoryAmounts.sorted { $0.categoryName < $1.categoryName }
+                        let filteredTGA = sortedTGA.filter { self.userViewModel.getTransactionCategory(id: $0.categoryId).type == type }
                         ForEach(filteredTGA) { transactionCategoryAmount in
                             NavigationLink {
                                 TransactionCategoryAmountView(transactionCategoryAmount: transactionCategoryAmount)
@@ -24,11 +25,8 @@ struct TransactionCategoryAmountsView: View {
                                 HStack(spacing: 0) {
                                     Text(LocalizedStringKey(transactionCategoryAmount.categoryName))
                                     Text(": ")
-                                    if transactionCategoryAmount.custom {
-                                    } else {
-                                        let amountText = Utility.currencyFormatter.string(from: transactionCategoryAmount.amount as NSNumber) ?? ""
-                                        Text(amountText)
-                                    }
+                                    let amountText = Utility.currencyFormatter.string(from: transactionCategoryAmount.getRealAmount(budget: user.budget) as NSNumber) ?? ""
+                                    Text(amountText)
                                 }
                             }
                         }.onDelete(perform: { indexSet in

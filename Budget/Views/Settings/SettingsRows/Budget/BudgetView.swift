@@ -14,7 +14,7 @@ struct BudgetView: View {
     var body: some View {
         Form {
             Section {
-                let budget = self.userViewModel.getUser(errorHandling: self.errorHandling).budget
+                let budget = self.userViewModel.user.budget
                 NavigationLink {
                     IncomeView(income: budget.income)
                 } label: {

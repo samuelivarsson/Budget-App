@@ -62,10 +62,10 @@
 		4D7ADA50282ACBB80051460B /* StorageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */; };
 		4D7ADA52282BCABB0051460B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA51282BCABB0051460B /* User.swift */; };
 		4D7ADA54282C54420051460B /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA53282C54420051460B /* UserViewModel.swift */; };
-		4D7ADA56282C6D540051460B /* FirebaseFirestoreSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 4D7ADA55282C6D540051460B /* FirebaseFirestoreSwift-Beta */; };
 		4D7ADA5828D78E990051460B /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA5728D78E990051460B /* Transaction.swift */; };
 		4D7AE0AF295280DA009E0845 /* Participant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7AE0AE295280DA009E0845 /* Participant.swift */; };
 		4D7E2A612915DD6200E16314 /* FriendStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7E2A602915DD6200E16314 /* FriendStatus.swift */; };
+		4D92143829BDD32A0064ACC7 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4D92143729BDD32A0064ACC7 /* FirebaseFirestoreSwift */; };
 		4DC4BDB1280B8457009E5859 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB0280B8457009E5859 /* Roboto-Medium.ttf */; };
 		4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC4BDB2280B915E009E5859 /* EditPhoneView.swift */; };
 		4DD27E78295230E10011D002 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD27E77295230E10011D002 /* Named.swift */; };
@@ -184,8 +184,8 @@
 			files = (
 				4D18ABC92813155E00B39744 /* FirebaseMessaging in Frameworks */,
 				4D18ABC32813155E00B39744 /* FirebaseAnalytics in Frameworks */,
-				4D7ADA56282C6D540051460B /* FirebaseFirestoreSwift-Beta in Frameworks */,
 				4D18ABC52813155E00B39744 /* FirebaseAuth in Frameworks */,
+				4D92143829BDD32A0064ACC7 /* FirebaseFirestoreSwift in Frameworks */,
 				4D18ABCB2813155E00B39744 /* FirebaseStorage in Frameworks */,
 				4D18ABC72813155E00B39744 /* FirebaseFirestore in Frameworks */,
 				4D18ABCE2813163B00B39744 /* GoogleSignIn in Frameworks */,
@@ -495,7 +495,7 @@
 				4D18ABC82813155E00B39744 /* FirebaseMessaging */,
 				4D18ABCA2813155E00B39744 /* FirebaseStorage */,
 				4D18ABCD2813163B00B39744 /* GoogleSignIn */,
-				4D7ADA55282C6D540051460B /* FirebaseFirestoreSwift-Beta */,
+				4D92143729BDD32A0064ACC7 /* FirebaseFirestoreSwift */,
 			);
 			productName = Budget;
 			productReference = 4DFD3D9228073E4A00D5FFB4 /* Budget.app */;
@@ -871,7 +871,7 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
+				minimumVersion = 10.0.0;
 			};
 		};
 		4D18ABCC2813163B00B39744 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
@@ -879,7 +879,7 @@
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 6.0.0;
+				minimumVersion = 7.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -915,10 +915,10 @@
 			package = 4D18ABCC2813163B00B39744 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
 		};
-		4D7ADA55282C6D540051460B /* FirebaseFirestoreSwift-Beta */ = {
+		4D92143729BDD32A0064ACC7 /* FirebaseFirestoreSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4D18ABC12813155E00B39744 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = "FirebaseFirestoreSwift-Beta";
+			productName = FirebaseFirestoreSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 

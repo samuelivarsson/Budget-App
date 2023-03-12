@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Firebase
+import FirebaseStorage
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 

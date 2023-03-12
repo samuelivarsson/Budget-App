@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+import FirebaseAuth
 
 class FirestoreViewModel: ObservableObject {
     @Published var phone: [String: String] = [:]

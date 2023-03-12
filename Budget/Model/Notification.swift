@@ -10,7 +10,7 @@ import Firebase
 import FirebaseFirestoreSwift
 
 struct Notification: Identifiable, Codable, Hashable {
-    @DocumentID var documentId: String? = UUID().uuidString
+    @DocumentID var documentId: String?
     var type: NotificationType
     var from: String
     var fromName: String

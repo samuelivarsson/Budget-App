@@ -53,13 +53,19 @@ class AuthViewModel: ObservableObject {
                     completion(error)
                     return
                 }
-
+                
+                guard let user = user else {
+                    let info = "Found nil when extracting user in signIn in AuthViewModel (1)"
+                    completion(ApplicationError.unexpectedNil(info))
+                    return
+                }
+                
                 self.authenticateUser(for: user) { error in
                     if let error = error {
                         completion(error)
                         return
                     }
-                    
+
                     // Success
                     completion(nil)
                 }
@@ -70,30 +76,27 @@ class AuthViewModel: ObservableObject {
         
         guard let clientID = FirebaseApp.app()?.options.clientID else {
             let info = "Found unexpected nil when extracting clientID in signIn in AuthViewModel"
-            print(info)
             completion(ApplicationError.unexpectedNil(info))
             return
         }
             
         let configuration = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = configuration
             
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             let info = "Found unexpected nil when extracting windowScene in signIn in AuthViewModel"
-            print(info)
             completion(ApplicationError.unexpectedNil(info))
             return
         }
         guard let rootViewController = windowScene.windows.first?.rootViewController else {
             let info = "Found unexpected nil when extracting rootViewController in signIn in AuthViewModel"
-            print(info)
             completion(ApplicationError.unexpectedNil(info))
             return
         }
-            
-        GIDSignIn.sharedInstance.signIn(with: configuration, presenting: rootViewController) { [weak self] user, error in
+        
+        GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { [weak self] signResult, error in
             guard let self = self else {
                 let info = "Found unexpected nil when extracting self in signIn in AuthViewModel (2)"
-                print(info)
                 completion(ApplicationError.unexpectedNil(info))
                 return
             }
@@ -101,35 +104,44 @@ class AuthViewModel: ObservableObject {
                 completion(error)
                 return
             }
-                
+            
+            guard let user = signResult?.user else {
+                let info = "Found nil when extracting user in signIn in AuthViewModel (2)"
+                completion(ApplicationError.unexpectedNil(info))
+                return
+            }
+                 
             self.authenticateUser(for: user) { error in
                 if let error = error {
                     completion(error)
                     return
                 }
-                    
+
                 // Success
                 completion(nil)
             }
         }
     }
     
-    private func authenticateUser(for user: GIDGoogleUser?, completion: @escaping (Error?) -> Void) {
-        guard let authentication = user?.authentication, let idToken = authentication.idToken else {
-            let info = "Found unexpected nil when extracting authentication in authenticateUser in AuthViewModel"
-            print(info)
+    private func authenticateUser(for user: GIDGoogleUser, completion: @escaping (Error?) -> Void) {
+        guard let idToken = user.idToken else {
+            let info = "Found nil when extracting idToken in signIn in AuthViewModel"
             completion(ApplicationError.unexpectedNil(info))
             return
         }
-        
-        let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: authentication.accessToken)
-        
+            
+        let accessToken = user.accessToken
+                        
+        let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString, accessToken: accessToken.tokenString)
+
+        // Use the credential to authenticate with Firebase
+            
         auth.signIn(with: credential) { _, error in
             if let error = error {
                 completion(error)
                 return
             }
-            
+
             // Success
             completion(nil)
         }

@@ -11,7 +11,7 @@ import Foundation
 
 struct User: Identifiable, Codable, Hashable, Named {
     var id: String
-    @DocumentID var documentId: String? = UUID().uuidString
+    @DocumentID var documentId: String?
     var name: String
     var email: String
     var phone: String

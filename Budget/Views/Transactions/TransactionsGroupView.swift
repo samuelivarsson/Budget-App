@@ -32,7 +32,7 @@ struct TransactionsGroupView: View {
                 ForEach(transactionsViewModel.transactions.filter({ $0.date >= from && $0.date <= to })) { transaction in
                     Section {
                         NavigationLink {
-                            TransactionView(transaction: transaction, myId: self.userViewModel.user?.id ?? "")
+                            TransactionView(transaction: transaction, myId: self.userViewModel.user.id)
                         } label: {
                             let amount = Utility.doubleToLocalCurrency(value: transaction.totalAmount)
                             Label(
