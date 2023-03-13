@@ -5,8 +5,8 @@
 //  Created by Samuel Ivarsson on 2022-04-20.
 //
 
-import SwiftUI
 import Firebase
+import SwiftUI
 
 struct AddFriendView: View {
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
@@ -23,10 +23,12 @@ struct AddFriendView: View {
     @State private var addUserLoading: Bool = false
     @State var keyword: String = ""
     
+    @FocusState var isInputActive: Bool
+    
     var body: some View {
         Form {
             Section("searchForUser") {
-                ProfileSearchView()
+                ProfileSearchView(isInputActive: self.$isInputActive)
             }
             
             Section("addFriendManually") {
@@ -37,8 +39,6 @@ struct AddFriendView: View {
                     presentationMode.wrappedValue.dismiss()
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
-                
-                
             }
         }
         .navigationTitle("addFriend")
@@ -51,6 +51,16 @@ struct AddFriendView: View {
             TextField("name", text: $name, prompt: Text("friendsName"))
                 .textInputAutocapitalization(.words)
                 .multilineTextAlignment(.trailing)
+                .focused(self.$isInputActive)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+
+                        Button("Done") {
+                            self.isInputActive = false
+                        }
+                    }
+                }
         }
     }
     
@@ -62,6 +72,7 @@ struct AddFriendView: View {
                 .keyboardType(.phonePad)
                 .disableAutocorrection(true)
                 .multilineTextAlignment(.trailing)
+                .focused(self.$isInputActive)
         }
     }
     

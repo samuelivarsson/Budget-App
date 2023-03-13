@@ -54,7 +54,6 @@
 		4D6CA59B29B2CC0400487669 /* Overhead.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59A29B2CC0400487669 /* Overhead.swift */; };
 		4D6CA59D29B2CCA500487669 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59C29B2CCA500487669 /* Account.swift */; };
 		4D6CA59F29B2CCE600487669 /* AccountType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59E29B2CCE600487669 /* AccountType.swift */; };
-		4D6CA5A129B2D10F00487669 /* BudgetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA5A029B2D10F00487669 /* BudgetViewModel.swift */; };
 		4D6CA5A329B2E1EF00487669 /* TransactionCategoryAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA5A229B2E1EF00487669 /* TransactionCategoryAmount.swift */; };
 		4D6CA5A629B2E4CC00487669 /* BudgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA5A529B2E4CC00487669 /* BudgetView.swift */; };
 		4D6CA5A929B2E54000487669 /* TransactionCategoryAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA5A829B2E54000487669 /* TransactionCategoryAmountView.swift */; };
@@ -137,7 +136,6 @@
 		4D6CA59A29B2CC0400487669 /* Overhead.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Overhead.swift; sourceTree = "<group>"; };
 		4D6CA59C29B2CCA500487669 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		4D6CA59E29B2CCE600487669 /* AccountType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountType.swift; sourceTree = "<group>"; };
-		4D6CA5A029B2D10F00487669 /* BudgetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetViewModel.swift; sourceTree = "<group>"; };
 		4D6CA5A229B2E1EF00487669 /* TransactionCategoryAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoryAmount.swift; sourceTree = "<group>"; };
 		4D6CA5A529B2E4CC00487669 /* BudgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetView.swift; sourceTree = "<group>"; };
 		4D6CA5A829B2E54000487669 /* TransactionCategoryAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoryAmountView.swift; sourceTree = "<group>"; };
@@ -451,7 +449,6 @@
 			isa = PBXGroup;
 			children = (
 				4D028908280B16E30053D15D /* AuthViewModel.swift */,
-				4D6CA5A029B2D10F00487669 /* BudgetViewModel.swift */,
 				4DFF75A3281066BF00C40FF6 /* FirestoreViewModel.swift */,
 				4DF808B5282178AC00E19A8D /* FriendsViewModel.swift */,
 				4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */,
@@ -589,7 +586,6 @@
 				4DF808B4281ECDBC00E19A8D /* ParticipantsView.swift in Sources */,
 				4D02890B280B196B0053D15D /* GoogleSignInButton.swift in Sources */,
 				4DFF75B5281077E500C40FF6 /* FriendDetailView.swift in Sources */,
-				4D6CA5A129B2D10F00487669 /* BudgetViewModel.swift in Sources */,
 				4DFF75B12810739E00C40FF6 /* EditFriendNameView.swift in Sources */,
 				4D6CA5A929B2E54000487669 /* TransactionCategoryAmountView.swift in Sources */,
 				4DFF75B32810772B00C40FF6 /* EditFriendPhoneView.swift in Sources */,

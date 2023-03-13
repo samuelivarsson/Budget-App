@@ -5,8 +5,8 @@
 //  Created by Samuel Ivarsson on 2022-10-02.
 //
 
-import SwiftUI
 import Firebase
+import SwiftUI
 
 struct TransactionCategoryView: View {
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
@@ -45,6 +45,15 @@ struct TransactionCategoryView: View {
                     Spacer()
                     TextField("", text: self.$name).multilineTextAlignment(.trailing)
                         .focused(self.$isInputActive)
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+
+                                Button("Done") {
+                                    self.isInputActive = false
+                                }
+                            }
+                        }
                 }
                 HStack {
                     Text("type")
@@ -75,7 +84,7 @@ struct TransactionCategoryView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     Button("apply") {
-                        editTransactionCategory()
+                        self.editTransactionCategory()
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 }

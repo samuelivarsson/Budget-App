@@ -12,9 +12,9 @@ struct HomeView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
-    
+
     private let textSize: Font = .footnote
-    
+
     var body: some View {
         NavigationView {
             Form {
@@ -25,11 +25,12 @@ struct HomeView: View {
                         Spacer()
                         Text(Utility.doubleToLocalCurrency(value: user.budget.income))
                     }
+                } header: {
+                    Text("incomes")
                 }
-                .redacted(when: !self.userViewModel.firstLoadFinished)
 
                 Section {
-                    ForEach(user.budget.transactionCategoryAmounts) { transactionCategoryAmount in
+                    ForEach(user.budget.transactionCategoryAmounts.sorted { $0.categoryName < $1.categoryName }) { transactionCategoryAmount in
                         HStack {
                             let name = NSLocalizedString(transactionCategoryAmount.categoryName, comment: "")
                             Text(name)
@@ -37,28 +38,31 @@ struct HomeView: View {
                                 .multilineTextAlignment(.leading)
 
                             Spacer()
-                            
+
                             let spent = self.transactionsViewModel.getSpent(user: user, transactionCategoryAmount: transactionCategoryAmount)
                             Text(Utility.doubleToLocalCurrency(value: spent))
                                 .lineLimit(1)
                                 .font(self.textSize)
-                            
+
                             Spacer()
-                            
+
                             let amount = transactionCategoryAmount.getRealAmount(budget: user.budget)
 
-                            ProgressView(value: spent, total: amount)
+                            ProgressView(value: min(spent, amount), total: amount)
                                 .padding()
-                            
+
                             Spacer()
-                            
+
                             Text(Utility.doubleToLocalCurrency(value: amount))
                                 .lineLimit(1)
                                 .font(self.textSize)
                         }
                     }
+                } header: {
+                    Text("expenses")
                 }
             }
+            .redacted(when: !self.transactionsViewModel.firstLoadFinished)
             .navigationTitle("home")
             .toolbar {
                 ToolbarItem {

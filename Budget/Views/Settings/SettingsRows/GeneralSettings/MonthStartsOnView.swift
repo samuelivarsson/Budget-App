@@ -19,8 +19,6 @@ struct MonthStartsOnView: View {
         Form {
             Section {
                 HStack {
-                    Text("monthStartsOn")
-                    Spacer()
                     Picker("monthStartsOn", selection: $day) {
                         ForEach(1..<29) {
                             Text("\($0)")

@@ -13,38 +13,39 @@ struct TransactionCategoryAmountView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var errorHandling: ErrorHandling
     
-    @State var categoryAmount: TransactionCategoryAmount
+    @State var transactionCategoryAmount: TransactionCategoryAmount
     @FocusState var isInputActive: Bool
     
     private var add: Bool
 
     init(add: Bool) {
         self.add = add
-        self._categoryAmount = State(initialValue: TransactionCategoryAmount(categoryId: "", categoryName: "", amount: 0))
+        self._transactionCategoryAmount = State(initialValue: TransactionCategoryAmount(categoryId: "", categoryName: "", amount: 0))
     }
     
     init(transactionCategoryAmount: TransactionCategoryAmount) {
         self.add = false
-        self._categoryAmount = State(initialValue: transactionCategoryAmount)
+        self._transactionCategoryAmount = State(initialValue: transactionCategoryAmount)
     }
 
     var body: some View {
         Form {
             Section {
+                let user = self.userViewModel.user
                 HStack {
                     Text("transactionCategory")
                     
                     Spacer()
                     
                     if self.add {
-                        Picker("", selection: self.$categoryAmount.categoryId) {
-                            ForEach(self.userViewModel.user.transactionCategories) { category in
-                                let name = NSLocalizedString(category.name, comment: "")
+                        Picker("", selection: self.$transactionCategoryAmount.categoryId) {
+                            ForEach(self.userViewModel.user.transactionCategories.filter { $0.type == .expense }) { category in
+                                let name = category.name.localizeString()
                                 Text(name).tag(category.id)
                             }
                         }
                     } else {
-                        let name = NSLocalizedString(self.categoryAmount.categoryName, comment: "")
+                        let name = self.transactionCategoryAmount.categoryName.localizeString()
                         Text(name)
                     }
                 }
@@ -54,12 +55,11 @@ struct TransactionCategoryAmountView: View {
                         
                     Spacer()
                         
-                    if self.categoryAmount.custom {
-                        let user = self.userViewModel.user
-                        let amount: String = "\(self.categoryAmount.getCustomAmount(budget: user.budget))"
+                    if self.transactionCategoryAmount.custom || user.budget.transactionCategoryThatUsesRest == self.transactionCategoryAmount.categoryId {
+                        let amount: String = "\(self.transactionCategoryAmount.getRealAmount(budget: user.budget))"
                         Text(amount)
                     } else {
-                        TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$categoryAmount.amount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
+                        TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$transactionCategoryAmount.amount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .focused(self.$isInputActive)
@@ -67,31 +67,49 @@ struct TransactionCategoryAmountView: View {
                             .background(Color.tertiaryBackground)
                             .cornerRadius(8)
                             .fixedSize()
+                            .toolbar {
+                                ToolbarItemGroup(placement: .keyboard) {
+                                    Spacer()
+                                        
+                                    Button("Done") {
+                                        self.isInputActive = false
+                                    }
+                                }
+                            }
                     }
                         
                     Text(Utility.currencyFormatter.currencySymbol)
                 }
-                
-                HStack {
-                    Toggle("custom", isOn: self.$categoryAmount.custom)
-                }
-                
-                if self.categoryAmount.custom {
-                    HStack {
-                        Text("percentageOfRemaining")
-                        
-                        Spacer()
-                        
-                        TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$categoryAmount.customPercentage, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .focused(self.$isInputActive)
-                            .padding(5)
-                            .background(Color.tertiaryBackground)
-                            .cornerRadius(8)
-                            .fixedSize()
-                        
-                        Text("%")
+                 
+                if user.budget.transactionCategoryThatUsesRest != self.transactionCategoryAmount.categoryId {
+                    Toggle("custom", isOn: self.$transactionCategoryAmount.custom)
+                    
+                    if self.transactionCategoryAmount.custom {
+                        HStack {
+                            Text("percentageOfRemaining")
+                            
+                            Spacer()
+                            
+                            TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$transactionCategoryAmount.customPercentage, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
+                                .keyboardType(.decimalPad)
+                                .multilineTextAlignment(.trailing)
+                                .focused(self.$isInputActive)
+                                .padding(5)
+                                .background(Color.tertiaryBackground)
+                                .cornerRadius(8)
+                                .fixedSize()
+                                .toolbar {
+                                    ToolbarItemGroup(placement: .keyboard) {
+                                        Spacer()
+                                        
+                                        Button("Done") {
+                                            self.isInputActive = false
+                                        }
+                                    }
+                                }
+                            
+                            Text("%")
+                        }
                     }
                 }
             } footer: {
@@ -117,8 +135,13 @@ struct TransactionCategoryAmountView: View {
     }
     
     private func addTransactionCategoryAmount() {
-        self.categoryAmount.categoryName = self.userViewModel.getTransactionCategory(id: self.categoryAmount.categoryId).name
-        self.userViewModel.addTransactionCategoryAmount(newTGA: self.categoryAmount) { error in
+        guard self.userViewModel.user.budget.transactionCategoryAmountsAreLowerThanRemaining(updated: self.transactionCategoryAmount) else {
+            self.errorHandling.handle(error: InputError.transactionCategoryAmountsAddsUpToMoreThanRemaining)
+            return
+        }
+        
+        self.transactionCategoryAmount.categoryName = self.userViewModel.getTransactionCategory(id: self.transactionCategoryAmount.categoryId).name
+        self.userViewModel.addTransactionCategoryAmount(newTGA: self.transactionCategoryAmount) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
                 return
@@ -130,7 +153,12 @@ struct TransactionCategoryAmountView: View {
     }
     
     private func editTransactionCategoryAmount() {
-        self.userViewModel.editTransactionCategoryAmount(newTGA: self.categoryAmount) { error in
+        guard self.userViewModel.user.budget.transactionCategoryAmountsAreLowerThanRemaining(updated: self.transactionCategoryAmount) else {
+            self.errorHandling.handle(error: InputError.transactionCategoryAmountsAddsUpToMoreThanRemaining)
+            return
+        }
+        
+        self.userViewModel.editTransactionCategoryAmount(newTGA: self.transactionCategoryAmount) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
                 return

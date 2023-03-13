@@ -49,6 +49,8 @@
 "settings" = "Inställningar";
 
 // Home View
+"incomes" = "Inkomster";
+"expenses" = "Utgifter";
 "notifications" = "Notifikationer";
 "readAll" = "Läs alla";
 "markAsRead" = "Markera som läst";
@@ -95,9 +97,11 @@
 "quickBalance" = "Snabbsaldo";
 "takePicture" = "Ta ett foto";
 "choosePicture" = "Välj bild";
+"remaining" = "Resterande";
+"categoryThatUsesRest" = "Kategori som använder resten";
 "custom" = "Anpassad";
 "percentageOfRemaining" = "Procent av resterande";
-"transactionCategoryAmountNote" = "Här kan du välja vad varje kategori ska ha för tak i din budget. Om du väljer anpassad så kan du välja hur många procent av dina resterande pengar som ska gå till kategorin. De resterande pengarna är de pengar som blir över efter alla fasta kostnader, inklusive ditt sparande.";
+"transactionCategoryAmountNote" = "Här kan du välja vad varje kategori ska ha för tak i din budget. Om du väljer anpassad så kan du välja hur många procent av dina resterande pengar som ska gå till kategorin. De resterande pengarna är de pengar som blir över efter alla fasta kostnader, inklusive ditt sparande. Om du väljer använd resten så låter du denna kategorin använda de pengar som blir över efter de andra kategorierna har räknats med.";
 "transactionCategoryAmount" = "Transaktionskategoribelopp";
 "transactionCategoryAmounts" = "Transaktionskategoribelopp";
 "budget" = "Budget";
@@ -164,3 +168,4 @@
 "phoneTooShort" = "Telefonnumret du angav är för kort";
 "documentNotExist" = "Dokumentet som du försökte hämta finns inte";
 "noPhotoURL" = "Hittade nil vid extrahering av profilbilden, detta kan ignoreras om användaren inte har laddat up en profilbild än";
+"transactionCategoryAmountsAddsUpToMoreThanRemaining" = "Transaktionskategoribeloppen summerar upp till mer än vad som är över";

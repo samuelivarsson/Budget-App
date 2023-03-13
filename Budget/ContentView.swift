@@ -15,7 +15,7 @@ struct ContentView: View {
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
-    
+
     var body: some View {
         VStack {
             switch authViewModel.state {
@@ -31,7 +31,7 @@ struct ContentView: View {
         }
         .navigationViewStyle(.stack)
     }
-    
+
     private var content: some View {
         TabView {
             HomeView().tabItem {
@@ -57,14 +57,14 @@ struct ContentView: View {
                     self.errorHandling.handle(error: error)
                     return
                 }
-                
+
                 // Success
                 self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return
                     }
-                    
+
                     // Success
                 }
             }
@@ -73,7 +73,7 @@ struct ContentView: View {
                     self.errorHandling.handle(error: error)
                     return
                 }
-                
+
                 // Success
             }
         }
@@ -95,9 +95,12 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 extension String {
-    func localizeString(string: String) -> String {
-        let path = Bundle.main.path(forResource: string, ofType: "lproj")
-        let bundle = Bundle(path: path!)
-        return NSLocalizedString(self, tableName: nil, bundle: bundle!, value: "", comment: "")
+    //    func localizeString(string: String) -> String {
+    //        let path = Bundle.main.path(forResource: string, ofType: "lproj")
+    //        let bundle = Bundle(path: path!)
+    //        return NSLocalizedString(self, tableName: nil, bundle: bundle!, value: "", comment: "")
+    //    }
+    func localizeString() -> String {
+        return NSLocalizedString(self, comment: "")
     }
 }

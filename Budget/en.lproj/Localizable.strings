@@ -49,6 +49,8 @@
 "settings" = "Settings";
 
 // Home View
+"incomes" = "Incomes";
+"expenses" = "Expenses";
 "notifications" = "Notifications";
 "readAll" = "Read all";
 "markAsRead" = "Mark as read";
@@ -95,9 +97,11 @@
 "quickBalance" = "Quick balance";
 "takePicture" = "Take a picture";
 "choosePicture" = "Choose picture";
+"remaining" = "Remaining";
+"categoryThatUsesRest" = "Category that uses the rest";
 "custom" = "Custom";
 "percentageOfRemaining" = "Percentage of remaining";
-"transactionCategoryAmountNote" = "This allows you to choose what ceiling you want for each category in your budget. Choosing custom allows you to pick a percentage of your remaining money for this category. The remaining money is the money remaining after all overheads, your savings included";
+"transactionCategoryAmountNote" = "This allows you to choose what ceiling you want for each category in your budget. Choosing custom allows you to pick a percentage of your remaining money for this category. The remaining money is the money remaining after all overheads, your savings included. Choosing use rest allows this category to use the rest of the remaining money, that is, the money that is left after the other categories has been taken into account.";
 "transactionCategoryAmount" = "Transaction category amount";
 "transactionCategoryAmounts" = "Transaction category amounts";
 "budget" = "Budget";
@@ -164,3 +168,4 @@
 "phoneTooShort" = "The phone number you entered is too short";
 "documentNotExist" = "The document does not exist";
 "noPhotoURL" = "Found nil when extracting url in setProfilePicture in AuthViewModel, this can be ignored if the user hasn't uploaded a profile picture yet";
+"transactionCategoryAmountsAddsUpToMoreThanRemaining" = "The transaction category amounts adds up to more money than remaining";

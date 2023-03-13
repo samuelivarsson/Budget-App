@@ -13,29 +13,51 @@ struct TransactionCategoryAmountsView: View {
 
     var body: some View {
         Form {
-            if let user = self.userViewModel.user {
-                ForEach(TransactionType.allCases, id: \.self) { type in
-                    Section {
-                        let sortedTGA = user.budget.transactionCategoryAmounts.sorted { $0.categoryName < $1.categoryName }
-                        let filteredTGA = sortedTGA.filter { self.userViewModel.getTransactionCategory(id: $0.categoryId).type == type }
-                        ForEach(filteredTGA) { transactionCategoryAmount in
-                            NavigationLink {
-                                TransactionCategoryAmountView(transactionCategoryAmount: transactionCategoryAmount)
-                            } label: {
-                                HStack(spacing: 0) {
-                                    Text(LocalizedStringKey(transactionCategoryAmount.categoryName))
-                                    Text(": ")
-                                    let amountText = Utility.doubleToLocalCurrency(value: transactionCategoryAmount.getRealAmount(budget: user.budget))
-                                    Text(amountText)
-                                }
-                            }
-                        }.onDelete(perform: { indexSet in
-                            self.deleteTransactionCategoryAmount(offsets: indexSet, transactionCategoryAmounts: filteredTGA)
-                        })
-                    } header: {
-                        Text(type.description())
+            Section {
+                Picker("category", selection: self.$userViewModel.user.budget.transactionCategoryThatUsesRest) {
+                    ForEach(self.userViewModel.user.budget.transactionCategoryAmounts) { transactionCategoryAmount in
+                        Text(transactionCategoryAmount.categoryName.localizeString()).tag(transactionCategoryAmount.categoryId)
                     }
                 }
+                .onChange(of: self.userViewModel.user.budget.transactionCategoryThatUsesRest) { _ in
+                    self.userViewModel.setUserData { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
+                    }
+                }
+            } header: {
+                Text("categoryThatUsesRest")
+            }
+
+            Section {
+                HStack {
+                    Text("remaining")
+                    Spacer()
+                    Text(Utility.doubleToLocalCurrency(value: self.userViewModel.user.budget.getRemaining()))
+                }
+
+                let sortedTGA = self.userViewModel.user.budget.transactionCategoryAmounts.sorted { $0.categoryName < $1.categoryName }
+                let filteredTGA = sortedTGA.filter { self.userViewModel.getTransactionCategory(id: $0.categoryId).type == .expense }
+                ForEach(filteredTGA) { transactionCategoryAmount in
+                    NavigationLink {
+                        TransactionCategoryAmountView(transactionCategoryAmount: transactionCategoryAmount)
+                    } label: {
+                        HStack(spacing: 0) {
+                            Text(LocalizedStringKey(transactionCategoryAmount.categoryName))
+                            Text(": ")
+                            let amountText = Utility.doubleToLocalCurrency(value: transactionCategoryAmount.getRealAmount(budget: self.userViewModel.user.budget))
+                            Text(amountText)
+                        }
+                    }
+                }.onDelete(perform: { indexSet in
+                    self.deleteTransactionCategoryAmount(offsets: indexSet, transactionCategoryAmounts: filteredTGA)
+                })
+            } header: {
+                Text("expenses")
             }
         }
         .navigationTitle("transactionCategoryAmounts")

@@ -19,6 +19,7 @@ struct ParticipantsView: View {
     var body: some View {
         ScrollView {
             HStack(spacing: 20) {
+                Text("friends")
                 let friends = self.userViewModel.getAllFriendsSorted(exceptFor: self.participants)
                 ForEach(friends, id: \.id) { friend in
                     Button {
@@ -47,7 +48,7 @@ struct ParticipantsView: View {
         }
         
         Picker("payer", selection: self.$payer) {
-            ForEach(self.participants) { participant in
+            ForEach(self.participants, id: \.userId) { participant in
                 Text(participant.userName).tag(participant.userId)
             }
         }

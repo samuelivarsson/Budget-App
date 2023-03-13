@@ -9,6 +9,8 @@ import Firebase
 import Foundation
 
 class TransactionsViewModel: ObservableObject {
+    @Published var firstLoadFinished = false
+    
     @Published var transactions: [Transaction] = []
     
     private var db = Firestore.firestore()
@@ -23,7 +25,7 @@ class TransactionsViewModel: ObservableObject {
             return
         }
         let referenceDate: Date = Utility.getBudgetPeriod(monthStartsOn: monthStartsOn).0
-        listener = db.collection("Transactions").whereField("participantIds", arrayContains: uid).whereField("date", isGreaterThanOrEqualTo: referenceDate).order(by: "date", descending: true)
+        self.listener = db.collection("Transactions").whereField("participantIds", arrayContains: uid).whereField("date", isGreaterThanOrEqualTo: referenceDate).order(by: "date", descending: true)
             .addSnapshotListener { querySnapshot, error in
                 guard let documents = querySnapshot?.documents else {
                     print("Error fetching documents: \(error!)")
@@ -38,6 +40,8 @@ class TransactionsViewModel: ObservableObject {
                     
                     // Success
                     self.transactions = data
+                    print("Successfully set transactions in TransactionsViewModel")
+                    self.firstLoadFinished = true
                     completion(nil)
                 } catch {
                     print("Something went wrong when fetching transactions documents: \(error)")
@@ -53,7 +57,10 @@ class TransactionsViewModel: ObservableObject {
             completion(ApplicationError.unexpectedNil(info))
             return
         }
-        listener = db.collection("Transactions").whereField("participantIds", arrayContains: uid).order(by: "date", descending: true)
+        // Remove old listener
+        self.listener?.remove()
+        // Add new listener
+        self.listener = db.collection("Transactions").whereField("participantIds", arrayContains: uid).order(by: "date", descending: true)
             .addSnapshotListener { querySnapshot, error in
                 guard let documents = querySnapshot?.documents else {
                     print("Error fetching documents: \(error!)")
@@ -68,6 +75,7 @@ class TransactionsViewModel: ObservableObject {
                     
                     // Success
                     self.transactions = data
+                    print("Successfully set all transactions in TransactionsViewModel")
                     completion(nil)
                 } catch {
                     print("Something went wrong when fetching transactions documents: \(error)")
@@ -79,7 +87,9 @@ class TransactionsViewModel: ObservableObject {
     func getSpent(user: User, transactionCategoryAmount: TransactionCategoryAmount) -> Double {
         var total: Double = 0
         self.transactions.forEach { transaction in
-            total += transaction.getShare(user: user)
+            if transaction.category.id == transactionCategoryAmount.categoryId {
+                total += transaction.getShare(user: user)
+            }
         }
         
         return total

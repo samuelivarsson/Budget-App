@@ -16,7 +16,7 @@ struct User: Identifiable, Codable, Hashable, Named {
     var email: String
     var phone: String
     var monthStartsOn: Int
-    var budget: Budget = Budget.getDefault()
+    var budget: Budget = Budget.getDummyBudget()
     var friends: [Friend]
     var customFriends: [CustomFriend] = []
     var transactionCategories: [TransactionCategory] = []
@@ -24,8 +24,8 @@ struct User: Identifiable, Codable, Hashable, Named {
         [self.name.generateStringSequence(), self.name.split(separator: " ").map { String($0).generateStringSequence() }.flatMap { $0 }].flatMap { $0 }
     }
     
-    static func getDefault() -> User {
-        return User(id: "", documentId: "", name: "", email: "", phone: "", monthStartsOn: 25, budget: Budget.getDefault(), friends: [], customFriends: [], transactionCategories: [])
+    static func getDummyUser() -> User {
+        return User(id: "", documentId: "", name: "", email: "", phone: "", monthStartsOn: 25, budget: Budget.getDummyBudget(), friends: [], customFriends: [], transactionCategories: [])
     }
 }
 

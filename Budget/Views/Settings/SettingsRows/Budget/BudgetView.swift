@@ -14,9 +14,8 @@ struct BudgetView: View {
     var body: some View {
         Form {
             Section {
-                let budget = self.userViewModel.user.budget
                 NavigationLink {
-                    IncomeView(income: budget.income)
+                    IncomeView(income: self.userViewModel.user.budget.income)
                 } label: {
                     Label("income", systemImage: "bag.badge.plus")
                 }

@@ -10,9 +10,7 @@ import FirebaseFirestore
 import Foundation
 
 class UserViewModel: ObservableObject {
-    @Published var firstLoadFinished = false
-    
-    @Published var user: User = .getDefault()
+    @Published var user: User = .getDummyUser()
     @Published var friends: [User] = .init()
     @Published var favouriteIds: [String] = .init()
     @Published var friendRequests: [String] = .init()
@@ -68,7 +66,6 @@ class UserViewModel: ObservableObject {
                             
                             // Success
                             print("Successfully set friends in UserViewModel")
-                            self.firstLoadFinished = true
                             completion(nil)
                         }
                     }

@@ -11,20 +11,19 @@ struct TransactionsView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     
-    @AppStorage("monthStartsOn") var monthStartsOn = 25
     @State private var groupDates: [(Date, Date)] = []
     @State private var level: Int = 1
     
     var body: some View {
-        // TODO: - Only show transactions from the logged in user
         NavigationView {
             Form {
-                TransactionsGroupView(level: 0, monthStartsOn: monthStartsOn, showChildren: true)
+                TransactionsGroupView(level: 0, monthStartsOn: self.userViewModel.user.monthStartsOn, showChildren: true)
                 
                 ForEach(1 ..< level, id: \.self) {
-                    TransactionsGroupView(level: $0, monthStartsOn: monthStartsOn, showChildren: false)
+                    TransactionsGroupView(level: $0, monthStartsOn: self.userViewModel.user.monthStartsOn, showChildren: false)
                 }
                 Button {
                     self.transactionsViewModel.fetchAllData { error in

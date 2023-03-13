@@ -14,13 +14,15 @@ struct TransactionCategoryAmount: Identifiable, Codable, Hashable {
     var amount: Double
     var custom: Bool = false
     var customPercentage: Double = 0
-    
+
     func getCustomAmount(budget: Budget) -> Double {
         return self.customPercentage * 0.01 * budget.getRemaining()
     }
-    
+
     func getRealAmount(budget: Budget) -> Double {
-        if self.custom {
+        if budget.transactionCategoryThatUsesRest == self.categoryId {
+            return budget.getRest()
+        } else if self.custom {
             return self.getCustomAmount(budget: budget)
         } else {
             return self.amount

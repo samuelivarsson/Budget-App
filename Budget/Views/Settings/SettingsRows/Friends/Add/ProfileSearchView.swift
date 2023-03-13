@@ -13,14 +13,16 @@ struct ProfileSearchView: View {
     
     @State var keyword: String = ""
     
+    var isInputActive: FocusState<Bool>.Binding
+    
     var body: some View {
         let keywordBinding = Binding<String>(
             get: {
-                keyword
+                self.keyword
             },
             set: {
-                keyword = $0
-                self.usersLookupViewModel.fetchData(from: keyword) { error in
+                self.keyword = $0
+                self.usersLookupViewModel.fetchData(from: self.keyword) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return
@@ -30,10 +32,10 @@ struct ProfileSearchView: View {
                 }
             }
         )
-        SearchBarView(keyword: keywordBinding)
+        SearchBarView(keyword: keywordBinding, isInputActive: self.isInputActive)
         if self.usersLookupViewModel.queriedUsers.count > 0 {
             ScrollView {
-                ForEach(self.usersLookupViewModel.queriedUsers, id:\.documentId) { user in
+                ForEach(self.usersLookupViewModel.queriedUsers, id: \.documentId) { user in
                     ProfileBarView(user: user)
                         .environmentObject(self.usersLookupViewModel)
                 }
@@ -46,9 +48,12 @@ struct ProfileSearchView: View {
 struct SearchBarView: View {
     @Binding var keyword: String
     
+    var isInputActive: FocusState<Bool>.Binding
+    
     var body: some View {
-        TextField("searchForUser", text: $keyword)
+        TextField("searchForUser", text: self.$keyword)
             .autocorrectionDisabled(true)
+            .focused(self.isInputActive)
     }
 }
 
@@ -66,12 +71,12 @@ struct ProfileBarView: View {
     var body: some View {
         HStack {
             ProfilePicture(
-                uiImage: self.usersLookupViewModel.userPictures[user.id],
+                uiImage: self.usersLookupViewModel.userPictures[self.user.id],
                 failImage: Image(systemName: "person.circle")
             )
-                .frame(width: 40, height: 40)
-                .clipShape(Circle())
-            Text("\(user.name)")
+            .frame(width: 40, height: 40)
+            .clipShape(Circle())
+            Text("\(self.user.name)")
             Spacer()
             if self.addUserLoading {
                 ProgressView()
@@ -79,14 +84,14 @@ struct ProfileBarView: View {
                 if self.userViewModel.isUserFriend(uid: self.user.id) {
                     Image(systemName: "person.fill.checkmark")
                         .frame(maxWidth: 30)
-                } else if self.userViewModel.isUserRequested(uid: self.user.id){
+                } else if self.userViewModel.isUserRequested(uid: self.user.id) {
                     Button {
                         self.cancelFriendRequest(friend: self.user)
                     } label: {
                         Image(systemName: "person.fill.questionmark")
                     }
                 } else {
-                    let (notification, hasUserSentRequest) = self.notificationsViewModel.hasUserSentRequest(uid: user.id)
+                    let (notification, hasUserSentRequest) = self.notificationsViewModel.hasUserSentRequest(uid: self.user.id)
                     if hasUserSentRequest {
                         HStack {
                             Button {
@@ -150,7 +155,7 @@ struct ProfileBarView: View {
     }
     
     private func cancelFriendRequest(friend: User) {
-        self.userViewModel.cancelFriendRequest(friend: user) { error in
+        self.userViewModel.cancelFriendRequest(friend: self.user) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
                 return
@@ -223,8 +228,8 @@ struct ProfileBarView: View {
     }
 }
 
-struct ProfileSearchView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileSearchView()
-    }
-}
+//struct ProfileSearchView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ProfileSearchView()
+//    }
+//}
