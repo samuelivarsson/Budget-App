@@ -24,7 +24,7 @@ class Utility {
         currencyFormatter.minimumFractionDigits = 2
         return currencyFormatter
     }
-    
+
     static var currencyFormatterNoSymbol: NumberFormatter {
         let currencyFormatter = NumberFormatter()
         currencyFormatter.isPartialStringValidationEnabled = true
@@ -33,7 +33,7 @@ class Utility {
         currencyFormatter.minimumFractionDigits = 2
         return currencyFormatter
     }
-    
+
     static var currencyFormatterNoSymbolNoZeroSymbol: NumberFormatter {
         let currencyFormatter = NumberFormatter()
         currencyFormatter.isPartialStringValidationEnabled = true
@@ -43,7 +43,7 @@ class Utility {
         currencyFormatter.zeroSymbol = ""
         return currencyFormatter
     }
-    
+
     /// Converts any Double to Double with only 2 decimals
     static func doubleToTwoDecimals(value: Double) -> Double {
         let newValue = String(format: "%.2f", value)
@@ -54,17 +54,17 @@ class Utility {
         }
         return result
     }
-    
+
     /// Converts any Double to Double with only 2 decimals rounded down
     static func doubleToTwoDecimalsFloored(value: Double) -> Double {
         let decimals = pow(10.0, Double(2))
         let result = floor(value * decimals) / decimals
         return result
     }
-    
+
     /// Converts a double to a string representing the value as a currency
     static func doubleToLocalCurrency(value: Double) -> String {
-        guard let result: String = self.currencyFormatter.string(from: value as NSNumber) else {
+        guard let result: String = currencyFormatter.string(from: value as NSNumber) else {
             return "Error when formatting to local currency"
         }
         return result
@@ -376,12 +376,12 @@ struct MyBadge: View {
             Color.clear
             Text(String(count))
                 .font(.system(size: 16))
-                .foregroundColor(.primary)
+                .foregroundColor(.white)
                 .padding(5)
                 .background(Color.red)
                 .clipShape(Circle())
                 // custom positioning in the top-right corner
-                .alignmentGuide(.top) { $0[.bottom] }
+                .alignmentGuide(.top) { $0[.bottom] - $0.height * 0.25 }
                 .alignmentGuide(.trailing) { $0[.trailing] - $0.width * 0.25 }
         }
     }

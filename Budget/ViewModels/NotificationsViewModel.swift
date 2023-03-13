@@ -54,7 +54,6 @@ class NotificationsViewModel: ObservableObject {
     func setNotificationAsRead(notification: Notification, completion: @escaping (Error?) -> Void) {
         guard let notificationId = notification.documentId else {
             let info = "Found nil when extracting notificationId in setNotificationAsRead in NotificationsViewModel"
-            print(info)
             completion(ApplicationError.unexpectedNil(info))
             return
         }
@@ -67,6 +66,25 @@ class NotificationsViewModel: ObservableObject {
             
             // Success
             print("Successfully set notification as read")
+            completion(nil)
+        }
+    }
+    
+    func setNotificationAsUnRead(notification: Notification, completion: @escaping (Error?) -> Void) {
+        guard let notificationId = notification.documentId else {
+            let info = "Found nil when extracting notificationId in setNotificationAsUnRead in NotificationsViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        self.db.collection("Notifications").document(notificationId).updateData(["read": false]) { error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // Success
+            print("Successfully set notification as unread")
             completion(nil)
         }
     }
