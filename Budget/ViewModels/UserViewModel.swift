@@ -403,4 +403,11 @@ class UserViewModel: ObservableObject {
         // Update our user data
         self.setUserData(completion: completion)
     }
+    
+    func setMonthStartsOn(day: Int, completion: @escaping (Error?) -> Void) {
+        // Update the day
+        self.user.monthStartsOn = day
+        // Update our user data
+        self.setUserData(completion: completion)
+    }
 }

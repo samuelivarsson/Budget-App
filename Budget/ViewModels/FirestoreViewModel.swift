@@ -109,6 +109,7 @@ class FirestoreViewModel: ObservableObject {
                     name: user.displayName ?? "",
                     email: user.email ?? "",
                     phone: "",
+                    monthStartsOn: 25,
                     budget: Budget(accounts: [], income: 0, savingsPercentage: 0.5, transactionCategoryAmounts: [], overheads: [], overheadAccount: Account(name: "Overheads", type: .overhead)),
                     friends: [],
                     customFriends: [],

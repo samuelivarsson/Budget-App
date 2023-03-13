@@ -15,6 +15,7 @@ struct User: Identifiable, Codable, Hashable, Named {
     var name: String
     var email: String
     var phone: String
+    var monthStartsOn: Int
     var budget: Budget = Budget.getDefault()
     var friends: [Friend]
     var customFriends: [CustomFriend] = []
@@ -24,7 +25,7 @@ struct User: Identifiable, Codable, Hashable, Named {
     }
     
     static func getDefault() -> User {
-        return User(id: "", documentId: "", name: "", email: "", phone: "", budget: Budget.getDefault(), friends: [], customFriends: [], transactionCategories: [])
+        return User(id: "", documentId: "", name: "", email: "", phone: "", monthStartsOn: 25, budget: Budget.getDefault(), friends: [], customFriends: [], transactionCategories: [])
     }
 }
 

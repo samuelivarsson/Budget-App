@@ -25,7 +25,7 @@ struct TransactionCategoryAmountsView: View {
                                 HStack(spacing: 0) {
                                     Text(LocalizedStringKey(transactionCategoryAmount.categoryName))
                                     Text(": ")
-                                    let amountText = Utility.currencyFormatter.string(from: transactionCategoryAmount.getRealAmount(budget: user.budget) as NSNumber) ?? ""
+                                    let amountText = Utility.doubleToLocalCurrency(value: transactionCategoryAmount.getRealAmount(budget: user.budget))
                                     Text(amountText)
                                 }
                             }

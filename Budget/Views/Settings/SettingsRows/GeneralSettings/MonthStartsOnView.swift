@@ -9,7 +9,10 @@ import SwiftUI
 
 struct MonthStartsOnView: View {
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
-    @AppStorage("monthStartsOn") private var monthStartsOn = 25
+    
+    @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var userViewModel: UserViewModel
+    
     @State private var day: Int = 0
     
     var body: some View {
@@ -25,13 +28,20 @@ struct MonthStartsOnView: View {
                     }
                     .pickerStyle(.menu)
                     .onAppear {
-                        day = monthStartsOn-1
+                        day = self.userViewModel.user.monthStartsOn-1
                     }
                 }
             }
             
             Button {
-                monthStartsOn = day+1
+                self.userViewModel.setMonthStartsOn(day: day+1) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
+                }
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 HStack {

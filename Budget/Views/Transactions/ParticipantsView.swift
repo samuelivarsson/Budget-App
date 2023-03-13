@@ -72,7 +72,7 @@ struct ParticipantsView: View {
                 Text(participant.userName)
                 Spacer()
                 if self.splitEvenly {
-                    Text(Utility.currencyFormatter.string(from: participant.amount as NSNumber) ?? "0")
+                    Text(Utility.doubleToLocalCurrency(value: participant.amount))
                         .padding(5)
                 } else {
                     HStack {

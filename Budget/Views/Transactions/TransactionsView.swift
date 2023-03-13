@@ -18,16 +18,24 @@ struct TransactionsView: View {
     @State private var level: Int = 1
     
     var body: some View {
-        // TODO - Only show transactions from the logged in user
+        // TODO: - Only show transactions from the logged in user
         NavigationView {
             Form {
                 TransactionsGroupView(level: 0, monthStartsOn: monthStartsOn, showChildren: true)
                 
-                ForEach(1..<level, id: \.self) {
+                ForEach(1 ..< level, id: \.self) {
                     TransactionsGroupView(level: $0, monthStartsOn: monthStartsOn, showChildren: false)
                 }
                 Button {
-                    level += 5
+                    self.transactionsViewModel.fetchAllData { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
+                        level += 5
+                    }
                 } label: {
                     HStack {
                         Spacer()
@@ -48,16 +56,6 @@ struct TransactionsView: View {
                     } label: {
                         Label("Add Item", systemImage: "plus")
                     }
-                }
-            }
-            .onLoad {
-                self.transactionsViewModel.fetchData { error in
-                    if let error = error {
-                        self.errorHandling.handle(error: error)
-                        return
-                    }
-                    
-                    // Success
                 }
             }
         }

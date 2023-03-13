@@ -14,6 +14,7 @@ struct ContentView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
+    @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     
     var body: some View {
         VStack {
@@ -58,6 +59,14 @@ struct ContentView: View {
                 }
                 
                 // Success
+                self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
+                }
             }
             self.notificationsViewModel.fetchData { error in
                 if let error = error {

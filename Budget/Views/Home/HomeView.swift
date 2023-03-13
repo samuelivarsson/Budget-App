@@ -13,6 +13,8 @@ struct HomeView: View {
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     
+    private let textSize: Font = .footnote
+    
     var body: some View {
         NavigationView {
             Form {
@@ -21,8 +23,7 @@ struct HomeView: View {
                     HStack {
                         Text("income")
                         Spacer()
-                        let income = "\(user.budget.income)"
-                        Text(income)
+                        Text(Utility.doubleToLocalCurrency(value: user.budget.income))
                     }
                 }
                 .redacted(when: !self.userViewModel.firstLoadFinished)
@@ -32,12 +33,28 @@ struct HomeView: View {
                         HStack {
                             let name = NSLocalizedString(transactionCategoryAmount.categoryName, comment: "")
                             Text(name)
+                                .frame(maxWidth: 150)
+                                .multilineTextAlignment(.leading)
 
+                            Spacer()
+                            
                             let spent = self.transactionsViewModel.getSpent(user: user, transactionCategoryAmount: transactionCategoryAmount)
+                            Text(Utility.doubleToLocalCurrency(value: spent))
+                                .lineLimit(1)
+                                .font(self.textSize)
+                            
+                            Spacer()
+                            
                             let amount = transactionCategoryAmount.getRealAmount(budget: user.budget)
 
                             ProgressView(value: spent, total: amount)
                                 .padding()
+                            
+                            Spacer()
+                            
+                            Text(Utility.doubleToLocalCurrency(value: amount))
+                                .lineLimit(1)
+                                .font(self.textSize)
                         }
                     }
                 }
