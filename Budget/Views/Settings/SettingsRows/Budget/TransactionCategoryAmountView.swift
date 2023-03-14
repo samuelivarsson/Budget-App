@@ -39,7 +39,7 @@ struct TransactionCategoryAmountView: View {
                     
                     if self.add {
                         Picker("", selection: self.$transactionCategoryAmount.categoryId) {
-                            ForEach(self.userViewModel.user.transactionCategories.filter { $0.type == .expense }) { category in
+                            ForEach(self.userViewModel.getTransactionCategoriesSorted(type: .expense)) { category in
                                 let name = category.name.localizeString()
                                 Text(name).tag(category.id)
                             }
@@ -132,6 +132,12 @@ struct TransactionCategoryAmountView: View {
         }
         .navigationTitle("transactionCategoryAmount")
         .navigationBarTitleDisplayMode(.inline)
+        .onLoad {
+            let transactionCategories = self.userViewModel.getTransactionCategoriesSorted(type: .expense)
+            if transactionCategories.count > 0 {
+                self.transactionCategoryAmount.categoryId = transactionCategories[0].id
+            }
+        }
     }
     
     private func addTransactionCategoryAmount() {

@@ -51,6 +51,6 @@ struct Budget: Identifiable, Codable, Hashable {
     
     /// Returns true if all transaction category amounts sums up to less than the remaining money. Is used to check that there is money left for the category that uses the rest.
     func transactionCategoryAmountsAreLowerThanRemaining(updated: TransactionCategoryAmount) -> Bool {
-        return self.getCategoryAmounts(exceptFor: updated) + updated.getRealAmount(budget: self) < self.getRemaining()
+        return self.getCategoryAmounts(exceptFor: updated) + updated.getRealAmount(budget: self) <= self.getRemaining()
     }
 }

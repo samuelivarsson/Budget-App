@@ -14,26 +14,21 @@ struct TransactionCategoriesView: View {
     
     var body: some View {
         Form {
-            if let user = self.userViewModel.user {
                 ForEach(TransactionType.allCases, id: \.self) { type in
                     Section {
-                        let filteredTG = user.transactionCategories.filter({ $0.type == type })
-                        ForEach(filteredTG) { transactionCategory in
+                        ForEach(self.userViewModel.getTransactionCategoriesSorted(type: type)) { transactionCategory in
                             NavigationLink {
                                 TransactionCategoryView(transactionCategory: transactionCategory)
                             } label: {
                                 Text(LocalizedStringKey(transactionCategory.name))
                             }
-                        }.onDelete(perform: { indexSet in
-                            self.deleteTransactionCategory(offsets: indexSet, transactionCategories: filteredTG)
-                        })
+                        }.onDelete { indexSet in
+                            self.deleteTransactionCategory(offsets: indexSet, type: type)
+                        }
                     } header: {
                         Text(type.description())
                     }
                 }
-            } else {
-                Text("No user found!")
-            }
         }
         .navigationTitle("transactionCategories")
         .navigationBarTitleDisplayMode(.inline)
@@ -51,9 +46,9 @@ struct TransactionCategoriesView: View {
         }
     }
     
-    private func deleteTransactionCategory(offsets: IndexSet, transactionCategories: [TransactionCategory]) {
+    private func deleteTransactionCategory(offsets: IndexSet, type: TransactionType) {
         withAnimation {
-            offsets.map { transactionCategories[$0] }.forEach { transactionCategory in
+            offsets.map { self.userViewModel.getTransactionCategoriesSorted(type: type)[$0] }.forEach { transactionCategory in
                 self.userViewModel.deleteTransactionCategory(transactionCategory: transactionCategory) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)

@@ -106,6 +106,7 @@
 "transactionCategoryAmount" = "Transaction category amount";
 "transactionCategoryAmounts" = "Transaction category amounts";
 "budget" = "Budget";
+"noTransactionCategoryAmounts" = "You have no transaction category amounts";
 
 // Friends View
 "friends" = "Friends";

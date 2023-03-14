@@ -106,6 +106,7 @@
 "transactionCategoryAmount" = "Transaktionskategoribelopp";
 "transactionCategoryAmounts" = "Transaktionskategoribelopp";
 "budget" = "Budget";
+"noTransactionCategoryAmounts" = "Du har inga transaktionskategoribelopp";
 
 // Friends View
 "friends" = "Vänner";

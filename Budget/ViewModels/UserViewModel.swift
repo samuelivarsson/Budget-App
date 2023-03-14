@@ -202,6 +202,10 @@ class UserViewModel: ObservableObject {
     }
     
     func addTransactionCategoryAmount(newTGA: TransactionCategoryAmount, completion: @escaping (Error?) -> Void) {
+        if self.getTransactionCategoryAmountsSorted().count < 1 {
+            self.user.budget.transactionCategoryThatUsesRest = newTGA.categoryId
+        }
+        
         self.user.budget.transactionCategoryAmounts = self.user.budget.transactionCategoryAmounts + [newTGA]
         
         self.setUserData(completion: completion)
@@ -215,6 +219,15 @@ class UserViewModel: ObservableObject {
     
     func deleteTransactionCategoryAmount(transactionCategoryAmount: TransactionCategoryAmount, completion: @escaping (Error?) -> Void) {
         self.user.budget.transactionCategoryAmounts = self.user.budget.transactionCategoryAmounts.filter { $0.id != transactionCategoryAmount.id }
+        
+        if transactionCategoryAmount.categoryId == self.user.budget.transactionCategoryThatUsesRest {
+            let transactionCategoryAmounts = self.getTransactionCategoryAmountsSorted()
+            if transactionCategoryAmounts.count < 1 {
+                self.user.budget.transactionCategoryThatUsesRest = ""
+            } else {
+                self.user.budget.transactionCategoryThatUsesRest = transactionCategoryAmounts[0].categoryId
+            }
+        }
         
         self.setUserData(completion: completion)
     }
@@ -392,6 +405,26 @@ class UserViewModel: ObservableObject {
         return sortedFriends.filter { friend in
             !exceptFor.contains { $0.userId == friend.id }
         }
+    }
+    
+    func getTransactionCategoriesSorted(type: TransactionType? = nil) -> [TransactionCategory] {
+        let sortedTGA = self.user.transactionCategories.sorted { $0.name < $1.name }
+        
+        if let type = type {
+            return sortedTGA.filter { $0.type == type }
+        }
+        
+        return sortedTGA
+    }
+    
+    func getTransactionCategoryAmountsSorted(type: TransactionType? = nil) -> [TransactionCategoryAmount] {
+        let sortedTGA = self.user.budget.transactionCategoryAmounts.sorted { $0.categoryName < $1.categoryName }
+        
+        if let type = type {
+            return sortedTGA.filter { self.getTransactionCategory(id: $0.categoryId).type == type }
+        }
+        
+        return sortedTGA
     }
     
     func setIncome(income: Double, completion: @escaping (Error?) -> Void) {
