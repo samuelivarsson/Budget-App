@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+import FirebaseFirestore
 
 class NotificationsViewModel: ObservableObject {
     @Published var notifications: [Notification] = [Notification]()

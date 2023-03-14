@@ -82,6 +82,7 @@
 "description" = "Beskrivning";
 "shortDescription" = "En kort beskrivning";
 "payer" = "Betalare";
+"noTransactionsThisPeriod" = "Du har inga transaktioner under denna period";
 
 // Settings
 "myInformation" = "Mina uppgifter";

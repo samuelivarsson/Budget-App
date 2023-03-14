@@ -5,8 +5,8 @@
 //  Created by Samuel Ivarsson on 2022-05-05.
 //
 
-import SwiftUI
 import FirebaseAuth
+import SwiftUI
 
 struct TransactionsGroupView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -28,9 +28,13 @@ struct TransactionsGroupView: View {
     
     var body: some View {
         Section {
-            if showChildren {
-                ForEach(transactionsViewModel.transactions.filter({ $0.date >= from && $0.date <= to })) { transaction in
-                    Section {
+            if self.showChildren {
+                let transactions = self.transactionsViewModel.getTransactions(from: self.from, to: self.to)
+                if transactions.count < 1 {
+                    Text("noTransactionsThisPeriod")
+                        .font(.footnote)
+                } else {
+                    ForEach(transactions) { transaction in
                         NavigationLink {
                             TransactionView(transaction: transaction, myId: self.userViewModel.user.id)
                         } label: {
@@ -42,10 +46,10 @@ struct TransactionsGroupView: View {
                         }
                         .frame(height: 50)
                         .padding()
+                        .transition(.asymmetric(insertion: .fadeAndSlide, removal: .fadeAndSlide))
                     }
-                    .transition(.asymmetric(insertion: .fadeAndSlide, removal: .fadeAndSlide))
+                    .onDelete(perform: deleteTransactions)
                 }
-                .onDelete(perform: deleteTransactions)
             }
         } header: {
             HStack {
@@ -73,7 +77,7 @@ struct TransactionsGroupView: View {
     
     private func deleteTransactions(offsets: IndexSet) {
         withAnimation {
-            offsets.map { self.transactionsViewModel.transactions[$0] }.forEach { transaction in
+            offsets.map { self.transactionsViewModel.getTransactions(from: self.from, to: self.to)[$0] }.forEach { transaction in
                 transaction.delete { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)

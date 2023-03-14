@@ -59,13 +59,16 @@ struct ContentView: View {
                 }
 
                 // Success
-                self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn) { error in
-                    if let error = error {
-                        self.errorHandling.handle(error: error)
-                        return
-                    }
+                if !self.transactionsViewModel.firstLoadFinished {
+                    self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn) { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
 
-                    // Success
+                        // Success
+                        self.transactionsViewModel.firstLoadFinished = true
+                    }
                 }
             }
             self.notificationsViewModel.fetchData { error in

@@ -17,15 +17,18 @@ class TransactionsViewModel: ObservableObject {
     
     var listener: ListenerRegistration?
     
-    func fetchData(monthStartsOn: Int, completion: @escaping (Error?) -> Void) {
+    func fetchData(monthStartsOn: Int, monthsBack: Int = 0, completion: @escaping (Error?) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {
             let info = "Found nil when extracting uid in fetchData in TransactionsViewModel"
             print(info)
             completion(ApplicationError.unexpectedNil(info))
             return
         }
-        let referenceDate: Date = Utility.getBudgetPeriod(monthStartsOn: monthStartsOn).0
-        self.listener = db.collection("Transactions").whereField("participantIds", arrayContains: uid).whereField("date", isGreaterThanOrEqualTo: referenceDate).order(by: "date", descending: true)
+        let referenceDate: Date = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: monthStartsOn).0
+        // Remove old listener
+        self.listener?.remove()
+        // Add new listener
+        self.listener = self.db.collection("Transactions").whereField("participantIds", arrayContains: uid).whereField("date", isGreaterThanOrEqualTo: referenceDate).order(by: "date", descending: true)
             .addSnapshotListener { querySnapshot, error in
                 guard let documents = querySnapshot?.documents else {
                     print("Error fetching documents: \(error!)")
@@ -41,7 +44,6 @@ class TransactionsViewModel: ObservableObject {
                     // Success
                     self.transactions = data
                     print("Successfully set transactions in TransactionsViewModel")
-                    self.firstLoadFinished = true
                     completion(nil)
                 } catch {
                     print("Something went wrong when fetching transactions documents: \(error)")
@@ -60,7 +62,7 @@ class TransactionsViewModel: ObservableObject {
         // Remove old listener
         self.listener?.remove()
         // Add new listener
-        self.listener = db.collection("Transactions").whereField("participantIds", arrayContains: uid).order(by: "date", descending: true)
+        self.listener = self.db.collection("Transactions").whereField("participantIds", arrayContains: uid).order(by: "date", descending: true)
             .addSnapshotListener { querySnapshot, error in
                 guard let documents = querySnapshot?.documents else {
                     print("Error fetching documents: \(error!)")
@@ -93,5 +95,9 @@ class TransactionsViewModel: ObservableObject {
         }
         
         return total
+    }
+    
+    func getTransactions(from: Date, to: Date) -> [Transaction] {
+        return self.transactions.filter { $0.date >= from && $0.date < to }
     }
 }

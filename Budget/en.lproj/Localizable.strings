@@ -82,6 +82,7 @@
 "description" = "Description";
 "shortDescription" = "A short description";
 "payer" = "Payer";
+"noTransactionsThisPeriod" = "You have no transactions during this period";
 
 // Settings
 "myInformation" = "My information";

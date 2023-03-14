@@ -14,7 +14,6 @@ struct TransactionsView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     
-    @State private var groupDates: [(Date, Date)] = []
     @State private var level: Int = 1
     
     var body: some View {
@@ -22,27 +21,31 @@ struct TransactionsView: View {
             Form {
                 TransactionsGroupView(level: 0, monthStartsOn: self.userViewModel.user.monthStartsOn, showChildren: true)
                 
-                ForEach(1 ..< level, id: \.self) {
+                ForEach(1 ..< self.level, id: \.self) {
                     TransactionsGroupView(level: $0, monthStartsOn: self.userViewModel.user.monthStartsOn, showChildren: false)
                 }
-                Button {
-                    self.transactionsViewModel.fetchAllData { error in
-                        if let error = error {
-                            self.errorHandling.handle(error: error)
-                            return
+                
+                Section {
+                    Button {
+                        self.level += 5
+                        self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn, monthsBack: self.level + 4) { error in
+                            if let error = error {
+                                self.errorHandling.handle(error: error)
+                                self.level -= 5
+                                return
+                            }
+                            
+                            // Success
                         }
-                        
-                        // Success
-                        level += 5
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("loadMore")
+                            Spacer()
+                        }
                     }
-                } label: {
-                    HStack {
-                        Spacer()
-                        Text("loadMore")
-                        Spacer()
-                    }
+                    .listRowBackground(colorScheme == .dark ? Color.background : Color.secondaryBackground)
                 }
-                .listRowBackground(colorScheme == .dark ? Color.background : Color.secondaryBackground)
             }
             .navigationTitle("transactions")
             .toolbar {
