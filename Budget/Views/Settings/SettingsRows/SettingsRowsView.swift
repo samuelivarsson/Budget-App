@@ -36,11 +36,6 @@ struct SettingsRowsView: View {
             name: "budget",
             imgName: "dollarsign",
             view: AnyView(BudgetView())
-        ),
-        Setting(
-            name: "transactionCategories",
-            imgName: "arrow.left.arrow.right",
-            view: AnyView(TransactionCategoriesView())
         )
     ]
 

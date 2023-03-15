@@ -15,15 +15,21 @@ struct BudgetView: View {
         Form {
             Section {
                 NavigationLink {
+                    AccountsView()
+                } label: {
+                    Label("accounts", systemImage: "creditcard.and.123")
+                }
+                
+                NavigationLink {
                     IncomeView(income: self.userViewModel.user.budget.income)
                 } label: {
                     Label("income", systemImage: "bag.badge.plus")
                 }
                 
                 NavigationLink {
-                    TransactionCategoryAmountsView()
+                    TransactionCategoriesView()
                 } label: {
-                    Label("transactionCategoryAmounts", systemImage: "arrow.left.arrow.right")
+                    Label("transactionCategories", systemImage: "arrow.left.arrow.right")
                 }
             }
         }

@@ -24,6 +24,10 @@ struct Transaction: Identifiable, Codable {
 
     var id: String { documentId ?? "" }
     
+    static func getDummyTransaction(category: TransactionCategory = TransactionCategory.getDummyCategory()) -> Transaction {
+        return Transaction(totalAmount: 0, category: category, date: Date(), desc: "", creator: "", payer: "", participants: [], type: .expense)
+    }
+    
     func getImageName() -> String {
         switch type {
         case .expense:

@@ -72,6 +72,8 @@ extension AccountError: LocalizedError {
 
 enum UserError: Error {
     case noUserWithEmail
+    case noAccountsYet
+    case accountIsUsedByAmount
 }
 
 extension UserError: LocalizedError {
@@ -79,6 +81,10 @@ extension UserError: LocalizedError {
         switch self {
         case .noUserWithEmail:
             return NSLocalizedString("noUserWithEmail", comment: "User Error")
+        case .noAccountsYet:
+            return NSLocalizedString("noAccountsYet", comment: "User Error")
+        case .accountIsUsedByAmount:
+            return NSLocalizedString("accountIsUsedByAmount", comment: "User Error")
         }
     }
 }

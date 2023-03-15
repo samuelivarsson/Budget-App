@@ -11,9 +11,35 @@ struct TransactionCategoriesView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
-    
+
     var body: some View {
         Form {
+            if self.userViewModel.getTransactionCategoriesSorted().count < 1 {
+                Text("noTransactionCategories")
+            } else {
+                Section {
+                    Picker("category", selection: self.$userViewModel.user.budget.transactionCategoryThatUsesRest) {
+                        Text("none").tag("")
+                        ForEach(self.userViewModel.getTransactionCategoriesSorted(type: .expense)) { transactionCategory in
+                            Text(transactionCategory.name.localizeString()).tag(transactionCategory.id)
+                        }
+                    }
+                    .onChange(of: self.userViewModel.user.budget.transactionCategoryThatUsesRest) { _ in
+                        self.userViewModel.setUserData { error in
+                            if let error = error {
+                                self.errorHandling.handle(error: error)
+                                return
+                            }
+                            
+                            // Success
+                        }
+                    }
+                } header: {
+                    Text("categoryThatUsesRest")
+                } footer: {
+                    Text("categoryThatUsesRestOfMainTransactionAccount")
+                }
+                
                 ForEach(TransactionType.allCases, id: \.self) { type in
                     Section {
                         ForEach(self.userViewModel.getTransactionCategoriesSorted(type: type)) { transactionCategory in
@@ -29,6 +55,7 @@ struct TransactionCategoriesView: View {
                         Text(type.description())
                     }
                 }
+            }
         }
         .navigationTitle("transactionCategories")
         .navigationBarTitleDisplayMode(.inline)
@@ -45,7 +72,7 @@ struct TransactionCategoriesView: View {
             }
         }
     }
-    
+
     private func deleteTransactionCategory(offsets: IndexSet, type: TransactionType) {
         withAnimation {
             offsets.map { self.userViewModel.getTransactionCategoriesSorted(type: type)[$0] }.forEach { transactionCategory in
@@ -54,7 +81,7 @@ struct TransactionCategoriesView: View {
                         self.errorHandling.handle(error: error)
                         return
                     }
-                    
+
                     // Success
                 }
             }

@@ -19,13 +19,12 @@ struct User: Identifiable, Codable, Hashable, Named {
     var budget: Budget = Budget.getDummyBudget()
     var friends: [Friend]
     var customFriends: [CustomFriend] = []
-    var transactionCategories: [TransactionCategory] = []
     var keywordsForLookup: [String] {
         [self.name.generateStringSequence(), self.name.split(separator: " ").map { String($0).generateStringSequence() }.flatMap { $0 }].flatMap { $0 }
     }
     
-    static func getDummyUser() -> User {
-        return User(id: "", documentId: "", name: "", email: "", phone: "", monthStartsOn: 25, budget: Budget.getDummyBudget(), friends: [], customFriends: [], transactionCategories: [])
+    static func getDummyUser(id: String = "", name: String = "", email: String = "") -> User {
+        return User(id: id, documentId: "", name: name, email: email, phone: "", monthStartsOn: 25, budget: Budget.getDummyBudget(), friends: [], customFriends: [])
     }
 }
 

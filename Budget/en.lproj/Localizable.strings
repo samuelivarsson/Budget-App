@@ -100,13 +100,28 @@
 "choosePicture" = "Choose picture";
 "remaining" = "Remaining";
 "categoryThatUsesRest" = "Category that uses the rest";
+"categoryThatUsesRestOfMainTransactionAccount" = "Choose which category that should use what gets left over from the remaining money in the main transaction account";
 "custom" = "Custom";
 "percentageOfRemaining" = "Percentage of remaining";
 "transactionCategoryAmountNote" = "This allows you to choose what ceiling you want for each category in your budget. Choosing custom allows you to pick a percentage of your remaining money for this category. The remaining money is the money remaining after all overheads, your savings included. Choosing use rest allows this category to use the rest of the remaining money, that is, the money that is left after the other categories has been taken into account.";
 "transactionCategoryAmount" = "Transaction category amount";
 "transactionCategoryAmounts" = "Transaction category amounts";
 "budget" = "Budget";
-"noTransactionCategoryAmounts" = "You have no transaction category amounts";
+"budgetAccount" = "Budget account";
+"account" = "Account";
+"accounts" = "Accounts";
+"budgetAccounts" = "Budget accounts";
+"noBudgetAccounts" = "You have no budget accounts";
+"noTransactionCategories" = "You have no transaction categories";
+"transaction" = "Transaction";
+"overhead" = "Overhead";
+"mainAccount" = "Main account";
+"takesFrom" = "Takes from";
+"givesTo" = "Gives to";
+"none" = "None";
+"ceiling" = "Ceiling";
+"categoryCeiling" = "Category ceiling";
+"useRest" = "Use rest";
 
 // Friends View
 "friends" = "Friends";
@@ -157,6 +172,8 @@
 "notSignedIn" = "You are not signed in";
 "youreOffline" = "You are offline";
 "noUserWithEmail" = "There is no user with that email";
+"noAccountsYet" = "You have no accounts in your budget yet. You need to create one before you can proceed with this action";
+"accountIsUsedByAmount" = "This account is used by a transaction category amount";
 "applicationError" = "Application error";
 "unexpectedNil" = "An unexpected nil turned up";
 "pleaseTryAgain" = "Please try again";

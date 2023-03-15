@@ -86,10 +86,12 @@ class TransactionsViewModel: ObservableObject {
             }
     }
     
-    func getSpent(user: User, transactionCategoryAmount: TransactionCategoryAmount) -> Double {
+    func getSpent(user: User, transactionCategory: TransactionCategory) -> Double {
         var total: Double = 0
-        self.transactions.forEach { transaction in
-            if transaction.category.id == transactionCategoryAmount.categoryId {
+        let (from, to) = Utility.getBudgetPeriod(monthStartsOn: user.monthStartsOn)
+        let thisMonthsTransactions = self.getTransactions(from: from, to: to)
+        thisMonthsTransactions.forEach { transaction in
+            if transaction.category.id == transactionCategory.id {
                 total += transaction.getShare(user: user)
             }
         }

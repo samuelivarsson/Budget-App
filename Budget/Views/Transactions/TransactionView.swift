@@ -18,30 +18,13 @@ struct TransactionView: View {
     @EnvironmentObject private var firestoreViewModel: FirestoreViewModel
     
     @State private var transaction: Transaction
-    @State private var transactionCategories: [TransactionCategory] = .init()
     @FocusState var isInputActive: Bool
     
     private var action: TransactionAction
     
-    init(action: TransactionAction) {
+    init(action: TransactionAction, firstCategory: TransactionCategory) {
         self.action = action
-        let category = TransactionCategory(
-            name: "food",
-            type: TransactionType.expense,
-            useSavingsAccount: false,
-            useBuffer: false
-        )
-        let transaction = Transaction(
-            totalAmount: 0,
-            category: category,
-            date: Date.now,
-            desc: "",
-            creator: "",
-            payer: "",
-            participants: [],
-            type: TransactionType.expense
-        )
-        self._transaction = State(initialValue: transaction)
+        self._transaction = State(initialValue: Transaction.getDummyTransaction(category: firstCategory))
     }
     
     init(transaction: Transaction, myId: String) {
@@ -87,7 +70,6 @@ struct TransactionView: View {
             if self.transaction.payer == "" {
                 self.transaction.payer = self.transaction.participants[0].id
             }
-            self.transactionCategories = user.transactionCategories
         }
     }
     
@@ -122,20 +104,14 @@ struct TransactionView: View {
     
     private var categoryView: some View {
         HStack(spacing: 30) {
-            let list = self.transactionCategories.filter { $0.type == self.transaction.type }
             Picker("category", selection: self.$transaction.category) {
-                ForEach(list) { category in
+                ForEach(self.userViewModel.getTransactionCategoriesSorted(type: self.transaction.type), id: \.self) { category in
                     Text(LocalizedStringKey(category.name)).tag(category)
                 }
             }
             .pickerStyle(.menu)
             .onLoad {
-                guard let first = list.first else {
-                    print("There are no categories!")
-                    return
-                }
-
-                self.transaction.category = first
+                self.transaction.category = self.userViewModel.getFirstTransactionCategory(type: self.transaction.type)
             }
         }
     }

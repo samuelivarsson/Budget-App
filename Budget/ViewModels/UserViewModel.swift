@@ -42,7 +42,7 @@ class UserViewModel: ObservableObject {
                     completion(error!)
                     return
                 }
-
+                
                 // Succes
                 do {
                     let data = try document.data(as: User.self)
@@ -50,24 +50,15 @@ class UserViewModel: ObservableObject {
                     // Success
                     print("Successfully set user in UserViewModel")
                     self.user = data
-                    self.sortTransactionCategories { error in
+                    self.setFriends(from: data) { error in
                         if let error = error {
                             completion(error)
                             return
                         }
-                        
-                        // Success
-                        print("Successfully sorted transaction categories in UserViewModel")
-                        self.setFriends(from: data) { error in
-                            if let error = error {
-                                completion(error)
-                                return
-                            }
                             
-                            // Success
-                            print("Successfully set friends in UserViewModel")
-                            completion(nil)
-                        }
+                        // Success
+                        print("Successfully set friends in UserViewModel")
+                        completion(nil)
                     }
                 } catch {
                     print("No document with id \(uid) found, error message: \(error)")
@@ -112,7 +103,7 @@ class UserViewModel: ObservableObject {
                 completion(FirestoreError.documentNotExist)
                 return
             }
-                    
+            
             // Success
             var exit = false
             let newFriends = documents.compactMap { queryDocumentSnapshot in
@@ -172,62 +163,62 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    func sortTransactionCategories(completion: @escaping (Error?) -> Void) {
-        self.user.transactionCategories = self.user.transactionCategories.sorted(by: { $0.name.lowercased() < $1.name.lowercased() })
-        completion(nil)
-    }
-    
-    func addTransactionCategory(newTG: TransactionCategory, completion: @escaping (Error?) -> Void) {
-        self.user.transactionCategories = self.user.transactionCategories + [newTG]
+    func addTransactionCategory(newTG: TransactionCategory, useRest: Bool = false, completion: @escaping (Error?) -> Void) {
+        if useRest {
+            self.user.budget.transactionCategoryThatUsesRest = newTG.id
+        }
+        
+        self.user.budget.transactionCategories = self.user.budget.transactionCategories + [newTG]
         
         self.setUserData(completion: completion)
     }
     
     func editTransactionCategory(newTG: TransactionCategory, completion: @escaping (Error?) -> Void) {
-        self.user.transactionCategories = self.user.transactionCategories.filter { $0.id != newTG.id } + [newTG]
+        self.user.budget.transactionCategories = self.user.budget.transactionCategories.filter { $0.id != newTG.id } + [newTG]
         
         self.setUserData(completion: completion)
     }
     
     func deleteTransactionCategory(transactionCategory: TransactionCategory, completion: @escaping (Error?) -> Void) {
-        self.user.transactionCategories = self.user.transactionCategories.filter { $0.id != transactionCategory.id }
+        self.user.budget.transactionCategories = self.user.budget.transactionCategories.filter { $0.id != transactionCategory.id }
+        
+        if transactionCategory.id == self.user.budget.transactionCategoryThatUsesRest {
+            let transactionCategories = self.getTransactionCategoriesSorted()
+            if transactionCategories.count < 1 {
+                self.user.budget.transactionCategoryThatUsesRest = ""
+            } else {
+                self.user.budget.transactionCategoryThatUsesRest = transactionCategories[0].id
+            }
+        }
         
         self.setUserData(completion: completion)
     }
     
     func getTransactionCategory(id: String) -> TransactionCategory {
-        let errorCategory = TransactionCategory(name: "error", type: .expense, useSavingsAccount: false, useBuffer: false)
-        let category = self.user.transactionCategories.first { $0.id == id }
+        let errorCategory = TransactionCategory(name: "error", type: .expense)
+        let category = self.user.budget.transactionCategories.first { $0.id == id }
         return category ?? errorCategory
     }
     
-    func addTransactionCategoryAmount(newTGA: TransactionCategoryAmount, completion: @escaping (Error?) -> Void) {
-        if self.getTransactionCategoryAmountsSorted().count < 1 {
-            self.user.budget.transactionCategoryThatUsesRest = newTGA.categoryId
-        }
-        
-        self.user.budget.transactionCategoryAmounts = self.user.budget.transactionCategoryAmounts + [newTGA]
+    func addBudgetAccount(account: Account, completion: @escaping (Error?) -> Void) {
+        self.user.budget.accounts = self.user.budget.accounts + [account]
         
         self.setUserData(completion: completion)
     }
     
-    func editTransactionCategoryAmount(newTGA: TransactionCategoryAmount, completion: @escaping (Error?) -> Void) {
-        self.user.budget.transactionCategoryAmounts = self.user.budget.transactionCategoryAmounts.filter { $0.id != newTGA.id } + [newTGA]
+    func editBudgetAccount(account: Account, completion: @escaping (Error?) -> Void) {
+        self.user.budget.accounts = self.user.budget.accounts.filter { $0.id != account.id } + [account]
         
         self.setUserData(completion: completion)
     }
     
-    func deleteTransactionCategoryAmount(transactionCategoryAmount: TransactionCategoryAmount, completion: @escaping (Error?) -> Void) {
-        self.user.budget.transactionCategoryAmounts = self.user.budget.transactionCategoryAmounts.filter { $0.id != transactionCategoryAmount.id }
-        
-        if transactionCategoryAmount.categoryId == self.user.budget.transactionCategoryThatUsesRest {
-            let transactionCategoryAmounts = self.getTransactionCategoryAmountsSorted()
-            if transactionCategoryAmounts.count < 1 {
-                self.user.budget.transactionCategoryThatUsesRest = ""
-            } else {
-                self.user.budget.transactionCategoryThatUsesRest = transactionCategoryAmounts[0].categoryId
-            }
+    func deleteBudgetAccount(account: Account, completion: @escaping (Error?) -> Void) {
+        guard !self.transactionCategoryUsesAccount(account: account) else {
+            completion(UserError.accountIsUsedByAmount)
+            return
         }
+        
+        self.user.budget.accounts = self.user.budget.accounts.filter { $0.id != account.id }
         
         self.setUserData(completion: completion)
     }
@@ -393,7 +384,7 @@ class UserViewModel: ObservableObject {
     
     func getCustomFriendsSorted() -> [CustomFriend] {
         return self.getCustomFriends().sorted(by: { friend1, friend2 -> Bool in
-            friend1.name < friend2.name
+            friend1.name.lowercased() < friend2.name.lowercased()
         })
     }
     
@@ -408,23 +399,13 @@ class UserViewModel: ObservableObject {
     }
     
     func getTransactionCategoriesSorted(type: TransactionType? = nil) -> [TransactionCategory] {
-        let sortedTGA = self.user.transactionCategories.sorted { $0.name < $1.name }
+        let sortedTG = self.user.budget.transactionCategories.sorted { $0.name.lowercased() < $1.name.lowercased() }
         
         if let type = type {
-            return sortedTGA.filter { $0.type == type }
+            return sortedTG.filter { $0.type == type }
         }
         
-        return sortedTGA
-    }
-    
-    func getTransactionCategoryAmountsSorted(type: TransactionType? = nil) -> [TransactionCategoryAmount] {
-        let sortedTGA = self.user.budget.transactionCategoryAmounts.sorted { $0.categoryName < $1.categoryName }
-        
-        if let type = type {
-            return sortedTGA.filter { self.getTransactionCategory(id: $0.categoryId).type == type }
-        }
-        
-        return sortedTGA
+        return sortedTG
     }
     
     func setIncome(income: Double, completion: @escaping (Error?) -> Void) {
@@ -439,5 +420,28 @@ class UserViewModel: ObservableObject {
         self.user.monthStartsOn = day
         // Update our user data
         self.setUserData(completion: completion)
+    }
+    
+    func getAccounts() -> [Account] {
+        return self.user.budget.accounts
+    }
+    
+    func getAccounts(type: AccountType) -> [Account] {
+        return self.getAccounts().filter { $0.type == type }
+    }
+    
+    func getFirstTransactionCategory(type: TransactionType) -> TransactionCategory {
+        let errorCategory = TransactionCategory(name: "Error", type: .expense)
+        return self.getTransactionCategoriesSorted(type: type).first ?? errorCategory
+    }
+    
+    func transactionCategoryUsesAccount(account: Account) -> Bool {
+        for transactionCategory in self.getTransactionCategoriesSorted() {
+            if transactionCategory.takesFromAccount == account.id || transactionCategory.givesToAccount == account.id {
+                return true
+            }
+        }
+        
+        return false
     }
 }

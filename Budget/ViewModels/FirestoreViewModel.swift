@@ -5,9 +5,9 @@
 //  Created by Samuel Ivarsson on 2022-04-20.
 //
 
-import Foundation
 import Firebase
 import FirebaseAuth
+import Foundation
 
 class FirestoreViewModel: ObservableObject {
     @Published var phone: [String: String] = [:]
@@ -16,7 +16,7 @@ class FirestoreViewModel: ObservableObject {
     
     init() {
         if let user = Auth.auth().currentUser {
-            self.setPhoneDict(user: user) { error in
+            setPhoneDict(user: user) { error in
                 if let error = error {
                     print("Error when initializing FirestoreViewModel: \(error.localizedDescription)")
                     return
@@ -51,7 +51,7 @@ class FirestoreViewModel: ObservableObject {
     }
     
     func getUserFromEmail(email: String, completion: @escaping ([String: Any]?, Error?) -> Void) {
-        db.collection("Users").whereField("email", isEqualTo: email.lowercased()).getDocuments() { snapshot, error in
+        db.collection("Users").whereField("email", isEqualTo: email.lowercased()).getDocuments { snapshot, error in
             if let error = error {
                 print("Error getting documents: \(error)")
                 completion(nil, error)
@@ -101,20 +101,9 @@ class FirestoreViewModel: ObservableObject {
                     // Success
                     print("id: \(user.uid)")
                     completion(nil)
-                    return
                 }
             } else {
-                let userData: User = User(
-                    id: user.uid,
-                    name: user.displayName ?? "",
-                    email: user.email ?? "",
-                    phone: "",
-                    monthStartsOn: 25,
-                    budget: Budget(accounts: [], income: 0, savingsPercentage: 0.5, transactionCategoryAmounts: [], transactionCategoryThatUsesRest: "", overheads: [], overheadAccount: Account(name: "Overheads", type: .overhead)),
-                    friends: [],
-                    customFriends: [],
-                    transactionCategories: self.defaultTransactionCategories()
-                )
+                let userData = User.getDummyUser(id: user.uid, name: user.displayName ?? "", email: user.email ?? "")
                 do {
                     try documentReference.setData(from: userData) { error in
                         if let error = error {
@@ -143,72 +132,52 @@ class FirestoreViewModel: ObservableObject {
     private func defaultTransactionCategories() -> [TransactionCategory] {
         let food = TransactionCategory(
             name: "food",
-            type: .expense,
-            useSavingsAccount: false,
-            useBuffer: false
+            type: .expense
         )
 
         let fika = TransactionCategory(
             name: "fika",
-            type: .expense,
-            useSavingsAccount: false,
-            useBuffer: false
+            type: .expense
         )
 
         let transportation = TransactionCategory(
             name: "transportation",
-            type: .expense,
-            useSavingsAccount: false,
-            useBuffer: false
+            type: .expense
         )
 
         let other = TransactionCategory(
             name: "other",
-            type: .expense,
-            useSavingsAccount: false,
-            useBuffer: false
+            type: .expense
         )
 
         let savingsAccountPurchase = TransactionCategory(
             name: "savingsAccountPurchase",
-            type: .expense,
-            useSavingsAccount: true,
-            useBuffer: false
+            type: .expense
         )
         
         let groceries = TransactionCategory(
             name: "groceries",
-            type: .expense,
-            useSavingsAccount: false,
-            useBuffer: false
+            type: .expense
         )
 
         let extraSaving = TransactionCategory(
             name: "extraSaving",
-            type: .saving,
-            useSavingsAccount: false,
-            useBuffer: false
+            type: .saving
         )
         
         let savingsAccount = TransactionCategory(
             name: "savingsAccount",
-            type: .income,
-            useSavingsAccount: true,
-            useBuffer: false
+            type: .income
         )
         
         let swish = TransactionCategory(
             name: "swish",
-            type: .income,
-            useSavingsAccount: false,
-            useBuffer: false
+            type: .income
         )
 
         let buffer = TransactionCategory(
             name: "buffer",
-            type: .income,
-            useSavingsAccount: false,
-            useBuffer: true
+            type: .income
         )
 
         return [
@@ -225,14 +194,13 @@ class FirestoreViewModel: ObservableObject {
         ]
     }
 
-    
     func setPhoneDict(user: Firebase.User?, completion: @escaping (Error?) -> Void) {
         guard let user = user else {
             completion(AccountError.notSignedIn)
             return
         }
         
-        self.getUserFromUID(uid: user.uid) { userDict, error in
+        getUserFromUID(uid: user.uid) { userDict, error in
             if let error = error {
                 completion(error)
                 return

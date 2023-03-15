@@ -11,5 +11,10 @@ struct Account: Identifiable, Codable, Hashable {
     var id: String = UUID().uuidString
     var name: String
     var type: AccountType
+    var baseAmount: Double = 0
     var main: Bool = false
+    
+    static func getDummyAccount() -> Account {
+        return Account(name: "", type: .transaction)
+    }
 }

@@ -93,20 +93,35 @@
 "yourPhone" = "Ditt telefonnummer";
 "general" = "Allmänt";
 "monthStartsOn" = "Månad börjar på";
-"transactionCategory" = "Transactionskategori";
+"transactionCategory" = "Transaktionskategori";
 "transactionCategories" = "Transaktionskategorier";
 "quickBalance" = "Snabbsaldo";
 "takePicture" = "Ta ett foto";
 "choosePicture" = "Välj bild";
 "remaining" = "Resterande";
 "categoryThatUsesRest" = "Kategori som använder resten";
+"categoryThatUsesRestOfMainTransactionAccount" = "Välj vilket konto som ska använda det som blir över från de resterande pengarna på huvudkontot för transaktioner";
 "custom" = "Anpassad";
 "percentageOfRemaining" = "Procent av resterande";
 "transactionCategoryAmountNote" = "Här kan du välja vad varje kategori ska ha för tak i din budget. Om du väljer anpassad så kan du välja hur många procent av dina resterande pengar som ska gå till kategorin. De resterande pengarna är de pengar som blir över efter alla fasta kostnader, inklusive ditt sparande. Om du väljer använd resten så låter du denna kategorin använda de pengar som blir över efter de andra kategorierna har räknats med.";
 "transactionCategoryAmount" = "Transaktionskategoribelopp";
 "transactionCategoryAmounts" = "Transaktionskategoribelopp";
 "budget" = "Budget";
-"noTransactionCategoryAmounts" = "Du har inga transaktionskategoribelopp";
+"budgetAccount" = "Budget konto";
+"account" = "Konto";
+"accounts" = "Konton";
+"budgetAccounts" = "Budget konton";
+"noBudgetAccounts" = "Du har inga budget konton";
+"noTransactionCategories" = "Du har inga transaktionskategorier";
+"transaction" = "Transaktion";
+"overhead" = "Overhead";
+"mainAccount" = "Huvudkonto";
+"takesFrom" = "Drar från";
+"givesTo" = "Ger till";
+"none" = "Inget";
+"ceiling" = "Tak";
+"categoryCeiling" = "Kategoritak";
+"useRest" = "Använd resten";
 
 // Friends View
 "friends" = "Vänner";
@@ -157,6 +172,8 @@
 "notSignedIn" = "Du är inte inloggad";
 "youreOffline" = "Du är offline";
 "noUserWithEmail" = "Det finns ingen användare med den angivna email adressen";
+"noAccounts" = "Du har inga konton i din budget än. Du måste skapa ett innan du fortsätter med denna handlingen";
+"accountIsUsedByAmount" = "Detta kontot används av ett transaktionskategoribelopp";
 "applicationError" = "Applikations error";
 "unexpectedNil" = "Ett oväntat nil dök upp";
 "pleaseTryAgain" = "Vänligen försök igen";

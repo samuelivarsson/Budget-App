@@ -30,23 +30,22 @@ struct HomeView: View {
                 }
 
                 Section {
-                    ForEach(user.budget.transactionCategoryAmounts.sorted { $0.categoryName < $1.categoryName }) { transactionCategoryAmount in
+                    ForEach(self.userViewModel.getTransactionCategoriesSorted(type: .expense)) { transactionCategory in
                         HStack {
-                            let name = NSLocalizedString(transactionCategoryAmount.categoryName, comment: "")
-                            Text(name)
+                            Text(transactionCategory.name.localizeString())
                                 .frame(maxWidth: 150)
                                 .multilineTextAlignment(.leading)
 
                             Spacer()
 
-                            let spent = self.transactionsViewModel.getSpent(user: user, transactionCategoryAmount: transactionCategoryAmount)
+                            let spent = self.transactionsViewModel.getSpent(user: user, transactionCategory: transactionCategory)
                             Text(Utility.doubleToLocalCurrency(value: spent))
                                 .lineLimit(1)
                                 .font(self.textSize)
 
                             Spacer()
 
-                            let amount = transactionCategoryAmount.getRealAmount(budget: user.budget)
+                            let amount = transactionCategory.getRealAmount(budget: user.budget)
 
                             ProgressView(value: min(spent, amount), total: amount)
                                 .padding()

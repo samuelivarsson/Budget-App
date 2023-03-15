@@ -54,7 +54,7 @@ struct TransactionsView: View {
                 }
                 ToolbarItem {
                     NavigationLink {
-                        TransactionView(action: .add)
+                        TransactionView(action: .add, firstCategory: self.userViewModel.getFirstTransactionCategory(type: .expense))
                     } label: {
                         Label("Add Item", systemImage: "plus")
                     }

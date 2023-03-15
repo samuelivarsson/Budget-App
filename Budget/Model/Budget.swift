@@ -12,13 +12,12 @@ struct Budget: Identifiable, Codable, Hashable {
     var accounts: [Account]
     var income: Double
     var savingsPercentage: Double
-    var transactionCategoryAmounts: [TransactionCategoryAmount]
+    var transactionCategories: [TransactionCategory]
     var transactionCategoryThatUsesRest: String
     var overheads: [Overhead]
-    var overheadAccount: Account
 
     static func getDummyBudget() -> Budget {
-        return Budget(accounts: [], income: 0, savingsPercentage: 0.5, transactionCategoryAmounts: [], transactionCategoryThatUsesRest: "", overheads: [], overheadAccount: Account(name: "Overheads", type: .overhead))
+        return Budget(accounts: [], income: 0, savingsPercentage: 0.5, transactionCategories: [], transactionCategoryThatUsesRest: "", overheads: [])
     }
     
     func getOverheadsAmount() -> Double {
@@ -31,26 +30,55 @@ struct Budget: Identifiable, Codable, Hashable {
         return self.savingsPercentage * (self.income - self.getOverheadsAmount())
     }
 
-    func getRemaining() -> Double {
-        return self.income - self.getOverheadsAmount() - self.getSavings()
+    func getRemaining(accountId: String) -> Double {
+        let account = self.getAccount(id: accountId)
+        if account.type == .transaction && account.main {
+            return account.baseAmount + self.income - self.getOverheadsAmount() - self.getSavings()
+        } else {
+            return account.baseAmount
+        }
     }
     
-    func getCategoryAmounts(exceptFor: TransactionCategoryAmount? = nil) -> Double {
+    func getTransactionCategoryCeilings(accountId: String, exceptFor: TransactionCategory? = nil) -> Double {
         var total: Double = 0
-        self.transactionCategoryAmounts.forEach { transactionCategoryAmount in
-            if self.transactionCategoryThatUsesRest != transactionCategoryAmount.categoryId && exceptFor?.categoryId ?? "" != transactionCategoryAmount.categoryId {
-                total += transactionCategoryAmount.getRealAmount(budget: self)
+        self.transactionCategories.forEach { transactionCategory in
+            if self.transactionCategoryThatUsesRest != transactionCategory.id && exceptFor?.id ?? "" != transactionCategory.id && transactionCategory.takesFromAccount == accountId {
+                total += transactionCategory.getRealAmount(budget: self)
             }
         }
         return total
     }
     
-    func getRest() -> Double {
-        return self.getRemaining() - self.getCategoryAmounts()
+    func getRestOfRemaining(accountId: String) -> Double {
+        return self.getRemaining(accountId: accountId) - self.getTransactionCategoryCeilings(accountId: accountId)
     }
     
     /// Returns true if all transaction category amounts sums up to less than the remaining money. Is used to check that there is money left for the category that uses the rest.
-    func transactionCategoryAmountsAreLowerThanRemaining(updated: TransactionCategoryAmount) -> Bool {
-        return self.getCategoryAmounts(exceptFor: updated) + updated.getRealAmount(budget: self) <= self.getRemaining()
+    func transactionCategoriesAreLowerThanRemaining(updated: TransactionCategory) -> Bool {
+        return self.getTransactionCategoryCeilings(accountId: updated.takesFromAccount, exceptFor: updated) + updated.getRealAmount(budget: self) <= self.getRemaining(accountId: updated.takesFromAccount)
+    }
+    
+    func getMainAccountId(type: AccountType) -> String {
+        for account in self.accounts {
+            if account.type == type && account.main {
+                return account.id
+            }
+        }
+        // If no main account is set, search for a non main account as fail-safe
+        for account in self.accounts {
+            if account.type == type {
+                return account.id
+            }
+        }
+        return ""
+    }
+    
+    func getAccount(id: String) -> Account {
+        let errorAccount = Account(name: "Error", type: .transaction)
+        return self.accounts.first { $0.id == id } ?? errorAccount
+    }
+    
+    func getBaseAmount(accountId: String) -> Double {
+        return self.getAccount(id: accountId).baseAmount
     }
 }
