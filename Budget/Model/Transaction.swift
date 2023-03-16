@@ -8,6 +8,7 @@
 import Firebase
 import FirebaseFirestoreSwift
 import Foundation
+import SwiftUI
 
 struct Transaction: Identifiable, Codable {
     @DocumentID var documentId: String?
@@ -15,8 +16,10 @@ struct Transaction: Identifiable, Codable {
     var category: TransactionCategory
     var date: Date
     var desc: String
-    var creator: String
-    var payer: String
+    var creatorId: String
+    var creatorName: String
+    var payerId: String
+    var payerName: String
     var participants: [Participant]
     var participantIds: [String] = .init()
     var type: TransactionType
@@ -25,7 +28,7 @@ struct Transaction: Identifiable, Codable {
     var id: String { documentId ?? "" }
     
     static func getDummyTransaction(category: TransactionCategory = TransactionCategory.getDummyCategory()) -> Transaction {
-        return Transaction(totalAmount: 0, category: category, date: Date(), desc: "", creator: "", payer: "", participants: [], type: .expense)
+        return Transaction(totalAmount: 0, category: category, date: Date(), desc: "", creatorId: "", creatorName: "", payerId: "", payerName: "", participants: [], type: .expense)
     }
     
     func getImageName() -> String {
@@ -36,6 +39,17 @@ struct Transaction: Identifiable, Codable {
             return "arrow.up.square.fill"
         case .saving:
             return "circle.circle"
+        }
+    }
+    
+    func getImageColor() -> Color {
+        switch type {
+        case .expense:
+            return .red
+        case .income:
+            return .green
+        case .saving:
+            return .accentColor
         }
     }
     
@@ -65,5 +79,15 @@ struct Transaction: Identifiable, Codable {
         }
         
         return 0.0
+    }
+    
+    func getPayerName() -> String {
+        for participant in participants {
+            if participant.userId == self.payerId {
+                return participant.userName
+            }
+        }
+        
+        return ""
     }
 }

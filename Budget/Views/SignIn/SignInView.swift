@@ -13,6 +13,8 @@ struct SignInView: View {
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
     @EnvironmentObject private var storageViewModel: StorageViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
+    @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     
     @State private var email = ""
     @State private var password = ""
@@ -20,7 +22,7 @@ struct SignInView: View {
     private var width: CGFloat = 300
     private var height: CGFloat = 48
     private var cornerRadius: CGFloat = 5
-    private var googleBlue: Color = Color(hex: "#4285F4")
+    private var googleBlue: Color = .init(hex: "#4285F4")
     private var aboveFont: Font = .footnote
     
     var body: some View {
@@ -117,8 +119,28 @@ struct SignInView: View {
         }
     }
     
+    private func attachListeners(completion: @escaping (Error?) -> Void) {
+        userViewModel.fetchData { error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // Success
+            self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn) { error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                
+                // Success
+                self.notificationsViewModel.fetchData(completion: completion)
+            }
+        }
+    }
+    
     private func signInWithGoogle() {
-        authViewModel.signIn() { error in
+        authViewModel.signIn { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
                 return
@@ -155,14 +177,14 @@ struct SignInView: View {
                         
                         // Success
                         print("Successfully set profile picture")
-                        self.userViewModel.fetchData { error in
+                        self.attachListeners { error in
                             if let error = error {
                                 self.errorHandling.handle(error: error)
                                 return
                             }
                             
                             // Success
-                            print("Successfully set user in signInWithGoogle")
+                            print("Successfully attached listeners in signInWithGoogle")
                             self.authViewModel.state = .signedIn
                         }
                     }
@@ -172,7 +194,7 @@ struct SignInView: View {
     }
     
     private func signInAnonymously() {
-        authViewModel.signInAnonymously() { error in
+        authViewModel.signInAnonymously { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
                 return
@@ -224,14 +246,14 @@ struct SignInView: View {
                         
                         // Success
                         print("Successfully set profile picture")
-                        self.userViewModel.fetchData { error in
+                        self.attachListeners { error in
                             if let error = error {
                                 self.errorHandling.handle(error: error)
                                 return
                             }
                             
                             // Success
-                            print("Successfully set user in signInWithEmail")
+                            print("Successfully attached listeners in signInWithEmail")
                             self.authViewModel.state = .signedIn
                         }
                     }

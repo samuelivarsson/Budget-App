@@ -16,6 +16,7 @@ struct MyInformationView: View {
     @EnvironmentObject private var storageViewModel: StorageViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
+    @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     
     @State private var signOutAsGuestPressed: Bool = false
     @State private var isShowPhotoChoices = false
@@ -171,7 +172,7 @@ struct MyInformationView: View {
     }
     
     private func detachListeners() {
-        let listeners = [self.userViewModel.listener, self.transactionsViewModel.listener]
+        let listeners = [self.userViewModel.listener, self.transactionsViewModel.listener, self.notificationsViewModel.listener]
         
         listeners.forEach { listener in
             if let listener = listener {

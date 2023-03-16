@@ -430,6 +430,10 @@ class UserViewModel: ObservableObject {
         return self.getAccounts().filter { $0.type == type }
     }
     
+    func getAccountsSorted() -> [Account] {
+        return self.user.budget.accounts.sorted { $0.name.lowercased() < $1.name.lowercased() }
+    }
+    
     func getFirstTransactionCategory(type: TransactionType) -> TransactionCategory {
         let errorCategory = TransactionCategory(name: "Error", type: .expense)
         return self.getTransactionCategoriesSorted(type: type).first ?? errorCategory
@@ -443,5 +447,9 @@ class UserViewModel: ObservableObject {
         }
         
         return false
+    }
+    
+    func getBalance(accountId: String, spent: Double) -> Double {
+        return self.user.budget.getRemaining(accountId: accountId) - spent
     }
 }

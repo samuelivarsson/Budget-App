@@ -57,6 +57,9 @@ struct NotificationView: View {
                 
             case .transaction:
                 TransactionNotificationView(notification: self.notification)
+                
+            // TODO - Fix notification when you add someone to a transaction
+            // TODO - Add notification to remind someone to swish you
             }
         }
         .frame(height: self.notificationHeight)

@@ -12,6 +12,7 @@ class TransactionsViewModel: ObservableObject {
     @Published var firstLoadFinished = false
     
     @Published var transactions: [Transaction] = []
+    @Published var standings: [String: Double] = .init()
     
     private var db = Firestore.firestore()
     
@@ -44,7 +45,7 @@ class TransactionsViewModel: ObservableObject {
                     // Success
                     self.transactions = data
                     print("Successfully set transactions in TransactionsViewModel")
-                    completion(nil)
+                    self.setStandings(completion: completion)
                 } catch {
                     print("Something went wrong when fetching transactions documents: \(error)")
                     completion(error)
@@ -86,13 +87,20 @@ class TransactionsViewModel: ObservableObject {
             }
     }
     
-    func getSpent(user: User, transactionCategory: TransactionCategory) -> Double {
+    func getSpent(user: User, transactionCategory: TransactionCategory? = nil, accountId: String? = nil) -> Double {
         var total: Double = 0
         let (from, to) = Utility.getBudgetPeriod(monthStartsOn: user.monthStartsOn)
         let thisMonthsTransactions = self.getTransactions(from: from, to: to)
         thisMonthsTransactions.forEach { transaction in
-            if transaction.category.id == transactionCategory.id {
-                total += transaction.getShare(user: user)
+            if let transactionCategory = transactionCategory {
+                if transaction.category.id == transactionCategory.id {
+                    total += transaction.getShare(user: user)
+                }
+            }
+            else if let accountId = accountId {
+                if transaction.category.takesFromAccount == accountId {
+                    total += transaction.getShare(user: user)
+                }
             }
         }
         
@@ -101,5 +109,68 @@ class TransactionsViewModel: ObservableObject {
     
     func getTransactions(from: Date, to: Date) -> [Transaction] {
         return self.transactions.filter { $0.date >= from && $0.date < to }
+    }
+    
+    func setStandings(completion: @escaping (Error?) -> Void) {
+        guard let myUid = Auth.auth().currentUser?.uid else {
+            let info = "Found nil when extracting uid in setStandings in TransactionsViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        for transaction in self.transactions {
+            for participant in transaction.participants {
+                // Continue if the participant is me
+                if participant.userId == myUid {
+                    continue
+                }
+                
+                let prevAmount = self.standings[participant.userId] ?? 0
+                
+                // If I am the payer, increase the standing for the participant
+                var newAmount: Double = prevAmount
+                if transaction.payerId == myUid {
+                    newAmount += Utility.doubleToTwoDecimals(value: participant.amount)
+                }
+                // If the participant is the payer, decrease the standing for the participant
+                else if transaction.payerId == participant.userId {
+                    newAmount -= Utility.doubleToTwoDecimals(value: participant.amount)
+                }
+                
+                self.standings.updateValue(newAmount, forKey: participant.userId)
+            }
+        }
+        completion(nil)
+    }
+    
+    func getStandings() -> [String: Double] {
+        return self.standings
+    }
+    
+    func getStanding(friendId: String, myUid: String) -> Double {
+        var total: Double = 0
+        for transaction in self.transactions {
+            // I am the payer
+            if transaction.payerId == myUid {
+                for participant in transaction.participants {
+                    // Increase total if the participant is the friend in question
+                    if participant.userId == friendId {
+                        total += participant.amount
+                    }
+                }
+            }
+            
+            // The friend is the payer
+            else if transaction.payerId == friendId {
+                for participant in transaction.participants {
+                    // Decrease total if the participant is me
+                    if participant.userId == myUid {
+                        total -= participant.amount
+                    }
+                }
+            }
+        }
+        
+        return total
     }
 }

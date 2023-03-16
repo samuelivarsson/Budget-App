@@ -16,6 +16,7 @@
 "category" = "Category";
 "loadMore" = "Load more";
 "details" = "Details";
+"and" = "And";
 
 // Sign in
 "signIn" = "Sign in";
@@ -62,6 +63,8 @@
 "friendRequestDenied" = "Friend request denied";
 "hasAddedYouToTransaction" = "has added you to a transaction";
 "youHaveNoNotifications" = "You have no notifications!";
+"standing" = "Standing";
+"standings" = "Standings";
 
 // Years, months etc abbreviations
 "shortYears" = "y";
@@ -82,7 +85,11 @@
 "description" = "Description";
 "shortDescription" = "A short description";
 "payer" = "Payer";
+"paid" = "Paid";
+"youPaid" = "You paid";
 "noTransactionsThisPeriod" = "You have no transactions during this period";
+"transactionCreatedBy" = "Transaction created by";
+"transactionCreatedByYou" = "Transaction created by you";
 
 // Settings
 "myInformation" = "My information";
@@ -124,6 +131,7 @@
 "useRest" = "Use rest";
 
 // Friends View
+"friend" = "Friend";
 "friends" = "Friends";
 "friendsName" = "Friend's name";
 "friendsPhone" = "Friend's phone number";
@@ -158,6 +166,7 @@
 "noCategoriesFound" = "You have no transaction categories!";
 "splitEvenly" = "Split evenly";
 "me" = "Me";
+"you" = "You";
 
 // Transaction Types
 "expense" = "Expense";
@@ -188,3 +197,9 @@
 "documentNotExist" = "The document does not exist";
 "noPhotoURL" = "Found nil when extracting url in setProfilePicture in AuthViewModel, this can be ignored if the user hasn't uploaded a profile picture yet";
 "transactionCategoryAmountsAddsUpToMoreThanRemaining" = "The transaction category amounts adds up to more money than remaining";
+
+// Swish
+"squaringUpTransactionsSince" = "Squaring up transactions since";
+"send" = "Send";
+"sendReminder?" = "Send reminder?";
+"doYouWantToRemind" = "Do you want to send a notification as a reminder for them to pay you?";

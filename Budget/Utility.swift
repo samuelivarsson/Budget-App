@@ -43,6 +43,17 @@ class Utility {
         currencyFormatter.zeroSymbol = ""
         return currencyFormatter
     }
+    
+    static var dateFormatterNoTime: DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        return dateFormatter
+    }
+    
+    static func dateToStringNoTime(date: Date) -> String {
+        return self.dateFormatterNoTime.string(from: date)
+    }
 
     /// Converts any Double to Double with only 2 decimals
     static func doubleToTwoDecimals(value: Double) -> Double {
@@ -226,6 +237,28 @@ class Utility {
         }
 
         return "\(Int(seconds)) " + NSLocalizedString("shortSeconds", comment: "")
+    }
+
+    static func getSwishUrl(amount: Double, friend: User) -> String {
+        let amountTwoDecimals = Utility.doubleToTwoDecimals(value: abs(amount))
+        // TODO - Fix to reflect date of transaction after last swish
+        let date = self.dateToStringNoTime(date: Date())
+        let info = "squaringUpTransactionsSince".localizeString() + " " + date
+        let link =
+            "swish://payment?data={" +
+                "\"amount\":{" +
+                    "\"value\":\(amountTwoDecimals)" +
+                "}," +
+                "\"message\":{" +
+                    "\"value\":\"\(info)\"" +
+                "}," +
+                "\"payee\":{" +
+                    "\"value\":\"\(friend.phone)\"" +
+                "}," +
+                "\"version\":1" +
+            "}"
+        let linkSafe = link.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        return linkSafe
     }
 }
 

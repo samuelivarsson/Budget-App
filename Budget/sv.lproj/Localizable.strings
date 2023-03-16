@@ -16,6 +16,7 @@
 "category" = "Kategori";
 "loadMore" = "Ladda mer";
 "details" = "Detaljer";
+"and" = "Och";
 
 // Sign in
 "signIn" = "Logga in";
@@ -62,6 +63,8 @@
 "friendRequestDenied" = "Vänförfrågan nekad";
 "hasAddedYouToTransaction" = "har lagt till dig i en transaktion";
 "youHaveNoNotifications" = "Du har inga notifikationer!";
+"standing" = "Ställning";
+"standings" = "Ställningar";
 
 // Years, months etc abbreviations
 "shortYears" = "å";
@@ -82,7 +85,11 @@
 "description" = "Beskrivning";
 "shortDescription" = "En kort beskrivning";
 "payer" = "Betalare";
+"paid" = "Betalade";
+"youPaid" = "Du betalade";
 "noTransactionsThisPeriod" = "Du har inga transaktioner under denna period";
+"transactionCreatedBy" = "Transaktion skapad av";
+"transactionCreatedByYou" = "Transaktion skapad av dig";
 
 // Settings
 "myInformation" = "Mina uppgifter";
@@ -124,6 +131,7 @@
 "useRest" = "Använd resten";
 
 // Friends View
+"friend" = "Vän";
 "friends" = "Vänner";
 "friendsName" = "Vännens namn";
 "friendsPhone" = "Vännens telefonnummer";
@@ -158,6 +166,7 @@
 "noCategoriesFound" = "Du har inga transaktionskategorier!";
 "splitEvenly" = "Dela jämnt";
 "me" = "Jag";
+"you" = "Du";
 
 // Transaction Types
 "expense" = "Utgift";
@@ -188,3 +197,9 @@
 "documentNotExist" = "Dokumentet som du försökte hämta finns inte";
 "noPhotoURL" = "Hittade nil vid extrahering av profilbilden, detta kan ignoreras om användaren inte har laddat up en profilbild än";
 "transactionCategoryAmountsAddsUpToMoreThanRemaining" = "Transaktionskategoribeloppen summerar upp till mer än vad som är över";
+
+// Swish
+"squaringUpTransactionsSince" = "Kvitterar ut transaktioner från";
+"send" = "Skicka";
+"sendReminder?" = "Skicka påmminelse?";
+"doYouWantToRemind" = "Vill du skicka en notis för att påminna personen om att betala dig?";

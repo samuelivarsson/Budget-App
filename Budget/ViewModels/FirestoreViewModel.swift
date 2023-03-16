@@ -99,7 +99,6 @@ class FirestoreViewModel: ObservableObject {
                     }
                     
                     // Success
-                    print("id: \(user.uid)")
                     completion(nil)
                 }
             } else {

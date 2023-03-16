@@ -29,7 +29,7 @@ struct TransactionView: View {
     
     init(transaction: Transaction, myId: String) {
         self._transaction = State(initialValue: transaction)
-        self.action = transaction.creator == myId ? .edit : .view
+        self.action = transaction.creatorId == myId ? .edit : .view
     }
     
     var body: some View {
@@ -43,7 +43,7 @@ struct TransactionView: View {
             }
             
             Section(participantText) {
-                ParticipantsView(totalAmount: self.$transaction.totalAmount, splitEvenly: self.$transaction.splitEvenly, participants: self.$transaction.participants, payer: self.$transaction.payer, isInputActive: self.$isInputActive)
+                ParticipantsView(totalAmount: self.$transaction.totalAmount, splitEvenly: self.$transaction.splitEvenly, participants: self.$transaction.participants, payer: self.$transaction.payerId, isInputActive: self.$isInputActive)
             }
             
             Section {
@@ -58,6 +58,14 @@ struct TransactionView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
+            } footer: {
+                if self.action != .add {
+                    if self.transaction.payerId == self.userViewModel.user.id {
+                        Text("transactionCreatedByYou")
+                    } else {
+                        Text("transactionCreatedBy".localizeString() + " " + transaction.payerName)
+                    }
+                }
             }
         }
         .navigationTitle(self.titleText)
@@ -67,8 +75,8 @@ struct TransactionView: View {
             if self.transaction.participants.count < 1 {
                 self.transaction.participants = [Participant(me: true, userId: user.id, userName: user.name)]
             }
-            if self.transaction.payer == "" {
-                self.transaction.payer = self.transaction.participants[0].id
+            if self.transaction.payerId == "" {
+                self.transaction.payerId = self.transaction.participants[0].id
             }
         }
     }
@@ -191,8 +199,11 @@ struct TransactionView: View {
                 return
             }
             
-            let creator = user.isAnonymous ? "createdByGuest" : user.uid
-            self.transaction.creator = creator
+            let creatorId = user.isAnonymous ? "createdByGuest" : user.uid
+            let creatorName = user.isAnonymous ? "createdByGuest" : self.userViewModel.user.name
+            self.transaction.creatorId = creatorId
+            self.transaction.creatorName = creatorName
+            self.transaction.payerName = self.transaction.getPayerName()
             self.addParticipantIds()
             
             do {
@@ -221,6 +232,7 @@ struct TransactionView: View {
                 return
             }
             
+            self.transaction.payerName = self.transaction.getPayerName()
             self.addParticipantIds()
             
             do {
