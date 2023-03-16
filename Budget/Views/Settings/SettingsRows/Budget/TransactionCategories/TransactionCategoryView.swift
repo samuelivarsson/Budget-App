@@ -70,11 +70,11 @@ struct TransactionCategoryView: View {
             Section {
                 Toggle("categoryCeiling", isOn: self.$transactionCategory.ceiling)
                 
-                if self.add {
-                    Toggle("useRest", isOn: self.$useRest)
-                }
-                    
                 if self.transactionCategory.ceiling {
+                    if self.add {
+                        Toggle("useRest", isOn: self.$useRest)
+                    }
+                    
                     let user = self.userViewModel.user
                     HStack {
                         Text("amount")
