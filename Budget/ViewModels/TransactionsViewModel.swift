@@ -45,7 +45,7 @@ class TransactionsViewModel: ObservableObject {
                     // Success
                     self.transactions = data
                     print("Successfully set transactions in TransactionsViewModel")
-                    self.setStandings(completion: completion)
+                    completion(nil)
                 } catch {
                     print("Something went wrong when fetching transactions documents: \(error)")
                     completion(error)
@@ -109,42 +109,6 @@ class TransactionsViewModel: ObservableObject {
     
     func getTransactions(from: Date, to: Date) -> [Transaction] {
         return self.transactions.filter { $0.date >= from && $0.date < to }
-    }
-    
-    func setStandings(completion: @escaping (Error?) -> Void) {
-        guard let myUid = Auth.auth().currentUser?.uid else {
-            let info = "Found nil when extracting uid in setStandings in TransactionsViewModel"
-            completion(ApplicationError.unexpectedNil(info))
-            return
-        }
-        
-        for transaction in self.transactions {
-            for participant in transaction.participants {
-                // Continue if the participant is me
-                if participant.userId == myUid {
-                    continue
-                }
-                
-                let prevAmount = self.standings[participant.userId] ?? 0
-                
-                // If I am the payer, increase the standing for the participant
-                var newAmount: Double = prevAmount
-                if transaction.payerId == myUid {
-                    newAmount += Utility.doubleToTwoDecimals(value: participant.amount)
-                }
-                // If the participant is the payer, decrease the standing for the participant
-                else if transaction.payerId == participant.userId {
-                    newAmount -= Utility.doubleToTwoDecimals(value: participant.amount)
-                }
-                
-                self.standings.updateValue(newAmount, forKey: participant.userId)
-            }
-        }
-        completion(nil)
-    }
-    
-    func getStandings() -> [String: Double] {
-        return self.standings
     }
     
     func getStanding(friendId: String, myUid: String) -> Double {
