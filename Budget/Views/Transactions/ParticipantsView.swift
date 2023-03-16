@@ -17,6 +17,8 @@ struct ParticipantsView: View {
     @Binding var payer: String
     var isInputActive: FocusState<Bool>.Binding
     
+    var action: TransactionAction
+    
     private let friendText: Font = .footnote
     
     var body: some View {
@@ -63,13 +65,15 @@ struct ParticipantsView: View {
             }
         }
         .onLoad {
-            guard let first = self.participants.first else {
-                let info = "Found nil when extracting first in onLoad in payer picker in ParticipantsView"
-                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                return
+            if self.action == .add {
+                guard let first = self.participants.first else {
+                    let info = "Found nil when extracting first in onLoad in payer picker in ParticipantsView"
+                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                    return
+                }
+                
+                self.payer = first.userId
             }
-            
-            self.payer = first.userId
         }
             
         // Use a Toggle to allow the user to turn splitEvenly on or off

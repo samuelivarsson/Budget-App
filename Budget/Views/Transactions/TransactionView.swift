@@ -43,7 +43,7 @@ struct TransactionView: View {
             }
             
             Section(participantText) {
-                ParticipantsView(totalAmount: self.$transaction.totalAmount, splitEvenly: self.$transaction.splitEvenly, participants: self.$transaction.participants, payer: self.$transaction.payerId, isInputActive: self.$isInputActive)
+                ParticipantsView(totalAmount: self.$transaction.totalAmount, splitEvenly: self.$transaction.splitEvenly, participants: self.$transaction.participants, payer: self.$transaction.payerId, isInputActive: self.$isInputActive, action: self.action)
             }
             
             Section {
@@ -119,7 +119,9 @@ struct TransactionView: View {
             }
             .pickerStyle(.menu)
             .onLoad {
-                self.transaction.category = self.userViewModel.getFirstTransactionCategory(type: self.transaction.type)
+                if self.action == .add {
+                    self.transaction.category = self.userViewModel.getFirstTransactionCategory(type: self.transaction.type)
+                }
             }
         }
     }
