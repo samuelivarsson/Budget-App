@@ -60,10 +60,10 @@ struct TransactionView: View {
                 }
             } footer: {
                 if self.action != .add {
-                    if self.transaction.payerId == self.userViewModel.user.id {
+                    if self.transaction.creatorId == self.userViewModel.user.id {
                         Text("transactionCreatedByYou")
                     } else {
-                        Text("transactionCreatedBy".localizeString() + " " + transaction.payerName)
+                        Text("transactionCreatedBy".localizeString() + " " + transaction.creatorName)
                     }
                 }
             }
