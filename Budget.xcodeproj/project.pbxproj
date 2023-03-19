@@ -67,6 +67,8 @@
 		4DD8713329BCFC7A00BA8809 /* IncomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD8713229BCFC7A00BA8809 /* IncomeView.swift */; };
 		4DDA445D282354B90045C58E /* TransactionsGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDA445C282354B90045C58E /* TransactionsGroupView.swift */; };
 		4DDCB77028F3371C006A1BD0 /* ProfileSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDCB76F28F3371C006A1BD0 /* ProfileSearchView.swift */; };
+		4DE5B44729C61574002340A2 /* Standing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5B44629C61574002340A2 /* Standing.swift */; };
+		4DE5B44929C6162D002340A2 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */; };
 		4DE907C229BFDE5C00CB4F99 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4DE907C129BFDE5C00CB4F99 /* FirebaseFirestore */; };
 		4DE907C429C0E02E00CB4F99 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE907C329C0E02E00CB4F99 /* AccountView.swift */; };
 		4DE907C629C0E3FA00CB4F99 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE907C529C0E3FA00CB4F99 /* AccountsView.swift */; };
@@ -148,6 +150,8 @@
 		4DD8713229BCFC7A00BA8809 /* IncomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeView.swift; sourceTree = "<group>"; };
 		4DDA445C282354B90045C58E /* TransactionsGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsGroupView.swift; sourceTree = "<group>"; };
 		4DDCB76F28F3371C006A1BD0 /* ProfileSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSearchView.swift; sourceTree = "<group>"; };
+		4DE5B44629C61574002340A2 /* Standing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Standing.swift; sourceTree = "<group>"; };
+		4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsViewModel.swift; sourceTree = "<group>"; };
 		4DE907C329C0E02E00CB4F99 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		4DE907C529C0E3FA00CB4F99 /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
 		4DF808B3281ECDBC00E19A8D /* ParticipantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantsView.swift; sourceTree = "<group>"; };
@@ -441,6 +445,7 @@
 				4D4FB1B22905FFA400E9A2D9 /* NotificationType.swift */,
 				4D6CA59A29B2CC0400487669 /* Overhead.swift */,
 				4D7AE0AE295280DA009E0845 /* Participant.swift */,
+				4DE5B44629C61574002340A2 /* Standing.swift */,
 				4D7ADA5728D78E990051460B /* Transaction.swift */,
 				4D6CA59429B2AFD100487669 /* TransactionAction.swift */,
 				4D40510728E8B3950043D844 /* TransactionCategory.swift */,
@@ -456,11 +461,12 @@
 				4D028908280B16E30053D15D /* AuthViewModel.swift */,
 				4DFF75A3281066BF00C40FF6 /* FirestoreViewModel.swift */,
 				4DF808B5282178AC00E19A8D /* FriendsViewModel.swift */,
-				4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */,
-				4D7ADA53282C54420051460B /* UserViewModel.swift */,
-				4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */,
-				4D671E3828EF84330071A60E /* UsersLookupViewModel.swift */,
 				4D4FB1B42906057600E9A2D9 /* NotificationsViewModel.swift */,
+				4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */,
+				4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */,
+				4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */,
+				4D7ADA53282C54420051460B /* UserViewModel.swift */,
+				4D671E3828EF84330071A60E /* UsersLookupViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -568,6 +574,7 @@
 				4D6CA59529B2AFD100487669 /* TransactionAction.swift in Sources */,
 				4D7ADA52282BCABB0051460B /* User.swift in Sources */,
 				4D6CA5A629B2E4CC00487669 /* BudgetView.swift in Sources */,
+				4DE5B44929C6162D002340A2 /* StandingsViewModel.swift in Sources */,
 				4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */,
 				4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */,
 				4D65306A281B60BA00641570 /* ImagePicker.swift in Sources */,
@@ -595,6 +602,7 @@
 				4DE907C629C0E3FA00CB4F99 /* AccountsView.swift in Sources */,
 				4D6CA59F29B2CCE600487669 /* AccountType.swift in Sources */,
 				4D7ADA5828D78E990051460B /* Transaction.swift in Sources */,
+				4DE5B44729C61574002340A2 /* Standing.swift in Sources */,
 				4DD8713329BCFC7A00BA8809 /* IncomeView.swift in Sources */,
 				4D4FB1AF2905FFA400E9A2D9 /* Friend.swift in Sources */,
 				4D6AC16D280CD86C00B8EA41 /* ErrorHandling.swift in Sources */,
@@ -789,6 +797,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Budget/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -822,6 +831,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Budget/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

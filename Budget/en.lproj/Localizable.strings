@@ -17,6 +17,7 @@
 "loadMore" = "Load more";
 "details" = "Details";
 "and" = "And";
+"yes" = "Yes";
 
 // Sign in
 "signIn" = "Sign in";
@@ -197,9 +198,11 @@
 "documentNotExist" = "The document does not exist";
 "noPhotoURL" = "Found nil when extracting url in setProfilePicture in AuthViewModel, this can be ignored if the user hasn't uploaded a profile picture yet";
 "transactionCategoryAmountsAddsUpToMoreThanRemaining" = "The transaction category amounts adds up to more money than remaining";
+"deleteTransactionCreatedBySomeoneElse" = "You can not delete a transaction that you did not create";
 
 // Swish
 "squaringUpTransactionsSince" = "Squaring up transactions since";
 "send" = "Send";
 "sendReminder?" = "Send reminder?";
 "doYouWantToRemind" = "Do you want to send a notification as a reminder for them to pay you?";
+"didSwishGoThrough?" = "Did the Swish go through?";

@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
-	<string></string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -12,6 +10,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.821647068521-3ifs3js7u2910mbkdh1m6k79vufkh8s0</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.samuelivarsson.Budget</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>budgetapp</string>
 			</array>
 		</dict>
 	</array>

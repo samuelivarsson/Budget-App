@@ -9,8 +9,6 @@ import Firebase
 import Foundation
 
 class TransactionsViewModel: ObservableObject {
-    @Published var firstLoadFinished = false
-    
     @Published var transactions: [Transaction] = []
     @Published var standings: [String: Double] = .init()
     
@@ -44,7 +42,7 @@ class TransactionsViewModel: ObservableObject {
                     
                     // Success
                     self.transactions = data
-                    print("Successfully set transactions in TransactionsViewModel")
+                    print("Successfully set transactions in fetchData in TransactionsViewModel")
                     completion(nil)
                 } catch {
                     print("Something went wrong when fetching transactions documents: \(error)")
@@ -78,13 +76,29 @@ class TransactionsViewModel: ObservableObject {
                     
                     // Success
                     self.transactions = data
-                    print("Successfully set all transactions in TransactionsViewModel")
+                    print("Successfully set transactions in fetchAllData in TransactionsViewModel")
                     completion(nil)
                 } catch {
                     print("Something went wrong when fetching transactions documents: \(error)")
                     completion(error)
                 }
             }
+    }
+    
+    func addTransaction(transaction: Transaction, completion: @escaping (Error?) -> Void) {
+        do {
+            let _ = try self.db.collection("Transactions").addDocument(from: transaction) { error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                            
+                // Success
+                completion(nil)
+            }
+        } catch {
+            completion(error)
+        }
     }
     
     func getSpent(user: User, transactionCategory: TransactionCategory? = nil, accountId: String? = nil) -> Double {
@@ -94,12 +108,11 @@ class TransactionsViewModel: ObservableObject {
         thisMonthsTransactions.forEach { transaction in
             if let transactionCategory = transactionCategory {
                 if transaction.category.id == transactionCategory.id {
-                    total += transaction.getShare(user: user)
+                    total += transaction.getShare(userId: user.id)
                 }
-            }
-            else if let accountId = accountId {
+            } else if let accountId = accountId {
                 if transaction.category.takesFromAccount == accountId {
-                    total += transaction.getShare(user: user)
+                    total += transaction.getShare(userId: user.id)
                 }
             }
         }
@@ -109,32 +122,5 @@ class TransactionsViewModel: ObservableObject {
     
     func getTransactions(from: Date, to: Date) -> [Transaction] {
         return self.transactions.filter { $0.date >= from && $0.date < to }
-    }
-    
-    func getStanding(friendId: String, myUid: String) -> Double {
-        var total: Double = 0
-        for transaction in self.transactions {
-            // I am the payer
-            if transaction.payerId == myUid {
-                for participant in transaction.participants {
-                    // Increase total if the participant is the friend in question
-                    if participant.userId == friendId {
-                        total += participant.amount
-                    }
-                }
-            }
-            
-            // The friend is the payer
-            else if transaction.payerId == friendId {
-                for participant in transaction.participants {
-                    // Decrease total if the participant is me
-                    if participant.userId == myUid {
-                        total -= participant.amount
-                    }
-                }
-            }
-        }
-        
-        return total
     }
 }

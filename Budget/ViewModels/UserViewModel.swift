@@ -48,7 +48,7 @@ class UserViewModel: ObservableObject {
                     let data = try document.data(as: User.self)
                     
                     // Success
-                    print("Successfully set user in UserViewModel")
+                    print("Successfully set user in fetchData in UserViewModel")
                     self.user = data
                     self.setFriends(from: data) { error in
                         if let error = error {
@@ -57,7 +57,7 @@ class UserViewModel: ObservableObject {
                         }
                             
                         // Success
-                        print("Successfully set friends in UserViewModel")
+                        print("Successfully set friends in fetchData in UserViewModel")
                         completion(nil)
                     }
                 } catch {

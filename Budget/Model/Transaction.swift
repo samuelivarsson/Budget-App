@@ -71,9 +71,9 @@ struct Transaction: Identifiable, Codable {
         }
     }
     
-    func getShare(user: User) -> Double {
+    func getShare(userId: String) -> Double {
         for participant in participants {
-            if participant.userId == user.id {
+            if participant.userId == userId {
                 return participant.amount
             }
         }

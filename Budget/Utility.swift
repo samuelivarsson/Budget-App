@@ -244,8 +244,8 @@ class Utility {
         // TODO - Fix to reflect date of transaction after last swish
         let date = self.dateToStringNoTime(date: Date())
         let info = "squaringUpTransactionsSince".localizeString() + " " + date
-        let link =
-            "swish://payment?data={" +
+        let data =
+            "{" +
                 "\"amount\":{" +
                     "\"value\":\(amountTwoDecimals)" +
                 "}," +
@@ -257,6 +257,8 @@ class Utility {
                 "}," +
                 "\"version\":1" +
             "}"
+        let callbackUrl = "budgetapp%3A%2F%2F?userId=\(friend.id)"
+        let link = "swish://payment?callbackurl=" + callbackUrl + "&data=" + data
         let linkSafe = link.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         return linkSafe
     }

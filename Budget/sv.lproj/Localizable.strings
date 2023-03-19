@@ -17,6 +17,7 @@
 "loadMore" = "Ladda mer";
 "details" = "Detaljer";
 "and" = "Och";
+"yes" = "Ja";
 
 // Sign in
 "signIn" = "Logga in";
@@ -197,9 +198,11 @@
 "documentNotExist" = "Dokumentet som du försökte hämta finns inte";
 "noPhotoURL" = "Hittade nil vid extrahering av profilbilden, detta kan ignoreras om användaren inte har laddat up en profilbild än";
 "transactionCategoryAmountsAddsUpToMoreThanRemaining" = "Transaktionskategoribeloppen summerar upp till mer än vad som är över";
+"deleteTransactionCreatedBySomeoneElse" = "Du kan inte ta bort en transaktion som du inte skapade";
 
 // Swish
 "squaringUpTransactionsSince" = "Kvitterar ut transaktioner från";
 "send" = "Skicka";
 "sendReminder?" = "Skicka påmminelse?";
 "doYouWantToRemind" = "Vill du skicka en notis för att påminna personen om att betala dig?";
+"didSwishGoThrough?" = "Gick Swishen igenom?";

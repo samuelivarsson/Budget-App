@@ -21,7 +21,7 @@ extension NetworkError: LocalizedError {
             return NSLocalizedString("signUp", comment: "Network Error")
         }
     }
-    
+
     public var failureReason: String? {
         switch self {
         case .imageFetch:
@@ -30,7 +30,7 @@ extension NetworkError: LocalizedError {
             return NSLocalizedString("signUp", comment: "Network Error")
         }
     }
-    
+
     public var recoverySuggestion: String? {
         switch self {
         case .imageFetch:
@@ -100,14 +100,14 @@ extension ApplicationError: LocalizedError {
             return NSLocalizedString("applicationError", comment: "Application Error") + ": \(info)"
         }
     }
-    
+
     public var failureReason: String? {
         switch self {
         case .unexpectedNil:
             return NSLocalizedString("unexpectedNil", comment: "Application Error")
         }
     }
-    
+
     public var recoverySuggestion: String? {
         switch self {
         case .unexpectedNil:
@@ -126,6 +126,7 @@ enum InputError: Error {
     case userIsAlreadyFriend
     case totalAmountMisMatch
     case transactionCategoryAmountsAddsUpToMoreThanRemaining
+    case deleteTransactionCreatedBySomeoneElse
 }
 
 extension InputError: LocalizedError {
@@ -149,7 +150,8 @@ extension InputError: LocalizedError {
             return NSLocalizedString("totalAmountMisMatch", comment: "Input Error")
         case .transactionCategoryAmountsAddsUpToMoreThanRemaining:
             return NSLocalizedString("transactionCategoryAmountsAddsUpToMoreThanRemaining", comment: "Input Error")
+        case .deleteTransactionCreatedBySomeoneElse:
+            return NSLocalizedString("deleteTransactionCreatedBySomeoneElse", comment: "Input Error")
         }
     }
 }
-

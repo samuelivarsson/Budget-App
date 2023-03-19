@@ -12,9 +12,12 @@ struct HomeView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
+    @EnvironmentObject private var standingsViewModel: StandingsViewModel
 
     @State private var showSendReminderAlert: Bool = false
-    
+    @State private var showDidSwishGoThrough: Bool = false
+    @State private var swishFriendId: String? = nil
+
     private let textSize: Font = .footnote
 
     var body: some View {
@@ -30,7 +33,7 @@ struct HomeView: View {
                 } header: {
                     Text("incomes")
                 }
-                
+
                 Section {
                     ForEach(self.userViewModel.getAccountsSorted()) { account in
                         HStack {
@@ -57,7 +60,7 @@ struct HomeView: View {
                                 .frame(width: 75, alignment: .trailing)
                                 .lineLimit(1)
                                 .font(self.textSize)
-                            
+
                             Spacer()
 
                             let amount = transactionCategory.getRealAmount(budget: user.budget)
@@ -79,7 +82,8 @@ struct HomeView: View {
 
                 Section {
                     ForEach(self.userViewModel.getFriendsSorted()) { friend in
-                        let amount = self.transactionsViewModel.getStanding(friendId: friend.id, myUid: self.userViewModel.user.id)
+                        let standing = self.standingsViewModel.getStanding(userId1: self.userViewModel.user.id, userId2: friend.id)
+                        let amount = standing?.getStanding(myId: self.userViewModel.user.id) ?? 0
                         Button {
                             if amount < 0 {
                                 if let url = URL(string: Utility.getSwishUrl(amount: amount, friend: friend)) {
@@ -98,15 +102,15 @@ struct HomeView: View {
                             }
                         }
                     }
-                    // TODO - Only see favourite friends in standing
-                    // TODO - Fix so you can favourite a friend
-                    // TODO - Add See All button to show all standing between your friends
-                    // TODO - Fix so the standing decrease after swish
+                    // TODO: - Only see favourite friends in standing
+                    // TODO: - Fix so you can favourite a friend
+                    // TODO: - Add See All button to show all standing between your friends
+                    // TODO: - Fix so the standing decrease after swish
                 } header: {
                     Text("standings")
                 }
             }
-            .redacted(when: !self.transactionsViewModel.firstLoadFinished)
+            .redacted(when: !self.standingsViewModel.firstLoadFinished)
             .navigationTitle("home")
             .toolbar {
                 ToolbarItem {
@@ -121,10 +125,49 @@ struct HomeView: View {
             }
             .alert("sendReminder?", isPresented: self.$showSendReminderAlert) {
                 Button("send", role: .destructive) {
-                    // Todo - Send reminder
+                    // TODO: - Send a reminder
                 }
             } message: {
                 Text("doYouWantToRemind")
+            }
+            .alert("didSwishGoThrough?", isPresented: self.$showDidSwishGoThrough) {
+                Button("yes", role: .destructive) {
+                    // TODO: - Send notification that you swished
+                    guard let swishFriendId = self.swishFriendId else {
+                        let info = "Found nil when extracting swishFriendId in alert in HomeView"
+                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                        return
+                    }
+                    self.standingsViewModel.squareUp(myId: self.userViewModel.user.id, friendId: swishFriendId) { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+
+                        // Success
+                        print("Successfully squared up standings between you and user with id: \(swishFriendId)")
+                        self.swishFriendId = nil
+                    }
+                }
+            } message: {
+                Text("")
+            }
+            .onOpenURL { url in
+                self.handleUrlOpen(url: url)
+            }
+        }
+    }
+
+    private func handleUrlOpen(url: URL) {
+        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        if let queryItems = urlComponents?.queryItems {
+            for queryItem in queryItems {
+                if let value = queryItem.value {
+                    if queryItem.name == "userId" && !value.isEmpty {
+                        self.swishFriendId = value
+                        self.showDidSwishGoThrough = true
+                    }
+                }
             }
         }
     }
@@ -136,7 +179,7 @@ extension View {
         if !condition {
             unredacted()
         } else {
-            redacted(reason: .placeholder)
+            self.redacted(reason: .placeholder)
         }
     }
 }

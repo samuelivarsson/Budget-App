@@ -13,6 +13,7 @@ struct TransactionsGroupView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var standingsViewModel: StandingsViewModel
     
     @State private var showChildren: Bool = false
     
@@ -54,7 +55,7 @@ struct TransactionsGroupView: View {
                                     Spacer()
                                     
                                     VStack(alignment: .trailing, spacing: 5) {
-                                        Text(Utility.doubleToLocalCurrency(value: transaction.getShare(user: self.userViewModel.user)))
+                                        Text(Utility.doubleToLocalCurrency(value: transaction.getShare(userId: self.userViewModel.user.id)))
                                             .bold()
                                         Text(Utility.doubleToLocalCurrency(value: transaction.totalAmount))
                                             .font(.footnote)
@@ -125,6 +126,11 @@ struct TransactionsGroupView: View {
     private func deleteTransactions(offsets: IndexSet) {
         withAnimation {
             offsets.map { self.transactionsViewModel.getTransactions(from: self.from, to: self.to)[$0] }.forEach { transaction in
+                if transaction.creatorId != self.userViewModel.user.id {
+                    // TODO: - Send notification asking for the transaction to be deleted
+                    self.errorHandling.handle(error: InputError.deleteTransactionCreatedBySomeoneElse)
+                    return
+                }
                 transaction.delete { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
@@ -132,6 +138,14 @@ struct TransactionsGroupView: View {
                     }
                     
                     // Success
+                    self.standingsViewModel.setStandings(transaction: transaction, delete: true) { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
+                    }
                 }
             }
         }

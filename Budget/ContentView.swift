@@ -9,12 +9,14 @@ import SwiftUI
 
 struct ContentView: View {
     @AppStorage("welcomeScreenShown") private var welcomeScreenShown: Bool = false
+    
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
+    @EnvironmentObject private var standingsViewModel: StandingsViewModel
 
     var body: some View {
         VStack {
@@ -59,7 +61,6 @@ struct ContentView: View {
                 }
 
                 // Success
-                if !self.transactionsViewModel.firstLoadFinished {
                     self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn) { error in
                         if let error = error {
                             self.errorHandling.handle(error: error)
@@ -67,9 +68,16 @@ struct ContentView: View {
                         }
 
                         // Success
-                        self.transactionsViewModel.firstLoadFinished = true
+                        self.standingsViewModel.fetchData { error in
+                            if let error = error {
+                                self.errorHandling.handle(error: error)
+                                return
+                            }
+                            
+                            // Success
+                            self.standingsViewModel.firstLoadFinished = true
+                        }
                     }
-                }
             }
             self.notificationsViewModel.fetchData { error in
                 if let error = error {
@@ -98,11 +106,6 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 extension String {
-    //    func localizeString(string: String) -> String {
-    //        let path = Bundle.main.path(forResource: string, ofType: "lproj")
-    //        let bundle = Bundle(path: path!)
-    //        return NSLocalizedString(self, tableName: nil, bundle: bundle!, value: "", comment: "")
-    //    }
     func localizeString() -> String {
         return NSLocalizedString(self, comment: "")
     }

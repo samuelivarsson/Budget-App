@@ -10,7 +10,6 @@ import Foundation
 struct Participant: Identifiable, Codable {
     var id: String = UUID().uuidString
     var amount: Double = 0
-    var me: Bool = false
     var userId: String
     var userName: String
 }

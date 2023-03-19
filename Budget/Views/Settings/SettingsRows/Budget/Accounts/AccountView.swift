@@ -45,14 +45,23 @@ struct AccountView: View {
                         .multilineTextAlignment(.trailing)
                         .focused(self.$isInputActive)
                         .toolbar {
-                                ToolbarItemGroup(placement: .keyboard) {
-                                    Spacer()
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
                                         
-                                    Button("Done") {
-                                        self.isInputActive = false
-                                    }
+                                Button("Done") {
+                                    self.isInputActive = false
                                 }
                             }
+                        }
+                }
+                
+                HStack(spacing: 5) {
+                    Text("amount")
+                    TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$account.baseAmount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .focused(self.$isInputActive)
+                    Text(Utility.currencyFormatter.currencySymbol)
                 }
                 
                 Toggle("mainAccount", isOn: self.$account.main)
@@ -103,8 +112,8 @@ struct AccountView: View {
     }
 }
 
-//struct AccountView_Previews: PreviewProvider {
+// struct AccountView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        AccountView()
 //    }
-//}
+// }

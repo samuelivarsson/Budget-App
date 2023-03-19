@@ -61,7 +61,7 @@ struct ParticipantsView: View {
         
         Picker("payer", selection: self.$payer) {
             ForEach(self.participants, id: \.userId) { participant in
-                Text(participant.me ? "you".localizeString() : participant.userName).tag(participant.userId)
+                Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : participant.userName).tag(participant.userId)
             }
         }
         .onLoad {
@@ -93,7 +93,7 @@ struct ParticipantsView: View {
         // Use a ForEach loop to display a list of participants
         ForEach(self.$participants, id: \.id) { $participant in
             HStack {
-                Text(participant.me ? "you".localizeString() : participant.userName)
+                Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : participant.userName)
                 Spacer()
                 if self.splitEvenly {
                     Text(Utility.doubleToLocalCurrency(value: participant.amount))
@@ -113,7 +113,7 @@ struct ParticipantsView: View {
                     }
                 }
             }
-            .deleteDisabled(participant.me)
+            .deleteDisabled(participant.userId == self.userViewModel.user.id)
         }
         .onDelete(perform: deleteParticipants)
     }

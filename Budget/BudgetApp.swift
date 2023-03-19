@@ -17,6 +17,7 @@ struct BudgetApp: App {
     @StateObject var userViewModel = UserViewModel()
     @StateObject var transactionsViewModel = TransactionsViewModel()
     @StateObject var notificationsViewModel = NotificationsViewModel()
+    @StateObject var standingsViewModel = StandingsViewModel()
 
     init() {
         setUpFirebase()
@@ -33,6 +34,7 @@ struct BudgetApp: App {
                 .environmentObject(userViewModel)
                 .environmentObject(transactionsViewModel)
                 .environmentObject(notificationsViewModel)
+                .environmentObject(standingsViewModel)
         }
     }
 }

@@ -16,9 +16,13 @@ struct TransactionView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var firestoreViewModel: FirestoreViewModel
+    @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
+    @EnvironmentObject private var standingsViewModel: StandingsViewModel
     
     @State private var transaction: Transaction
     @FocusState var isInputActive: Bool
+    
+    private var oldTransaction: Transaction? = nil
     
     private var action: TransactionAction
     
@@ -30,6 +34,7 @@ struct TransactionView: View {
     init(transaction: Transaction, myId: String) {
         self._transaction = State(initialValue: transaction)
         self.action = transaction.creatorId == myId ? .edit : .view
+        self.oldTransaction = transaction
     }
     
     var body: some View {
@@ -42,7 +47,7 @@ struct TransactionView: View {
                 self.datePicker
             }
             
-            Section(participantText) {
+            Section(self.participantText) {
                 ParticipantsView(totalAmount: self.$transaction.totalAmount, splitEvenly: self.$transaction.splitEvenly, participants: self.$transaction.participants, payer: self.$transaction.payerId, isInputActive: self.$isInputActive, action: self.action)
             }
             
@@ -63,7 +68,7 @@ struct TransactionView: View {
                     if self.transaction.creatorId == self.userViewModel.user.id {
                         Text("transactionCreatedByYou")
                     } else {
-                        Text("transactionCreatedBy".localizeString() + " " + transaction.creatorName)
+                        Text("transactionCreatedBy".localizeString() + " " + self.transaction.creatorName)
                     }
                 }
             }
@@ -73,7 +78,7 @@ struct TransactionView: View {
         .onLoad {
             let user = self.userViewModel.user
             if self.transaction.participants.count < 1 {
-                self.transaction.participants = [Participant(me: true, userId: user.id, userName: user.name)]
+                self.transaction.participants = [Participant(userId: user.id, userName: user.name)]
             }
             if self.transaction.payerId == "" {
                 self.transaction.payerId = self.transaction.participants[0].id
@@ -177,8 +182,8 @@ struct TransactionView: View {
     }
     
     private func addParticipantIds() {
-        transaction.participantIds = .init()
-        transaction.participants.forEach { participant in
+        self.transaction.participantIds = .init()
+        self.transaction.participants.forEach { participant in
             self.transaction.participantIds.append(participant.userId)
         }
     }
@@ -207,19 +212,22 @@ struct TransactionView: View {
             self.transaction.creatorName = creatorName
             self.transaction.payerName = self.transaction.getPayerName()
             self.addParticipantIds()
-            
-            do {
-                let _ = try self.firestoreViewModel.db.collection("Transactions").addDocument(from: self.transaction) { error in
+            self.standingsViewModel.setStandings(transaction: self.transaction) { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+                self.transactionsViewModel.addTransaction(transaction: self.transaction) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return
                     }
-                        
-                    // Success
+                    
+                    // Succes
                     self.presentationMode.wrappedValue.dismiss()
                 }
-            } catch {
-                self.errorHandling.handle(error: error)
             }
         }
     }
@@ -237,9 +245,43 @@ struct TransactionView: View {
             self.transaction.payerName = self.transaction.getPayerName()
             self.addParticipantIds()
             
+            guard let oldTransaction = self.oldTransaction else {
+                let info = "Found nil when extracting oldTransaction in editTransaction in TransactionView"
+                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                return
+            }
+            guard let documentId = self.transaction.documentId else {
+                let info = "Found nil when extracting oldTransaction in editTransaction in TransactionView"
+                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                return
+            }
+            
             do {
-                try self.firestoreViewModel.db.collection("Transactions").document(self.transaction.documentId ?? "").setData(from: self.transaction)
-                self.presentationMode.wrappedValue.dismiss()
+                try self.firestoreViewModel.db.collection("Transactions").document(documentId).setData(from: self.transaction) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
+                    self.standingsViewModel.setStandings(transaction: oldTransaction, delete: true) { error in
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Succes
+                        self.standingsViewModel.setStandings(transaction: self.transaction) { error in
+                            if let error = error {
+                                self.errorHandling.handle(error: error)
+                                return
+                            }
+                            
+                            // Success
+                            self.presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                }
             } catch {
                 self.errorHandling.handle(error: error)
             }
