@@ -24,7 +24,7 @@ struct ParticipantsView: View {
     var body: some View {
         if self.action != .view {
             HStack(spacing: 10) {
-                Text("friends")
+                Text("addFriend")
             
                 Spacer()
             
