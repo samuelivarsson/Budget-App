@@ -18,21 +18,19 @@ struct MonthStartsOnView: View {
     var body: some View {
         Form {
             Section {
-                HStack {
-                    Picker("monthStartsOn", selection: $day) {
-                        ForEach(1..<29) {
-                            Text("\($0)")
-                        }
+                Picker("monthStartsOn", selection: $day) {
+                    ForEach(1 ..< 29) {
+                        Text("\($0)")
                     }
-                    .pickerStyle(.menu)
-                    .onAppear {
-                        day = self.userViewModel.user.monthStartsOn-1
-                    }
+                }
+                .pickerStyle(.menu)
+                .onAppear {
+                    day = self.userViewModel.user.monthStartsOn - 1
                 }
             }
             
             Button {
-                self.userViewModel.setMonthStartsOn(day: day+1) { error in
+                self.userViewModel.setMonthStartsOn(day: day + 1) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return

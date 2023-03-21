@@ -64,8 +64,12 @@
 "friendRequestDenied" = "Vänförfrågan nekad";
 "hasAddedYouToTransaction" = "har lagt till dig i en transaktion";
 "youHaveNoNotifications" = "Du har inga notifikationer!";
+
+// Standings View
 "standing" = "Ställning";
 "standings" = "Ställningar";
+"favourites" = "Favoriter";
+"otherFriends" = "Andra vänner";
 
 // Years, months etc abbreviations
 "shortYears" = "å";
@@ -122,7 +126,9 @@
 "noBudgetAccounts" = "Du har inga budget konton";
 "noTransactionCategories" = "Du har inga transaktionskategorier";
 "transaction" = "Transaktion";
-"overhead" = "Overhead";
+"overhead" = "Fast kostnad";
+"overheads" = "Fasta kostnader";
+"day" = "Dag";
 "mainAccount" = "Huvudkonto";
 "takesFrom" = "Drar från";
 "givesTo" = "Ger till";
@@ -130,6 +136,18 @@
 "ceiling" = "Tak";
 "categoryCeiling" = "Kategoritak";
 "useRest" = "Använd resten";
+"noOverheads" = "Du har inga fasta kostnader";
+"sum" = "Summa";
+"dayOfPay" = "Dragningsdag";
+"startDate" = "Start datum";
+"months" = "Månader";
+"share" = "Dela";
+"overheadNote" = "Dragningsdagen är den dag på månaden som den fasta kostnaden dras från kontot. Månader är hur ofta den fasta kostnaden dras, det vill säga varje månad = 1, varannan månad = 2, osv. Dela är om du delar denna kostnaden med t.ex din sambo";
+"savings" = "Sparande";
+"savingsPercentage" = "Sparningsprocent";
+"percentage" = "Procent";
+"savingAccounts" = "Sparkonton";
+"savingAmount" = "Sparbelopp";
 
 // Friends View
 "friend" = "Vän";
@@ -149,6 +167,8 @@
 "searchForUser" = "Sök efter en användare";
 "userName" = "Användarnamn";
 "customFriends" = "Anpassade vänner";
+"makeFavourite" = "Gör till favorit";
+"removeFromFavourites" = "Ta bort från favoriter";
 
 // Transaction Categories
 "food" = "Mat";

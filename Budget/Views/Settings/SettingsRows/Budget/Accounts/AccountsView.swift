@@ -15,20 +15,22 @@ struct AccountsView: View {
 
     var body: some View {
         Form {
-            let accounts = self.userViewModel.getAccounts()
+            let accounts = self.userViewModel.getAccountsSorted()
             if accounts.count < 1 {
                 Text("noBudgetAccounts")
             } else {
                 ForEach(AccountType.allCases, id: \.self) { type in
                     Section {
-                        ForEach(self.userViewModel.getAccounts(type: type)) { account in
+                        ForEach(self.userViewModel.getAccountsSorted(type: type)) { account in
                             NavigationLink {
                                 AccountView(account: account)
                             } label: {
                                 Text(account.name)
                             }
                         }
-                        .onDelete(perform: self.deleteBudgetAccounts)
+                        .onDelete { indexSet in
+                            self.deleteBudgetAccounts(offsets: indexSet, type: type)
+                        }
                     } header: {
                         Text(type.description())
                     }
@@ -51,9 +53,9 @@ struct AccountsView: View {
         }
     }
 
-    private func deleteBudgetAccounts(offsets: IndexSet) {
+    private func deleteBudgetAccounts(offsets: IndexSet, type: AccountType) {
         withAnimation {
-            offsets.map { self.userViewModel.getAccounts()[$0] }.forEach { account in
+            offsets.map { self.userViewModel.getAccountsSorted(type: type)[$0] }.forEach { account in
                 self.userViewModel.deleteBudgetAccount(account: account) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)

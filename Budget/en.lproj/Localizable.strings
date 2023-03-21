@@ -64,8 +64,12 @@
 "friendRequestDenied" = "Friend request denied";
 "hasAddedYouToTransaction" = "has added you to a transaction";
 "youHaveNoNotifications" = "You have no notifications!";
+
+// Standings View
 "standing" = "Standing";
 "standings" = "Standings";
+"favourites" = "Favourites";
+"otherFriends" = "Other friends";
 
 // Years, months etc abbreviations
 "shortYears" = "y";
@@ -123,6 +127,8 @@
 "noTransactionCategories" = "You have no transaction categories";
 "transaction" = "Transaction";
 "overhead" = "Overhead";
+"overheads" = "Overheads";
+"day" = "Day";
 "mainAccount" = "Main account";
 "takesFrom" = "Takes from";
 "givesTo" = "Gives to";
@@ -130,6 +136,18 @@
 "ceiling" = "Ceiling";
 "categoryCeiling" = "Category ceiling";
 "useRest" = "Use rest";
+"noOverheads" = "You have no overheads";
+"sum" = "Sum";
+"dayOfPay" = "Day of pay";
+"startDate" = "Start date";
+"months" = "Months";
+"share" = "Share";
+"overheadNote" = "Day of pay is the day of the month when the overhead draws money from the account. Months is how often the overhead draws from the account, that is, every month = 1, every other month = 2, etc. Share is if you, for example, share this overhead with your living partner";
+"savings" = "Savings";
+"savingsPercentage" = "Savings percentage";
+"percentage" = "Percentage";
+"savingAccounts" = "Saving accounts";
+"savingAmount" = "Saving amount";
 
 // Friends View
 "friend" = "Friend";
@@ -149,6 +167,8 @@
 "searchForUser" = "Search for a user";
 "userName" = "User name";
 "customFriends" = "Custom friends";
+"makeFavourite" = "Make favourite";
+"removeFromFavourites" = "Remove from favourites";
 
 // Transaction Categories
 "food" = "Food";

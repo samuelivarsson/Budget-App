@@ -107,13 +107,28 @@ class TransactionsViewModel: ObservableObject {
         let thisMonthsTransactions = self.getTransactions(from: from, to: to)
         thisMonthsTransactions.forEach { transaction in
             if let transactionCategory = transactionCategory {
-                if transaction.category.id == transactionCategory.id {
+                // Check if it's the correct transaction by id, could also be a friends category with same name
+                let isNotMineButSameName = transaction.category.isNotMineButSameName(sameNameAs: transactionCategory, budget: user.budget)
+                if transaction.category.id == transactionCategory.id || isNotMineButSameName {
                     total += transaction.getShare(userId: user.id)
                 }
             } else if let accountId = accountId {
                 if transaction.category.takesFromAccount == accountId {
                     total += transaction.getShare(userId: user.id)
                 }
+            }
+        }
+        
+        return total
+    }
+    
+    func getIncomes(user: User, accountId: String) -> Double {
+        var total: Double = 0
+        let (from, to) = Utility.getBudgetPeriod(monthStartsOn: user.monthStartsOn)
+        let thisMonthsTransactions = self.getTransactions(from: from, to: to)
+        thisMonthsTransactions.forEach { transaction in
+            if transaction.category.givesToAccount == accountId {
+                total += transaction.getShare(userId: user.id)
             }
         }
         

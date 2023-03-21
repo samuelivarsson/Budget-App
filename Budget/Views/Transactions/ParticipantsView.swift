@@ -22,62 +22,72 @@ struct ParticipantsView: View {
     private let friendText: Font = .footnote
     
     var body: some View {
-        HStack(spacing: 10) {
-            Text("friends")
+        if self.action != .view {
+            HStack(spacing: 10) {
+                Text("friends")
             
-            Spacer()
+                Spacer()
             
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 20) {
-                    let friends = self.userViewModel.getAllFriendsSorted(exceptFor: self.participants)
-                    ForEach(friends, id: \.id) { friend in
-                        Button {
-                            self.participants.append(Participant(userId: friend.id, userName: friend.name))
-                        } label: {
-                            Text(friend.name)
-                                .font(self.friendText)
-                                .lineLimit(1)
-                        }
-                        .onChange(of: self.participants) { _ in
-                            // If splitEvenly is true, divide the total amount evenly among the participants
-                            if self.splitEvenly {
-                                let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: self.totalAmount / Double(self.participants.count))
-                                var val = self.totalAmount
-                                for i in (0 ..< self.participants.count).reversed() {
-                                    self.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
-                                    val -= amountPerParticipant
-                                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 20) {
+                        let friends = self.userViewModel.getAllFriendsSorted(exceptFor: self.participants)
+                        ForEach(friends, id: \.id) { friend in
+                            Button {
+                                self.participants.append(Participant(userId: friend.id, userName: friend.name))
+                            } label: {
+                                Text(friend.name)
+                                    .font(self.friendText)
+                                    .lineLimit(1)
                             }
                         }
+                        .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+                        .background(Color.accentColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(15)
+                        .padding(EdgeInsets(top: 5, leading: 0, bottom: 0.6, trailing: 0))
                     }
-                    .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
-                    .cornerRadius(15)
-                    .padding(EdgeInsets(top: 5, leading: 0, bottom: 0.6, trailing: 0))
+                }
+            }
+            .onChange(of: self.participants) { _ in
+                // If splitEvenly is true, divide the total amount evenly among the participants
+                if self.splitEvenly {
+                    let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: self.totalAmount / Double(self.participants.count))
+                    var val = self.totalAmount
+                    for i in (0 ..< self.participants.count).reversed() {
+                        self.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
+                        val -= amountPerParticipant
+                    }
                 }
             }
         }
         
-        Picker("payer", selection: self.$payer) {
-            ForEach(self.participants, id: \.userId) { participant in
-                Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : participant.userName).tag(participant.userId)
-            }
-        }
-        .onLoad {
-            if self.action == .add {
-                guard let first = self.participants.first else {
-                    let info = "Found nil when extracting first in onLoad in payer picker in ParticipantsView"
-                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                    return
+        HStack {
+            Text("payer")
+            Spacer()
+            Picker("", selection: self.$payer) {
+                ForEach(self.participants, id: \.userId) { participant in
+                    Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : participant.userName).tag(participant.userId)
+                        .minimumScaleFactor(0.1)
+                        .lineLimit(1)
                 }
-                
-                self.payer = first.userId
+            }
+            .disabled(self.action == .view)
+            .onLoad {
+                if self.action == .add {
+                    guard let first = self.participants.first else {
+                        let info = "Found nil when extracting first in onLoad in payer picker in ParticipantsView"
+                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                        return
+                    }
+                    
+                    self.payer = first.userId
+                }
             }
         }
             
         // Use a Toggle to allow the user to turn splitEvenly on or off
         Toggle("splitEvenly", isOn: self.$splitEvenly)
+            .disabled(self.action == .view)
             .onChange(of: self.splitEvenly) { _ in
                 // If splitEvenly is true, divide the total amount evenly among the participants
                 if self.splitEvenly {
@@ -95,7 +105,7 @@ struct ParticipantsView: View {
             HStack {
                 Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : participant.userName)
                 Spacer()
-                if self.splitEvenly {
+                if self.splitEvenly || self.action == .view {
                     Text(Utility.doubleToLocalCurrency(value: participant.amount))
                         .padding(5)
                 } else {
@@ -113,7 +123,7 @@ struct ParticipantsView: View {
                     }
                 }
             }
-            .deleteDisabled(participant.userId == self.userViewModel.user.id)
+            .deleteDisabled(participant.userId == self.userViewModel.user.id || self.action == .view)
         }
         .onDelete(perform: deleteParticipants)
     }

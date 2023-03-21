@@ -107,73 +107,114 @@ struct TransactionView: View {
     }
     
     private var typeView: some View {
-        Picker("type", selection: self.$transaction.type) {
-            ForEach(TransactionType.allCases, id: \.self) { type in
-                Text(type.description()).tag(type)
+        Group {
+            if self.action == .view {
+                HStack {
+                    Text("type")
+                    Spacer()
+                    Text(self.transaction.type.description())
+                }
+            } else {
+                Picker("type", selection: self.$transaction.type) {
+                    ForEach(TransactionType.allCases, id: \.self) { type in
+                        Text(type.description()).tag(type)
+                    }
+                }
+                .pickerStyle(.segmented)
             }
         }
-        .pickerStyle(.segmented)
     }
     
     private var categoryView: some View {
-        HStack(spacing: 30) {
-            Picker("category", selection: self.$transaction.category) {
-                ForEach(self.userViewModel.getTransactionCategoriesSorted(type: self.transaction.type), id: \.self) { category in
-                    Text(LocalizedStringKey(category.name)).tag(category)
+        Group {
+            if self.action == .view {
+                HStack {
+                    Text("category")
+                    Spacer()
+                    Text(self.transaction.category.name)
                 }
-            }
-            .pickerStyle(.menu)
-            .onLoad {
-                if self.action == .add {
-                    self.transaction.category = self.userViewModel.getFirstTransactionCategory(type: self.transaction.type)
+            } else {
+                HStack(spacing: 30) {
+                    Picker("category", selection: self.$transaction.category) {
+                        ForEach(self.userViewModel.getTransactionCategoriesSorted(type: self.transaction.type), id: \.self) { category in
+                            Text(LocalizedStringKey(category.name)).tag(category)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .onLoad {
+                        if self.action == .add {
+                            self.transaction.category = self.userViewModel.getFirstTransactionCategory(type: self.transaction.type)
+                        }
+                    }
                 }
             }
         }
     }
     
     private var descriptionView: some View {
-        HStack(spacing: 30) {
-            Text("description")
-            TextField("description", text: self.$transaction.desc, prompt: Text("shortDescription"))
-                .multilineTextAlignment(.trailing)
-                .focused(self.$isInputActive)
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-
-                        Button("Done") {
-                            self.isInputActive = false
-                        }
-                    }
+        Group {
+            if self.action == .view {
+                HStack {
+                    Text("description")
+                    Spacer()
+                    Text(self.transaction.desc)
                 }
+            } else {
+                HStack(spacing: 30) {
+                    Text("description")
+                    TextField("description", text: self.$transaction.desc, prompt: Text("shortDescription"))
+                        .multilineTextAlignment(.trailing)
+                        .focused(self.$isInputActive)
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                
+                                Button("Done") {
+                                    self.isInputActive = false
+                                }
+                            }
+                        }
+                }
+            }
         }
     }
     
     private var amountView: some View {
-        HStack(spacing: 5) {
-            Text("amount")
-            TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$transaction.totalAmount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
-                .focused(self.$isInputActive)
-                .onChange(of: self.transaction.totalAmount) { newValue in
-                    self.transaction.totalAmount = Utility.doubleToTwoDecimals(value: newValue)
-                    // If splitEvenly is true, divide the total amount evenly among the participants
-                    if self.transaction.splitEvenly {
-                        let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: newValue / Double(self.transaction.participants.count))
-                        var val = newValue
-                        for i in (0 ..< self.transaction.participants.count).reversed() {
-                            self.transaction.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
-                            val -= amountPerParticipant
-                        }
-                    }
+        Group {
+            if self.action == .view {
+                HStack {
+                    Text("amount")
+                    Spacer()
+                    Text(Utility.doubleToLocalCurrency(value: self.transaction.totalAmount))
                 }
-            Text(Utility.currencyFormatter.currencySymbol)
+            } else {
+                HStack(spacing: 5) {
+                    Text("amount")
+                    TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$transaction.totalAmount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .focused(self.$isInputActive)
+                        .onChange(of: self.transaction.totalAmount) { newValue in
+                            self.transaction.totalAmount = Utility.doubleToTwoDecimals(value: newValue)
+                            // If splitEvenly is true, divide the total amount evenly among the participants
+                            if self.transaction.splitEvenly {
+                                let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: newValue / Double(self.transaction.participants.count))
+                                var val = newValue
+                                for i in (0 ..< self.transaction.participants.count).reversed() {
+                                    self.transaction.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
+                                    val -= amountPerParticipant
+                                }
+                            }
+                        }
+                    Text(Utility.currencyFormatter.currencySymbol)
+                }
+            }
         }
     }
     
     private var datePicker: some View {
         DatePicker("date", selection: self.$transaction.date)
+            .disabled(self.action == .view)
             .onLoad {
                 if self.action == .add {
                     self.transaction.date = Date()
@@ -234,6 +275,10 @@ struct TransactionView: View {
     
     private func editTransaction() {
         withAnimation {
+            if self.action == .view {
+                return
+            }
+            
             let totalAmount = self.transaction.participants.reduce(0) { result, participant in
                 result + participant.amount
             }

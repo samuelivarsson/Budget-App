@@ -76,8 +76,6 @@ class UserViewModel: ObservableObject {
             return
         }
         
-        var friendsIds = [String]()
-        self.friendRequests = [String]()
         var friendsIds: [String] = .init()
         self.favouriteIds = .init()
         self.friendRequests = .init()
@@ -224,6 +222,24 @@ class UserViewModel: ObservableObject {
         }
         
         self.user.budget.accounts = self.user.budget.accounts.filter { $0.id != account.id }
+        
+        self.setUserData(completion: completion)
+    }
+    
+    func addOverhead(overhead: Overhead, completion: @escaping (Error?) -> Void) {
+        self.user.budget.overheads = self.user.budget.overheads + [overhead]
+        
+        self.setUserData(completion: completion)
+    }
+    
+    func editOverhead(overhead: Overhead, completion: @escaping (Error?) -> Void) {
+        self.user.budget.overheads = self.user.budget.overheads.filter { $0.id != overhead.id } + [overhead]
+        
+        self.setUserData(completion: completion)
+    }
+    
+    func deleteOverhead(overhead: Overhead, completion: @escaping (Error?) -> Void) {
+        self.user.budget.overheads = self.user.budget.overheads.filter { $0.id != overhead.id }
         
         self.setUserData(completion: completion)
     }
@@ -407,6 +423,13 @@ class UserViewModel: ObservableObject {
         })
     }
     
+    func getFriendsSorted(favourites: Bool) -> [User] {
+        if favourites {
+            return self.getFriendsSorted().filter(self.isFriendFavourite)
+        }
+        return self.getFriendsSorted().filter { !self.isFriendFavourite(user: $0) }
+    }
+    
     func getCustomFriends() -> [CustomFriend] {
         return self.user.customFriends
     }
@@ -444,6 +467,20 @@ class UserViewModel: ObservableObject {
         self.setUserData(completion: completion)
     }
     
+    func setSavingsPercentage(savingsPercentage: Double, completion: @escaping (Error?) -> Void) {
+        // Update the income
+        self.user.budget.savingsPercentage = savingsPercentage
+        // Update our user data
+        self.setUserData(completion: completion)
+    }
+    
+    func setSavingAmount(savingAmount: Double, accountId: String, completion: @escaping (Error?) -> Void) {
+        // Update the income
+        self.user.budget.savingAmounts[accountId] = savingAmount
+        // Update our user data
+        self.setUserData(completion: completion)
+    }
+    
     func setMonthStartsOn(day: Int, completion: @escaping (Error?) -> Void) {
         // Update the day
         self.user.monthStartsOn = day
@@ -463,6 +500,10 @@ class UserViewModel: ObservableObject {
         return self.user.budget.accounts.sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
     
+    func getAccountsSorted(type: AccountType) -> [Account] {
+        return self.getAccounts(type: type).sorted { $0.name.lowercased() < $1.name.lowercased() }
+    }
+    
     func getFirstTransactionCategory(type: TransactionType) -> TransactionCategory {
         let errorCategory = TransactionCategory(name: "Error", type: .expense)
         return self.getTransactionCategoriesSorted(type: type).first ?? errorCategory
@@ -478,7 +519,19 @@ class UserViewModel: ObservableObject {
         return false
     }
     
-    func getBalance(accountId: String, spent: Double) -> Double {
-        return self.user.budget.getRemaining(accountId: accountId) - spent
+    func getBalance(accountId: String, spent: Double, incomes: Double) -> Double {
+        return self.user.budget.getBalance(accountId: accountId, spent: spent, incomes: incomes, monthStartsOn: self.user.monthStartsOn)
+    }
+    
+    func getOverheads() -> [Overhead] {
+        return self.user.budget.overheads
+    }
+    
+    func getOverheadsSorted() -> [Overhead] {
+        return self.getOverheads().sorted { $0.name.lowercased() < $1.name.lowercased() }
+    }
+    
+    func getSavingAmount(accountId: String) -> Double {
+        return self.user.budget.getSavingAmount(accountId: accountId)
     }
 }

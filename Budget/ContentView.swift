@@ -44,6 +44,10 @@ struct ContentView: View {
                 Image(systemName: "arrow.left.arrow.right")
                 Text("transactions")
             }
+            StandingsView().tabItem {
+                Image(systemName: "person.2")
+                Text("standings")
+            }
             HistoryView().tabItem {
                 Image(systemName: "clock")
                 Text("history")

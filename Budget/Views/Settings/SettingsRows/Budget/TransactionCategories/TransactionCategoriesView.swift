@@ -30,7 +30,7 @@ struct TransactionCategoriesView: View {
                                 self.errorHandling.handle(error: error)
                                 return
                             }
-                            
+
                             // Success
                         }
                     }
@@ -39,7 +39,7 @@ struct TransactionCategoriesView: View {
                 } footer: {
                     Text("categoryThatUsesRestOfMainTransactionAccount")
                 }
-                
+
                 ForEach(TransactionType.allCases, id: \.self) { type in
                     Section {
                         ForEach(self.userViewModel.getTransactionCategoriesSorted(type: type)) { transactionCategory in
@@ -48,7 +48,8 @@ struct TransactionCategoriesView: View {
                             } label: {
                                 Text(LocalizedStringKey(transactionCategory.name))
                             }
-                        }.onDelete { indexSet in
+                        }
+                        .onDelete { indexSet in
                             self.deleteTransactionCategory(offsets: indexSet, type: type)
                         }
                     } header: {

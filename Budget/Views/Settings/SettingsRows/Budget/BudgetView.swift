@@ -31,6 +31,18 @@ struct BudgetView: View {
                 } label: {
                     Label("transactionCategories", systemImage: "arrow.left.arrow.right")
                 }
+                
+                NavigationLink {
+                    OverheadsView()
+                } label: {
+                    Label("overheads", systemImage: "list.bullet")
+                }
+                
+                NavigationLink {
+                    SavingsView(savingsPercentage: self.userViewModel.user.budget.savingsPercentage)
+                } label: {
+                    Label("savings", systemImage: "percent")
+                }
             }
         }
         .navigationTitle("budget")

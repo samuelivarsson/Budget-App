@@ -27,6 +27,7 @@ struct User: Identifiable, Codable, Hashable, Named {
         return User(id: id, documentId: "", name: name, email: email, phone: "", monthStartsOn: 25, budget: Budget.getDummyBudget(), friends: [], customFriends: [])
     }
 }
+// TODO: - Move monthStartsOn to Budget (fix getBalance when doing this)
 
 extension String {
     func generateStringSequence() -> [String] {

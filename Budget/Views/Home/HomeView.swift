@@ -14,10 +14,6 @@ struct HomeView: View {
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     @EnvironmentObject private var standingsViewModel: StandingsViewModel
 
-    @State private var showSendReminderAlert: Bool = false
-    @State private var showDidSwishGoThrough: Bool = false
-    @State private var swishFriendId: String? = nil
-
     private let textSize: Font = .footnote
 
     var body: some View {
@@ -39,7 +35,10 @@ struct HomeView: View {
                         HStack {
                             Text(account.name)
                             Spacer()
-                            Text(Utility.doubleToLocalCurrency(value: self.userViewModel.getBalance(accountId: account.id, spent: self.transactionsViewModel.getSpent(user: self.userViewModel.user, accountId: account.id))))
+                            let spent = self.transactionsViewModel.getSpent(user: self.userViewModel.user, accountId: account.id)
+                            let incomes = self.transactionsViewModel.getIncomes(user: self.userViewModel.user, accountId: account.id)
+                            let balance = self.userViewModel.getBalance(accountId: account.id, spent: spent, incomes: incomes)
+                            Text(Utility.doubleToLocalCurrency(value: balance))
                         }
                     }
                 } header: {
@@ -58,57 +57,42 @@ struct HomeView: View {
                             let spent = self.transactionsViewModel.getSpent(user: user, transactionCategory: transactionCategory)
                             Text(Utility.doubleToLocalCurrency(value: spent))
                                 .frame(width: 75, alignment: .trailing)
-                                .lineLimit(1)
                                 .font(self.textSize)
+                                .scaledToFill()
+                                .minimumScaleFactor(0.1)
+                                .lineLimit(1)
 
                             Spacer()
 
                             let amount = transactionCategory.getRealAmount(budget: user.budget)
 
-                            ProgressView(value: min(spent, amount), total: amount)
-                                .tint(spent < amount ? Color.green : Color.red)
+                            // TODO: - Gradient from green to red
+                            VStack(spacing: 5) {
+                                Text(Utility.doubleToLocalCurrency(value: amount - spent))
+                                    .font(self.textSize)
+                                    .scaledToFit()
+                                    .minimumScaleFactor(0.1)
+                                    .lineLimit(1)
+                                ProgressView(value: min(spent, amount), total: amount)
+                                    .tint(spent < amount ? Color.green : Color.red)
+                            }
 
                             Spacer()
 
                             Text(Utility.doubleToLocalCurrency(value: amount))
                                 .frame(width: 75, alignment: .leading)
-                                .lineLimit(1)
                                 .font(self.textSize)
+                                .scaledToFill()
+                                .minimumScaleFactor(0.1)
+                                .lineLimit(1)
                         }
                     }
                 } header: {
                     Text("expenses")
                 }
 
-                Section {
-                    ForEach(self.userViewModel.getFriendsSorted()) { friend in
-                        let standing = self.standingsViewModel.getStanding(userId1: self.userViewModel.user.id, userId2: friend.id)
-                        let amount = standing?.getStanding(myId: self.userViewModel.user.id) ?? 0
-                        Button {
-                            if amount < 0 {
-                                if let url = URL(string: Utility.getSwishUrl(amount: amount, friend: friend)) {
-                                    UIApplication.shared.open(url)
-                                }
-                            } else if amount > 0 {
-                                self.showSendReminderAlert = true
-                            }
-                        } label: {
-                            HStack {
-                                Text(friend.name)
-                                    .foregroundColor(.primary)
-                                Spacer()
-                                Text(Utility.doubleToLocalCurrency(value: amount))
-                                    .foregroundColor(amount < 0 ? Color.red : Color.green)
-                            }
-                        }
-                    }
-                    // TODO: - Only see favourite friends in standing
-                    // TODO: - Fix so you can favourite a friend
-                    // TODO: - Add See All button to show all standing between your friends
-                    // TODO: - Fix so the standing decrease after swish
-                } header: {
-                    Text("standings")
-                }
+                // TODO: - New section for other people's cateogires (if same name as yours -> use yours)
+                // TODO: - Add standings to own Tab
             }
             .redacted(when: !self.standingsViewModel.firstLoadFinished)
             .navigationTitle("home")
@@ -120,52 +104,6 @@ struct HomeView: View {
                         Image(systemName: "bell")
                             .foregroundColor(.primary)
                             .myBadge(count: self.notificationsViewModel.getNumberOfUnreadNotifications())
-                    }
-                }
-            }
-            .alert("sendReminder?", isPresented: self.$showSendReminderAlert) {
-                Button("send", role: .destructive) {
-                    // TODO: - Send a reminder
-                }
-            } message: {
-                Text("doYouWantToRemind")
-            }
-            .alert("didSwishGoThrough?", isPresented: self.$showDidSwishGoThrough) {
-                Button("yes", role: .destructive) {
-                    // TODO: - Send notification that you swished
-                    guard let swishFriendId = self.swishFriendId else {
-                        let info = "Found nil when extracting swishFriendId in alert in HomeView"
-                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                        return
-                    }
-                    self.standingsViewModel.squareUp(myId: self.userViewModel.user.id, friendId: swishFriendId) { error in
-                        if let error = error {
-                            self.errorHandling.handle(error: error)
-                            return
-                        }
-
-                        // Success
-                        print("Successfully squared up standings between you and user with id: \(swishFriendId)")
-                        self.swishFriendId = nil
-                    }
-                }
-            } message: {
-                Text("")
-            }
-            .onOpenURL { url in
-                self.handleUrlOpen(url: url)
-            }
-        }
-    }
-
-    private func handleUrlOpen(url: URL) {
-        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        if let queryItems = urlComponents?.queryItems {
-            for queryItem in queryItems {
-                if let value = queryItem.value {
-                    if queryItem.name == "userId" && !value.isEmpty {
-                        self.swishFriendId = value
-                        self.showDidSwishGoThrough = true
                     }
                 }
             }

@@ -172,11 +172,11 @@ class Utility {
     }
 
     /// Get the current budget period based on when the user wants to start and end the budget-month
-    static func getBudgetPeriod(monthsBack: Int = 0, monthStartsOn: Int) -> (Date, Date) {
+    static func getBudgetPeriod(date: Date = Date(), monthsBack: Int = 0, monthStartsOn: Int) -> (Date, Date) {
         var fromDate: Date
         var toDate: Date
         let calendar = Calendar.current
-        let referenceDate = calendar.date(byAdding: .month, value: -monthsBack, to: Date()) ?? Date()
+        let referenceDate = calendar.date(byAdding: .month, value: -monthsBack, to: date) ?? Date()
 
         if calendar.dateComponents([.day], from: referenceDate).day! < monthStartsOn {
             var dayComponent = DateComponents()
@@ -197,7 +197,7 @@ class Utility {
                 after: referenceDate,
                 matching: dayComponent,
                 matchingPolicy: .nextTime,
-                repeatedTimePolicy: .last,
+                repeatedTimePolicy: .first,
                 direction: .backward
             ) ?? Date()
 
@@ -241,7 +241,7 @@ class Utility {
 
     static func getSwishUrl(amount: Double, friend: User) -> String {
         let amountTwoDecimals = Utility.doubleToTwoDecimals(value: abs(amount))
-        // TODO - Fix to reflect date of transaction after last swish
+        // TODO: - Fix to reflect date of transaction after last swish
         let date = self.dateToStringNoTime(date: Date())
         let info = "squaringUpTransactionsSince".localizeString() + " " + date
         let data =
