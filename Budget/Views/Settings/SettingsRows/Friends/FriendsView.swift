@@ -5,8 +5,8 @@
 //  Created by Samuel Ivarsson on 2022-04-19.
 //
 
-import SwiftUI
 import Firebase
+import SwiftUI
 
 struct FriendsView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
@@ -17,13 +17,22 @@ struct FriendsView: View {
     
     var body: some View {
         Form {
-            Section {
-                ForEach(self.userViewModel.friends) { friend in
-                    FriendView(friend: friend, rowHeight: self.rowHeight)
+            let favouriteFriends = self.userViewModel.getFriendsSorted(favourites: true)
+            if favouriteFriends.count > 0 {
+                Section {
+                    self.getFriends(friends: favouriteFriends)
+                } header: {
+                    Text("favourites")
                 }
-                .onDelete(perform: deleteFriends)
-            } header: {
-                Text("friends")
+            }
+            
+            let otherFriends = self.userViewModel.getFriendsSorted(favourites: false)
+            if otherFriends.count > 0 {
+                Section {
+                    self.getFriends(friends: otherFriends)
+                } header: {
+                    Text("otherFriends")
+                }
             }
             
             if (self.userViewModel.user.customFriends).count > 0 {
@@ -31,7 +40,7 @@ struct FriendsView: View {
                     ForEach(self.userViewModel.user.customFriends) { friend in
                         CustomFriendView(friend: friend, rowHeight: self.rowHeight)
                     }
-                    .onDelete(perform: deleteCustomFriends)
+                    .onDelete(perform: self.deleteCustomFriends)
                 } header: {
                     Text("customFriends")
                 }
@@ -53,9 +62,18 @@ struct FriendsView: View {
         }
     }
     
-    private func deleteFriends(offsets: IndexSet) {
+    private func getFriends(friends: [User]) -> some View {
+        ForEach(friends) { friend in
+            FriendView(friend: friend, rowHeight: self.rowHeight)
+        }
+        .onDelete { offsets in
+            self.deleteFriends(offsets: offsets, friends: friends)
+        }
+    }
+    
+    private func deleteFriends(offsets: IndexSet, friends: [User]) {
         withAnimation {
-            offsets.map { self.userViewModel.friends[$0] }.forEach { friend in
+            offsets.map { friends[$0] }.forEach { friend in
                 self.userViewModel.deleteFriend(friend: friend) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)

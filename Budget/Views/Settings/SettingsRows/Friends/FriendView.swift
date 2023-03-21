@@ -11,9 +11,8 @@ struct FriendView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var friendsViewModel: FriendsViewModel
     
+    @State private var friend: User
     @State var profilePicture: UIImage? = nil
-    
-    private let friend: User
     
     private let rowHeight: CGFloat
     private let pictureSize: CGFloat
@@ -22,14 +21,14 @@ struct FriendView: View {
     private let numberSize: Font = .subheadline
     
     init(friend: User, rowHeight: CGFloat) {
-        self.friend = friend
+        self._friend = State(initialValue: friend)
         self.rowHeight = rowHeight
         self.pictureSize = rowHeight - 10
     }
     
     var body: some View {
         NavigationLink {
-            FriendDetailView(friend: self.friend)
+            FriendDetailView(friend: self.$friend)
         } label: {
             HStack(spacing: 15) {
                 ProfilePicture(uiImage: profilePicture, failImage: Image(systemName: "person.circle"))

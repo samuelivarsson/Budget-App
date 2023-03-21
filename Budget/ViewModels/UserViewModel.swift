@@ -55,7 +55,7 @@ class UserViewModel: ObservableObject {
                             completion(error)
                             return
                         }
-                            
+                        
                         // Success
                         print("Successfully set friends in fetchData in UserViewModel")
                         completion(nil)
@@ -70,26 +70,31 @@ class UserViewModel: ObservableObject {
     
     func setFriends(from data: User, completion: @escaping (Error?) -> Void) {
         if data.friends.count < 1 {
-            self.friends = [User]()
-            self.friendRequests = [String]()
+            self.friends = .init()
+            self.friendRequests = .init()
             completion(nil)
             return
         }
         
         var friendsIds = [String]()
         self.friendRequests = [String]()
+        var friendsIds: [String] = .init()
+        self.favouriteIds = .init()
+        self.friendRequests = .init()
         data.friends.forEach { friend in
             switch friend.status {
             case .requested:
                 self.friendRequests.append(friend.documentReference.documentID)
             case .friends:
                 friendsIds.append(friend.documentReference.documentID)
-                if friend.favourite { self.favouriteIds.append(friend.id) }
+                if friend.favourite {
+                    self.favouriteIds.append(friend.documentReference.documentID)
+                }
             }
         }
         
         if friendsIds.count < 1 {
-            self.friends = [User]()
+            self.friends = .init()
             completion(nil)
             return
         }
@@ -350,6 +355,30 @@ class UserViewModel: ObservableObject {
         self.user.customFriends = self.user.customFriends.filter { $0.id != customFriend.id }
         // Update our user data
         self.setUserData(completion: completion)
+    }
+    
+    func toggleFriendFavourite(friendId: String, completion: @escaping (Error?) -> Void) {
+        // Make friend favourite
+        let newFriend = self.user.friends.first(where: { $0.documentReference.documentID == friendId })
+        
+        guard var newFriend = newFriend else {
+            let info = "Found nil when extracting newFriend in makeFriendFavourite in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        newFriend.favourite = !newFriend.favourite
+        self.user.friends = self.user.friends.filter { $0.documentReference.documentID != friendId } + [newFriend]
+        // Update our user data
+        self.setUserData { error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // Success
+            self.setFriends(from: self.user, completion: completion)
+        }
     }
     
     func isUserFriend(uid: String) -> Bool {

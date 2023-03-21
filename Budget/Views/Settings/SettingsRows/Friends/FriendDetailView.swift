@@ -5,47 +5,54 @@
 //  Created by Samuel Ivarsson on 2022-04-20.
 //
 
-import SwiftUI
 import Firebase
 import FirebaseFirestore
+import SwiftUI
 
 struct FriendDetailView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var friendsViewModel: FriendsViewModel
     
     @State private var uiImage: UIImage?
     @State private var pictureLoading = false
     
-    private var friend: User
+    @Binding var friend: User
     
-    init(friend: User) {
-        self.friend = friend
-    }
+    private let pictureSize: CGFloat = 150
     
     var body: some View {
         Form {
             HStack {
                 Spacer()
                 VStack {
-                    // TODO - Check box if user is connected
+                    // TODO: - Check box if user is connected
                     if self.pictureLoading {
                         ProgressView()
-                            .frame(width: 150, height: 150)
+                            .frame(width: self.pictureSize, height: self.pictureSize)
                     } else {
-                        ProfilePicture(uiImage: uiImage, failImage: Image(systemName: "person.circle"))
-                            .frame(width: 150, height: 150)
-                            .clipShape(Circle())
+                        ZStack {
+                            ProfilePicture(uiImage: self.uiImage, failImage: Image(systemName: "person.circle"))
+                                .frame(width: self.pictureSize, height: self.pictureSize)
+                                .clipShape(Circle())
+                            
+                            if self.userViewModel.isFriendFavourite(user: self.friend) {
+                                Image(systemName: "heart.fill")
+                                    .offset(x: self.pictureSize/2, y: -self.pictureSize/2)
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
                     
-                    Text(friend.name)
+                    Text(self.friend.name)
                         .font(.headline)
                 }
                 Spacer()
             }
-            .listRowBackground(colorScheme == .dark ? Color.background : Color.secondaryBackground)
+            .listRowBackground(self.colorScheme == .dark ? Color.background : Color.secondaryBackground)
 
             Section {
                 HStack {
@@ -65,6 +72,20 @@ struct FriendDetailView: View {
                     Text(self.friend.email)
                 }
             }
+            
+            Section {
+                Button {
+                    self.toggleFavourite()
+                } label: {
+                    HStack {
+                        Spacer()
+                        let isFavourite = self.userViewModel.isFriendFavourite(user: self.friend)
+                        Text(isFavourite ? "removeFromFavourites" : "makeFavourite")
+                            .foregroundColor(isFavourite ? .red : .accentColor)
+                        Spacer()
+                    }
+                }
+            }
         }
         .navigationTitle("editFriend")
         .navigationBarTitleDisplayMode(.inline)
@@ -81,6 +102,17 @@ struct FriendDetailView: View {
                 // Success
                 self.uiImage = uiImage
             }
+        }
+    }
+    
+    private func toggleFavourite() {
+        self.userViewModel.toggleFriendFavourite(friendId: self.friend.id) { error in
+            if let error = error {
+                self.errorHandling.handle(error: error)
+                return
+            }
+            
+            // Success
         }
     }
 }
