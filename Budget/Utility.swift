@@ -74,10 +74,14 @@ class Utility {
         return dateFormatter.string(from: date)
     }
 
-    static func dateToString(date: Date, size: DateFormatter.Style) -> String {
+    static func dateToString(date: Date, style: DateFormatter.Style, timeStyle: DateFormatter.Style? = nil) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = size
-        dateFormatter.timeStyle = size
+        dateFormatter.dateStyle = style
+        if let timeStyle = timeStyle {
+            dateFormatter.timeStyle = timeStyle
+        } else {
+            dateFormatter.timeStyle = style
+        }
         return dateFormatter.string(from: date)
     }
 

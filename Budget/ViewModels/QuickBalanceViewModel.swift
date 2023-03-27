@@ -43,7 +43,7 @@ class QuickBalanceViewModel: ObservableObject {
             // Success
             let balance = Utility.convertToDouble(quickBalanceResponse.balance) ?? 0
             self.userDefaults.setValue(balance, forKey: self.quickBalancePrefix + quickBalanceAccounts[index].budgetAccountId)
-            let dateString = Utility.dateToString(date: Date.now, size: .short)
+            let dateString = Utility.dateToString(date: Date.now, style: .short, timeStyle: .medium)
             self.userDefaults.setValue(dateString, forKey: self.lastUpdatePrefix + quickBalanceAccounts[index].budgetAccountId)
             print("Successfully set quickBalance for \(quickBalanceAccounts[index].name) in fetchQuickBalanceFromApi in QuickBalanceViewModel")
             

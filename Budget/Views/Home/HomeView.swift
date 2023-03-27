@@ -134,59 +134,64 @@ struct HomeView: View {
         }
 
         var body: some View {
-            Button {
-                self.getQuickBalance(quickBalanceAccount: self.quickBalanceAccount)
-            } label: {
-                ZStack {
-                    VStack(spacing: 5) {
-                        HStack {
-                            Text(account.name)
-                                .bold()
-                            Spacer()
-                            Text(Utility.doubleToLocalCurrency(value: balance))
-                                .bold()
-                        }
-
-                        HStack {
-                            Text("quickBalance")
-                                .font(.footnote)
-                            Spacer()
-                            Text(Utility.doubleToLocalCurrency(value: quickBalance))
-                                .font(.footnote)
-                                .scaleEffect(self.animate ? 1.3 : 1)
-                                .animation(.spring(dampingFraction: 0.5), value: self.animate)
-                        }
-
-                        HStack {
-                            Text("difference")
-                                .font(.caption)
-                            Spacer()
-                            Text(Utility.doubleToLocalCurrency(value: balance - quickBalance))
-                                .font(.caption)
-                        }
-                        
-                        HStack {
-                            Text("latestUpdate")
-                                .font(.caption2)
-                            Spacer()
-                            Text(self.lastUpdate)
-                                .onChange(of: self.lastUpdate) { _ in
-                                    self.animate = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        self.animate = false
-                                    }
-                                }
-                                .font(.caption2)
-                                .scaleEffect(self.animate ? 1.3 : 1)
-                                .animation(.spring(dampingFraction: 0.5), value: self.animate)
-                        }
-                    }
-
+            ZStack {
+                Button {
+                    self.getQuickBalance(quickBalanceAccount: self.quickBalanceAccount)
+                } label: {
                     Color.clear
                         .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .zIndex(0)
+
+                VStack(spacing: 5) {
+                    HStack {
+                        Text(account.name)
+                            .bold()
+                        Spacer()
+                        Text(Utility.doubleToLocalCurrency(value: balance))
+                            .bold()
+                    }
+
+                    HStack {
+                        Text("quickBalance")
+                            .font(.footnote)
+                        Spacer()
+                        Text(Utility.doubleToLocalCurrency(value: quickBalance))
+                            .font(.footnote)
+                            .scaleEffect(self.animate ? 1.3 : 1)
+                            .animation(.spring(dampingFraction: 0.5), value: self.animate)
+                    }
+
+                    HStack {
+                        Text("difference")
+                            .font(.caption)
+                        Spacer()
+                        Text(Utility.doubleToLocalCurrency(value: balance - quickBalance))
+                            .font(.caption)
+                    }
+
+                    HStack {
+                        Text("latestUpdate")
+                            .font(.caption2)
+                        Spacer()
+                        Text(self.lastUpdate)
+                            .onChange(of: self.lastUpdate) { _ in
+                                self.animate = true
+                                print("Hi: \(self.animate) - \(DispatchTime.now())")
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    print("Middle: \(self.animate) - \(DispatchTime.now())")
+                                    self.animate = false
+                                    print("Bye: \(self.animate) - \(DispatchTime.now())")
+                                }
+                            }
+                            .font(.caption2)
+                            .scaleEffect(self.animate ? 1.3 : 1)
+                            .animation(.spring(dampingFraction: 0.5), value: self.animate)
+                    }
+                }
+                .zIndex(1)
             }
-            .buttonStyle(.plain)
         }
 
         private func getQuickBalance(quickBalanceAccount: QuickBalanceAccount) {
