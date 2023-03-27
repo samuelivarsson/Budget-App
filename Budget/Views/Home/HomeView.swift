@@ -179,7 +179,7 @@ struct HomeView: View {
                             .onChange(of: self.lastUpdate) { _ in
                                 self.animate = true
                                 print("Hi: \(self.animate) - \(DispatchTime.now())")
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     print("Middle: \(self.animate) - \(DispatchTime.now())")
                                     self.animate = false
                                     print("Bye: \(self.animate) - \(DispatchTime.now())")
