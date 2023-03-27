@@ -64,12 +64,20 @@
 "friendRequestDenied" = "Friend request denied";
 "hasAddedYouToTransaction" = "has added you to a transaction";
 "youHaveNoNotifications" = "You have no notifications!";
+"difference" = "Difference";
+"somethingWentWrong" = "Something went wrong";
+"latestUpdate" = "Latest update";
 
 // Standings View
 "standing" = "Standing";
 "standings" = "Standings";
 "favourites" = "Favourites";
 "otherFriends" = "Other friends";
+
+// History View
+"averageSpent" = "Transaction cateogries - Average amount you spend in each category\n\nAccounts - What the account balance was at the end of last budget month";
+"info" = "Info";
+"ok" = "Ok";
 
 // Years, months etc abbreviations
 "shortYears" = "y";
@@ -203,7 +211,7 @@
 "youreOffline" = "You are offline";
 "noUserWithEmail" = "There is no user with that email";
 "noAccountsYet" = "You have no accounts in your budget yet. You need to create one before you can proceed with this action";
-"accountIsUsedByAmount" = "This account is used by a transaction category amount";
+"accountIsUsedByTransactionCategory" = "This account is used by a transaction category";
 "applicationError" = "Application error";
 "unexpectedNil" = "An unexpected nil turned up";
 "pleaseTryAgain" = "Please try again";
@@ -219,6 +227,11 @@
 "noPhotoURL" = "Found nil when extracting url in setProfilePicture in AuthViewModel, this can be ignored if the user hasn't uploaded a profile picture yet";
 "transactionCategoryAmountsAddsUpToMoreThanRemaining" = "The transaction category amounts adds up to more money than remaining";
 "deleteTransactionCreatedBySomeoneElse" = "You can not delete a transaction that you did not create";
+"httpError" = "HTTP Error";
+"unexpectedCode" = "An unexpected HTTP code turned up";
+"bankIdNotInstalled" = "You do not have the Bank-ID app installed";
+"bankIdNotEnabled" = "Unable to use Mobile BankID. Check if you have enabled Mobile BankID";
+"bankIdLoginFailed" = "Login with Bank-ID failed. Please try again";
 
 // Swish
 "squaringUpTransactionsSince" = "Squaring up transactions since";
@@ -226,3 +239,9 @@
 "sendReminder?" = "Send reminder?";
 "doYouWantToRemind" = "Do you want to send a notification as a reminder for them to pay you?";
 "didSwishGoThrough?" = "Did the Swish go through?";
+
+// Quick Balance
+"quickBalanceAccount" = "Quick balance account";
+"subscriptionId" = "Subscription ID";
+"chooseAnAccount" = "Choose an account";
+"choose" = "Choose";

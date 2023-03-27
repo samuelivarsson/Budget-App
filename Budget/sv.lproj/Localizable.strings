@@ -64,12 +64,20 @@
 "friendRequestDenied" = "Vänförfrågan nekad";
 "hasAddedYouToTransaction" = "har lagt till dig i en transaktion";
 "youHaveNoNotifications" = "Du har inga notifikationer!";
+"difference" = "Skillnad";
+"somethingWentWrong" = "Någonting gick snett";
+"latestUpdate" = "Senast uppdaterad";
 
 // Standings View
 "standing" = "Ställning";
 "standings" = "Ställningar";
 "favourites" = "Favoriter";
 "otherFriends" = "Andra vänner";
+
+// History View
+"averageSpent" = "Transaktionskategorier - Genomsnittlig summa spenderat inom varje kategori\n\nKonton - Vad saldot var i slutet av förra budgetmånaden";
+"info" = "Info";
+"ok" = "Ok";
 
 // Years, months etc abbreviations
 "shortYears" = "å";
@@ -203,7 +211,7 @@
 "youreOffline" = "Du är offline";
 "noUserWithEmail" = "Det finns ingen användare med den angivna email adressen";
 "noAccounts" = "Du har inga konton i din budget än. Du måste skapa ett innan du fortsätter med denna handlingen";
-"accountIsUsedByAmount" = "Detta kontot används av ett transaktionskategoribelopp";
+"accountIsUsedByTransactionCategory" = "Detta kontot används av en transaktionskategori";
 "applicationError" = "Applikations error";
 "unexpectedNil" = "Ett oväntat nil dök upp";
 "pleaseTryAgain" = "Vänligen försök igen";
@@ -219,6 +227,11 @@
 "noPhotoURL" = "Hittade nil vid extrahering av profilbilden, detta kan ignoreras om användaren inte har laddat up en profilbild än";
 "transactionCategoryAmountsAddsUpToMoreThanRemaining" = "Transaktionskategoribeloppen summerar upp till mer än vad som är över";
 "deleteTransactionCreatedBySomeoneElse" = "Du kan inte ta bort en transaktion som du inte skapade";
+"httpError" = "HTTP Error";
+"unexpectedCode" = "En oväntad HTTP kod dök upp";
+"bankIdNotInstalled" = "Du har inte Bank-ID appen installerad";
+"bankIdNotEnabled" = "Kunde inte använda Bank-ID. Kolla med din internetbank att du har Bank-ID aktiverat";
+"bankIdLoginFailed" = "Inloggning med Bank-ID misslyckades. Vänligen försök igen";
 
 // Swish
 "squaringUpTransactionsSince" = "Kvitterar ut transaktioner från";
@@ -226,3 +239,9 @@
 "sendReminder?" = "Skicka påmminelse?";
 "doYouWantToRemind" = "Vill du skicka en notis för att påminna personen om att betala dig?";
 "didSwishGoThrough?" = "Gick Swishen igenom?";
+
+// Quick Balance
+"quickBalanceAccount" = "Snabbsaldokonto";
+"subscriptionId" = "Prenumerations-ID";
+"chooseAnAccount" = "Välj ett konto";
+"choose" = "Välj";

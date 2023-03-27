@@ -9,8 +9,6 @@ import Firebase
 import Foundation
 
 class StandingsViewModel: ObservableObject {
-    @Published var firstLoadFinished = false
-    
     @Published var standings: [Standing] = []
     
     private var db = Firestore.firestore()

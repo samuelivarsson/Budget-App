@@ -29,7 +29,6 @@ struct FriendDetailView: View {
             HStack {
                 Spacer()
                 VStack {
-                    // TODO: - Check box if user is connected
                     if self.pictureLoading {
                         ProgressView()
                             .frame(width: self.pictureSize, height: self.pictureSize)

@@ -90,4 +90,8 @@ struct Transaction: Identifiable, Codable {
         
         return ""
     }
+
+    func isMine(userId: String) -> Bool {
+        return self.creatorId == userId
+    }
 }

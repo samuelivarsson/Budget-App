@@ -44,6 +44,13 @@ class Utility {
         return currencyFormatter
     }
     
+    static var dateFormatter: DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .medium
+        return dateFormatter
+    }
+
     static var dateFormatterNoTime: DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
@@ -51,8 +58,31 @@ class Utility {
         return dateFormatter
     }
     
+    static func convertToDouble(_ amountString: String) -> Double? {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .decimal
+        
+        if let number = formatter.number(from: amountString) {
+            return number.doubleValue
+        } else {
+            return nil
+        }
+    }
+
+    static func dateToString(date: Date) -> String {
+        return dateFormatter.string(from: date)
+    }
+
+    static func dateToString(date: Date, size: DateFormatter.Style) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = size
+        dateFormatter.timeStyle = size
+        return dateFormatter.string(from: date)
+    }
+
     static func dateToStringNoTime(date: Date) -> String {
-        return self.dateFormatterNoTime.string(from: date)
+        return dateFormatterNoTime.string(from: date)
     }
 
     /// Converts any Double to Double with only 2 decimals
@@ -173,36 +203,21 @@ class Utility {
 
     /// Get the current budget period based on when the user wants to start and end the budget-month
     static func getBudgetPeriod(date: Date = Date(), monthsBack: Int = 0, monthStartsOn: Int) -> (Date, Date) {
-        var fromDate: Date
-        var toDate: Date
         let calendar = Calendar.current
         let referenceDate = calendar.date(byAdding: .month, value: -monthsBack, to: date) ?? Date()
 
-        if calendar.dateComponents([.day], from: referenceDate).day! < monthStartsOn {
-            var dayComponent = DateComponents()
-            dayComponent.day = monthStartsOn
-            toDate = calendar.nextDate(
-                after: referenceDate,
-                matching: dayComponent,
-                matchingPolicy: .nextTime,
-                repeatedTimePolicy: .first,
-                direction: .forward
-            ) ?? Date()
+        var dayComponent = DateComponents()
+        dayComponent.day = monthStartsOn
+        
+        let toDate = calendar.nextDate(
+            after: referenceDate,
+            matching: dayComponent,
+            matchingPolicy: .nextTime,
+            repeatedTimePolicy: .first,
+            direction: .forward
+        ) ?? Date()
 
-            fromDate = calendar.date(byAdding: .month, value: -1, to: toDate) ?? Date()
-        } else {
-            var dayComponent = DateComponents()
-            dayComponent.day = monthStartsOn
-            fromDate = calendar.nextDate(
-                after: referenceDate,
-                matching: dayComponent,
-                matchingPolicy: .nextTime,
-                repeatedTimePolicy: .first,
-                direction: .backward
-            ) ?? Date()
-
-            toDate = calendar.date(byAdding: .month, value: 1, to: fromDate) ?? Date()
-        }
+        let fromDate = calendar.date(byAdding: .month, value: -1, to: toDate) ?? Date()
 
         return (fromDate, toDate)
     }
@@ -238,67 +253,32 @@ class Utility {
 
         return "\(Int(seconds)) " + NSLocalizedString("shortSeconds", comment: "")
     }
-
-    static func getSwishUrl(amount: Double, friend: User) -> String {
+    
+    static func getSwishUrl(amount: Double, friend: User) -> URL? {
         let amountTwoDecimals = Utility.doubleToTwoDecimals(value: abs(amount))
         // TODO: - Fix to reflect date of transaction after last swish
-        let date = self.dateToStringNoTime(date: Date())
+        let date = dateToStringNoTime(date: Date())
         let info = "squaringUpTransactionsSince".localizeString() + " " + date
         let data =
             "{" +
-                "\"amount\":{" +
-                    "\"value\":\(amountTwoDecimals)" +
-                "}," +
-                "\"message\":{" +
-                    "\"value\":\"\(info)\"" +
-                "}," +
-                "\"payee\":{" +
-                    "\"value\":\"\(friend.phone)\"" +
-                "}," +
-                "\"version\":1" +
+            "\"amount\":{" +
+            "\"value\":\(amountTwoDecimals)" +
+            "}," +
+            "\"message\":{" +
+            "\"value\":\"\(info)\"" +
+            "}," +
+            "\"payee\":{" +
+            "\"value\":\"\(friend.phone)\"" +
+            "}," +
+            "\"version\":1" +
             "}"
-        let callbackUrl = "budgetapp%3A%2F%2F?userId=\(friend.id)"
-        let link = "swish://payment?callbackurl=" + callbackUrl + "&data=" + data
-        let linkSafe = link.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        return linkSafe
-    }
-}
-
-extension Color {
-    #if os(macOS)
-    static let background = Color(NSColor.windowBackgroundColor)
-    static let secondaryBackground = Color(NSColor.underPageBackgroundColor)
-    static let tertiaryBackground = Color(NSColor.controlBackgroundColor)
-    #else
-    static let background = Color(UIColor.systemBackground)
-    static let secondaryBackground = Color(UIColor.secondarySystemBackground)
-    static let tertiaryBackground = Color(UIColor.tertiarySystemBackground)
-    #endif
-
-    /// Create a color with hex-code
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (1, 1, 1, 0)
-        }
-
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
+        
+        let callbackUrl = "budgetapp%3A%2F%2F?sourceApplication=swish%26userId=\(friend.id)"
+        
+        let queryItems = [URLQueryItem(name: "callbackurl", value: callbackUrl), URLQueryItem(name: "data", value: data)]
+        var urlComps = URLComponents(string: "swish://payment") ?? .init()
+        urlComps.queryItems = queryItems
+        return urlComps.url
     }
 }
 
@@ -378,7 +358,6 @@ struct PasswordField: View {
     }
 }
 
-/// View extension onLoad
 struct ViewDidLoadModifier: ViewModifier {
     @State private var didLoad = false
     private let action: (() -> Void)?
@@ -394,12 +373,6 @@ struct ViewDidLoadModifier: ViewModifier {
                 action?()
             }
         }
-    }
-}
-
-extension View {
-    func onLoad(perform action: (() -> Void)? = nil) -> some View {
-        modifier(ViewDidLoadModifier(perform: action))
     }
 }
 
@@ -432,11 +405,5 @@ struct MyBadgeModifier: ViewModifier {
             content
                 .overlay(MyBadge(count: count))
         }
-    }
-}
-
-extension View {
-    func myBadge(count: Int) -> some View {
-        modifier(MyBadgeModifier(count: count))
     }
 }

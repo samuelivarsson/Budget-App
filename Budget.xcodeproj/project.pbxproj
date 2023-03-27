@@ -7,11 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D008F3C29CE63D000B3C3FE /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
+		4D008F3F29CE654B00B3C3FE /* MobileBankID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */; };
+		4D008F4329CE6C4000B3C3FE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4229CE6C4000B3C3FE /* Extensions.swift */; };
+		4D008F4529CE6E8B00B3C3FE /* QuickBalanceURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4429CE6E8B00B3C3FE /* QuickBalanceURL.swift */; };
+		4D008F4929CE835700B3C3FE /* MobileBankIDResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4829CE835700B3C3FE /* MobileBankIDResponse.swift */; };
+		4D008F4B29CE849800B3C3FE /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4A29CE849800B3C3FE /* HTTPMethod.swift */; };
+		4D008F4D29CECDEA00B3C3FE /* ProfileListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4C29CECDEA00B3C3FE /* ProfileListResponse.swift */; };
+		4D008F5629CF4A4500B3C3FE /* QuickBalanceAccountsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F5529CF4A4500B3C3FE /* QuickBalanceAccountsResponse.swift */; };
 		4D028909280B16E30053D15D /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D028908280B16E30053D15D /* AuthViewModel.swift */; };
 		4D02890B280B196B0053D15D /* GoogleSignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D02890A280B196B0053D15D /* GoogleSignInButton.swift */; };
 		4D02890D280B304B0053D15D /* MyInformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D02890C280B304B0053D15D /* MyInformationView.swift */; };
+		4D0ED15029CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0ED14F29CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift */; };
 		4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F05CA280793FA0030AB5B /* TransactionView.swift */; };
 		4D12984B28E4A33900BDCAA8 /* TransactionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */; };
+		4D13AEDF29CCFF9B000B6D9F /* QuickBalanceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13AEDE29CCFF9B000B6D9F /* QuickBalanceResponse.swift */; };
+		4D13AEE129CD11B6000B6D9F /* QuickBalanceAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13AEE029CD11B6000B6D9F /* QuickBalanceAccount.swift */; };
+		4D13AEE429CD1335000B6D9F /* QuickBalanceAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13AEE329CD1335000B6D9F /* QuickBalanceAccountView.swift */; };
 		4D18ABC32813155E00B39744 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABC22813155E00B39744 /* FirebaseAnalytics */; };
 		4D18ABC52813155E00B39744 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABC42813155E00B39744 /* FirebaseAuth */; };
 		4D18ABC92813155E00B39744 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABC82813155E00B39744 /* FirebaseMessaging */; };
@@ -30,7 +42,6 @@
 		4D28F0DD2919F046006E2AAF /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28F0DC2919F046006E2AAF /* FriendView.swift */; };
 		4D28F0DF2919F7A8006E2AAF /* CustomFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28F0DE2919F7A8006E2AAF /* CustomFriendView.swift */; };
 		4D3563A3280DC39D007B83B0 /* ErrorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */; };
-		4D3563A5280E102E007B83B0 /* SettingsRowsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3563A4280E102E007B83B0 /* SettingsRowsView.swift */; };
 		4D40510828E8B3950043D844 /* TransactionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D40510728E8B3950043D844 /* TransactionCategory.swift */; };
 		4D423DB0280F680300565641 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D423DAF280F680300565641 /* NotificationsView.swift */; };
 		4D4B3E6C280C4AB100B78860 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4B3E6B280C4AB100B78860 /* SignUpView.swift */; };
@@ -42,9 +53,13 @@
 		4D653059281764E100641570 /* MonthStartsOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D653058281764E100641570 /* MonthStartsOnView.swift */; };
 		4D653063281B590100641570 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D653061281B590100641570 /* InfoPlist.strings */; };
 		4D65306A281B60BA00641570 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D653069281B60BA00641570 /* ImagePicker.swift */; };
+		4D6579B029CFCB2000EBCF6A /* QuickBalanceErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6579AF29CFCB2000EBCF6A /* QuickBalanceErrorResponse.swift */; };
 		4D6626DE29C7B9EB00C0F4D5 /* SavingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626DD29C7B9EB00C0F4D5 /* SavingsView.swift */; };
 		4D6626E129C7C01B00C0F4D5 /* SavingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E029C7C01B00C0F4D5 /* SavingView.swift */; };
 		4D6626E329C8199300C0F4D5 /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E229C8199300C0F4D5 /* StandingsView.swift */; };
+		4D6626E829CB823900C0F4D5 /* CategoryHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E729CB823900C0F4D5 /* CategoryHistory.swift */; };
+		4D6626EA29CBB21400C0F4D5 /* AccountHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E929CBB21400C0F4D5 /* AccountHistory.swift */; };
+		4D6626EC29CBB55300C0F4D5 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626EB29CBB55300C0F4D5 /* HistoryViewModel.swift */; };
 		4D671E3528EF015C0071A60E /* CustomFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D671E3428EF015C0071A60E /* CustomFriend.swift */; };
 		4D671E3728EF01EC0071A60E /* CustomFriendDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D671E3628EF01EC0071A60E /* CustomFriendDetailView.swift */; };
 		4D671E3928EF84330071A60E /* UsersLookupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D671E3828EF84330071A60E /* UsersLookupViewModel.swift */; };
@@ -99,12 +114,24 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceViewModel.swift; sourceTree = "<group>"; };
+		4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileBankID.swift; sourceTree = "<group>"; };
+		4D008F4229CE6C4000B3C3FE /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		4D008F4429CE6E8B00B3C3FE /* QuickBalanceURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceURL.swift; sourceTree = "<group>"; };
+		4D008F4829CE835700B3C3FE /* MobileBankIDResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileBankIDResponse.swift; sourceTree = "<group>"; };
+		4D008F4A29CE849800B3C3FE /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		4D008F4C29CECDEA00B3C3FE /* ProfileListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileListResponse.swift; sourceTree = "<group>"; };
+		4D008F5529CF4A4500B3C3FE /* QuickBalanceAccountsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceAccountsResponse.swift; sourceTree = "<group>"; };
 		4D028907280AE3590053D15D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4D028908280B16E30053D15D /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		4D02890A280B196B0053D15D /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		4D02890C280B304B0053D15D /* MyInformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyInformationView.swift; sourceTree = "<group>"; };
+		4D0ED14F29CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceSubscriptionResponse.swift; sourceTree = "<group>"; };
 		4D0F05CA280793FA0030AB5B /* TransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionView.swift; sourceTree = "<group>"; };
 		4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsViewModel.swift; sourceTree = "<group>"; };
+		4D13AEDE29CCFF9B000B6D9F /* QuickBalanceResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceResponse.swift; sourceTree = "<group>"; };
+		4D13AEE029CD11B6000B6D9F /* QuickBalanceAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceAccount.swift; sourceTree = "<group>"; };
+		4D13AEE329CD1335000B6D9F /* QuickBalanceAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceAccountView.swift; sourceTree = "<group>"; };
 		4D1E5E9B28E9C9FA0054CF2F /* TransactionCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoryView.swift; sourceTree = "<group>"; };
 		4D1E973E28085459003C8802 /* WelcomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreenView.swift; sourceTree = "<group>"; };
 		4D1E974128085626003C8802 /* TransactionCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoriesView.swift; sourceTree = "<group>"; };
@@ -118,7 +145,6 @@
 		4D28F0DC2919F046006E2AAF /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
 		4D28F0DE2919F7A8006E2AAF /* CustomFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFriendView.swift; sourceTree = "<group>"; };
 		4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorEnums.swift; sourceTree = "<group>"; };
-		4D3563A4280E102E007B83B0 /* SettingsRowsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRowsView.swift; sourceTree = "<group>"; };
 		4D40510728E8B3950043D844 /* TransactionCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategory.swift; sourceTree = "<group>"; };
 		4D423DAF280F680300565641 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		4D4B3E6B280C4AB100B78860 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -131,9 +157,13 @@
 		4D653062281B590100641570 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Budget/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4D653068281B5A3900641570 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = Budget/sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4D653069281B60BA00641570 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		4D6579AF29CFCB2000EBCF6A /* QuickBalanceErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceErrorResponse.swift; sourceTree = "<group>"; };
 		4D6626DD29C7B9EB00C0F4D5 /* SavingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsView.swift; sourceTree = "<group>"; };
 		4D6626E029C7C01B00C0F4D5 /* SavingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingView.swift; sourceTree = "<group>"; };
 		4D6626E229C8199300C0F4D5 /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
+		4D6626E729CB823900C0F4D5 /* CategoryHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryHistory.swift; sourceTree = "<group>"; };
+		4D6626E929CBB21400C0F4D5 /* AccountHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHistory.swift; sourceTree = "<group>"; };
+		4D6626EB29CBB55300C0F4D5 /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
 		4D671E3428EF015C0071A60E /* CustomFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFriend.swift; sourceTree = "<group>"; };
 		4D671E3628EF01EC0071A60E /* CustomFriendDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFriendDetailView.swift; sourceTree = "<group>"; };
 		4D671E3828EF84330071A60E /* UsersLookupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersLookupViewModel.swift; sourceTree = "<group>"; };
@@ -205,6 +235,100 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4D008F3D29CE652B00B3C3FE /* QuickBalance */ = {
+			isa = PBXGroup;
+			children = (
+				4D008F4A29CE849800B3C3FE /* HTTPMethod.swift */,
+				4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */,
+				4D008F4429CE6E8B00B3C3FE /* QuickBalanceURL.swift */,
+			);
+			path = QuickBalance;
+			sourceTree = "<group>";
+		};
+		4D008F4E29CF48CE00B3C3FE /* QuickBalance */ = {
+			isa = PBXGroup;
+			children = (
+				4D008F4829CE835700B3C3FE /* MobileBankIDResponse.swift */,
+				4D008F4C29CECDEA00B3C3FE /* ProfileListResponse.swift */,
+				4D13AEE029CD11B6000B6D9F /* QuickBalanceAccount.swift */,
+				4D13AEDE29CCFF9B000B6D9F /* QuickBalanceResponse.swift */,
+				4D008F5529CF4A4500B3C3FE /* QuickBalanceAccountsResponse.swift */,
+				4D0ED14F29CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift */,
+				4D6579AF29CFCB2000EBCF6A /* QuickBalanceErrorResponse.swift */,
+			);
+			path = QuickBalance;
+			sourceTree = "<group>";
+		};
+		4D008F4F29CF493A00B3C3FE /* Transaction */ = {
+			isa = PBXGroup;
+			children = (
+				4D7ADA5728D78E990051460B /* Transaction.swift */,
+				4D6CA59429B2AFD100487669 /* TransactionAction.swift */,
+				4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */,
+				4D7AE0AE295280DA009E0845 /* Participant.swift */,
+			);
+			path = Transaction;
+			sourceTree = "<group>";
+		};
+		4D008F5029CF497000B3C3FE /* History */ = {
+			isa = PBXGroup;
+			children = (
+				4D6626E929CBB21400C0F4D5 /* AccountHistory.swift */,
+				4D6626E729CB823900C0F4D5 /* CategoryHistory.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		4D008F5129CF498C00B3C3FE /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				4D4FB1B02905FFA400E9A2D9 /* Notification.swift */,
+				4D4FB1B22905FFA400E9A2D9 /* NotificationType.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
+		4D008F5229CF49AD00B3C3FE /* Budget */ = {
+			isa = PBXGroup;
+			children = (
+				4D6CA59C29B2CCA500487669 /* Account.swift */,
+				4D6CA59E29B2CCE600487669 /* AccountType.swift */,
+				4D6CA59629B2CA7C00487669 /* Budget.swift */,
+				4D6CA59A29B2CC0400487669 /* Overhead.swift */,
+				4DE5B44629C61574002340A2 /* Standing.swift */,
+				4D40510728E8B3950043D844 /* TransactionCategory.swift */,
+			);
+			path = Budget;
+			sourceTree = "<group>";
+		};
+		4D008F5329CF49CA00B3C3FE /* Friend */ = {
+			isa = PBXGroup;
+			children = (
+				4D671E3428EF015C0071A60E /* CustomFriend.swift */,
+				4D4FB1AE2905FFA400E9A2D9 /* Friend.swift */,
+				4D7E2A602915DD6200E16314 /* FriendStatus.swift */,
+			);
+			path = Friend;
+			sourceTree = "<group>";
+		};
+		4D008F5429CF49FA00B3C3FE /* User */ = {
+			isa = PBXGroup;
+			children = (
+				4DD27E77295230E10011D002 /* Named.swift */,
+				4D7ADA51282BCABB0051460B /* User.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		4D13AEE229CD1309000B6D9F /* QuickBalance */ = {
+			isa = PBXGroup;
+			children = (
+				4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */,
+				4D13AEE329CD1335000B6D9F /* QuickBalanceAccountView.swift */,
+			);
+			path = QuickBalance;
+			sourceTree = "<group>";
+		};
 		4D1E97402808560C003C8802 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
@@ -277,18 +401,6 @@
 				4D6626E229C8199300C0F4D5 /* StandingsView.swift */,
 			);
 			path = Standings;
-			sourceTree = "<group>";
-		};
-		4D68FC3A280E405100B9C5E4 /* SettingsRows */ = {
-			isa = PBXGroup;
-			children = (
-				4D6CA5A729B2E4D400487669 /* Budget */,
-				4D653057281764B800641570 /* GeneralSettings */,
-				4D68FC3B280E408300B9C5E4 /* Friends */,
-				4D3563A4280E102E007B83B0 /* SettingsRowsView.swift */,
-				4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */,
-			);
-			path = SettingsRows;
 			sourceTree = "<group>";
 		};
 		4D68FC3B280E408300B9C5E4 /* Friends */ = {
@@ -396,6 +508,7 @@
 				4DFD3DBC2807412D00D5FFB4 /* Model */,
 				4DFD3DA82807405D00D5FFB4 /* Views */,
 				4DFF75A22810669600C40FF6 /* ViewModels */,
+				4D008F3D29CE652B00B3C3FE /* QuickBalance */,
 				4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */,
 				4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */,
 				4D2255312809B65C00C80851 /* Utility.swift */,
@@ -464,7 +577,10 @@
 			isa = PBXGroup;
 			children = (
 				4D3563A8280E1526007B83B0 /* MyInformation */,
-				4D68FC3A280E405100B9C5E4 /* SettingsRows */,
+				4D653057281764B800641570 /* GeneralSettings */,
+				4D6CA5A729B2E4D400487669 /* Budget */,
+				4D68FC3B280E408300B9C5E4 /* Friends */,
+				4D13AEE229CD1309000B6D9F /* QuickBalance */,
 				4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */,
 			);
 			path = Settings;
@@ -473,23 +589,14 @@
 		4DFD3DBC2807412D00D5FFB4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4D6CA59C29B2CCA500487669 /* Account.swift */,
-				4D6CA59E29B2CCE600487669 /* AccountType.swift */,
-				4D6CA59629B2CA7C00487669 /* Budget.swift */,
-				4D671E3428EF015C0071A60E /* CustomFriend.swift */,
-				4D4FB1AE2905FFA400E9A2D9 /* Friend.swift */,
-				4D7E2A602915DD6200E16314 /* FriendStatus.swift */,
-				4DD27E77295230E10011D002 /* Named.swift */,
-				4D4FB1B02905FFA400E9A2D9 /* Notification.swift */,
-				4D4FB1B22905FFA400E9A2D9 /* NotificationType.swift */,
-				4D6CA59A29B2CC0400487669 /* Overhead.swift */,
-				4D7AE0AE295280DA009E0845 /* Participant.swift */,
-				4DE5B44629C61574002340A2 /* Standing.swift */,
-				4D7ADA5728D78E990051460B /* Transaction.swift */,
-				4D6CA59429B2AFD100487669 /* TransactionAction.swift */,
-				4D40510728E8B3950043D844 /* TransactionCategory.swift */,
-				4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */,
-				4D7ADA51282BCABB0051460B /* User.swift */,
+				4D008F5229CF49AD00B3C3FE /* Budget */,
+				4D008F5329CF49CA00B3C3FE /* Friend */,
+				4D008F5029CF497000B3C3FE /* History */,
+				4D008F5129CF498C00B3C3FE /* Notification */,
+				4D008F4E29CF48CE00B3C3FE /* QuickBalance */,
+				4D008F4F29CF493A00B3C3FE /* Transaction */,
+				4D008F5429CF49FA00B3C3FE /* User */,
+				4D008F4229CE6C4000B3C3FE /* Extensions.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -500,7 +607,9 @@
 				4D028908280B16E30053D15D /* AuthViewModel.swift */,
 				4DFF75A3281066BF00C40FF6 /* FirestoreViewModel.swift */,
 				4DF808B5282178AC00E19A8D /* FriendsViewModel.swift */,
+				4D6626EB29CBB55300C0F4D5 /* HistoryViewModel.swift */,
 				4D4FB1B42906057600E9A2D9 /* NotificationsViewModel.swift */,
+				4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */,
 				4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */,
 				4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */,
 				4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */,
@@ -609,19 +718,21 @@
 			files = (
 				4DDA445D282354B90045C58E /* TransactionsGroupView.swift in Sources */,
 				4D28F0D92919B483006E2AAF /* FriendRequestView.swift in Sources */,
+				4D008F3F29CE654B00B3C3FE /* MobileBankID.swift in Sources */,
 				4DFF75AC28106E3100C40FF6 /* AddFriendView.swift in Sources */,
 				4D6CA59529B2AFD100487669 /* TransactionAction.swift in Sources */,
+				4D008F4B29CE849800B3C3FE /* HTTPMethod.swift in Sources */,
 				4D7ADA52282BCABB0051460B /* User.swift in Sources */,
 				4D6CA5A629B2E4CC00487669 /* BudgetView.swift in Sources */,
 				4DE5B44929C6162D002340A2 /* StandingsViewModel.swift in Sources */,
 				4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */,
 				4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */,
 				4D65306A281B60BA00641570 /* ImagePicker.swift in Sources */,
-				4D3563A5280E102E007B83B0 /* SettingsRowsView.swift in Sources */,
 				4D12984B28E4A33900BDCAA8 /* TransactionsViewModel.swift in Sources */,
 				4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */,
 				4D6530562817645B00641570 /* GeneralSettingsView.swift in Sources */,
 				4D3563A3280DC39D007B83B0 /* ErrorEnums.swift in Sources */,
+				4D6626EC29CBB55300C0F4D5 /* HistoryViewModel.swift in Sources */,
 				4D1E5E9C28E9C9FA0054CF2F /* TransactionCategoryView.swift in Sources */,
 				4D423DB0280F680300565641 /* NotificationsView.swift in Sources */,
 				4D4FB1B52906057600E9A2D9 /* NotificationsViewModel.swift in Sources */,
@@ -629,6 +740,7 @@
 				4DFD3DB4280740E000D5FFB4 /* SettingsView.swift in Sources */,
 				4DFD3D9828073E4A00D5FFB4 /* ContentView.swift in Sources */,
 				4D671E3528EF015C0071A60E /* CustomFriend.swift in Sources */,
+				4D13AEE429CD1335000B6D9F /* QuickBalanceAccountView.swift in Sources */,
 				4D6626DE29C7B9EB00C0F4D5 /* SavingsView.swift in Sources */,
 				4D4FB1B32905FFA400E9A2D9 /* NotificationType.swift in Sources */,
 				4D7E2A612915DD6200E16314 /* FriendStatus.swift in Sources */,
@@ -650,17 +762,23 @@
 				4D6AC16D280CD86C00B8EA41 /* ErrorHandling.swift in Sources */,
 				4DDCB77028F3371C006A1BD0 /* ProfileSearchView.swift in Sources */,
 				4DFD3DA228073E4B00D5FFB4 /* Budget.xcdatamodeld in Sources */,
+				4D008F4929CE835700B3C3FE /* MobileBankIDResponse.swift in Sources */,
 				4D02890D280B304B0053D15D /* MyInformationView.swift in Sources */,
 				4D1E973F28085459003C8802 /* WelcomeScreenView.swift in Sources */,
+				4D6626EA29CBB21400C0F4D5 /* AccountHistory.swift in Sources */,
 				4D671E3928EF84330071A60E /* UsersLookupViewModel.swift in Sources */,
 				4D7ADA54282C54420051460B /* UserViewModel.swift in Sources */,
 				4DFD3DBE2807414500D5FFB4 /* TransactionType.swift in Sources */,
 				4D28F0D62919ADEB006E2AAF /* NotificationView.swift in Sources */,
 				4DF808B6282178AC00E19A8D /* FriendsViewModel.swift in Sources */,
 				4DFD3DAA2807406800D5FFB4 /* HomeView.swift in Sources */,
+				4D008F4529CE6E8B00B3C3FE /* QuickBalanceURL.swift in Sources */,
+				4D008F3C29CE63D000B3C3FE /* QuickBalanceViewModel.swift in Sources */,
 				4D653059281764E100641570 /* MonthStartsOnView.swift in Sources */,
 				4D1E9744280857B6003C8802 /* LoginView.swift in Sources */,
 				4D28F0DF2919F7A8006E2AAF /* CustomFriendView.swift in Sources */,
+				4D008F4D29CECDEA00B3C3FE /* ProfileListResponse.swift in Sources */,
+				4D6626E829CB823900C0F4D5 /* CategoryHistory.swift in Sources */,
 				4D4B3E6C280C4AB100B78860 /* SignUpView.swift in Sources */,
 				4D671E3728EF01EC0071A60E /* CustomFriendDetailView.swift in Sources */,
 				4D6626E129C7C01B00C0F4D5 /* SavingView.swift in Sources */,
@@ -672,15 +790,21 @@
 				4D028909280B16E30053D15D /* AuthViewModel.swift in Sources */,
 				4D6CA59D29B2CCA500487669 /* Account.swift in Sources */,
 				4D6626E329C8199300C0F4D5 /* StandingsView.swift in Sources */,
+				4D008F4329CE6C4000B3C3FE /* Extensions.swift in Sources */,
 				4D40510828E8B3950043D844 /* TransactionCategory.swift in Sources */,
+				4D6579B029CFCB2000EBCF6A /* QuickBalanceErrorResponse.swift in Sources */,
 				4DFD3DAC2807407D00D5FFB4 /* TransactionsView.swift in Sources */,
 				4D6CA59729B2CA7C00487669 /* Budget.swift in Sources */,
 				4D1E974228085626003C8802 /* TransactionCategoriesView.swift in Sources */,
 				4D22553D280A39F600C80851 /* SignInView.swift in Sources */,
+				4D13AEDF29CCFF9B000B6D9F /* QuickBalanceResponse.swift in Sources */,
 				4D7ADA50282ACBB80051460B /* StorageViewModel.swift in Sources */,
+				4D13AEE129CD11B6000B6D9F /* QuickBalanceAccount.swift in Sources */,
 				4DFD3DB6280740F300D5FFB4 /* QuickBalanceView.swift in Sources */,
 				4DFF75A4281066BF00C40FF6 /* FirestoreViewModel.swift in Sources */,
 				4D28F0DD2919F046006E2AAF /* FriendView.swift in Sources */,
+				4D0ED15029CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift in Sources */,
+				4D008F5629CF4A4500B3C3FE /* QuickBalanceAccountsResponse.swift in Sources */,
 				4DE907C429C0E02E00CB4F99 /* AccountView.swift in Sources */,
 				4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */,
 			);

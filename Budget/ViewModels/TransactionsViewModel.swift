@@ -101,9 +101,9 @@ class TransactionsViewModel: ObservableObject {
         }
     }
     
-    func getSpent(user: User, transactionCategory: TransactionCategory? = nil, accountId: String? = nil) -> Double {
+    func getSpent(user: User, transactionCategory: TransactionCategory? = nil, accountId: String? = nil, monthsBack: Int = 0) -> Double {
         var total: Double = 0
-        let (from, to) = Utility.getBudgetPeriod(monthStartsOn: user.monthStartsOn)
+        let (from, to) = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: user.monthStartsOn)
         let thisMonthsTransactions = self.getTransactions(from: from, to: to)
         thisMonthsTransactions.forEach { transaction in
             if let transactionCategory = transactionCategory {
@@ -113,7 +113,8 @@ class TransactionsViewModel: ObservableObject {
                     total += transaction.getShare(userId: user.id)
                 }
             } else if let accountId = accountId {
-                if transaction.category.takesFromAccount == accountId {
+                let isNotMineButMainAccount = !transaction.isMine(userId: user.id) && user.budget.getMainAccountId(type: .transaction) == accountId
+                if transaction.category.takesFromAccount == accountId || isNotMineButMainAccount {
                     total += transaction.getShare(userId: user.id)
                 }
             }
@@ -122,9 +123,9 @@ class TransactionsViewModel: ObservableObject {
         return total
     }
     
-    func getIncomes(user: User, accountId: String) -> Double {
+    func getIncomes(user: User, accountId: String, monthsBack: Int = 0) -> Double {
         var total: Double = 0
-        let (from, to) = Utility.getBudgetPeriod(monthStartsOn: user.monthStartsOn)
+        let (from, to) = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: user.monthStartsOn)
         let thisMonthsTransactions = self.getTransactions(from: from, to: to)
         thisMonthsTransactions.forEach { transaction in
             if transaction.category.givesToAccount == accountId {

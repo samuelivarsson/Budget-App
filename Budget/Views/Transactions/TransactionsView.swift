@@ -14,7 +14,7 @@ struct TransactionsView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     
-    @State private var level: Int = 1
+    @State private var level: Int = 2
     
     var body: some View {
         NavigationView {

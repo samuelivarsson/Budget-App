@@ -9,7 +9,6 @@ import Foundation
 
 enum NetworkError: Error {
     case imageFetch
-    case test
 }
 
 extension NetworkError: LocalizedError {
@@ -17,8 +16,6 @@ extension NetworkError: LocalizedError {
         switch self {
         case .imageFetch:
             return NSLocalizedString("imageFetchError", comment: "Network Error")
-        case .test:
-            return NSLocalizedString("signUp", comment: "Network Error")
         }
     }
 
@@ -26,8 +23,6 @@ extension NetworkError: LocalizedError {
         switch self {
         case .imageFetch:
             return NSLocalizedString("networkProblem", comment: "Network Error")
-        case .test:
-            return NSLocalizedString("signUp", comment: "Network Error")
         }
     }
 
@@ -35,8 +30,6 @@ extension NetworkError: LocalizedError {
         switch self {
         case .imageFetch:
             return NSLocalizedString("checkConnectionTryAgain", comment: "Network Error")
-        case .test:
-            return NSLocalizedString("signUp", comment: "Network Error")
         }
     }
 }
@@ -73,7 +66,10 @@ extension AccountError: LocalizedError {
 enum UserError: Error {
     case noUserWithEmail
     case noAccountsYet
-    case accountIsUsedByAmount
+    case accountIsUsedByTransactionCategory
+    case bankIdNotInstalled
+    case bankIdNotEnabled
+    case bankIdLoginFailed
 }
 
 extension UserError: LocalizedError {
@@ -83,8 +79,14 @@ extension UserError: LocalizedError {
             return NSLocalizedString("noUserWithEmail", comment: "User Error")
         case .noAccountsYet:
             return NSLocalizedString("noAccountsYet", comment: "User Error")
-        case .accountIsUsedByAmount:
-            return NSLocalizedString("accountIsUsedByAmount", comment: "User Error")
+        case .accountIsUsedByTransactionCategory:
+            return NSLocalizedString("accountIsUsedByTransactionCategory", comment: "User Error")
+        case .bankIdNotInstalled:
+            return NSLocalizedString("bankIdNotInstalled", comment: "User Error")
+        case .bankIdNotEnabled:
+            return NSLocalizedString("bankIdNotEnabled", comment: "User Error")
+        case .bankIdLoginFailed:
+            return NSLocalizedString("bankIdLoginFailed", comment: "User Error")
         }
     }
 }
@@ -152,6 +154,33 @@ extension InputError: LocalizedError {
             return NSLocalizedString("transactionCategoryAmountsAddsUpToMoreThanRemaining", comment: "Input Error")
         case .deleteTransactionCreatedBySomeoneElse:
             return NSLocalizedString("deleteTransactionCreatedBySomeoneElse", comment: "Input Error")
+        }
+    }
+}
+
+enum HTTPError: Error {
+    case badCode(QuickBalanceErrorResponse, HTTPURLResponse)
+}
+
+extension HTTPError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .badCode(let quickBalanceErrorResponse, let response):
+            return NSLocalizedString("httpError", comment: "HTTP Error") + ": \(response.statusCode). \(quickBalanceErrorResponse.errorMessages.generals.message)"
+        }
+    }
+
+    public var failureReason: String? {
+        switch self {
+        case .badCode:
+            return NSLocalizedString("unexpectedCode", comment: "HTTP Error")
+        }
+    }
+
+    public var recoverySuggestion: String? {
+        switch self {
+        case .badCode:
+            return NSLocalizedString("pleaseTryAgain", comment: "HTTP Error")
         }
     }
 }

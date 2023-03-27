@@ -217,7 +217,7 @@ class UserViewModel: ObservableObject {
     
     func deleteBudgetAccount(account: Account, completion: @escaping (Error?) -> Void) {
         guard !self.transactionCategoryUsesAccount(account: account) else {
-            completion(UserError.accountIsUsedByAmount)
+            completion(UserError.accountIsUsedByTransactionCategory)
             return
         }
         
@@ -240,6 +240,24 @@ class UserViewModel: ObservableObject {
     
     func deleteOverhead(overhead: Overhead, completion: @escaping (Error?) -> Void) {
         self.user.budget.overheads = self.user.budget.overheads.filter { $0.id != overhead.id }
+        
+        self.setUserData(completion: completion)
+    }
+    
+    func addQuickBalanceAccount(account: QuickBalanceAccount, completion: @escaping (Error?) -> Void) {
+        self.user.quickBalanceAccounts = self.user.quickBalanceAccounts + [account]
+        
+        self.setUserData(completion: completion)
+    }
+    
+    func editQuickBalanceAccount(account: QuickBalanceAccount, completion: @escaping (Error?) -> Void) {
+        self.user.quickBalanceAccounts = self.user.quickBalanceAccounts.filter { $0.subscriptionId != account.subscriptionId } + [account]
+        
+        self.setUserData(completion: completion)
+    }
+    
+    func deleteQuickBalanceAccount(account: QuickBalanceAccount, completion: @escaping (Error?) -> Void) {
+        self.user.quickBalanceAccounts = self.user.quickBalanceAccounts.filter { $0.subscriptionId != account.subscriptionId }
         
         self.setUserData(completion: completion)
     }
@@ -533,5 +551,14 @@ class UserViewModel: ObservableObject {
     
     func getSavingAmount(accountId: String) -> Double {
         return self.user.budget.getSavingAmount(accountId: accountId)
+    }
+    
+    func getQuickBalanceAccounts() -> [QuickBalanceAccount] {
+        return self.user.quickBalanceAccounts
+    }
+    
+    func getQuickBalanceAccount(budgetAccountId: String) -> QuickBalanceAccount? {
+        let accounts = self.user.quickBalanceAccounts.filter { $0.budgetAccountId == budgetAccountId }
+        return accounts.first
     }
 }

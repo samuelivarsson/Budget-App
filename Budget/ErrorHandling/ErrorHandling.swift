@@ -5,12 +5,12 @@
 //  Created by Samuel Ivarsson on 2022-04-18.
 //
 
-import Foundation
-import SwiftUI
 import Firebase
-import FirebaseCore
 import FirebaseAuth
+import FirebaseCore
+import Foundation
 import GoogleSignIn
+import SwiftUI
 
 struct ErrorAlert: Identifiable {
     var id = UUID()
@@ -26,25 +26,27 @@ class ErrorHandling: ObservableObject {
     private var currentTask: DispatchWorkItem?
 
     func handle(error: Error, duration: TimeInterval = 8) {
-        let nsError = error as NSError
-        print(nsError.localizedDescription)
-        currentAlert = ErrorAlert(
-            message: nsError.localizedDescription,
-            reason: nsError.localizedFailureReason,
-            recovery: nsError.localizedRecoverySuggestion,
-            dismissAction: dismissError
-        )
-        animateAndDelayWithSeconds(0, showError: true)
-        currentTask = animateAndDelayWithSeconds(duration, showError: false)
+        DispatchQueue.main.async {
+            let nsError = error as NSError
+            print(nsError.localizedDescription)
+            self.currentAlert = ErrorAlert(
+                message: nsError.localizedDescription,
+                reason: nsError.localizedFailureReason,
+                recovery: nsError.localizedRecoverySuggestion,
+                dismissAction: self.dismissError
+            )
+            self.animateAndDelayWithSeconds(0, showError: true)
+            self.currentTask = self.animateAndDelayWithSeconds(duration, showError: false)
+        }
     }
-    
+
     func dismissError() {
         animateAndDelayWithSeconds(0, showError: false)
         guard let currentTask = currentTask else { return }
         currentTask.cancel()
         self.currentTask = nil
     }
-    
+
     @discardableResult
     private func animateAndDelayWithSeconds(_ seconds: TimeInterval, showError: Bool) -> DispatchWorkItem {
         let task = DispatchWorkItem { [weak self] in
@@ -54,20 +56,14 @@ class ErrorHandling: ObservableObject {
             }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: task)
-        
-        return task
-    }
-}
 
-extension AnyTransition {
-    static var fadeAndSlide: AnyTransition {
-        AnyTransition.opacity.combined(with: .move(edge: .top))
+        return task
     }
 }
 
 struct HandleErrorsByShowingBoxOnTopViewModifier: ViewModifier {
     @StateObject var errorHandling = ErrorHandling()
-    
+
     private var errorLabel: some View {
         Button {
             if let currentAlert = errorHandling.currentAlert {
@@ -103,7 +99,6 @@ struct HandleErrorsByShowingBoxOnTopViewModifier: ViewModifier {
                                 .padding(.bottom, 10)
                         }
                     }
-                    
                 }
                 Spacer()
             }
@@ -111,7 +106,7 @@ struct HandleErrorsByShowingBoxOnTopViewModifier: ViewModifier {
         }
         .buttonStyle(.plain)
     }
-    
+
     func body(content: Content) -> some View {
         ZStack {
             content
@@ -123,11 +118,5 @@ struct HandleErrorsByShowingBoxOnTopViewModifier: ViewModifier {
                 }
             }
         }
-    }
-}
-
-extension View {
-    func withErrorHandling() -> some View {
-        modifier(HandleErrorsByShowingBoxOnTopViewModifier())
     }
 }

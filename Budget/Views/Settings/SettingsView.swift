@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject private var storageViewModel: StorageViewModel
-    
+
     var body: some View {
         NavigationView {
             Form {
@@ -22,7 +22,7 @@ struct SettingsView: View {
                             ProfilePicture(uiImage: storageViewModel.profilePicture, failImage: Image(systemName: "person.circle"))
                                 .frame(width: 50, height: 50)
                                 .clipShape(Circle())
-                            
+
                             VStack(alignment: .leading) {
                                 let userName = authViewModel.auth.currentUser?.displayName ?? "Guest"
                                 Text(userName).font(.headline)
@@ -32,9 +32,28 @@ struct SettingsView: View {
                     }
                     .frame(height: 60)
                 }
-                
+
                 Section {
-                    SettingsRowsView()
+                    NavigationLink {
+                        GeneralSettingsView()
+                    } label: {
+                        Label("general", systemImage: "gear")
+                    }
+                    NavigationLink {
+                        BudgetView()
+                    } label: {
+                        Label("budget", systemImage: "dollarsign")
+                    }
+                    NavigationLink {
+                        FriendsView()
+                    } label: {
+                        Label("friends", systemImage: "person.2")
+                    }
+                    NavigationLink {
+                        QuickBalanceView()
+                    } label: {
+                        Label("quickBalance", systemImage: "creditcard")
+                    }
                 }
             }
             .navigationTitle("settings")

@@ -5,6 +5,7 @@
 //  Created by Samuel Ivarsson on 2022-04-12.
 //
 
+import Combine
 import SwiftUI
 
 struct HomeView: View {
@@ -13,6 +14,8 @@ struct HomeView: View {
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     @EnvironmentObject private var standingsViewModel: StandingsViewModel
+    @EnvironmentObject private var historyViewModel: HistoryViewModel
+    @EnvironmentObject private var quickBalanceViewModel: QuickBalanceViewModel
 
     private let textSize: Font = .footnote
 
@@ -32,13 +35,14 @@ struct HomeView: View {
 
                 Section {
                     ForEach(self.userViewModel.getAccountsSorted()) { account in
-                        HStack {
-                            Text(account.name)
-                            Spacer()
-                            let spent = self.transactionsViewModel.getSpent(user: self.userViewModel.user, accountId: account.id)
-                            let incomes = self.transactionsViewModel.getIncomes(user: self.userViewModel.user, accountId: account.id)
-                            let balance = self.userViewModel.getBalance(accountId: account.id, spent: spent, incomes: incomes)
-                            Text(Utility.doubleToLocalCurrency(value: balance))
+                        let spent = self.transactionsViewModel.getSpent(user: self.userViewModel.user, accountId: account.id)
+                        let incomes = self.transactionsViewModel.getIncomes(user: self.userViewModel.user, accountId: account.id)
+                        let balance = self.userViewModel.getBalance(accountId: account.id, spent: spent, incomes: incomes)
+                        if let quickBalanceAccount = self.userViewModel.getQuickBalanceAccount(budgetAccountId: account.id) {
+                            let quickBalance = self.quickBalanceViewModel.getQuickBalance(budgetAccountId: account.id)
+                            HomeQuickBalanceView(account: account, balance: balance, quickBalanceAccount: quickBalanceAccount, quickBalance: quickBalance)
+                        } else {
+                            HomeBalanceView(account: account, balance: balance)
                         }
                     }
                 } header: {
@@ -90,11 +94,8 @@ struct HomeView: View {
                 } header: {
                     Text("expenses")
                 }
-
-                // TODO: - New section for other people's cateogires (if same name as yours -> use yours)
-                // TODO: - Add standings to own Tab
             }
-            .redacted(when: !self.standingsViewModel.firstLoadFinished)
+            .redacted(when: !self.historyViewModel.firstLoadFinished)
             .navigationTitle("home")
             .toolbar {
                 ToolbarItem {
@@ -109,15 +110,111 @@ struct HomeView: View {
             }
         }
     }
-}
 
-extension View {
-    @ViewBuilder
-    func redacted(when condition: Bool) -> some View {
-        if !condition {
-            unredacted()
-        } else {
-            self.redacted(reason: .placeholder)
+    struct HomeQuickBalanceView: View {
+        @EnvironmentObject private var errorHandling: ErrorHandling
+        @EnvironmentObject private var userViewModel: UserViewModel
+        @EnvironmentObject private var quickBalanceViewModel: QuickBalanceViewModel
+
+        @AppStorage var quickBalance: Double
+        @AppStorage var lastUpdate: String
+
+        @State private var animate: Bool = false
+
+        let account: Account
+        let balance: Double
+        let quickBalanceAccount: QuickBalanceAccount
+
+        init(account: Account, balance: Double, quickBalanceAccount: QuickBalanceAccount, quickBalance: Double) {
+            self.account = account
+            self.balance = balance
+            self.quickBalanceAccount = quickBalanceAccount
+            self._quickBalance = AppStorage(wrappedValue: quickBalance, "QuickBalance:" + account.id)
+            self._lastUpdate = AppStorage(wrappedValue: "somethingWentWrong".localizeString(), "LastUpdate:" + account.id)
+        }
+
+        var body: some View {
+            Button {
+                self.getQuickBalance(quickBalanceAccount: self.quickBalanceAccount)
+            } label: {
+                ZStack {
+                    VStack(spacing: 5) {
+                        HStack {
+                            Text(account.name)
+                                .bold()
+                            Spacer()
+                            Text(Utility.doubleToLocalCurrency(value: balance))
+                                .bold()
+                        }
+
+                        HStack {
+                            Text("quickBalance")
+                                .font(.footnote)
+                            Spacer()
+                            Text(Utility.doubleToLocalCurrency(value: quickBalance))
+                                .font(.footnote)
+                                .scaleEffect(self.animate ? 1.3 : 1)
+                                .animation(.spring(dampingFraction: 0.5), value: self.animate)
+                        }
+
+                        HStack {
+                            Text("difference")
+                                .font(.caption)
+                            Spacer()
+                            Text(Utility.doubleToLocalCurrency(value: balance - quickBalance))
+                                .font(.caption)
+                        }
+                        
+                        HStack {
+                            Text("latestUpdate")
+                                .font(.caption2)
+                            Spacer()
+                            Text(self.lastUpdate)
+                                .onChange(of: self.lastUpdate) { _ in
+                                    self.animate = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                        self.animate = false
+                                    }
+                                }
+                                .font(.caption2)
+                                .scaleEffect(self.animate ? 1.3 : 1)
+                                .animation(.spring(dampingFraction: 0.5), value: self.animate)
+                        }
+                    }
+
+                    Color.clear
+                        .contentShape(Rectangle())
+                }
+            }
+            .buttonStyle(.plain)
+        }
+
+        private func getQuickBalance(quickBalanceAccount: QuickBalanceAccount) {
+            withAnimation {
+                self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccount: quickBalanceAccount) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+
+                    // Success
+                }
+            }
+        }
+    }
+
+    struct HomeBalanceView: View {
+        let account: Account
+        let balance: Double
+
+        var body: some View {
+            HStack {
+                Text(account.name)
+                    .bold()
+                Spacer()
+                Text(Utility.doubleToLocalCurrency(value: balance))
+                    .bold()
+            }
         }
     }
 }

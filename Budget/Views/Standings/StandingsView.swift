@@ -19,10 +19,6 @@ struct StandingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                // TODO: - Fix so you can favourite a friend
-                // TODO: - Add See All button to show all standing between your friends
-                // TODO: - Fix so the standing decrease after swish
-
                 let favouriteFriends = self.userViewModel.getFriendsSorted(favourites: true)
                 if favouriteFriends.count > 0 {
                     Section {
@@ -83,7 +79,8 @@ struct StandingsView: View {
             let amount = standing?.getStanding(myId: self.userViewModel.user.id) ?? 0
             Button {
                 if amount < 0 {
-                    if let url = URL(string: Utility.getSwishUrl(amount: amount, friend: friend)) {
+                    if let url = Utility.getSwishUrl(amount: amount, friend: friend) {
+                        print(url)
                         UIApplication.shared.open(url)
                     }
                 } else if amount > 0 {
@@ -106,6 +103,9 @@ struct StandingsView: View {
         if let queryItems = urlComponents?.queryItems {
             for queryItem in queryItems {
                 if let value = queryItem.value {
+                    if queryItem.name == "sourceApplication" && value != "swish" {
+                        return
+                    }
                     if queryItem.name == "userId" && !value.isEmpty {
                         self.swishFriendId = value
                         self.showDidSwishGoThrough = true
