@@ -32,23 +32,33 @@ struct OverheadsView: View {
                         NavigationLink {
                             OverheadView(overhead: overhead)
                         } label: {
-                            let myAmount = Utility.doubleToLocalCurrency(value: overhead.getShareOfAmount(monthStartsOn: self.userViewModel.user.budget.monthStartsOn))
-                            let amount = Utility.doubleToLocalCurrency(value: overhead.amount)
-                            HStack {
-                                VStack(alignment: .leading, spacing: 5) {
+                            let monthStartsOn = self.userViewModel.user.budget.monthStartsOn
+                            let myShare = overhead.getShareOfAmount(monthStartsOn: monthStartsOn)
+                            let balanceOnAccount = overhead.getTemporaryBalanceOnAccount(monthStartsOn: monthStartsOn)
+                            VStack(spacing: 5) {
+                                HStack {
                                     Text(overhead.name)
                                         .bold()
-                                    Text("\("day".localizeString()): \(overhead.dayOfPay)")
+                                Spacer()
+                                    Text(Utility.doubleToLocalCurrency(value: myShare))
+                                        .bold()
+                                }
+                                
+                                
+                                HStack {
+                                    Text("\("day".localizeString()): \(overhead.getDayOfPay())")
+                                        .font(.footnote)
+                                Spacer()
+                                    Text(Utility.doubleToLocalCurrency(value: overhead.amount))
                                         .font(.footnote)
                                 }
                                 
+                                HStack {
+                                    Text("balanceOnAccount")
+                                        .font(.caption)
                                 Spacer()
-                                
-                                VStack(alignment: .trailing, spacing: 5) {
-                                    Text(myAmount)
-                                        .bold()
-                                    Text(amount)
-                                        .font(.footnote)
+                                    Text(Utility.doubleToLocalCurrency(value: balanceOnAccount))
+                                        .font(.caption)
                                 }
                             }
                         }

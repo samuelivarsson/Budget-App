@@ -15,6 +15,7 @@ struct OverheadView: View {
     
     @State private var overhead: Overhead
     @State private var day: Int
+    @State private var receiveDay: Int
     @FocusState var isInputActive: Bool
     
     private var add: Bool
@@ -24,12 +25,14 @@ struct OverheadView: View {
         let overhead = Overhead.getDummyOverhead()
         self._overhead = State(initialValue: overhead)
         self._day = State(initialValue: overhead.dayOfPay - 1)
+        self._receiveDay = State(initialValue: overhead.receiveDay - 1)
     }
     
     init(overhead: Overhead) {
         self.add = false
         self._overhead = State(initialValue: overhead)
         self._day = State(initialValue: overhead.dayOfPay - 1)
+        self._receiveDay = State(initialValue: overhead.receiveDay - 1)
     }
     
     var body: some View {
@@ -67,6 +70,7 @@ struct OverheadView: View {
                     }
                 }
                 .pickerStyle(.menu)
+                .disabled(self.overhead.lastDay)
                 
                 Stepper(value: self.$overhead.months, in: 1 ... 6) {
                     HStack {
@@ -87,6 +91,19 @@ struct OverheadView: View {
                 }
                 
                 Toggle("share", isOn: self.$overhead.share)
+                
+                if self.overhead.share {
+                    Toggle("imPaying", isOn: self.$overhead.imPaying)
+                    
+                    if self.overhead.imPaying {
+                        Picker("receiveDay", selection: self.$receiveDay) {
+                            ForEach(1 ..< 29) {
+                                Text("\($0)")
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    }
+                }
             } footer: {
                 Text("overheadNote")
             }
@@ -113,6 +130,7 @@ struct OverheadView: View {
     
     private func addOverhead() {
         self.overhead.dayOfPay = self.day + 1
+        self.overhead.receiveDay = self.receiveDay + 1
         self.userViewModel.addOverhead(overhead: self.overhead) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
@@ -126,6 +144,7 @@ struct OverheadView: View {
     
     private func editOverhead() {
         self.overhead.dayOfPay = self.day + 1
+        self.overhead.receiveDay = self.receiveDay + 1
         self.userViewModel.editOverhead(overhead: self.overhead) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)

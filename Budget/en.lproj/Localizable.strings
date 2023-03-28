@@ -158,6 +158,8 @@
 "savingAmount" = "Saving amount";
 "lastDayOfMonth" = "Last day of month";
 "balanceOnAccount" = "Balance on account";
+"imPaying" = "I'm paying";
+"receiveDay" = "Day you receive money";
 
 // Friends View
 "friend" = "Friend";

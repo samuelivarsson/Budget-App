@@ -158,6 +158,8 @@
 "savingAmount" = "Sparbelopp";
 "lastDayOfMonth" = "Sista dagen på månaden";
 "balanceOnAccount" = "Saldo på konto";
+"imPaying" = "Jag betalar";
+"receiveDay" = "Dag du får pengar";
 
 // Friends View
 "friend" = "Vän";

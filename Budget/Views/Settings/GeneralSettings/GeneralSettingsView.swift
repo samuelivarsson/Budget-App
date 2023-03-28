@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct GeneralSettingsView: View {
+    @EnvironmentObject private var userViewModel: UserViewModel
+    
     var body: some View {
         Form {
             NavigationLink {
@@ -16,7 +18,7 @@ struct GeneralSettingsView: View {
                 HStack {
                     Text("monthStartsOn")
                     Spacer()
-                    Text("\(monthStartsOn)")
+                    Text("\(self.userViewModel.user.budget.monthStartsOn)")
                 }
             }
         }
