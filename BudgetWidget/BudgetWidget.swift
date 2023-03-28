@@ -10,6 +10,8 @@ import SwiftUI
 import Intents
 
 struct Provider: IntentTimelineProvider {
+    @StateObject var quickBalanceViewModel = QuickBalanceViewModel()
+
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date(), configuration: ConfigurationIntent())
     }
@@ -32,6 +34,10 @@ struct Provider: IntentTimelineProvider {
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
+    }
+    
+    private func fetchQuickBalance(completion: @escaping (QuickBalanceResponse?, Error?) -> Void) {
+//        self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccount: <#T##<<error type>>#>, completion: <#T##(Error?) -> Void#>)
     }
 }
 

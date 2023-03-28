@@ -14,6 +14,8 @@ import SwiftUI
 
 /// Offers useful utilities
 class Utility {
+    static let teamId = "NNPX5ZKT2A"
+    
     static var currencyFormatter: NumberFormatter {
         let currencyFormatter = NumberFormatter()
         currencyFormatter.isPartialStringValidationEnabled = true

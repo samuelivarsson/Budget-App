@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct ContentView: View {
     @AppStorage("welcomeScreenShown") private var welcomeScreenShown: Bool = false
@@ -60,6 +61,11 @@ struct ContentView: View {
             }
         }
         .onLoad {
+            do {
+                try Auth.auth().useUserAccessGroup("\(Utility.teamId).com.samuelivarsson.Budget")
+            } catch let error as NSError {
+                self.errorHandling.handle(error: error)
+            }
             self.userViewModel.fetchData { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
