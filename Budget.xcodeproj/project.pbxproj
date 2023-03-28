@@ -227,6 +227,7 @@
 		4DAB3B6429C6C9E60001BB4E /* OverheadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverheadsView.swift; sourceTree = "<group>"; };
 		4DAB3B6629C782770001BB4E /* OverheadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverheadView.swift; sourceTree = "<group>"; };
 		4DAC5C5829D3A16700892053 /* Budget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Budget.entitlements; sourceTree = "<group>"; };
+		4DAC5C6429D3B0B600892053 /* BudgetWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BudgetWidgetExtension.entitlements; sourceTree = "<group>"; };
 		4DAFD78F29D30A1D0018B8C7 /* BudgetWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BudgetWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DAFD79329D30A1D0018B8C7 /* BudgetWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgetBundle.swift; sourceTree = "<group>"; };
 		4DAFD79729D30A1D0018B8C7 /* BudgetWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidget.swift; sourceTree = "<group>"; };
@@ -561,6 +562,7 @@
 		4DFD3D8928073E4A00D5FFB4 = {
 			isa = PBXGroup;
 			children = (
+				4DAC5C6429D3B0B600892053 /* BudgetWidgetExtension.entitlements */,
 				4DFD3D9428073E4A00D5FFB4 /* Budget */,
 				4DAFD79229D30A1D0018B8C7 /* BudgetWidget */,
 				4DFD3D9328073E4A00D5FFB4 /* Products */,
@@ -978,6 +980,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = BudgetWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1008,6 +1011,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = BudgetWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
