@@ -19,16 +19,16 @@ struct TransactionsView: View {
     var body: some View {
         NavigationView {
             Form {
-                TransactionsGroupView(level: 0, monthStartsOn: self.userViewModel.user.monthStartsOn, showChildren: true)
+                TransactionsGroupView(level: 0, monthStartsOn: self.userViewModel.user.budget.monthStartsOn, showChildren: true)
                 
                 ForEach(1 ..< self.level, id: \.self) {
-                    TransactionsGroupView(level: $0, monthStartsOn: self.userViewModel.user.monthStartsOn, showChildren: false)
+                    TransactionsGroupView(level: $0, monthStartsOn: self.userViewModel.user.budget.monthStartsOn, showChildren: false)
                 }
                 
                 Section {
                     Button {
                         self.level += 5
-                        self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn, monthsBack: self.level + 4) { error in
+                        self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn, monthsBack: self.level + 4) { error in
                             if let error = error {
                                 self.errorHandling.handle(error: error)
                                 self.level -= 5

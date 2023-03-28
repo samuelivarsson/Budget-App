@@ -15,7 +15,6 @@ struct User: Identifiable, Codable, Hashable, Named {
     var name: String
     var email: String
     var phone: String
-    var monthStartsOn: Int
     var budget: Budget = Budget.getDummyBudget()
     var friends: [Friend]
     var customFriends: [CustomFriend] = []
@@ -26,8 +25,6 @@ struct User: Identifiable, Codable, Hashable, Named {
     }
     
     static func getDummyUser(id: String = "", name: String = "", email: String = "") -> User {
-        return User(id: id, name: name, email: email, phone: "", monthStartsOn: 25, budget: Budget.getDummyBudget(), friends: [], customFriends: [])
+        return User(id: id, name: name, email: email, phone: "", budget: Budget.getDummyBudget(), friends: [], customFriends: [])
     }
 }
-// TODO: - Move monthStartsOn to Budget (fix getBalance when doing this)
-

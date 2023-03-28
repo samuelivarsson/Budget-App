@@ -103,7 +103,7 @@ class TransactionsViewModel: ObservableObject {
     
     func getSpent(user: User, transactionCategory: TransactionCategory? = nil, accountId: String? = nil, monthsBack: Int = 0) -> Double {
         var total: Double = 0
-        let (from, to) = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: user.monthStartsOn)
+        let (from, to) = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: user.budget.monthStartsOn)
         let thisMonthsTransactions = self.getTransactions(from: from, to: to)
         thisMonthsTransactions.forEach { transaction in
             if let transactionCategory = transactionCategory {
@@ -125,7 +125,7 @@ class TransactionsViewModel: ObservableObject {
     
     func getIncomes(user: User, accountId: String, monthsBack: Int = 0) -> Double {
         var total: Double = 0
-        let (from, to) = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: user.monthStartsOn)
+        let (from, to) = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: user.budget.monthStartsOn)
         let thisMonthsTransactions = self.getTransactions(from: from, to: to)
         thisMonthsTransactions.forEach { transaction in
             if transaction.category.givesToAccount == accountId {

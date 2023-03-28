@@ -127,7 +127,7 @@ struct SignInView: View {
             }
             
             // Success
-            self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn) { error in
+            self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn) { error in
                 if let error = error {
                     completion(error)
                     return

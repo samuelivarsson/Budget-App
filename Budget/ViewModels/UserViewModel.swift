@@ -501,7 +501,7 @@ class UserViewModel: ObservableObject {
     
     func setMonthStartsOn(day: Int, completion: @escaping (Error?) -> Void) {
         // Update the day
-        self.user.monthStartsOn = day
+        self.user.budget.monthStartsOn = day
         // Update our user data
         self.setUserData(completion: completion)
     }
@@ -538,7 +538,7 @@ class UserViewModel: ObservableObject {
     }
     
     func getBalance(accountId: String, spent: Double, incomes: Double) -> Double {
-        return self.user.budget.getBalance(accountId: accountId, spent: spent, incomes: incomes, monthStartsOn: self.user.monthStartsOn)
+        return self.user.budget.getBalance(accountId: accountId, spent: spent, incomes: incomes)
     }
     
     func getOverheads() -> [Overhead] {

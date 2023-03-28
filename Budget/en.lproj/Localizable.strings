@@ -156,6 +156,8 @@
 "percentage" = "Percentage";
 "savingAccounts" = "Saving accounts";
 "savingAmount" = "Saving amount";
+"lastDayOfMonth" = "Last day of month";
+"balanceOnAccount" = "Balance on account";
 
 // Friends View
 "friend" = "Friend";

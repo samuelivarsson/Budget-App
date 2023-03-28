@@ -9,6 +9,7 @@ import Foundation
 
 struct Budget: Identifiable, Codable, Hashable {
     var id: String = UUID().uuidString
+    var monthStartsOn: Int = 25
     var accounts: [Account]
     var income: Double
     var savingsPercentage: Double
@@ -43,7 +44,7 @@ struct Budget: Identifiable, Codable, Hashable {
     
     func getOverheadsAmount() -> Double {
         var overheadsAmount: Double = 0
-        self.overheads.forEach { overheadsAmount += $0.getMyAmount() }
+        self.overheads.forEach { overheadsAmount += $0.getShareOfAmount(monthStartsOn: self.monthStartsOn) }
         return overheadsAmount
     }
     
@@ -82,7 +83,7 @@ struct Budget: Identifiable, Codable, Hashable {
         }
     }
     
-    func getTemporaryOverheadExtras(accountId: String, monthStartsOn: Int) -> Double {
+    func getTemporaryOverheadExtras(accountId: String) -> Double {
         let account = self.getAccount(id: accountId)
         if account.type != .overhead {
             return 0
@@ -90,13 +91,7 @@ struct Budget: Identifiable, Codable, Hashable {
         
         var total: Double = 0
         for overhead in overheads {
-            if !overhead.isPaid(monthStartsOn: monthStartsOn) {
-                if overhead.months > 1 {
-                    total += overhead.getMyAmount() * Double(overhead.getMonthsSinceLastPay(monthStartsOn: monthStartsOn))
-                } else {
-                    total += overhead.getMyAmount()
-                }
-            }
+            total += overhead.getTemporaryBalanceOnAccount(monthStartsOn: self.monthStartsOn)
         }
         return total
     }
@@ -121,11 +116,11 @@ struct Budget: Identifiable, Codable, Hashable {
         return self.savingAmounts[accountId] ?? 0
     }
     
-    func getBalance(accountId: String, spent: Double, incomes: Double, monthStartsOn: Int) -> Double {
+    func getBalance(accountId: String, spent: Double, incomes: Double) -> Double {
         let remaining = self.getRemaining(accountId: accountId)
         let fixedCeilings = self.getFixedCeilings(accountId: accountId)
         let savingsAmount = self.getSavingAmount(accountId: accountId)
-        let temporaryOverheadExtras = self.getTemporaryOverheadExtras(accountId: accountId, monthStartsOn: monthStartsOn)
+        let temporaryOverheadExtras = self.getTemporaryOverheadExtras(accountId: accountId)
         return remaining + fixedCeilings - spent + incomes + savingsAmount + temporaryOverheadExtras
     }
     

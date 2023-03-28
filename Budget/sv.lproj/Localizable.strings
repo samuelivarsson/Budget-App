@@ -156,6 +156,8 @@
 "percentage" = "Procent";
 "savingAccounts" = "Sparkonton";
 "savingAmount" = "Sparbelopp";
+"lastDayOfMonth" = "Sista dagen på månaden";
+"balanceOnAccount" = "Saldo på konto";
 
 // Friends View
 "friend" = "Vän";

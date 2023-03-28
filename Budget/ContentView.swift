@@ -70,7 +70,7 @@ struct ContentView: View {
                 if self.historyViewModel.firstLoadFinished {
                     return
                 }
-                self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.monthStartsOn, monthsBack: 1) { error in
+                self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn, monthsBack: 1) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return
@@ -133,7 +133,7 @@ struct ContentView: View {
     }
 
     private func isSaveNeeded() -> Bool {
-        let referenceDate = Utility.getBudgetPeriod(monthStartsOn: self.userViewModel.user.monthStartsOn).0
+        let referenceDate = Utility.getBudgetPeriod(monthStartsOn: self.userViewModel.user.budget.monthStartsOn).0
         print("isSaveNeeded: \(self.userViewModel.user.lastSaveDate < referenceDate)")
         return self.userViewModel.user.lastSaveDate < referenceDate
     }
