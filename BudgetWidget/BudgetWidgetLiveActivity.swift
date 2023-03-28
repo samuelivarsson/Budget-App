@@ -1,15 +1,15 @@
 //
-//  WidgetLiveActivity.swift
-//  Widget
+//  BudgetWidgetLiveActivity.swift
+//  BudgetWidget
 //
-//  Created by Samuel Ivarsson on 2023-03-27.
+//  Created by Samuel Ivarsson on 2023-03-28.
 //
 
 import ActivityKit
 import WidgetKit
 import SwiftUI
 
-struct WidgetAttributes: ActivityAttributes {
+struct BudgetWidgetAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
         // Dynamic stateful properties about your activity go here!
         var value: Int
@@ -19,9 +19,9 @@ struct WidgetAttributes: ActivityAttributes {
     var name: String
 }
 
-struct WidgetLiveActivity: Widget {
+struct BudgetWidgetLiveActivity: Widget {
     var body: some WidgetConfiguration {
-        ActivityConfiguration(for: WidgetAttributes.self) { context in
+        ActivityConfiguration(for: BudgetWidgetAttributes.self) { context in
             // Lock screen/banner UI goes here
             VStack {
                 Text("Hello")
@@ -53,5 +53,25 @@ struct WidgetLiveActivity: Widget {
             .widgetURL(URL(string: "http://www.apple.com"))
             .keylineTint(Color.red)
         }
+    }
+}
+
+struct BudgetWidgetLiveActivity_Previews: PreviewProvider {
+    static let attributes = BudgetWidgetAttributes(name: "Me")
+    static let contentState = BudgetWidgetAttributes.ContentState(value: 3)
+
+    static var previews: some View {
+        attributes
+            .previewContext(contentState, viewKind: .dynamicIsland(.compact))
+            .previewDisplayName("Island Compact")
+        attributes
+            .previewContext(contentState, viewKind: .dynamicIsland(.expanded))
+            .previewDisplayName("Island Expanded")
+        attributes
+            .previewContext(contentState, viewKind: .dynamicIsland(.minimal))
+            .previewDisplayName("Minimal")
+        attributes
+            .previewContext(contentState, viewKind: .content)
+            .previewDisplayName("Notification")
     }
 }

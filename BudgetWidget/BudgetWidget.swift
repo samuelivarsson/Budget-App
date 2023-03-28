@@ -1,8 +1,8 @@
 //
-//  Widget.swift
-//  Widget
+//  BudgetWidget.swift
+//  BudgetWidget
 //
-//  Created by Samuel Ivarsson on 2023-03-27.
+//  Created by Samuel Ivarsson on 2023-03-28.
 //
 
 import WidgetKit
@@ -40,7 +40,7 @@ struct SimpleEntry: TimelineEntry {
     let configuration: ConfigurationIntent
 }
 
-struct WidgetEntryView : View {
+struct BudgetWidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
@@ -49,20 +49,20 @@ struct WidgetEntryView : View {
 }
 
 struct BudgetWidget: Widget {
-    let kind: String = "Widget"
+    let kind: String = "BudgetWidget"
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-            WidgetEntryView(entry: entry)
+            BudgetWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("My Widget")
         .description("This is an example widget.")
     }
 }
 
-struct Widget_Previews: PreviewProvider {
+struct BudgetWidget_Previews: PreviewProvider {
     static var previews: some View {
-        WidgetEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
+        BudgetWidgetEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

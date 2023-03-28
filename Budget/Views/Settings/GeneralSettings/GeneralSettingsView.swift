@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct GeneralSettingsView: View {
-    @AppStorage("monthStartsOn") private var monthStartsOn = 25
-    
     var body: some View {
         Form {
             NavigationLink {

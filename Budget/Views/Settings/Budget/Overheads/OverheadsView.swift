@@ -32,7 +32,7 @@ struct OverheadsView: View {
                         NavigationLink {
                             OverheadView(overhead: overhead)
                         } label: {
-                            let myAmount = Utility.doubleToLocalCurrency(value: overhead.getMyAmount())
+                            let myAmount = Utility.doubleToLocalCurrency(value: overhead.getShareOfAmount(monthStartsOn: self.userViewModel.user.budget.monthStartsOn))
                             let amount = Utility.doubleToLocalCurrency(value: overhead.amount)
                             HStack {
                                 VStack(alignment: .leading, spacing: 5) {

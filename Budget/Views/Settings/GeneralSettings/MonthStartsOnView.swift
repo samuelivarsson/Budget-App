@@ -25,7 +25,7 @@ struct MonthStartsOnView: View {
                 }
                 .pickerStyle(.menu)
                 .onAppear {
-                    day = self.userViewModel.user.monthStartsOn - 1
+                    day = self.userViewModel.user.budget.monthStartsOn - 1
                 }
             }
             
