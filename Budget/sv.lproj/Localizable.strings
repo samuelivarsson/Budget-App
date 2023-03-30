@@ -236,6 +236,8 @@
 "bankIdNotInstalled" = "Du har inte Bank-ID appen installerad";
 "bankIdNotEnabled" = "Kunde inte använda Bank-ID. Kolla med din internetbank att du har Bank-ID aktiverat";
 "bankIdLoginFailed" = "Inloggning med Bank-ID misslyckades. Vänligen försök igen";
+"notLoggedIn" = "Du är inte inloggad";
+"lessThanTenSeconds" = "Du måste vänta minst 10 sekunder mellan varje uppdatering av ditt snabbsaldo";
 
 // Swish
 "squaringUpTransactionsSince" = "Kvitterar ut transaktioner från";
@@ -249,3 +251,7 @@
 "subscriptionId" = "Prenumerations-ID";
 "chooseAnAccount" = "Välj ett konto";
 "choose" = "Välj";
+
+// Widget
+"amountAvailable" = "Disponibelt belopp";
+"seeYourQuickBalance" = "Se ditt saldo snabbt och enkelt.";

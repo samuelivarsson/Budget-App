@@ -70,6 +70,8 @@ enum UserError: Error {
     case bankIdNotInstalled
     case bankIdNotEnabled
     case bankIdLoginFailed
+    case notLoggedIn
+    case lessThanTenSeconds
 }
 
 extension UserError: LocalizedError {
@@ -87,6 +89,10 @@ extension UserError: LocalizedError {
             return NSLocalizedString("bankIdNotEnabled", comment: "User Error")
         case .bankIdLoginFailed:
             return NSLocalizedString("bankIdLoginFailed", comment: "User Error")
+        case .notLoggedIn:
+            return NSLocalizedString("notLoggedIn", comment: "User Error")
+        case .lessThanTenSeconds:
+            return NSLocalizedString("lessThanTenSeconds", comment: "User Error")
         }
     }
 }

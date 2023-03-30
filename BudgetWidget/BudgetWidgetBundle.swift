@@ -21,6 +21,6 @@ struct BudgetWidgetBundle: WidgetBundle {
     }
 
     var body: some Widget {
-        BudgetWidget()
+        SingleQuickBalanceWidget()
     }
 }

@@ -50,6 +50,8 @@ struct TransactionsGroupView: View {
                                         let dateText = Utility.dateToStringNoTime(date: transaction.date)
                                         Text(dateText)
                                             .font(.footnote)
+                                        Text(transaction.category.name)
+                                            .font(.caption)
                                     }
                                     
                                     Spacer()
@@ -59,6 +61,7 @@ struct TransactionsGroupView: View {
                                             .bold()
                                         Text(Utility.doubleToLocalCurrency(value: transaction.totalAmount))
                                             .font(.footnote)
+                                        Spacer()
                                     }
                                 }
                                 
@@ -93,7 +96,7 @@ struct TransactionsGroupView: View {
                             }
                             .padding(.trailing, 5)
                         }
-                        .frame(height: 75)
+                        .frame(height: 80)
                         .transition(.asymmetric(insertion: .fadeAndSlide, removal: .fadeAndSlide))
                     }
                     .onDelete(perform: deleteTransactions)

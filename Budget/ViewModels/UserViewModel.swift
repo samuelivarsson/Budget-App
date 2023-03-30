@@ -19,7 +19,7 @@ class UserViewModel: ObservableObject {
     
     var listener: ListenerRegistration?
     
-    func fetchData(completion: @escaping (Error?) -> Void) {
+    func fetchData(setFriends: Bool = true, completion: @escaping (Error?) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {
             let info = "Found nil when extracting uid in fetchData in UserViewModel"
             print(info)
@@ -50,6 +50,10 @@ class UserViewModel: ObservableObject {
                     // Success
                     print("Successfully set user in fetchData in UserViewModel")
                     self.user = data
+                    if !setFriends {
+                        completion(nil)
+                        return
+                    }
                     self.setFriends(from: data) { error in
                         if let error = error {
                             completion(error)

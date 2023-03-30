@@ -5,8 +5,9 @@
 //  Created by Samuel Ivarsson on 2022-04-12.
 //
 
-import SwiftUI
 import Firebase
+import SwiftUI
+import WidgetKit
 
 struct ContentView: View {
     @AppStorage("welcomeScreenShown") private var welcomeScreenShown: Bool = false
@@ -136,6 +137,9 @@ struct ContentView: View {
                 // Success
             }
         }
+        .onOpenURL { url in
+            self.handleUrlOpen(url: url)
+        }
     }
 
     private func isSaveNeeded() -> Bool {
@@ -215,6 +219,27 @@ struct ContentView: View {
 
                 // Success
             }
+        }
+    }
+
+    private func handleUrlOpen(url: URL) {
+        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        if let queryItems = urlComponents?.queryItems {
+            var kind = ""
+            for queryItem in queryItems {
+                if let value = queryItem.value {
+                    if queryItem.name == "sourceApplication" && value != "widget" {
+                        return
+                    }
+                    if queryItem.name == "kind" && !value.isEmpty {
+                        kind = value
+                    }
+                }
+            }
+            // Reload timeline
+            WidgetCenter.shared.reloadTimelines(ofKind: kind)
+            // Close app
+            UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
         }
     }
 }

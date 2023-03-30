@@ -86,6 +86,17 @@ class Utility {
         }
         return dateFormatter.string(from: date)
     }
+    
+    static func stringToDate(string: String, style: DateFormatter.Style, timeStyle: DateFormatter.Style? = nil) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = style
+        if let timeStyle = timeStyle {
+            dateFormatter.timeStyle = timeStyle
+        } else {
+            dateFormatter.timeStyle = style
+        }
+        return dateFormatter.date(from: string)
+    }
 
     static func dateToStringNoTime(date: Date) -> String {
         return dateFormatterNoTime.string(from: date)

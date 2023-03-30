@@ -79,10 +79,7 @@ struct StandingsView: View {
             let amount = standing?.getStanding(myId: self.userViewModel.user.id) ?? 0
             Button {
                 if amount < 0 {
-                    if let url = Utility.getSwishUrl(amount: amount, friend: friend) {
-                        print(url)
-                        UIApplication.shared.open(url)
-                    }
+                    AppOpener.openSwish(amount: amount, friend: friend)
                 } else if amount > 0 {
                     self.showSendReminderAlert = true
                 }
@@ -101,17 +98,18 @@ struct StandingsView: View {
     private func handleUrlOpen(url: URL) {
         let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
         if let queryItems = urlComponents?.queryItems {
+            var userId = ""
             for queryItem in queryItems {
                 if let value = queryItem.value {
                     if queryItem.name == "sourceApplication" && value != "swish" {
                         return
-                    }
-                    if queryItem.name == "userId" && !value.isEmpty {
-                        self.swishFriendId = value
-                        self.showDidSwishGoThrough = true
+                    } else if queryItem.name == "userId" && !value.isEmpty {
+                        userId = value
                     }
                 }
             }
+            self.swishFriendId = userId
+            self.showDidSwishGoThrough = true
         }
     }
 }

@@ -122,7 +122,7 @@ struct QuickBalanceAccountView: View {
                     
                     // Success
                     self.mobileBankIdResponse = mobileBankIdResponse
-                    MobileBankID.openBankId(autoStartToken: mobileBankIdResponse.autoStartToken) { error in
+                    AppOpener.openBankId(autoStartToken: mobileBankIdResponse.autoStartToken) { error in
                         if let error = error {
                             self.errorHandling.handle(error: error)
                             return

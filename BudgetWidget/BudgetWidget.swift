@@ -5,70 +5,141 @@
 //  Created by Samuel Ivarsson on 2023-03-28.
 //
 
-import WidgetKit
-import SwiftUI
+import Firebase
 import Intents
+import SwiftUI
+import WidgetKit
 
 struct Provider: IntentTimelineProvider {
-    @StateObject var quickBalanceViewModel = QuickBalanceViewModel()
+    private var quickBalanceViewModel = QuickBalanceViewModel()
 
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationIntent())
+        SimpleEntry(date: Date.now, balance: "1234,56", currency: "SEK", error: "", configuration: SelectAccountIntent())
     }
 
-    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), configuration: configuration)
+    func getSnapshot(for configuration: SelectAccountIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+        let entry = SimpleEntry(date: Date.now, balance: "1234,56", currency: "SEK", error: "", configuration: SelectAccountIntent())
         completion(entry)
     }
 
-    func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+    func getTimeline(for configuration: SelectAccountIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [SimpleEntry] = []
 
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
-            entries.append(entry)
+        guard let budgetAccountId = configuration.account?.budgetAccountId else {
+            completion(Timeline(entries: entries, policy: .after(Date(timeInterval: 15, since: Date.now))))
+            return
         }
 
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
+        let prevBalance = self.quickBalanceViewModel.getRawQuickBalance(budgetAccountId: budgetAccountId)
+        let prevCurrency = self.quickBalanceViewModel.getCurrency(budgetAccountId: budgetAccountId)
+
+        self.fetchQuickBalance(configuration: configuration, budgetAccountId: budgetAccountId) { error in
+            if let error = error {
+                print(error.localizedDescription)
+                let entry = SimpleEntry(date: Date.now, balance: prevBalance, currency: prevCurrency, error: error.localizedDescription, configuration: SelectAccountIntent())
+                completion(Timeline(entries: [entry], policy: .after(Date(timeInterval: 15, since: Date.now))))
+                return
+            }
+
+            // Success
+            let newBalance = self.quickBalanceViewModel.getRawQuickBalance(budgetAccountId: budgetAccountId)
+            let newCurrency = self.quickBalanceViewModel.getCurrency(budgetAccountId: budgetAccountId)
+            let expirationMessage = self.quickBalanceViewModel.getExpirationMessage(budgetAccountId: budgetAccountId)
+
+            let entry = SimpleEntry(date: Date.now, balance: newBalance, currency: newCurrency, error: expirationMessage, configuration: configuration)
+            entries.append(entry)
+
+            let timeline = Timeline(entries: entries, policy: .never)
+            completion(timeline)
+        }
     }
-    
-    private func fetchQuickBalance(completion: @escaping (QuickBalanceResponse?, Error?) -> Void) {
-//        self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccount: <#T##<<error type>>#>, completion: <#T##(Error?) -> Void#>)
+
+    private func fetchQuickBalance(configuration: SelectAccountIntent, budgetAccountId: String, completion: @escaping (Error?) -> ()) {
+        guard let _ = Auth.auth().currentUser else {
+            completion(UserError.notLoggedIn)
+            return
+        }
+
+        guard let name = configuration.account?.name else {
+            let info = "Found nil when extracting name in fetchQuickBalance in Provider (Widget)"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+
+        guard let subscriptionId = configuration.account?.subscriptionId else {
+            let info = "Found nil when extracting subscriptionId in fetchQuickBalance in Provider (Widget)"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        let quickBalanceAccount = QuickBalanceAccount(name: name, subscriptionId: subscriptionId, budgetAccountId: budgetAccountId)
+        self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccount: quickBalanceAccount, completion: completion)
     }
 }
 
 struct SimpleEntry: TimelineEntry {
-    let date: Date
-    let configuration: ConfigurationIntent
+    var date: Date
+    let balance: String
+    let currency: String
+    let error: String
+    let configuration: SelectAccountIntent
 }
 
-struct BudgetWidgetEntryView : View {
+struct SingleQuickBalanceWidgetEntryView: View {
+    @Environment(\.colorScheme) var colorScheme
+
     var entry: Provider.Entry
 
     var body: some View {
-        Text(entry.date, style: .time)
+        ZStack(alignment: Alignment(horizontal: .center, vertical: .center)) {
+            if self.colorScheme == .dark {
+                Color(red: 44/255, green: 44/255, blue: 44/255).edgesIgnoringSafeArea(.all)
+            }
+
+            VStack(alignment: .center, spacing: 10) {
+                let balanceText = self.entry.balance + " " + self.entry.currency
+                Text("amountAvailable".localizeString())
+                    .font(.system(size: 13))
+
+                Text(balanceText)
+                    .font(.system(size: 22))
+                    .bold()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.3)
+
+                if self.entry.error.isEmpty {
+                    HStack(spacing: 0) {
+                        Text("\("latestUpdate".localizeString()): ")
+                            .font(.system(size: 9))
+                        Text(self.entry.date, style: .time)
+                            .font(.system(size: 9))
+                    }
+                } else {
+                    Text(self.entry.error)
+                        .font(.system(size: 8))
+                        .bold()
+                        .multilineTextAlignment(.center)
+                }
+            }.padding()
+        }.widgetURL(URL(string: "budgetapp://?sourceApplication=widget&kind=singleQuickBalance"))
     }
 }
 
-struct BudgetWidget: Widget {
-    let kind: String = "BudgetWidget"
+struct SingleQuickBalanceWidget: Widget {
+    let kind: String = "singleQuickBalance"
 
     var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-            BudgetWidgetEntryView(entry: entry)
+        IntentConfiguration(kind: self.kind, intent: SelectAccountIntent.self, provider: Provider()) { entry in
+            SingleQuickBalanceWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("quickBalance".localizeString())
+        .description("seeYourQuickBalance".localizeString())
     }
 }
 
-struct BudgetWidget_Previews: PreviewProvider {
+struct SingleQuickBalanceWidget_Previews: PreviewProvider {
     static var previews: some View {
-        BudgetWidgetEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
+        SingleQuickBalanceWidgetEntryView(entry: SimpleEntry(date: Date.now, balance: "1234,56", currency: "SEK", error: "", configuration: SelectAccountIntent()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

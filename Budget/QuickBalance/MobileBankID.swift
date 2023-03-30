@@ -207,19 +207,6 @@ struct MobileBankID {
         }
     }
 
-    static func openBankId(autoStartToken: String, completion: @escaping (Error?) -> Void) {
-        DispatchQueue.main.async {
-            if let url = URL(string: "https://app.bankid.com/?autostarttoken=\(autoStartToken)&redirect=budgetapp://?sourceApplication=bankid") {
-                UIApplication.shared.open(url) { success in
-                    guard success else {
-                        completion(UserError.bankIdNotInstalled)
-                        return
-                    }
-                }
-            }
-        }
-    }
-    
     static func goNext(mobileBankIdResponse: MobileBankIDResponse, completion: @escaping (MobileBankIDResponse?, Error?) -> Void) {
         DispatchQueue.main.async {
             let links = mobileBankIdResponse.links

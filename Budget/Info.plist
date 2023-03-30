@@ -23,5 +23,9 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>SelectAccountIntent</string>
+	</array>
 </dict>
 </plist>
