@@ -282,6 +282,7 @@
 		4D1E973E28085459003C8802 /* WelcomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreenView.swift; sourceTree = "<group>"; };
 		4D1E974128085626003C8802 /* TransactionCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoriesView.swift; sourceTree = "<group>"; };
 		4D1E9743280857B6003C8802 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		4D20A6F529DB754D0009A5D7 /* project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = project.xcconfig; sourceTree = "<group>"; };
 		4D2255312809B65C00C80851 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		4D225533280A1F4500C80851 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4D22553C280A39F600C80851 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
@@ -733,6 +734,7 @@
 		4DFD3D8928073E4A00D5FFB4 = {
 			isa = PBXGroup;
 			children = (
+				4D20A6F529DB754D0009A5D7 /* project.xcconfig */,
 				4DAC5C6429D3B0B600892053 /* BudgetWidgetExtension.entitlements */,
 				4DFD3D9428073E4A00D5FFB4 /* Budget */,
 				4DAFD79229D30A1D0018B8C7 /* BudgetWidget */,
@@ -1509,6 +1511,7 @@
 		};
 		4DFD3DA328073E4B00D5FFB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4D20A6F529DB754D0009A5D7 /* project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -1570,6 +1573,7 @@
 		};
 		4DFD3DA428073E4B00D5FFB4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4D20A6F529DB754D0009A5D7 /* project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
