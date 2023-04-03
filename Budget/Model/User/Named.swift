@@ -10,4 +10,5 @@ import Foundation
 protocol Named: Identifiable {
     var id: String { get }
     var name: String { get }
+    var phone: String { get }
 }

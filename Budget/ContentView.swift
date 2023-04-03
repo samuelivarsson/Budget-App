@@ -63,72 +63,77 @@ struct ContentView: View {
         }
         .onLoad {
             do {
-                try Auth.auth().useUserAccessGroup("\(Utility.teamId).com.samuelivarsson.Budget")
+                try Auth.auth().useUserAccessGroup("\(Secrets.teamId).com.samuelivarsson.Budget")
             } catch let error as NSError {
                 self.errorHandling.handle(error: error)
             }
-            self.userViewModel.fetchData { error in
+        }
+        .onAppear {
+            self.fetchData()
+        }
+        .onOpenURL { url in
+            self.handleUrlOpen(url: url)
+        }
+    }
+
+    private func fetchData() {
+        if Utility.firstLoadFinished {
+            print("nope")
+            return
+        }
+        self.userViewModel.fetchData { error in
+            if let error = error {
+                self.errorHandling.handle(error: error)
+                return
+            }
+
+            // Success
+            if Utility.firstLoadFinished {
+                return
+            }
+            self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn, monthsBack: 1) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
                     return
                 }
 
                 // Success
-                if self.historyViewModel.firstLoadFinished {
+                if Utility.firstLoadFinished {
                     return
                 }
-                self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn, monthsBack: 1) { error in
+                self.standingsViewModel.fetchData { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return
                     }
 
                     // Success
-                    if self.historyViewModel.firstLoadFinished {
+                    if Utility.firstLoadFinished {
                         return
                     }
-                    self.standingsViewModel.fetchData { error in
+                    self.historyViewModel.fetchData { error in
                         if let error = error {
                             self.errorHandling.handle(error: error)
                             return
                         }
 
                         // Success
-                        if self.historyViewModel.firstLoadFinished {
+                        if Utility.firstLoadFinished {
                             return
                         }
-                        self.historyViewModel.fetchData { error in
+                        Utility.firstLoadFinished = true
+                        self.saveIfNeeded { error in
                             if let error = error {
                                 self.errorHandling.handle(error: error)
                                 return
                             }
 
                             // Success
-                            if self.historyViewModel.firstLoadFinished {
-                                return
-                            }
-                            self.historyViewModel.firstLoadFinished = true
-                            self.saveIfNeeded { error in
-                                if let error = error {
-                                    self.errorHandling.handle(error: error)
-                                    return
-                                }
-
-                                // Success
-                            }
                         }
                     }
                 }
-                self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccounts: self.userViewModel.user.quickBalanceAccounts) { error in
-                    if let error = error {
-                        self.errorHandling.handle(error: error)
-                        return
-                    }
-
-                    // Success
-                }
             }
-            self.notificationsViewModel.fetchData { error in
+            self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccounts: self.userViewModel.user.quickBalanceAccounts) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
                     return
@@ -137,8 +142,13 @@ struct ContentView: View {
                 // Success
             }
         }
-        .onOpenURL { url in
-            self.handleUrlOpen(url: url)
+        self.notificationsViewModel.fetchData { error in
+            if let error = error {
+                self.errorHandling.handle(error: error)
+                return
+            }
+
+            // Success
         }
     }
 

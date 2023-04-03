@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Firebase
+import FirebaseMessaging
+import UserNotifications
 
 @main
 struct BudgetApp: App {

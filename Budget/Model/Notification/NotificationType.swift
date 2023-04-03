@@ -12,4 +12,7 @@ enum NotificationType: Int16, Codable {
     case transaction
     case friendRequestAccepted
     case friendRequestDenied
+    case transactionEdit
+    case squaredUp
+    case swishReminder
 }

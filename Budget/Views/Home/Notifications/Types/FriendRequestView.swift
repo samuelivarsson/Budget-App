@@ -17,65 +17,45 @@ struct FriendRequestView: View {
     
     private let cornerRadius: CGFloat = 5
     private let buttonHeight: CGFloat = 33
-    private let titleSize: Font = .headline
-    private let nameSize: Font = .subheadline
-    private let bodySize: Font = .subheadline
-    private let timeSinceSize: Font = .footnote
+    private let bodySize: Font
     
-    init(notification: Notification) {
+    init(notification: Notification, bodySize: Font) {
         self.notification = notification
+        self.bodySize = bodySize
     }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text("friendRequest")
-                    .font(self.titleSize)
-                Spacer()
-                Text(Utility.getTimePassed(since: notification.date))
-                    .foregroundColor(.secondary)
-                    .font(self.timeSinceSize)
-            }
-            
-            Spacer()
-            
-            Text(self.notification.fromName)
-                .font(self.nameSize)
-            
-            Spacer()
-            
-            switch self.notification.type {
-            case .friendRequestAccepted:
-                Text("friendRequestAccepted")
-                    .font(self.bodySize)
+        switch self.notification.type {
+        case .friendRequestAccepted:
+            Text("friendRequestAccepted")
+                .font(self.bodySize)
                 
-            case .friendRequestDenied:
-                Text("friendRequestAccepted")
-                    .font(self.bodySize)
+        case .friendRequestDenied:
+            Text("friendRequestAccepted")
+                .font(self.bodySize)
                 
-            default:
-                HStack(spacing: 5) {
-                    Button {
-                        self.acceptFriendRequest()
-                    } label: {
-                        Text("accept")
-                            .foregroundColor(.primary)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: self.buttonHeight)
-                    .background(Color.accentColor)
-                    .cornerRadius(self.cornerRadius)
+        default:
+            HStack(spacing: 5) {
+                Button {
+                    self.acceptFriendRequest()
+                } label: {
+                    Text("accept")
+                        .foregroundColor(.primary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: self.buttonHeight)
+                .background(Color.accentColor)
+                .cornerRadius(self.cornerRadius)
                     
-                    Button {
-                        self.denyFriendRequest()
-                    } label: {
-                        Text("deny")
-                            .foregroundColor(.primary)
-                    }
-                    .frame(maxWidth: .infinity, minHeight: self.buttonHeight)
-                    .background(Color.secondary)
-                    .cornerRadius(self.cornerRadius)
-                }.frame(maxWidth: .infinity)
-            }
+                Button {
+                    self.denyFriendRequest()
+                } label: {
+                    Text("deny")
+                        .foregroundColor(.primary)
+                }
+                .frame(maxWidth: .infinity, minHeight: self.buttonHeight)
+                .background(Color.secondary)
+                .cornerRadius(self.cornerRadius)
+            }.frame(maxWidth: .infinity)
         }
     }
     

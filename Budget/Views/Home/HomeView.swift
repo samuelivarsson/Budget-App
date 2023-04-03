@@ -18,6 +18,7 @@ struct HomeView: View {
     @EnvironmentObject private var quickBalanceViewModel: QuickBalanceViewModel
 
     private let textSize: Font = .footnote
+    private let labelSize: Font = .system(size: 10)
 
     var body: some View {
         NavigationView {
@@ -50,7 +51,31 @@ struct HomeView: View {
                 }
 
                 Section {
-                    ForEach(self.userViewModel.getTransactionCategoriesSorted(type: .expense)) { transactionCategory in
+                    HStack(spacing: 5) {
+                        Text("category")
+                            .frame(width: 75, alignment: .leading)
+                            .font(self.textSize.bold())
+                        Spacer()
+                        Text("spent")
+                            .frame(width: 75, alignment: .trailing)
+                            .font(self.labelSize.bold())
+                            .minimumScaleFactor(0.1)
+                            .lineLimit(1)
+                        Spacer()
+                        Text("remaining")
+                            .font(self.labelSize.bold())
+                            .scaledToFit()
+                            .minimumScaleFactor(0.1)
+                            .lineLimit(1)
+                        Spacer()
+                        Text("ceiling")
+                            .frame(width: 75, alignment: .leading)
+                            .font(self.labelSize.bold())
+                            .minimumScaleFactor(0.1)
+                            .lineLimit(1)
+                    }
+                    let transactionCategories = self.userViewModel.getTransactionCategoriesSorted(type: .expense)
+                    ForEach(transactionCategories) { transactionCategory in
                         HStack(spacing: 5) {
                             Text(transactionCategory.name.localizeString())
                                 .frame(width: 75, alignment: .leading)
@@ -70,15 +95,13 @@ struct HomeView: View {
 
                             let amount = transactionCategory.getRealAmount(budget: user.budget)
 
-                            // TODO: - Gradient from green to red
                             VStack(spacing: 5) {
                                 Text(Utility.doubleToLocalCurrency(value: amount - spent))
                                     .font(self.textSize)
                                     .scaledToFit()
                                     .minimumScaleFactor(0.1)
                                     .lineLimit(1)
-                                ProgressView(value: min(spent, amount), total: amount)
-                                    .tint(spent < amount ? Color.green : Color.red)
+                                CustomProgressView(value: min(spent, amount), total: amount)
                             }
 
                             Spacer()
@@ -95,7 +118,7 @@ struct HomeView: View {
                     Text("expenses")
                 }
             }
-            .redacted(when: !self.historyViewModel.firstLoadFinished)
+            .redacted(when: !Utility.firstLoadFinished)
             .navigationTitle("home")
             .toolbar {
                 ToolbarItem {
@@ -108,6 +131,27 @@ struct HomeView: View {
                     }
                 }
             }
+        }
+    }
+    
+    struct CustomProgressView: View {
+        var value: Double
+        var total: Double
+        
+        var body: some View {
+            let progress = CGFloat(min(max(value/total, 0), 1))
+            let startColor = Color.green
+            let endColor: Color
+            
+            switch progress {
+            case 0..<0.5:
+                endColor = startColor.interpolate(to: .yellow, fraction: progress * 2)
+            default:
+                endColor = .yellow.interpolate(to: .orange, fraction: (progress - 0.5) * 2)
+            }
+            
+            return ProgressView(value: value, total: total)
+                .tint(value < total ? endColor : Color.red)
         }
     }
 

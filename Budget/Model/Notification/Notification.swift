@@ -17,15 +17,17 @@ struct Notification: Identifiable, Codable, Hashable {
     var to: String
     var read: Bool
     var date: Date
-    var id: String { documentId ?? "" }
+    var desc: String
+    var id: String { documentId ?? UUID().uuidString }
     
-    init(type: NotificationType, from: String, fromName: String, to: String, read: Bool = false) {
+    init(type: NotificationType, from: String, fromName: String, to: String, read: Bool = false, desc: String = "") {
         self.type = type
         self.from = from
         self.fromName = fromName
         self.to = to
         self.read = read
         self.date = Date()
+        self.desc = desc
     }
     
     func equals(notification: Notification) -> Bool {

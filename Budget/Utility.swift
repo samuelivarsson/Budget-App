@@ -14,8 +14,10 @@ import SwiftUI
 
 /// Offers useful utilities
 class Utility {
-    static let teamId = "NNPX5ZKT2A"
+    static var listeners: [ListenerRegistration] = .init()
     
+    static var firstLoadFinished = false
+
     static var currencyFormatter: NumberFormatter {
         let currencyFormatter = NumberFormatter()
         currencyFormatter.isPartialStringValidationEnabled = true
@@ -45,7 +47,7 @@ class Utility {
         currencyFormatter.zeroSymbol = ""
         return currencyFormatter
     }
-    
+
     static var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
@@ -59,12 +61,12 @@ class Utility {
         dateFormatter.timeStyle = .none
         return dateFormatter
     }
-    
+
     static func convertToDouble(_ amountString: String) -> Double? {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
         formatter.numberStyle = .decimal
-        
+
         if let number = formatter.number(from: amountString) {
             return number.doubleValue
         } else {
@@ -73,7 +75,7 @@ class Utility {
     }
 
     static func dateToString(date: Date) -> String {
-        return dateFormatter.string(from: date)
+        return self.dateFormatter.string(from: date)
     }
 
     static func dateToString(date: Date, style: DateFormatter.Style, timeStyle: DateFormatter.Style? = nil) -> String {
@@ -86,7 +88,7 @@ class Utility {
         }
         return dateFormatter.string(from: date)
     }
-    
+
     static func stringToDate(string: String, style: DateFormatter.Style, timeStyle: DateFormatter.Style? = nil) -> Date? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = style
@@ -99,7 +101,30 @@ class Utility {
     }
 
     static func dateToStringNoTime(date: Date) -> String {
-        return dateFormatterNoTime.string(from: date)
+        return self.dateFormatterNoTime.string(from: date)
+    }
+
+    static func removeListener(listener: ListenerRegistration?) {
+        guard let listener = listener else {
+            return
+        }
+        var index = -1
+        for i in 0..<self.listeners.count {
+            if self.listeners[i].isEqual(listener) {
+                self.listeners[i].remove()
+                index = i
+            }
+        }
+        if index >= 0, index < self.listeners.count {
+            self.listeners.remove(at: index)
+        }
+    }
+
+    static func removeListeners() {
+        for i in 0..<self.listeners.count {
+            self.listeners[i].remove()
+        }
+        self.listeners = .init()
     }
 
     /// Converts any Double to Double with only 2 decimals
@@ -201,7 +226,7 @@ class Utility {
                 completion(failImage, ApplicationError.unexpectedNil(info))
                 return
             }
-            getImageFromURL(url: url) { uiImage, error in
+            self.getImageFromURL(url: url) { uiImage, error in
                 if let error = error {
                     completion(failImage, error)
                     return
@@ -225,7 +250,7 @@ class Utility {
 
         var dayComponent = DateComponents()
         dayComponent.day = monthStartsOn
-        
+
         let toDate = calendar.nextDate(
             after: referenceDate,
             matching: dayComponent,
@@ -270,11 +295,11 @@ class Utility {
 
         return "\(Int(seconds)) " + NSLocalizedString("shortSeconds", comment: "")
     }
-    
-    static func getSwishUrl(amount: Double, friend: User) -> URL? {
+
+    static func getSwishUrl(amount: Double, friend: any Named) -> URL? {
         let amountTwoDecimals = Utility.doubleToTwoDecimals(value: abs(amount))
         // TODO: - Fix to reflect date of transaction after last swish
-        let date = dateToStringNoTime(date: Date())
+        let date = self.dateToStringNoTime(date: Date())
         let info = "squaringUpTransactionsSince".localizeString() + " " + date
         let data =
             "{" +
@@ -289,9 +314,9 @@ class Utility {
             "}," +
             "\"version\":1" +
             "}"
-        
+
         let callbackUrl = "budgetapp%3A%2F%2F?sourceApplication=swish%26userId=\(friend.id)"
-        
+
         let queryItems = [URLQueryItem(name: "callbackurl", value: callbackUrl), URLQueryItem(name: "data", value: data)]
         var urlComps = URLComponents(string: "swish://payment") ?? .init()
         urlComps.queryItems = queryItems
@@ -307,7 +332,7 @@ struct ProfilePicture: View {
 
     var body: some View {
         if let uiImage = uiImage {
-            if fill {
+            if self.fill {
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -315,12 +340,12 @@ struct ProfilePicture: View {
                 Image(uiImage: uiImage)
             }
         } else {
-            if fill {
-                failImage
+            if self.fill {
+                self.failImage
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } else {
-                failImage
+                self.failImage
             }
         }
     }
@@ -337,11 +362,11 @@ struct IconTextField: View {
 
     var body: some View {
         HStack {
-            Image(systemName: imgName).foregroundColor(.secondary)
-            TextField(placeHolderText, text: $text)
-                .keyboardType(keyboardType)
-                .disableAutocorrection(disableAutocorrection)
-                .textInputAutocapitalization(autoCapitalization)
+            Image(systemName: self.imgName).foregroundColor(.secondary)
+            TextField(self.placeHolderText, text: self.$text)
+                .keyboardType(self.keyboardType)
+                .disableAutocorrection(self.disableAutocorrection)
+                .textInputAutocapitalization(self.autoCapitalization)
         }
         .frame(height: 20)
     }
@@ -356,12 +381,12 @@ struct PasswordField: View {
     var body: some View {
         HStack {
             Image(systemName: "lock").foregroundColor(.secondary)
-            if showPassword {
-                TextField("password", text: $password)
+            if self.showPassword {
+                TextField("password", text: self.$password)
                     .disableAutocorrection(true)
                     .textInputAutocapitalization(.none)
             } else {
-                SecureField("password", text: $password)
+                SecureField("password", text: self.$password)
                     .disableAutocorrection(true)
                     .textInputAutocapitalization(.none)
             }
@@ -385,9 +410,9 @@ struct ViewDidLoadModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content.onAppear {
-            if didLoad == false {
-                didLoad = true
-                action?()
+            if self.didLoad == false {
+                self.didLoad = true
+                self.action?()
             }
         }
     }
@@ -399,7 +424,7 @@ struct MyBadge: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Color.clear
-            Text(String(count))
+            Text(String(self.count))
                 .font(.system(size: 16))
                 .foregroundColor(.white)
                 .padding(5)
@@ -416,11 +441,11 @@ struct MyBadgeModifier: ViewModifier {
     let count: Int
 
     func body(content: Content) -> some View {
-        if count < 1 {
+        if self.count < 1 {
             content
         } else {
             content
-                .overlay(MyBadge(count: count))
+                .overlay(MyBadge(count: self.count))
         }
     }
 }

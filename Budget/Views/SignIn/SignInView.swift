@@ -49,23 +49,6 @@ struct SignInView: View {
                     .cornerRadius(cornerRadius)
                 }
                 
-                // Sign in anonymously
-                Button {
-                    signInAnonymously()
-                } label: {
-                    Label {
-                        Text("signInAsGuest")
-                        Spacer()
-                    } icon: {
-                        Image(systemName: "person").padding()
-                    }
-                    .font(Font.system(size: 14).bold())
-                    .foregroundColor(.white)
-                    .frame(width: width, height: height)
-                    .background(Color.secondary)
-                    .cornerRadius(cornerRadius)
-                }
-                
                 HStack {
                     VStack { Divider() }
                     Text("or").foregroundColor(.secondary)
@@ -119,26 +102,6 @@ struct SignInView: View {
         }
     }
     
-    private func attachListeners(completion: @escaping (Error?) -> Void) {
-        userViewModel.fetchData { error in
-            if let error = error {
-                completion(error)
-                return
-            }
-            
-            // Success
-            self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn) { error in
-                if let error = error {
-                    completion(error)
-                    return
-                }
-                
-                // Success
-                self.notificationsViewModel.fetchData(completion: completion)
-            }
-        }
-    }
-    
     private func signInWithGoogle() {
         authViewModel.signIn { error in
             if let error = error {
@@ -177,31 +140,10 @@ struct SignInView: View {
                         
                         // Success
                         print("Successfully set profile picture")
-                        self.attachListeners { error in
-                            if let error = error {
-                                self.errorHandling.handle(error: error)
-                                return
-                            }
-                            
-                            // Success
-                            print("Successfully attached listeners in signInWithGoogle")
-                            self.authViewModel.state = .signedIn
-                        }
+                        self.authViewModel.state = .signedIn
                     }
                 }
             }
-        }
-    }
-    
-    private func signInAnonymously() {
-        authViewModel.signInAnonymously { error in
-            if let error = error {
-                self.errorHandling.handle(error: error)
-                return
-            }
-            
-            // Success
-            self.authViewModel.state = .signedIn
         }
     }
     
@@ -246,16 +188,7 @@ struct SignInView: View {
                         
                         // Success
                         print("Successfully set profile picture")
-                        self.attachListeners { error in
-                            if let error = error {
-                                self.errorHandling.handle(error: error)
-                                return
-                            }
-                            
-                            // Success
-                            print("Successfully attached listeners in signInWithEmail")
-                            self.authViewModel.state = .signedIn
-                        }
+                        self.authViewModel.state = .signedIn
                     }
                 }
             }

@@ -5,12 +5,12 @@
 //  Created by Samuel Ivarsson on 2022-10-24.
 //
 
-import Foundation
 import Firebase
 import FirebaseFirestore
+import Foundation
 
 class NotificationsViewModel: ObservableObject {
-    @Published var notifications: [Notification] = [Notification]()
+    @Published var notifications: [Notification] = .init()
     
     private var db = Firestore.firestore()
     
@@ -24,6 +24,9 @@ class NotificationsViewModel: ObservableObject {
             return
         }
         
+        // Remove old listener
+        Utility.removeListener(listener: self.listener)
+        // Add new listener
         self.listener = self.db.collection("Notifications").whereField("to", isEqualTo: uid).order(by: "date", descending: true).addSnapshotListener { querySnapshot, error in
             if let error = error {
                 completion(error)
@@ -35,7 +38,7 @@ class NotificationsViewModel: ObservableObject {
             }
             
             // Succes
-            self.notifications = documents.compactMap{ queryDocumentSnapshot in
+            self.notifications = documents.compactMap { queryDocumentSnapshot in
                 do {
                     return try queryDocumentSnapshot.data(as: Notification.self)
                 } catch {
@@ -43,13 +46,20 @@ class NotificationsViewModel: ObservableObject {
                     return nil
                 }
             }
+            self.addListener()
             print("Successfully set notifications in NotificationsViewModel")
             completion(nil)
         }
     }
     
+    func addListener() {
+        if let listener = self.listener {
+            Utility.listeners.append(listener)
+        }
+    }
+    
     func getNumberOfUnreadNotifications() -> Int {
-        return self.notifications.filter({ !$0.read }).count
+        return self.notifications.filter { !$0.read }.count
     }
     
     func setNotificationAsRead(notification: Notification, completion: @escaping (Error?) -> Void) {
@@ -93,7 +103,7 @@ class NotificationsViewModel: ObservableObject {
     func setAllNotificationsAsRead(completion: @escaping (Error?) -> Void) {
         let batch = self.db.batch()
         
-        let unReadNotifications = self.notifications.filter({ !$0.read })
+        let unReadNotifications = self.notifications.filter { !$0.read }
         for notification in unReadNotifications {
             guard let notificationId = notification.documentId else {
                 let info = "Found nil when extracting notificationId in setAllNotificationsAsRead in NotificationsViewModel"
@@ -154,7 +164,7 @@ class NotificationsViewModel: ObservableObject {
             print("Successfully accepted friend request in NotificationsViewModel")
             let newNotification = Notification(type: .friendRequestAccepted, from: notification.to, fromName: myName, to: notification.from)
             do {
-                let _ = try self.db.collection("Notifications").addDocument(from: newNotification) { error in
+                try self.db.collection("Notifications").addDocument(from: newNotification) { error in
                     if let error = error {
                         completion(error)
                         return
@@ -217,7 +227,7 @@ class NotificationsViewModel: ObservableObject {
                 try? queryDocumentSnapshot.data(as: Notification.self)
             }
             
-            let notification = notifications.first{$0.from == from && $0.to == to && $0.type == .friendRequest}
+            let notification = notifications.first { $0.from == from && $0.to == to && $0.type == .friendRequest }
             guard let notification = notification else {
                 let info = "Found nil when extracting notification in cancelFriendRequest in NotificationsViewModel"
                 print(info)
@@ -242,5 +252,41 @@ class NotificationsViewModel: ObservableObject {
             }
         }
         return (nil, false)
+    }
+    
+    func sendTransactionNotifications(me: User, transaction: Transaction, edit: Bool = false, completion: @escaping (Error?) -> Void) {
+        let batch = self.db.batch()
+        for participant in transaction.participants {
+            if participant.userId == me.id {
+                continue
+            }
+            let type: NotificationType = edit ? .transactionEdit : .transaction
+            let notification = Notification(type: type, from: me.id, fromName: me.name, to: participant.userId, desc: transaction.desc)
+            let document = self.db.collection("Notifications").document()
+            do {
+                try batch.setData(from: notification, forDocument: document)
+            } catch {
+                completion(error)
+            }
+        }
+        batch.commit(completion: completion)
+    }
+    
+    func addNotification(notification: Notification, completion: @escaping (Error?) -> Void) {
+        do {
+            try self.db.collection("Notifications").addDocument(from: notification, completion: completion)
+        } catch {
+            completion(error)
+        }
+    }
+    
+    func sendReminder(me: User, friendId: String, completion: @escaping (Error?) -> Void) {
+        let notification = Notification(type: .swishReminder, from: me.id, fromName: me.name, to: friendId)
+        self.addNotification(notification: notification, completion: completion)
+    }
+    
+    func sendSquaredUpNotification(me: User, friendId: String, completion: @escaping (Error?) -> Void) {
+        let notification = Notification(type: .squaredUp, from: me.id, fromName: me.name, to: friendId)
+        self.addNotification(notification: notification, completion: completion)
     }
 }

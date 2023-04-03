@@ -62,11 +62,18 @@
 "friendRequest" = "Friend request";
 "friendRequestAccepted" = "Friend request accepted";
 "friendRequestDenied" = "Friend request denied";
-"hasAddedYouToTransaction" = "has added you to a transaction";
+"youHaveBeenAddedToTransaction" = "You have been added to the transaction";
+"editedTheTransaction" = "Edited the transaction";
+"youAreNowEven" = "You are now even";
+"reminder" = "Reminder";
+"youHaveBeenRemindedToSwish" = "You have been reminded to swish";
 "youHaveNoNotifications" = "You have no notifications!";
 "difference" = "Difference";
 "somethingWentWrong" = "Something went wrong";
 "latestUpdate" = "Latest update";
+"spent" = "Spent";
+"remaining" = "Remaining";
+"ceiling" = "Ceiling";
 
 // Standings View
 "standing" = "Standing";
@@ -245,6 +252,7 @@
 "sendReminder?" = "Send reminder?";
 "doYouWantToRemind" = "Do you want to send a notification as a reminder for them to pay you?";
 "didSwishGoThrough?" = "Did the Swish go through?";
+"didFriendSwish?" = "Has the friend swished you?";
 
 // Quick Balance
 "quickBalanceAccount" = "Quick balance account";

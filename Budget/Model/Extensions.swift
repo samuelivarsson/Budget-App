@@ -83,6 +83,31 @@ extension Color {
             opacity: Double(a) / 255
         )
     }
+
+    func interpolate(to other: Color, fraction: CGFloat) -> Color {
+        let red = self.redComponent + fraction * (other.redComponent - self.redComponent)
+        let green = self.greenComponent + fraction * (other.greenComponent - self.greenComponent)
+        let blue = self.blueComponent + fraction * (other.blueComponent - self.blueComponent)
+        return Color(red: Double(red), green: Double(green), blue: Double(blue))
+    }
+
+    var redComponent: CGFloat {
+        var red: CGFloat = 0
+        UIColor(self).getRed(&red, green: nil, blue: nil, alpha: nil)
+        return red
+    }
+
+    var greenComponent: CGFloat {
+        var green: CGFloat = 0
+        UIColor(self).getRed(nil, green: &green, blue: nil, alpha: nil)
+        return green
+    }
+
+    var blueComponent: CGFloat {
+        var blue: CGFloat = 0
+        UIColor(self).getRed(nil, green: nil, blue: &blue, alpha: nil)
+        return blue
+    }
 }
 
 extension View {
@@ -106,6 +131,31 @@ extension View {
 
     func myBadge(count: Int) -> some View {
         modifier(MyBadgeModifier(count: count))
+    }
+
+    func progressGradient(colors: [Color], value: Double, total: Double) -> some View {
+        let percentage = value / total
+
+        return GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                LinearGradient(
+                    gradient: Gradient(colors: [.gray]),
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .frame(width: geometry.size.width, height: 10)
+                .cornerRadius(5.0)
+
+                LinearGradient(
+                    gradient: Gradient(colors: colors),
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .frame(width: geometry.size.width * CGFloat(percentage), height: 10)
+                .cornerRadius(5.0)
+            }
+            .mask(self)
+        }
     }
 }
 
@@ -135,15 +185,15 @@ extension Date {
     func startOfMonth() -> Date {
         return Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Calendar.current.startOfDay(for: self)))!
     }
-    
+
     func endOfMonth() -> Date {
         return Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self.startOfMonth())!
     }
-    
+
     func get(_ components: Calendar.Component..., calendar: Calendar = Calendar.current) -> DateComponents {
         return calendar.dateComponents(Set(components), from: self)
     }
-    
+
     func get(_ component: Calendar.Component, calendar: Calendar = Calendar.current) -> Int {
         return calendar.component(component, from: self)
     }

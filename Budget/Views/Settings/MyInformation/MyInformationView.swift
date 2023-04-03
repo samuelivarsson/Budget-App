@@ -30,7 +30,7 @@ struct MyInformationView: View {
                 HStack {
                     Spacer()
                     ZStack {
-                        ProfilePicture(uiImage: storageViewModel.profilePicture, failImage: Image(systemName: "person.circle"))
+                        ProfilePicture(uiImage: self.storageViewModel.profilePicture, failImage: Image(systemName: "person.circle"))
                             .frame(width: 150, height: 150)
                             .clipShape(Circle())
                         VStack {
@@ -38,7 +38,7 @@ struct MyInformationView: View {
                             HStack {
                                 Spacer()
                                 Button {
-                                    isShowPhotoChoices = true
+                                    self.isShowPhotoChoices = true
                                 } label: {
                                     Image(systemName: "camera")
                                         .padding(5)
@@ -49,22 +49,21 @@ struct MyInformationView: View {
                     .frame(width: 150, height: 150)
                     Spacer()
                 }
-                .listRowBackground(colorScheme == .dark ? Color.background : Color.secondaryBackground)
-                
+                .listRowBackground(self.colorScheme == .dark ? Color.background : Color.secondaryBackground)
             }
             
             Section {
                 HStack {
                     Text("email")
                     Spacer()
-                    let email = authViewModel.auth.currentUser?.email ?? "-"
+                    let email = self.authViewModel.auth.currentUser?.email ?? "-"
                     Text(email).foregroundColor(.secondary)
                 }
                 
                 HStack {
                     Text("name")
                     Spacer()
-                    let userName = authViewModel.auth.currentUser?.displayName ?? "Guest"
+                    let userName = self.authViewModel.auth.currentUser?.displayName ?? "Guest"
                     Text(userName).foregroundColor(.secondary)
                 }
                 
@@ -93,7 +92,7 @@ struct MyInformationView: View {
             
             Section {
                 Button(role: .destructive) {
-                    signOut()
+                    self.signOut()
                 } label: {
                     HStack {
                         Spacer()
@@ -107,10 +106,10 @@ struct MyInformationView: View {
         }
         .navigationTitle("myInformation")
         .navigationBarTitleDisplayMode(.inline)
-        .confirmationDialog("", isPresented: $isShowPhotoChoices) {
+        .confirmationDialog("", isPresented: self.$isShowPhotoChoices) {
             Button {
-                sourceType = .camera
-                isShowPhotoLibrary = true
+                self.sourceType = .camera
+                self.isShowPhotoLibrary = true
             } label: {
                 HStack {
                     Spacer()
@@ -119,8 +118,8 @@ struct MyInformationView: View {
                 }
             }
             Button {
-                sourceType = .photoLibrary
-                isShowPhotoLibrary = true
+                self.sourceType = .photoLibrary
+                self.isShowPhotoLibrary = true
             } label: {
                 HStack {
                     Spacer()
@@ -129,14 +128,14 @@ struct MyInformationView: View {
                 }
             }
         }
-        .sheet(isPresented: $isShowPhotoLibrary) {
-            ImagePicker(selectedImage: self.$image, sourceType: sourceType)
+        .sheet(isPresented: self.$isShowPhotoLibrary) {
+            ImagePicker(selectedImage: self.$image, sourceType: self.sourceType)
         }
-        .alert("signOut?", isPresented: $signOutAsGuestPressed) {
+        .alert("signOut?", isPresented: self.$signOutAsGuestPressed) {
             Button("signOut", role: .destructive) {
-                authViewModel.signOut() { error in
+                self.authViewModel.signOut { error in
                     if let error = error {
-                        errorHandling.handle(error: error)
+                        self.errorHandling.handle(error: error)
                         return
                     }
                 }
@@ -154,10 +153,12 @@ struct MyInformationView: View {
             return
         }
         if user.isAnonymous {
-            signOutAsGuestPressed = true
+            self.signOutAsGuestPressed = true
             return
         }
-        self.authViewModel.signOut() { error in
+        self.detachListeners()
+        Utility.firstLoadFinished = false
+        self.authViewModel.signOut { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
                 return
@@ -165,20 +166,13 @@ struct MyInformationView: View {
             
             // Success
             DispatchQueue.main.async {
-                self.detachListeners()
                 self.storageViewModel.profilePicture = nil
             }
         }
     }
     
     private func detachListeners() {
-        let listeners = [self.userViewModel.listener, self.transactionsViewModel.listener, self.notificationsViewModel.listener]
-        
-        listeners.forEach { listener in
-            if let listener = listener {
-                listener.remove()
-            }
-        }
+        Utility.removeListeners()
     }
 }
 

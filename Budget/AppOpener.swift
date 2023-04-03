@@ -22,7 +22,7 @@ struct AppOpener {
         }
     }
 
-    static func openSwish(amount: Double, friend: User) {
+    static func openSwish(amount: Double, friend: any Named) {
         if let url = Utility.getSwishUrl(amount: amount, friend: friend) {
             UIApplication.shared.open(url)
         }

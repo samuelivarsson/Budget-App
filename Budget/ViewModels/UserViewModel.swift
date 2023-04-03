@@ -35,6 +35,9 @@ class UserViewModel: ObservableObject {
                 completion(FirestoreError.documentNotExist)
                 return
             }
+            // Remove old listener
+            Utility.removeListener(listener: self.listener)
+            // Add new listener
             self.listener = self.db.collection("Users").document(uid).addSnapshotListener { documentSnapshot, error in
                 guard let document = documentSnapshot else {
                     // If querySnapshot is nil then error is not nil
@@ -61,6 +64,7 @@ class UserViewModel: ObservableObject {
                         }
                         
                         // Success
+                        self.addListener()
                         print("Successfully set friends in fetchData in UserViewModel")
                         completion(nil)
                     }
@@ -69,6 +73,12 @@ class UserViewModel: ObservableObject {
                     completion(error)
                 }
             }
+        }
+    }
+    
+    func addListener() {
+        if let listener = self.listener {
+            Utility.listeners.append(listener)
         }
     }
     

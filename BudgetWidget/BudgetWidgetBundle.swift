@@ -14,7 +14,7 @@ struct BudgetWidgetBundle: WidgetBundle {
     init() {
         FirebaseApp.configure()
         do {
-            try Auth.auth().useUserAccessGroup("\(Utility.teamId).com.samuelivarsson.Budget")
+            try Auth.auth().useUserAccessGroup("\(Secrets.teamId).com.samuelivarsson.Budget")
         } catch let error as NSError {
             print(error.localizedDescription)
         }

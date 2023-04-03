@@ -25,7 +25,7 @@ class TransactionsViewModel: ObservableObject {
         }
         let referenceDate: Date = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: monthStartsOn).0
         // Remove old listener
-        self.listener?.remove()
+        Utility.removeListener(listener: self.listener)
         // Add new listener
         self.listener = self.db.collection("Transactions").whereField("participantIds", arrayContains: uid).whereField("date", isGreaterThanOrEqualTo: referenceDate).order(by: "date", descending: true)
             .addSnapshotListener { querySnapshot, error in
@@ -42,6 +42,7 @@ class TransactionsViewModel: ObservableObject {
                     
                     // Success
                     self.transactions = data
+                    self.addListener()
                     print("Successfully set transactions in fetchData in TransactionsViewModel")
                     completion(nil)
                 } catch {
@@ -49,6 +50,12 @@ class TransactionsViewModel: ObservableObject {
                     completion(error)
                 }
             }
+    }
+    
+    func addListener() {
+        if let listener = self.listener {
+            Utility.listeners.append(listener)
+        }
     }
     
     func fetchAllData(completion: @escaping (Error?) -> Void) {

@@ -22,6 +22,7 @@ struct NotificationView: View {
     private let pictureSize: CGFloat = 90
     private let titleSize: Font = .headline
     private let nameSize: Font = .subheadline
+    private let bodySize: Font = .system(size: 11)
     private let timeSinceSize: Font = .footnote
     
     init(notification: Notification) {
@@ -45,24 +46,70 @@ struct NotificationView: View {
                     }
                 }
             
-            switch self.notification.type {
-            case .friendRequest:
-                FriendRequestView(notification: self.notification)
+            VStack(alignment: .leading) {
+                Text(self.getTitle())
+                    .font(self.titleSize)
+            
+                Spacer()
+            
+                Text(self.notification.fromName)
+                    .font(self.nameSize)
+            
+                Spacer()
                 
-            case .friendRequestAccepted:
-                FriendRequestView(notification: self.notification)
+                switch self.notification.type {
+                case .friendRequest:
+                    FriendRequestView(notification: self.notification, bodySize: self.bodySize)
                 
-            case .friendRequestDenied:
-                FriendRequestView(notification: self.notification)
+                case .friendRequestAccepted:
+                    FriendRequestView(notification: self.notification, bodySize: self.bodySize)
                 
-            case .transaction:
-                TransactionNotificationView(notification: self.notification)
+                case .friendRequestDenied:
+                    FriendRequestView(notification: self.notification, bodySize: self.bodySize)
                 
-            // TODO - Fix notification when you add someone to a transaction
-            // TODO - Add notification to remind someone to swish you
+                case .transaction:
+                    TransactionNotificationView(notification: self.notification, bodySize: self.bodySize)
+                
+                case .transactionEdit:
+                    TransactionNotificationView(notification: self.notification, bodySize: self.bodySize)
+                
+                case .squaredUp:
+                    SquaredUpNotificationView(notification: self.notification, bodySize: self.bodySize)
+                
+                case .swishReminder:
+                    ReminderNotificationView(notification: self.notification, bodySize: self.bodySize)
+                }
+            }
+            
+            Spacer()
+            
+            VStack(alignment: .trailing) {
+                Text(Utility.getTimePassed(since: self.notification.date))
+                    .foregroundColor(.secondary)
+                    .font(self.timeSinceSize)
+                Spacer()
             }
         }
         .frame(height: self.notificationHeight)
         .buttonStyle(BorderlessButtonStyle())
+    }
+    
+    private func getTitle() -> LocalizedStringKey {
+        switch self.notification.type {
+        case .friendRequest:
+            return "friendRequest"
+        case .friendRequestAccepted:
+            return "friendRequest"
+        case .friendRequestDenied:
+            return "friendRequest"
+        case .transaction:
+            return "transaction"
+        case .transactionEdit:
+            return "transaction"
+        case .swishReminder:
+            return "reminder"
+        case .squaredUp:
+            return "standings"
+        }
     }
 }

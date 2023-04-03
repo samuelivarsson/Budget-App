@@ -13,19 +13,17 @@ struct EditFriendPhoneView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var userViewModel: UserViewModel
     
-    @State private var friend: CustomFriend = CustomFriend(name: "", phone: "")
-    @State private var phone: String = ""
+    @State private var friend: CustomFriend
     @State private var applyLoading = false
     
     init(customFriend: CustomFriend) {
-        self.friend = customFriend
-        self._phone = State(initialValue: customFriend.name)
+        self._friend = State(initialValue: customFriend)
     }
     
     var body: some View {
         Form {
             Section("phone") {
-                TextField("phone", text: $phone, prompt: Text("friendsPhone"))
+                TextField("phone", text: self.$friend.phone, prompt: Text("friendsPhone"))
             }
             
             HStack {
@@ -48,7 +46,6 @@ struct EditFriendPhoneView: View {
     
     private func editFriend() {
         self.applyLoading = true
-        self.friend.phone = phone
         
         self.userViewModel.editCustomFriend(friend: self.friend) { error in
             self.applyLoading = false

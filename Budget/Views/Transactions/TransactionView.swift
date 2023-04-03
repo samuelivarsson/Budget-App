@@ -18,8 +18,10 @@ struct TransactionView: View {
     @EnvironmentObject private var firestoreViewModel: FirestoreViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     @EnvironmentObject private var standingsViewModel: StandingsViewModel
+    @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     
     @State private var transaction: Transaction
+    @State private var applyLoading: Bool = false
     @FocusState var isInputActive: Bool
     
     private var oldTransaction: Transaction? = nil
@@ -53,15 +55,37 @@ struct TransactionView: View {
             
             Section {
                 if self.action == .add {
-                    Button("add") {
-                        self.addTransaction()
+                    Button {
+                        if !self.applyLoading {
+                            self.addTransaction()
+                        }
+                    } label: {
+                        HStack {
+                            Spacer()
+                            if self.applyLoading {
+                                ProgressView()
+                            } else {
+                                Text("add")
+                            }
+                            Spacer()
+                        }
                     }
-                    .frame(maxWidth: .infinity, alignment: .center)
                 } else if self.action == .edit {
-                    Button("apply") {
-                        self.editTransaction()
+                    Button {
+                        if !self.applyLoading {
+                            self.addTransaction()
+                        }
+                    } label: {
+                        HStack {
+                            Spacer()
+                            if self.applyLoading {
+                                ProgressView()
+                            } else {
+                                Text("edit")
+                            }
+                            Spacer()
+                        }
                     }
-                    .frame(maxWidth: .infinity, alignment: .center)
                 }
             } footer: {
                 if self.action != .add {
@@ -253,9 +277,11 @@ struct TransactionView: View {
             self.transaction.creatorName = creatorName
             self.transaction.payerName = self.transaction.getPayerName()
             self.addParticipantIds()
+            self.applyLoading = true
             self.standingsViewModel.setStandings(transaction: self.transaction) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
+                    self.applyLoading = false
                     return
                 }
                 
@@ -263,11 +289,21 @@ struct TransactionView: View {
                 self.transactionsViewModel.addTransaction(transaction: self.transaction) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
+                        self.applyLoading = false
                         return
                     }
                     
                     // Succes
-                    self.presentationMode.wrappedValue.dismiss()
+                    self.notificationsViewModel.sendTransactionNotifications(me: self.userViewModel.user, transaction: self.transaction) { error in
+                        self.applyLoading = false
+                        if let error = error {
+                            self.errorHandling.handle(error: error)
+                            return
+                        }
+                        
+                        // Success
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
                 }
             }
         }
@@ -301,10 +337,12 @@ struct TransactionView: View {
                 return
             }
             
+            self.applyLoading = true
             do {
                 try self.firestoreViewModel.db.collection("Transactions").document(documentId).setData(from: self.transaction) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
+                        self.applyLoading = false
                         return
                     }
                     
@@ -312,6 +350,7 @@ struct TransactionView: View {
                     self.standingsViewModel.setStandings(transaction: oldTransaction, delete: true) { error in
                         if let error = error {
                             self.errorHandling.handle(error: error)
+                            self.applyLoading = false
                             return
                         }
                         
@@ -319,11 +358,21 @@ struct TransactionView: View {
                         self.standingsViewModel.setStandings(transaction: self.transaction) { error in
                             if let error = error {
                                 self.errorHandling.handle(error: error)
+                                self.applyLoading = false
                                 return
                             }
                             
                             // Success
-                            self.presentationMode.wrappedValue.dismiss()
+                            self.notificationsViewModel.sendTransactionNotifications(me: self.userViewModel.user, transaction: self.transaction, edit: true) { error in
+                                self.applyLoading = false
+                                if let error = error {
+                                    self.errorHandling.handle(error: error)
+                                    return
+                                }
+                            
+                                // Success
+                                self.presentationMode.wrappedValue.dismiss()
+                            }
                         }
                     }
                 }

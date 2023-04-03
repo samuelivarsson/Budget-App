@@ -13,25 +13,25 @@ struct EditFriendNameView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var userViewModel: UserViewModel
     
-    @State private var friend: CustomFriend = CustomFriend(name: "", phone: "")
-    @State private var name: String = ""
+    @State private var friend: CustomFriend
     @State private var applyLoading = false
     
     init(customFriend: CustomFriend) {
-        self.friend = customFriend
-        self._name = State(initialValue: customFriend.name)
+        self._friend = State(initialValue: customFriend)
     }
     
     var body: some View {
         Form {
             Section("name") {
-                TextField("name", text: $name, prompt: Text("friendsName"))
+                TextField("name", text: self.$friend.name, prompt: Text("friendsName"))
             }
             
             HStack {
                 Spacer()
                 Button {
-                    self.editFriend()
+                    if !self.applyLoading {
+                        self.editFriend()
+                    }
                 } label: {
                     if self.applyLoading {
                         ProgressView()
@@ -48,7 +48,6 @@ struct EditFriendNameView: View {
     
     private func editFriend() {
         self.applyLoading = true
-        self.friend.name = name
         
         self.userViewModel.editCustomFriend(friend: self.friend) { error in
             self.applyLoading = false

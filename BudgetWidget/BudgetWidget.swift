@@ -36,8 +36,9 @@ struct Provider: IntentTimelineProvider {
         self.fetchQuickBalance(configuration: configuration, budgetAccountId: budgetAccountId) { error in
             if let error = error {
                 print(error.localizedDescription)
-                let entry = SimpleEntry(date: Date.now, balance: prevBalance, currency: prevCurrency, error: error.localizedDescription, configuration: SelectAccountIntent())
-                completion(Timeline(entries: [entry], policy: .after(Date(timeInterval: 15, since: Date.now))))
+                let entry = SimpleEntry(date: Date.now, balance: prevBalance, currency: prevCurrency, error: error.localizedDescription, configuration: configuration)
+                let entry2 = SimpleEntry(date: Date(timeIntervalSinceNow: 5), balance: prevBalance, currency: prevCurrency, error: "", configuration: configuration)
+                completion(Timeline(entries: [entry, entry2], policy: .after(Date(timeInterval: 15, since: Date.now))))
                 return
             }
 

@@ -23,7 +23,7 @@ class StandingsViewModel: ObservableObject {
             return
         }
         // Remove old listener
-        self.listener?.remove()
+        Utility.removeListener(listener: self.listener)
         // Add new listener
         self.listener = self.db.collection("Standings").whereField("userIds", arrayContains: uid)
             .addSnapshotListener { querySnapshot, error in
@@ -40,6 +40,7 @@ class StandingsViewModel: ObservableObject {
                     
                     // Success
                     self.standings = data
+                    self.addListener()
                     print("Successfully set standings in fetchData in StandingsViewModel")
                     completion(nil)
                 } catch {
@@ -47,6 +48,12 @@ class StandingsViewModel: ObservableObject {
                     completion(error)
                 }
             }
+    }
+    
+    func addListener() {
+        if let listener = self.listener {
+            Utility.listeners.append(listener)
+        }
     }
     
     func getStandingId(standing: Standing) -> String {
@@ -158,5 +165,14 @@ class StandingsViewModel: ObservableObject {
             }
         }
         return nil
+    }
+    
+    func getStandingAmount(myId: String, friendId: String) -> Double {
+        for standing in self.standings {
+            if standing.userIds.contains(myId) && standing.userIds.contains(friendId) {
+                return standing.getStanding(myId: myId)
+            }
+        }
+        return 0
     }
 }

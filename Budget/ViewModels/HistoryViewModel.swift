@@ -12,8 +12,6 @@ class HistoryViewModel: ObservableObject {
     @Published var accountHistories: [AccountHistory] = .init()
     @Published var categoryHistories: [CategoryHistory] = .init()
     
-    @Published var firstLoadFinished = false
-    
     private var db = Firestore.firestore()
     
     var accountListener: ListenerRegistration?
@@ -26,7 +24,7 @@ class HistoryViewModel: ObservableObject {
             return
         }
         // Remove old listener
-        self.accountListener?.remove()
+        Utility.removeListener(listener: self.accountListener)
         // Add new listener
         self.accountListener = self.db.collection("AccountHistories").whereField("userId", isEqualTo: uid).addSnapshotListener { querySnapshot, error in
             guard let documents = querySnapshot?.documents else {
@@ -44,7 +42,7 @@ class HistoryViewModel: ObservableObject {
                 self.accountHistories = data
                 print("Successfully set account histories in fetchData in HistoryViewModel")
                 // Remove old listener
-                self.categoryListener?.remove()
+                Utility.removeListener(listener: self.categoryListener)
                 // Add new listener
                 self.categoryListener = self.db.collection("CategoryHistories").whereField("userId", isEqualTo: uid).addSnapshotListener { querySnapshot, error in
                     guard let documents = querySnapshot?.documents else {
@@ -60,6 +58,7 @@ class HistoryViewModel: ObservableObject {
                     
                         // Success
                         self.categoryHistories = data
+                        self.addListeners()
                         print("Successfully set category histories in fetchData in HistoryViewModel")
                         completion(nil)
                         return
@@ -72,6 +71,15 @@ class HistoryViewModel: ObservableObject {
                 print("Something went wrong when fetching transactions documents: \(error)")
                 completion(error)
             }
+        }
+    }
+    
+    func addListeners() {
+        if let accountListener = self.accountListener {
+            Utility.listeners.append(accountListener)
+        }
+        if let categoryListener = self.categoryListener {
+            Utility.listeners.append(categoryListener)
         }
     }
     

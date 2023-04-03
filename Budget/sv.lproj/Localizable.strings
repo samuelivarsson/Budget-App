@@ -62,11 +62,18 @@
 "friendRequest" = "Vänförfrågan";
 "friendRequestAccepted" = "Vänförfrågan accepterad";
 "friendRequestDenied" = "Vänförfrågan nekad";
-"hasAddedYouToTransaction" = "har lagt till dig i en transaktion";
+"youHaveBeenAddedToTransaction" = "Du har blivit tillagd i transaktionen";
+"editedTheTransaction" = "Redigerade transaktionen";
+"youAreNowEven" = "Ni är nu kvitt";
+"reminder" = "Påminnelse";
+"youHaveBeenRemindedToSwish" = "Du har blivit påmind om att swisha";
 "youHaveNoNotifications" = "Du har inga notifikationer!";
 "difference" = "Skillnad";
 "somethingWentWrong" = "Någonting gick snett";
 "latestUpdate" = "Senast uppdaterad";
+"spent" = "Spenderat";
+"remaining" = "Kvar";
+"ceiling" = "Tak";
 
 // Standings View
 "standing" = "Ställning";
@@ -245,6 +252,7 @@
 "sendReminder?" = "Skicka påmminelse?";
 "doYouWantToRemind" = "Vill du skicka en notis för att påminna personen om att betala dig?";
 "didSwishGoThrough?" = "Gick Swishen igenom?";
+"didFriendSwish?" = "Har vännen swishat dig?";
 
 // Quick Balance
 "quickBalanceAccount" = "Snabbsaldokonto";

@@ -35,9 +35,10 @@ struct FriendsView: View {
                 }
             }
             
-            if (self.userViewModel.user.customFriends).count > 0 {
+            let customFriends = self.userViewModel.getCustomFriendsSorted()
+            if customFriends.count > 0 {
                 Section {
-                    ForEach(self.userViewModel.user.customFriends) { friend in
+                    ForEach(self.userViewModel.getCustomFriendsSorted()) { friend in
                         CustomFriendView(friend: friend, rowHeight: self.rowHeight)
                     }
                     .onDelete(perform: self.deleteCustomFriends)
@@ -87,9 +88,8 @@ struct FriendsView: View {
     }
     
     private func deleteCustomFriends(offsets: IndexSet) {
-        let user = self.userViewModel.user
         withAnimation {
-            offsets.map { user.customFriends[$0] }.forEach { customFriend in
+            offsets.map { self.userViewModel.getCustomFriendsSorted()[$0] }.forEach { customFriend in
                 self.userViewModel.deleteCustomFriend(customFriend: customFriend) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
@@ -97,7 +97,6 @@ struct FriendsView: View {
                     }
                     
                     // Success
-                    print("hej")
                 }
             }
         }

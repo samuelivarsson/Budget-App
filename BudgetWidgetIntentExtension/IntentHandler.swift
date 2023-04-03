@@ -21,7 +21,7 @@ class IntentHandler: INExtension, SelectAccountIntentHandling {
     func provideAccountOptionsCollection(for intent: SelectAccountIntent, with completion: @escaping (INObjectCollection<BalanceAccount>?, Error?) -> Void) {
         FirebaseApp.configure()
         do {
-            try Auth.auth().useUserAccessGroup("\(Utility.teamId).com.samuelivarsson.Budget")
+            try Auth.auth().useUserAccessGroup("\(Secrets.teamId).com.samuelivarsson.Budget")
         } catch let error as NSError {
             print(error.localizedDescription)
         }

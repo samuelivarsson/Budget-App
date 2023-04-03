@@ -28,6 +28,8 @@ struct ParticipantsView: View {
             
                 Spacer()
             
+                // TODO: - Move this down one step and add see all button here
+                // TODO: - See all should show friendsview but with exceptFor argument
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
                         let friends = self.userViewModel.getAllFriendsSorted(exceptFor: self.participants)
