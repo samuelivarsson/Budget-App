@@ -263,3 +263,12 @@
 // Widget
 "amountAvailable" = "Disponibelt belopp";
 "seeYourQuickBalance" = "Se ditt saldo snabbt och enkelt.";
+
+// Push Notifications
+"hasSentYouAFriendRequest" = "har skickat en vänförfrågan till dig";
+"hasAcceptedYourFriendRequest" = "har accepterat din vänförfrågan";
+"hasDeniedYourFriendRequest" = "har nekat din vänförfrågan";
+"hasAddedYouToTheTransaction" = "har lagt till dig i transaktionen";
+"hasEditedTheTransaction" = "har redigerat transaktionen";
+"youAreNowEvenWith" = "Du är nu kvitt med";
+"hasSentYouAReminder" = "har skickat en påminnelse till dig om att swisha";

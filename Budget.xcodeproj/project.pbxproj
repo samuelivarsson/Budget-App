@@ -107,6 +107,7 @@
 		4D1E973F28085459003C8802 /* WelcomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E973E28085459003C8802 /* WelcomeScreenView.swift */; };
 		4D1E974228085626003C8802 /* TransactionCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974128085626003C8802 /* TransactionCategoriesView.swift */; };
 		4D1E9744280857B6003C8802 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E9743280857B6003C8802 /* LoginView.swift */; };
+		4D20A6F729DB86F90009A5D7 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D20A6F629DB86F90009A5D7 /* PushNotification.swift */; };
 		4D2255322809B65C00C80851 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2255312809B65C00C80851 /* Utility.swift */; };
 		4D225534280A1F4500C80851 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D225533280A1F4500C80851 /* GoogleService-Info.plist */; };
 		4D22553D280A39F600C80851 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D22553C280A39F600C80851 /* SignInView.swift */; };
@@ -283,6 +284,7 @@
 		4D1E974128085626003C8802 /* TransactionCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoriesView.swift; sourceTree = "<group>"; };
 		4D1E9743280857B6003C8802 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		4D20A6F529DB754D0009A5D7 /* project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = project.xcconfig; sourceTree = "<group>"; };
+		4D20A6F629DB86F90009A5D7 /* PushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
 		4D2255312809B65C00C80851 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		4D225533280A1F4500C80851 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4D22553C280A39F600C80851 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
@@ -769,6 +771,7 @@
 				4D08D98E29D663AC003A09B5 /* AppOpener.swift */,
 				4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */,
 				4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */,
+				4D20A6F629DB86F90009A5D7 /* PushNotification.swift */,
 				4DE5C36329DB353F001639C7 /* Secrets.swift */,
 				4D2255312809B65C00C80851 /* Utility.swift */,
 				4DFD3D9928073E4B00D5FFB4 /* Assets.xcassets */,
@@ -1182,6 +1185,7 @@
 				4DE5C36429DB353F001639C7 /* Secrets.swift in Sources */,
 				4D28F0D92919B483006E2AAF /* FriendRequestView.swift in Sources */,
 				4D008F3F29CE654B00B3C3FE /* MobileBankID.swift in Sources */,
+				4D20A6F729DB86F90009A5D7 /* PushNotification.swift in Sources */,
 				4DFF75AC28106E3100C40FF6 /* AddFriendView.swift in Sources */,
 				4D6CA59529B2AFD100487669 /* TransactionAction.swift in Sources */,
 				4D008F4B29CE849800B3C3FE /* HTTPMethod.swift in Sources */,

@@ -143,7 +143,7 @@ struct ProfileBarView: View {
             }
             
             // Success
-            self.notificationsViewModel.sendFriendRequest(from: myUser, to: user.id) { error in
+            self.notificationsViewModel.sendFriendRequest(from: myUser, friend: user, to: user.id) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
                     return
@@ -189,7 +189,7 @@ struct ProfileBarView: View {
             // Success
             let myName = self.userViewModel.user.name
             
-            self.notificationsViewModel.acceptFriendRequest(notification: notification, myName: myName) { error in
+            self.notificationsViewModel.acceptFriendRequest(notification: notification, friend: user, myName: myName) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
                     return
@@ -215,7 +215,7 @@ struct ProfileBarView: View {
             }
             
             // Success
-            self.notificationsViewModel.denyFriendRequest(notification: notification) { error in
+            self.notificationsViewModel.denyFriendRequest(notification: notification, friend: user) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
                     return

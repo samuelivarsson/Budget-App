@@ -148,7 +148,7 @@ struct QuickBalanceURL {
         
         guard response.statusCode >= 200, response.statusCode < 300 else {
             let quickBalanceErrorResponse = QuickBalanceErrorResponse(data: data)
-            return HTTPError.badCode(quickBalanceErrorResponse, response)
+            return HTTPError.badQuickBalanceCode(quickBalanceErrorResponse, response)
         }
         
         return nil

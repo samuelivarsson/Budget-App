@@ -15,7 +15,6 @@ struct TransactionView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
-    @EnvironmentObject private var firestoreViewModel: FirestoreViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     @EnvironmentObject private var standingsViewModel: StandingsViewModel
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
@@ -73,7 +72,7 @@ struct TransactionView: View {
                 } else if self.action == .edit {
                     Button {
                         if !self.applyLoading {
-                            self.addTransaction()
+                            self.editTransaction()
                         }
                     } label: {
                         HStack {
@@ -81,7 +80,7 @@ struct TransactionView: View {
                             if self.applyLoading {
                                 ProgressView()
                             } else {
-                                Text("edit")
+                                Text("apply")
                             }
                             Spacer()
                         }
@@ -294,7 +293,7 @@ struct TransactionView: View {
                     }
                     
                     // Succes
-                    self.notificationsViewModel.sendTransactionNotifications(me: self.userViewModel.user, transaction: self.transaction) { error in
+                    self.notificationsViewModel.sendTransactionNotifications(me: self.userViewModel.user, transaction: self.transaction, friends: self.userViewModel.friends) { error in
                         self.applyLoading = false
                         if let error = error {
                             self.errorHandling.handle(error: error)
@@ -302,7 +301,9 @@ struct TransactionView: View {
                         }
                         
                         // Success
-                        self.presentationMode.wrappedValue.dismiss()
+                        DispatchQueue.main.async {
+                            self.presentationMode.wrappedValue.dismiss()
+                        }
                     }
                 }
             }
@@ -331,53 +332,46 @@ struct TransactionView: View {
                 self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                 return
             }
-            guard let documentId = self.transaction.documentId else {
-                let info = "Found nil when extracting oldTransaction in editTransaction in TransactionView"
-                self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                return
-            }
             
             self.applyLoading = true
-            do {
-                try self.firestoreViewModel.db.collection("Transactions").document(documentId).setData(from: self.transaction) { error in
+            self.transactionsViewModel.editTransaction(transaction: self.transaction) { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    self.applyLoading = false
+                    return
+                }
+                    
+                // Success
+                self.standingsViewModel.setStandings(transaction: oldTransaction, delete: true) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         self.applyLoading = false
                         return
                     }
-                    
-                    // Success
-                    self.standingsViewModel.setStandings(transaction: oldTransaction, delete: true) { error in
+                        
+                    // Succes
+                    self.standingsViewModel.setStandings(transaction: self.transaction) { error in
+                        self.applyLoading = false
                         if let error = error {
                             self.errorHandling.handle(error: error)
                             self.applyLoading = false
                             return
                         }
-                        
-                        // Succes
-                        self.standingsViewModel.setStandings(transaction: self.transaction) { error in
+                            
+                        // Success
+                        DispatchQueue.main.async {
+                            self.presentationMode.wrappedValue.dismiss()
+                        }
+                        self.notificationsViewModel.sendTransactionNotifications(me: self.userViewModel.user, transaction: self.transaction, friends: self.userViewModel.friends, edit: true) { error in
                             if let error = error {
                                 self.errorHandling.handle(error: error)
-                                self.applyLoading = false
                                 return
                             }
                             
                             // Success
-                            self.notificationsViewModel.sendTransactionNotifications(me: self.userViewModel.user, transaction: self.transaction, edit: true) { error in
-                                self.applyLoading = false
-                                if let error = error {
-                                    self.errorHandling.handle(error: error)
-                                    return
-                                }
-                            
-                                // Success
-                                self.presentationMode.wrappedValue.dismiss()
-                            }
                         }
                     }
                 }
-            } catch {
-                self.errorHandling.handle(error: error)
             }
         }
     }

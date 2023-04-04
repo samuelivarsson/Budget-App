@@ -482,6 +482,15 @@ class UserViewModel: ObservableObject {
         }
     }
     
+    func getFriendFromId(id: String) -> User? {
+        for friend in self.friends {
+            if friend.id == id {
+                return friend
+            }
+        }
+        return nil
+    }
+    
     func getTransactionCategoriesSorted(type: TransactionType? = nil) -> [TransactionCategory] {
         let sortedTG = self.user.budget.transactionCategories.sorted { $0.name.lowercased() < $1.name.lowercased() }
         

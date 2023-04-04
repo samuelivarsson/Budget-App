@@ -19,6 +19,7 @@ struct User: Identifiable, Codable, Hashable, Named {
     var friends: [Friend]
     var customFriends: [CustomFriend] = []
     var quickBalanceAccounts: [QuickBalanceAccount] = []
+    var deviceToken: String = ""
     var lastSaveDate: Date = Date.now
     var keywordsForLookup: [String] {
         [self.name.generateStringSequence(), self.name.split(separator: " ").map { String($0).generateStringSequence() }.flatMap { $0 }].flatMap { $0 }

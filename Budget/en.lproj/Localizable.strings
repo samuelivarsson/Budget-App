@@ -263,3 +263,12 @@
 // Widget
 "amountAvailable" = "Amount available";
 "seeYourQuickBalance" = "See your balance quick and easily.";
+
+// Push Notifications
+"hasSentYouAFriendRequest" = "has sent you a friend request";
+"hasAcceptedYourFriendRequest" = "has accepted your friend request";
+"hasDeniedYourFriendRequest" = "has denied your friend request";
+"hasAddedYouToTheTransaction" = "has added you to the transaction";
+"hasEditedTheTransaction" = "has edited the transaction";
+"youAreNowEvenWith" = "You are now even with";
+"hasSentYouAReminder" = "has sent you a reminder to swish";

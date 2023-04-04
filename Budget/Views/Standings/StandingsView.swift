@@ -57,7 +57,11 @@ struct StandingsView: View {
                     self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                     return
                 }
-                self.notificationsViewModel.sendReminder(me: self.userViewModel.user, friendId: swishFriendId) { error in
+                guard let friend = self.userViewModel.getFriendFromId(id: swishFriendId) else {
+                    print("Could not find friend in sendReminder in StandingsView, might be custom friend")
+                    return
+                }
+                self.notificationsViewModel.sendReminder(me: self.userViewModel.user, friend: friend) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return
@@ -87,7 +91,11 @@ struct StandingsView: View {
 
                     // Success
                     print("Successfully squared up standings between you and user with id: \(swishFriendId)")
-                    self.notificationsViewModel.sendSquaredUpNotification(me: self.userViewModel.user, friendId: swishFriendId) { error in
+                    guard let friend = self.userViewModel.getFriendFromId(id: swishFriendId) else {
+                        print("Could not find friend in didSwishGoThrough in StandingsView, might be custom friend")
+                        return
+                    }
+                    self.notificationsViewModel.sendSquaredUpNotification(me: self.userViewModel.user, friend: friend) { error in
                         if let error = error {
                             self.errorHandling.handle(error: error)
                             return

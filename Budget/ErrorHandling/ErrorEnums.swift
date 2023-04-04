@@ -165,13 +165,16 @@ extension InputError: LocalizedError {
 }
 
 enum HTTPError: Error {
-    case badCode(QuickBalanceErrorResponse, HTTPURLResponse)
+    case badCode(HTTPURLResponse)
+    case badQuickBalanceCode(QuickBalanceErrorResponse, HTTPURLResponse)
 }
 
 extension HTTPError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .badCode(let quickBalanceErrorResponse, let response):
+        case .badCode(let response):
+            return NSLocalizedString("httpError", comment: "HTTP Error") + ": \(response.statusCode)"
+        case .badQuickBalanceCode(let quickBalanceErrorResponse, let response):
             return NSLocalizedString("httpError", comment: "HTTP Error") + ": \(response.statusCode). \(quickBalanceErrorResponse.errorMessages.generals.message)"
         }
     }
@@ -180,12 +183,16 @@ extension HTTPError: LocalizedError {
         switch self {
         case .badCode:
             return NSLocalizedString("unexpectedCode", comment: "HTTP Error")
+        case .badQuickBalanceCode:
+            return NSLocalizedString("unexpectedCode", comment: "HTTP Error")
         }
     }
 
     public var recoverySuggestion: String? {
         switch self {
         case .badCode:
+            return NSLocalizedString("pleaseTryAgain", comment: "HTTP Error")
+        case .badQuickBalanceCode:
             return NSLocalizedString("pleaseTryAgain", comment: "HTTP Error")
         }
     }

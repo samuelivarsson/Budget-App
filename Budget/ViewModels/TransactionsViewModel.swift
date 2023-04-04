@@ -94,15 +94,20 @@ class TransactionsViewModel: ObservableObject {
     
     func addTransaction(transaction: Transaction, completion: @escaping (Error?) -> Void) {
         do {
-            let _ = try self.db.collection("Transactions").addDocument(from: transaction) { error in
-                if let error = error {
-                    completion(error)
-                    return
-                }
-                            
-                // Success
-                completion(nil)
-            }
+            try self.db.collection("Transactions").addDocument(from: transaction, completion: completion)
+        } catch {
+            completion(error)
+        }
+    }
+    
+    func editTransaction(transaction: Transaction, completion: @escaping (Error?) -> Void) {
+        guard let documentId = transaction.documentId else {
+            let info = "Found nil when extracting documentId in editTransaction in TransactionsViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        do {
+            try self.db.collection("Transactions").document(documentId).setData(from: transaction, completion: completion)
         } catch {
             completion(error)
         }

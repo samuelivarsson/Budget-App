@@ -125,7 +125,7 @@ class NotificationsViewModel: ObservableObject {
         }
     }
     
-    func sendFriendRequest(from: User, to: String, completion: @escaping (Error?) -> Void) {
+    func sendFriendRequest(from: User, friend: User, to: String, completion: @escaping (Error?) -> Void) {
         let notification = Notification(type: .friendRequest, from: from.id, fromName: from.name, to: to)
         
         do {
@@ -136,8 +136,8 @@ class NotificationsViewModel: ObservableObject {
                 }
                 
                 // Success
-                completion(nil)
                 print("Notification sent in NotificationsViewModel")
+                PushNotification.sendNotification(notification: notification, friend: friend, completion: completion)
             }
         } catch {
             print("Error in do block in sendFriendRequest in NotificationsViewModel")
@@ -145,7 +145,7 @@ class NotificationsViewModel: ObservableObject {
         }
     }
     
-    func acceptFriendRequest(notification: Notification, myName: String, completion: @escaping (Error?) -> Void) {
+    func acceptFriendRequest(notification: Notification, friend: User, myName: String, completion: @escaping (Error?) -> Void) {
         guard let notificationId = notification.documentId else {
             let info = "Found nil when extracting notificationId in acceptFriendRequest in NotificationsViewModel"
             print(info)
@@ -153,35 +153,39 @@ class NotificationsViewModel: ObservableObject {
             return
         }
         
-        let data: [String: Any] = ["read": true, "type": NotificationType.friendRequestAccepted.rawValue]
-        self.db.collection("Notifications").document(notificationId).updateData(data) { error in
-            if let error = error {
-                completion(error)
-                return
-            }
-            
-            // Success
-            print("Successfully accepted friend request in NotificationsViewModel")
-            let newNotification = Notification(type: .friendRequestAccepted, from: notification.to, fromName: myName, to: notification.from)
-            do {
-                try self.db.collection("Notifications").addDocument(from: newNotification) { error in
-                    if let error = error {
-                        completion(error)
-                        return
-                    }
-                    
-                    // Success
-                    completion(nil)
-                    print("Successfully sent accepted notice in NotificationsViewModel")
+        let newNotification = Notification(type: .friendRequestAccepted, from: notification.from, fromName: notification.fromName, to: notification.to, read: true)
+        do {
+            try self.db.collection("Notifications").document(notificationId).setData(from: newNotification, merge: true) { error in
+                if let error = error {
+                    completion(error)
+                    return
                 }
-            } catch {
-                print("Error in do block in acceptFriendRequest in NotificationsViewModel")
-                completion(error)
+                
+                // Success
+                print("Successfully accepted friend request in NotificationsViewModel")
+                let newNotification = Notification(type: .friendRequestAccepted, from: notification.to, fromName: myName, to: notification.from)
+                do {
+                    try self.db.collection("Notifications").addDocument(from: newNotification) { error in
+                        if let error = error {
+                            completion(error)
+                            return
+                        }
+                        
+                        // Success
+                        print("Successfully sent accepted notice in NotificationsViewModel")
+                        PushNotification.sendNotification(notification: newNotification, friend: friend, completion: completion)
+                    }
+                } catch {
+                    print("Error in do block in acceptFriendRequest in NotificationsViewModel")
+                    completion(error)
+                }
             }
+        } catch {
+            completion(error)
         }
     }
     
-    func denyFriendRequest(notification: Notification, completion: @escaping (Error?) -> Void) {
+    func denyFriendRequest(notification: Notification, friend: User, completion: @escaping (Error?) -> Void) {
         guard let notificationId = notification.documentId else {
             let info = "Found nil when extracting notificationId in acceptFriendRequest in NotificationsViewModel"
             print(info)
@@ -189,16 +193,20 @@ class NotificationsViewModel: ObservableObject {
             return
         }
         
-        let data: [String: Any] = ["read": true, "type": NotificationType.friendRequestDenied.rawValue]
-        self.db.collection("Notifications").document(notificationId).updateData(data) { error in
-            if let error = error {
-                completion(error)
-                return
+        let newNotification = Notification(type: .friendRequestDenied, from: notification.from, fromName: notification.fromName, to: notification.to, read: true)
+        do {
+            try self.db.collection("Notifications").document(notificationId).setData(from: newNotification, merge: true) { error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                
+                // Success
+                print("Successfully denied friend request in NotificationsViewModel")
+                PushNotification.sendNotification(notification: newNotification, friend: friend, completion: completion)
             }
-            
-            // Success
-            print("Successfully denied friend request in NotificationsViewModel")
-            completion(nil)
+        } catch {
+            completion(error)
         }
     }
     
@@ -254,14 +262,16 @@ class NotificationsViewModel: ObservableObject {
         return (nil, false)
     }
     
-    func sendTransactionNotifications(me: User, transaction: Transaction, edit: Bool = false, completion: @escaping (Error?) -> Void) {
+    func sendTransactionNotifications(me: User, transaction: Transaction, friends: [User], edit: Bool = false, completion: @escaping (Error?) -> Void) {
         let batch = self.db.batch()
+        var notifications: [Notification] = .init()
         for participant in transaction.participants {
             if participant.userId == me.id {
                 continue
             }
             let type: NotificationType = edit ? .transactionEdit : .transaction
             let notification = Notification(type: type, from: me.id, fromName: me.name, to: participant.userId, desc: transaction.desc)
+            notifications.append(notification)
             let document = self.db.collection("Notifications").document()
             do {
                 try batch.setData(from: notification, forDocument: document)
@@ -269,7 +279,15 @@ class NotificationsViewModel: ObservableObject {
                 completion(error)
             }
         }
-        batch.commit(completion: completion)
+        batch.commit { error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // Success
+            PushNotification.sendNotifications(notifications: notifications, friends: friends, completion: completion)
+        }
     }
     
     func addNotification(notification: Notification, completion: @escaping (Error?) -> Void) {
@@ -280,13 +298,29 @@ class NotificationsViewModel: ObservableObject {
         }
     }
     
-    func sendReminder(me: User, friendId: String, completion: @escaping (Error?) -> Void) {
-        let notification = Notification(type: .swishReminder, from: me.id, fromName: me.name, to: friendId)
-        self.addNotification(notification: notification, completion: completion)
+    func sendReminder(me: User, friend: User, completion: @escaping (Error?) -> Void) {
+        let notification = Notification(type: .swishReminder, from: me.id, fromName: me.name, to: friend.id)
+        self.addNotification(notification: notification) { error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // Success
+            PushNotification.sendNotification(notification: notification, friend: friend, completion: completion)
+        }
     }
     
-    func sendSquaredUpNotification(me: User, friendId: String, completion: @escaping (Error?) -> Void) {
-        let notification = Notification(type: .squaredUp, from: me.id, fromName: me.name, to: friendId)
-        self.addNotification(notification: notification, completion: completion)
+    func sendSquaredUpNotification(me: User, friend: User, completion: @escaping (Error?) -> Void) {
+        let notification = Notification(type: .squaredUp, from: me.id, fromName: me.name, to: friend.id)
+        self.addNotification(notification: notification) { error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // Success
+            PushNotification.sendNotification(notification: notification, friend: friend, completion: completion)
+        }
     }
 }

@@ -40,7 +40,10 @@ struct FriendRequestView: View {
                     self.acceptFriendRequest()
                 } label: {
                     Text("accept")
+                        .padding(5)
                         .foregroundColor(.primary)
+                        .minimumScaleFactor(0.1)
+                        .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, maxHeight: self.buttonHeight)
                 .background(Color.accentColor)
@@ -50,7 +53,10 @@ struct FriendRequestView: View {
                     self.denyFriendRequest()
                 } label: {
                     Text("deny")
+                        .padding(5)
                         .foregroundColor(.primary)
+                        .minimumScaleFactor(0.1)
+                        .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, minHeight: self.buttonHeight)
                 .background(Color.secondary)
@@ -80,7 +86,11 @@ struct FriendRequestView: View {
             // Success
             let myName = self.userViewModel.user.name
             
-            self.notificationsViewModel.acceptFriendRequest(notification: self.notification, myName: myName) { error in
+            guard let friend = self.userViewModel.getFriendFromId(id: self.notification.from) else {
+                print("Could not find friend in acceptFriendRequest in FriendRequestView, might be custom friend")
+                return
+            }
+            self.notificationsViewModel.acceptFriendRequest(notification: self.notification, friend: friend, myName: myName) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
                     return
@@ -100,7 +110,11 @@ struct FriendRequestView: View {
             }
             
             // Success
-            self.notificationsViewModel.denyFriendRequest(notification: self.notification) { error in
+            guard let friend = self.userViewModel.getFriendFromId(id: self.notification.from) else {
+                print("Could not find friend in denyFriendRequest in FriendRequestView, might be custom friend")
+                return
+            }
+            self.notificationsViewModel.denyFriendRequest(notification: self.notification, friend: friend) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
                     return
