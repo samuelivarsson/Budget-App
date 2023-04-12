@@ -259,6 +259,8 @@
 "subscriptionId" = "Prenumerations-ID";
 "chooseAnAccount" = "Välj ett konto";
 "choose" = "Välj";
+"budgetAccountAlreadyConnected" = "Detta budget kontot är redan anslutet";
+"doYouWishToOverwrite?" = "Vill du skriva över den nuvarande prenumerationskoden?";
 
 // Widget
 "amountAvailable" = "Disponibelt belopp";

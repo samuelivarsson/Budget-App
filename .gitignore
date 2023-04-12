@@ -2,3 +2,4 @@
 Budget/GoogleService-Info.plist
 Budget/Secrets.swift
 project.xcconfig
+.DS_Store

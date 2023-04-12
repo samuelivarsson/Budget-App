@@ -18,9 +18,9 @@ struct Standing: Codable {
         self.amounts = amounts
     }
     
-    init(userId1: String, userId2: String) {
+    init(userId1: String, userId2: String, amount1: Double = 0, amount2: Double = 0) {
         self.userIds = [userId1, userId2]
-        self.amounts = [userId1: 0, userId2: 0]
+        self.amounts = [userId1: amount1, userId2: amount2]
     }
     
     static func getDummyStanding() -> Standing {

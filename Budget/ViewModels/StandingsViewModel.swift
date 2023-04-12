@@ -114,8 +114,7 @@ class StandingsViewModel: ObservableObject {
                         continue
                     }
                     do {
-                        try batch.setData(from: Standing(userId1: userId1, userId2: userId2), forDocument: standingRef, mergeFields: ["userIds"])
-                        batch.updateData(["amounts.\(userId)": FieldValue.increment(amount)], forDocument: standingRef)
+                        try batch.setData(from: Standing(userId1: userId1, userId2: userId2, amount1: amount), forDocument: standingRef)
                     } catch {
                         completion(error)
                     }

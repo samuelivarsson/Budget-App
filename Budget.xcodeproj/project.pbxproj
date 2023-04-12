@@ -173,6 +173,9 @@
 		4DAC5C9129D5EF0200892053 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4DAC5C9029D5EF0200892053 /* FirebaseFirestoreSwift */; };
 		4DAC5C9729DB16E100892053 /* SquaredUpNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5C9629DB16E100892053 /* SquaredUpNotificationView.swift */; };
 		4DAC5C9929DB186700892053 /* ReminderNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5C9829DB186700892053 /* ReminderNotificationView.swift */; };
+		4DAD763229E0F867001B3C41 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD763129E0F867001B3C41 /* Secrets.swift */; };
+		4DAD763429E0F9AE001B3C41 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD763129E0F867001B3C41 /* Secrets.swift */; };
+		4DAD763529E0F9AF001B3C41 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD763129E0F867001B3C41 /* Secrets.swift */; };
 		4DAFD79029D30A1D0018B8C7 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D0ED15629D208CE000DE8C2 /* WidgetKit.framework */; };
 		4DAFD79129D30A1D0018B8C7 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D0ED15829D208CE000DE8C2 /* SwiftUI.framework */; };
 		4DAFD79429D30A1D0018B8C7 /* BudgetWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAFD79329D30A1D0018B8C7 /* BudgetWidgetBundle.swift */; };
@@ -189,9 +192,6 @@
 		4DDCB77028F3371C006A1BD0 /* ProfileSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDCB76F28F3371C006A1BD0 /* ProfileSearchView.swift */; };
 		4DE5B44729C61574002340A2 /* Standing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5B44629C61574002340A2 /* Standing.swift */; };
 		4DE5B44929C6162D002340A2 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */; };
-		4DE5C36429DB353F001639C7 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5C36329DB353F001639C7 /* Secrets.swift */; };
-		4DE5C36529DB357E001639C7 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5C36329DB353F001639C7 /* Secrets.swift */; };
-		4DE5C36629DB357F001639C7 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5C36329DB353F001639C7 /* Secrets.swift */; };
 		4DE907C229BFDE5C00CB4F99 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4DE907C129BFDE5C00CB4F99 /* FirebaseFirestore */; };
 		4DE907C429C0E02E00CB4F99 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE907C329C0E02E00CB4F99 /* AccountView.swift */; };
 		4DE907C629C0E3FA00CB4F99 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE907C529C0E3FA00CB4F99 /* AccountsView.swift */; };
@@ -283,7 +283,6 @@
 		4D1E973E28085459003C8802 /* WelcomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreenView.swift; sourceTree = "<group>"; };
 		4D1E974128085626003C8802 /* TransactionCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoriesView.swift; sourceTree = "<group>"; };
 		4D1E9743280857B6003C8802 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		4D20A6F529DB754D0009A5D7 /* project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = project.xcconfig; sourceTree = "<group>"; };
 		4D20A6F629DB86F90009A5D7 /* PushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
 		4D2255312809B65C00C80851 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		4D225533280A1F4500C80851 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -346,6 +345,8 @@
 		4DAC5C7E29D5EB8B00892053 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4DAC5C9629DB16E100892053 /* SquaredUpNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquaredUpNotificationView.swift; sourceTree = "<group>"; };
 		4DAC5C9829DB186700892053 /* ReminderNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotificationView.swift; sourceTree = "<group>"; };
+		4DAD763129E0F867001B3C41 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		4DAD763329E0F8DD001B3C41 /* project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = project.xcconfig; sourceTree = "<group>"; };
 		4DAFD78F29D30A1D0018B8C7 /* BudgetWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BudgetWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DAFD79329D30A1D0018B8C7 /* BudgetWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgetBundle.swift; sourceTree = "<group>"; };
 		4DAFD79729D30A1D0018B8C7 /* BudgetWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidget.swift; sourceTree = "<group>"; };
@@ -360,7 +361,6 @@
 		4DDCB76F28F3371C006A1BD0 /* ProfileSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSearchView.swift; sourceTree = "<group>"; };
 		4DE5B44629C61574002340A2 /* Standing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Standing.swift; sourceTree = "<group>"; };
 		4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsViewModel.swift; sourceTree = "<group>"; };
-		4DE5C36329DB353F001639C7 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		4DE907C329C0E02E00CB4F99 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		4DE907C529C0E3FA00CB4F99 /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
 		4DF808B3281ECDBC00E19A8D /* ParticipantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantsView.swift; sourceTree = "<group>"; };
@@ -736,7 +736,7 @@
 		4DFD3D8928073E4A00D5FFB4 = {
 			isa = PBXGroup;
 			children = (
-				4D20A6F529DB754D0009A5D7 /* project.xcconfig */,
+				4DAD763329E0F8DD001B3C41 /* project.xcconfig */,
 				4DAC5C6429D3B0B600892053 /* BudgetWidgetExtension.entitlements */,
 				4DFD3D9428073E4A00D5FFB4 /* Budget */,
 				4DAFD79229D30A1D0018B8C7 /* BudgetWidget */,
@@ -772,7 +772,7 @@
 				4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */,
 				4DFD3D9728073E4A00D5FFB4 /* ContentView.swift */,
 				4D20A6F629DB86F90009A5D7 /* PushNotification.swift */,
-				4DE5C36329DB353F001639C7 /* Secrets.swift */,
+				4DAD763129E0F867001B3C41 /* Secrets.swift */,
 				4D2255312809B65C00C80851 /* Utility.swift */,
 				4DFD3D9928073E4B00D5FFB4 /* Assets.xcassets */,
 				4DFD3DA028073E4B00D5FFB4 /* Budget.xcdatamodeld */,
@@ -1087,7 +1087,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D08D97B29D65D37003A09B5 /* Standing.swift in Sources */,
-				4DE5C36629DB357F001639C7 /* Secrets.swift in Sources */,
+				4DAD763529E0F9AF001B3C41 /* Secrets.swift in Sources */,
 				4D08D98329D65D63003A09B5 /* TransactionAction.swift in Sources */,
 				4D08D98A29D65DA2003A09B5 /* ErrorHandling.swift in Sources */,
 				4D08D98629D65D63003A09B5 /* Transaction.swift in Sources */,
@@ -1158,7 +1158,7 @@
 				4D08D97329D65D37003A09B5 /* TransactionCategory.swift in Sources */,
 				4DAFD79829D30A1D0018B8C7 /* BudgetWidget.swift in Sources */,
 				4D08D98229D65D63003A09B5 /* Transaction.swift in Sources */,
-				4DE5C36529DB357E001639C7 /* Secrets.swift in Sources */,
+				4DAD763429E0F9AE001B3C41 /* Secrets.swift in Sources */,
 				4D08D96529D65D1C003A09B5 /* User.swift in Sources */,
 				4D08D97429D65D37003A09B5 /* Account.swift in Sources */,
 				4D08D98129D65D63003A09B5 /* TransactionType.swift in Sources */,
@@ -1182,7 +1182,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4DDA445D282354B90045C58E /* TransactionsGroupView.swift in Sources */,
-				4DE5C36429DB353F001639C7 /* Secrets.swift in Sources */,
 				4D28F0D92919B483006E2AAF /* FriendRequestView.swift in Sources */,
 				4D008F3F29CE654B00B3C3FE /* MobileBankID.swift in Sources */,
 				4D20A6F729DB86F90009A5D7 /* PushNotification.swift in Sources */,
@@ -1190,6 +1189,7 @@
 				4D6CA59529B2AFD100487669 /* TransactionAction.swift in Sources */,
 				4D008F4B29CE849800B3C3FE /* HTTPMethod.swift in Sources */,
 				4D7ADA52282BCABB0051460B /* User.swift in Sources */,
+				4DAD763229E0F867001B3C41 /* Secrets.swift in Sources */,
 				4D6CA5A629B2E4CC00487669 /* BudgetView.swift in Sources */,
 				4DE5B44929C6162D002340A2 /* StandingsViewModel.swift in Sources */,
 				4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */,
@@ -1515,7 +1515,7 @@
 		};
 		4DFD3DA328073E4B00D5FFB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4D20A6F529DB754D0009A5D7 /* project.xcconfig */;
+			baseConfigurationReference = 4DAD763329E0F8DD001B3C41 /* project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -1577,7 +1577,7 @@
 		};
 		4DFD3DA428073E4B00D5FFB4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4D20A6F529DB754D0009A5D7 /* project.xcconfig */;
+			baseConfigurationReference = 4DAD763329E0F8DD001B3C41 /* project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;

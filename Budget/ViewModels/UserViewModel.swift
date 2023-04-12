@@ -265,13 +265,13 @@ class UserViewModel: ObservableObject {
     }
     
     func editQuickBalanceAccount(account: QuickBalanceAccount, completion: @escaping (Error?) -> Void) {
-        self.user.quickBalanceAccounts = self.user.quickBalanceAccounts.filter { $0.subscriptionId != account.subscriptionId } + [account]
+        self.user.quickBalanceAccounts = self.user.quickBalanceAccounts.filter { $0.budgetAccountId != account.budgetAccountId } + [account]
         
         self.setUserData(completion: completion)
     }
     
     func deleteQuickBalanceAccount(account: QuickBalanceAccount, completion: @escaping (Error?) -> Void) {
-        self.user.quickBalanceAccounts = self.user.quickBalanceAccounts.filter { $0.subscriptionId != account.subscriptionId }
+        self.user.quickBalanceAccounts = self.user.quickBalanceAccounts.filter { $0.budgetAccountId != account.budgetAccountId }
         
         self.setUserData(completion: completion)
     }

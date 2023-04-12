@@ -189,19 +189,6 @@ struct MobileBankID {
                     return
                 }
                 
-                guard let data = data else {
-                    let info = "Found nil when extracting data in " + _where
-                    completion(ApplicationError.unexpectedNil(info))
-                    return
-                }
-                
-                let mobileBankIdResponse = MobileBankIDResponse(data: data)
-                
-                guard mobileBankIdResponse.status == "COMPLETE" else {
-                    completion(UserError.bankIdLoginFailed)
-                    return
-                }
-                
                 completion(nil)
             }
         }

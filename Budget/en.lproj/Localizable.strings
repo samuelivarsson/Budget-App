@@ -259,6 +259,8 @@
 "subscriptionId" = "Subscription ID";
 "chooseAnAccount" = "Choose an account";
 "choose" = "Choose";
+"budgetAccountAlreadyConnected" = "This budget account is already connected";
+"doYouWishToOverwrite?" = "Do you wish to overwrite the current subscription?";
 
 // Widget
 "amountAvailable" = "Amount available";

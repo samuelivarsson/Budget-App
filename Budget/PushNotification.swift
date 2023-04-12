@@ -29,6 +29,12 @@ struct PushNotification {
         let friendId: String = notifications[index].type == .friendRequestDenied ? notifications[index].from : notifications[index].to
         guard let friend = self.getFriendFromId(id: friendId, friends: friends) else {
             print("Friend could not be found in sendNotifications in PushNotifications, might be a custom friend")
+            self.sendNotifications(index: index + 1, notifications: notifications, friends: friends, completion: completion)
+            return
+        }
+        
+        if friend.deviceToken.isEmpty {
+            self.sendNotifications(index: index + 1, notifications: notifications, friends: friends, completion: completion)
             return
         }
 

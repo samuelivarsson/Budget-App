@@ -9,7 +9,7 @@ import Foundation
 
 struct QuickBalanceURL {
     private static var _baseUri = "https://auth.api.swedbank.se/TDE_DAP_Portal_REST_WEB/api/"
-    private static var _appId: String = "6CykIX8fL3B0LrvM"
+    private static var _appId: String = "3IXrnmuUSR1AC0BL"
     private static var _userAgent: String = "SamuelIvarssonWidgetApp"
     
     static func genAuthorizationKey(appId: String) -> String {
@@ -120,12 +120,16 @@ struct QuickBalanceURL {
                 completion(nil, nil, ApplicationError.unexpectedNil(info))
                 return
             }
-                
+            
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                 completion(json, response, nil)
             } catch {
-                completion(nil, nil, error)
+                if response.statusCode < 200 || response.statusCode >= 300 {
+                    completion([:], response, nil)
+                    return
+                }
+                completion([:], response, nil)
             }
             
         }.resume()
