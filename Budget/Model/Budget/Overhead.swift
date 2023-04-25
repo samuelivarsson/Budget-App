@@ -23,12 +23,13 @@ struct Overhead: Identifiable, Codable, Hashable {
         return Overhead(name: "", amount: 0, dayOfPay: 27)
     }
     
-    func getShareOfAmount(monthStartsOn: Int) -> Double {
+    func getShareOfAmount(monthStartsOn: Int, monthsBack: Int = 0) -> Double {
         let share: Double = self.share ? 2 : 1
         let shareOfAmount: Double = (self.amount / share) / Double(self.months)
         let roundedToTwoDecimals: Double = round(shareOfAmount * 100) / 100
         let remainingToPay = self.amount / share - roundedToTwoDecimals * Double(self.months - 1)
-        return self.isPayMonth(monthStartsOn: monthStartsOn) ? remainingToPay : roundedToTwoDecimals
+        let date = Calendar.current.date(byAdding: .month, value: -monthsBack, to: Date.now) ?? Date()
+        return self.isPayMonth(monthStartsOn: monthStartsOn, date: date) ? remainingToPay : roundedToTwoDecimals
     }
     
     func getDayOfPay() -> Int {
@@ -43,21 +44,24 @@ struct Overhead: Identifiable, Codable, Hashable {
         return true
     }
     
-    private func getMonthsSinceLastPay(monthStartsOn: Int) -> Int {
+    private func getMonthsSinceLastPay(monthStartsOn: Int, date: Date = Date()) -> Int {
+        if self.months == 1 {
+            return 1
+        }
         let fromDate = Utility.getBudgetPeriod(date: self.startDate, monthStartsOn: monthStartsOn).0
-        let toDate = Utility.getBudgetPeriod(monthStartsOn: monthStartsOn).0
+        let toDate = Utility.getBudgetPeriod(date: date, monthStartsOn: monthStartsOn).0
         return Calendar.current.dateComponents([.month], from: fromDate, to: toDate).month ?? 0
     }
     
-    private func getAmountMultiplier(monthStartsOn: Int) -> Double {
-        return self.months < 2 ? 1 : Double(self.getMonthsSinceLastPay(monthStartsOn: monthStartsOn) % self.months)
+    private func getAmountMultiplier(monthStartsOn: Int, date: Date = Date()) -> Double {
+        return self.months < 2 ? 1 : Double(self.getMonthsSinceLastPay(monthStartsOn: monthStartsOn, date: date) % self.months)
     }
     
-    private func isPayMonth(monthStartsOn: Int) -> Bool {
+    private func isPayMonth(monthStartsOn: Int, date: Date = Date()) -> Bool {
         if self.months < 2 {
             return true
         }
-        return self.getAmountMultiplier(monthStartsOn: monthStartsOn) == 0
+        return self.getAmountMultiplier(monthStartsOn: monthStartsOn, date: date) == 0
     }
     
     func isPaid(monthStartsOn: Int) -> Bool {
@@ -81,8 +85,8 @@ struct Overhead: Identifiable, Codable, Hashable {
         }
         var total: Double = 0
         let monthsSinceLastPay = self.getMonthsSinceLastPay(monthStartsOn: monthStartsOn)
-        for _ in 0..<monthsSinceLastPay {
-            total += self.getShareOfAmount(monthStartsOn: monthStartsOn)
+        for i in 0..<monthsSinceLastPay {
+            total += self.getShareOfAmount(monthStartsOn: monthStartsOn, monthsBack: i)
         }
         total += self.getTemporaryExtraFromShare(monthStartsOn: monthStartsOn)
         return total

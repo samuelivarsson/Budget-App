@@ -42,9 +42,9 @@ struct Budget: Identifiable, Codable, Hashable {
         return ""
     }
     
-    func getOverheadsAmount() -> Double {
+    func getOverheadsAmount(monthsBack: Int = 0) -> Double {
         var overheadsAmount: Double = 0
-        self.overheads.forEach { overheadsAmount += $0.getShareOfAmount(monthStartsOn: self.monthStartsOn) }
+        self.overheads.forEach { overheadsAmount += $0.getShareOfAmount(monthStartsOn: self.monthStartsOn, monthsBack: monthsBack) }
         return overheadsAmount
     }
     
@@ -74,10 +74,10 @@ struct Budget: Identifiable, Codable, Hashable {
         return round(rawValue / 100) * 100
     }
     
-    func getRemaining(accountId: String) -> Double {
+    func getRemaining(accountId: String, monthsBack: Int = 0) -> Double {
         let account = self.getAccount(id: accountId)
         if account.type == .transaction && account.main {
-            return account.baseAmount + self.income - self.getOverheadsAmount() - self.getSavings() - self.getFixedCeilings(accountId: account.id)
+            return account.baseAmount + self.income - self.getOverheadsAmount(monthsBack: monthsBack) - self.getSavings() - self.getFixedCeilings(accountId: account.id)
         } else {
             return account.baseAmount
         }
@@ -116,8 +116,8 @@ struct Budget: Identifiable, Codable, Hashable {
         return self.savingAmounts[accountId] ?? 0
     }
     
-    func getBalance(accountId: String, spent: Double, incomes: Double) -> Double {
-        let remaining = self.getRemaining(accountId: accountId)
+    func getBalance(accountId: String, spent: Double, incomes: Double, monthsBack: Int = 0) -> Double {
+        let remaining = self.getRemaining(accountId: accountId, monthsBack: monthsBack)
         let fixedCeilings = self.getFixedCeilings(accountId: accountId)
         let savingsAmount = self.getSavingAmount(accountId: accountId)
         let temporaryOverheadExtras = self.getTemporaryOverheadExtras(accountId: accountId)

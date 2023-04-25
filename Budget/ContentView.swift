@@ -183,7 +183,7 @@ struct ContentView: View {
             }
             let spent = self.transactionsViewModel.getSpent(user: self.userViewModel.user, accountId: account.id, monthsBack: 1)
             let incomes = self.transactionsViewModel.getIncomes(user: self.userViewModel.user, accountId: account.id, monthsBack: 1)
-            let balance = self.userViewModel.getBalance(accountId: account.id, spent: spent, incomes: incomes)
+            let balance = self.userViewModel.getBalance(accountId: account.id, spent: spent, incomes: incomes, monthsBack: 1)
 
             accountHistories.append(AccountHistory(accountId: account.id, accountName: account.name, balance: balance, saveDate: Date.now, userId: self.userViewModel.user.id))
 

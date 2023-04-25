@@ -560,8 +560,8 @@ class UserViewModel: ObservableObject {
         return false
     }
     
-    func getBalance(accountId: String, spent: Double, incomes: Double) -> Double {
-        return self.user.budget.getBalance(accountId: accountId, spent: spent, incomes: incomes)
+    func getBalance(accountId: String, spent: Double, incomes: Double, monthsBack: Int = 0) -> Double {
+        return self.user.budget.getBalance(accountId: accountId, spent: spent, incomes: incomes, monthsBack: monthsBack)
     }
     
     func getOverheads() -> [Overhead] {
