@@ -25,7 +25,7 @@ struct Transaction: Identifiable, Codable {
     var type: TransactionType
     var splitEvenly: Bool = true
 
-    var id: String { documentId ?? "" }
+    var id: String { documentId ?? UUID().uuidString }
     
     static func getDummyTransaction(category: TransactionCategory = TransactionCategory.getDummyCategory()) -> Transaction {
         return Transaction(totalAmount: 0, category: category, date: Date(), desc: "", creatorId: "", creatorName: "", payerId: "", payerName: "", participants: [], type: .expense)
