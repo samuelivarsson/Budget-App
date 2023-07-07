@@ -151,4 +151,41 @@ class TransactionsViewModel: ObservableObject {
     func getTransactions(from: Date, to: Date) -> [Transaction] {
         return self.transactions.filter { $0.date >= from && $0.date < to }
     }
+    
+    func getTransactions(withParticipant: String) -> [Transaction] {
+        return self.transactions.filter { $0.participantIds.contains(withParticipant) }
+    }
+    
+    func getSwishInfo(myId: String, standing: Double, friend: any Named) -> String {
+        var add = ""
+        var sub = ""
+        
+        let transactionsWithFriend = self.getTransactions(withParticipant: friend.id)
+        var sum: Double = 0
+        for transaction in transactionsWithFriend {
+            if transaction.payerId == myId {
+                sum += transaction.getShare(userId: friend.id)
+                if sub.count > 0 {
+                    sub += "-" + transaction.desc
+                } else {
+                    sub = transaction.desc
+                }
+            } else {
+                sum -= transaction.getShare(userId: myId)
+                if add.count > 0 {
+                    add += "+" + transaction.desc
+                } else {
+                    add = transaction.desc
+                }
+            }
+
+            if round(sum*100) == round(standing*100) {
+                let info = sub.count > 0 ? add + "-" + sub : add
+                return info
+            }
+        }
+        print(add+"-"+sub)
+        
+        return "squaringUpTransactions".localizeString()
+    }
 }

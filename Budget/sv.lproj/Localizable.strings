@@ -247,7 +247,7 @@
 "lessThanTenSeconds" = "Du måste vänta minst 10 sekunder mellan varje uppdatering av ditt snabbsaldo";
 
 // Swish
-"squaringUpTransactionsSince" = "Kvitterar ut transaktioner från";
+"squaringUpTransactions" = "Kvitterar ut transaktioner";
 "send" = "Skicka";
 "sendReminder?" = "Skicka påmminelse?";
 "doYouWantToRemind" = "Vill du skicka en notis för att påminna personen om att betala dig?";

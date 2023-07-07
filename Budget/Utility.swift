@@ -296,11 +296,9 @@ class Utility {
         return "\(Int(seconds)) " + NSLocalizedString("shortSeconds", comment: "")
     }
 
-    static func getSwishUrl(amount: Double, friend: any Named) -> URL? {
+    static func getSwishUrl(amount: Double, friend: any Named, info: String) -> URL? {
         let amountTwoDecimals = Utility.doubleToTwoDecimals(value: abs(amount))
         // TODO: - Fix to reflect date of transaction after last swish
-        let date = self.dateToStringNoTime(date: Date())
-        let info = "squaringUpTransactionsSince".localizeString() + " " + date
         let data =
             "{" +
             "\"amount\":{" +

@@ -247,7 +247,7 @@
 "lessThanTenSeconds" = "You have to wait at least 10 seconds before you can fetch your quick balance again";
 
 // Swish
-"squaringUpTransactionsSince" = "Squaring up transactions since";
+"squaringUpTransactions" = "Squaring up transactions";
 "send" = "Send";
 "sendReminder?" = "Send reminder?";
 "doYouWantToRemind" = "Do you want to send a notification as a reminder for them to pay you?";

@@ -12,6 +12,7 @@ struct StandingsView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var standingsViewModel: StandingsViewModel
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
+    @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
 
     @State private var showSendReminderAlert: Bool = false
     @State private var showDidSwishGoThrough: Bool = false
@@ -141,7 +142,8 @@ struct StandingsView: View {
             let amount = self.standingsViewModel.getStandingAmount(myId: self.userViewModel.user.id, friendId: friend.id)
             Button {
                 if amount < 0 {
-                    AppOpener.openSwish(amount: amount, friend: friend)
+                    let info = self.transactionsViewModel.getSwishInfo(myId: self.userViewModel.user.id, standing: amount, friend: friend)
+                    AppOpener.openSwish(amount: amount, friend: friend, info: info)
                 } else if amount > 0 {
                     if customFriends {
                         self.swishFriendId = friend.id
