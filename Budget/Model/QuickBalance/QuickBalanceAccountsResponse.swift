@@ -20,7 +20,7 @@ struct QuickBalanceAccountsResponse: Codable, Hashable {
     }
     
     static func getDummyResponse() -> QuickBalanceAccountsResponse {
-        QuickBalanceAccountsResponse(data: ["accounts": []])
+        QuickBalanceAccountsResponse(data: ["accounts": [] as [Any]])
     }
     
     struct QuickBalanceAccountResponse: Codable, Hashable {
