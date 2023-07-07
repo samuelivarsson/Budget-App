@@ -26,7 +26,7 @@ class HistoryViewModel: ObservableObject {
         // Remove old listener
         Utility.removeListener(listener: self.accountListener)
         // Add new listener
-        self.accountListener = self.db.collection("AccountHistories").whereField("userId", isEqualTo: uid).addSnapshotListener { querySnapshot, error in
+        self.accountListener = self.db.collection("AccountHistories").whereField("userId", isEqualTo: uid).order(by: "saveDate", descending: true).addSnapshotListener { querySnapshot, error in
             guard let documents = querySnapshot?.documents else {
                 print("Error fetching documents: \(error!)")
                 completion(error!)
@@ -110,7 +110,7 @@ class HistoryViewModel: ObservableObject {
     }
     
     func getPreviousAccountBalance(accountId: String) -> Double {
-        guard let savingsAccountHistory = self.accountHistories.last(where: { $0.accountId == accountId }) else {
+        guard let savingsAccountHistory = self.accountHistories.first(where: { $0.accountId == accountId }) else {
             return 0
         }
         return savingsAccountHistory.balance
