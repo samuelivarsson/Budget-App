@@ -99,6 +99,10 @@ struct TransactionView: View {
         .navigationTitle(self.titleText)
         .navigationBarTitleDisplayMode(.inline)
         .onLoad {
+            if self.userViewModel.user.id.count == 0 {
+                self.presentationMode.wrappedValue.dismiss()
+                return
+            }
             let user = self.userViewModel.user
             if self.transaction.participants.count < 1 {
                 self.transaction.participants = [Participant(userId: user.id, userName: user.name)]

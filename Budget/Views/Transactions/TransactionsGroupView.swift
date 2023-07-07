@@ -31,11 +31,18 @@ struct TransactionsGroupView: View {
         Section {
             if self.showChildren {
                 let transactions = self.transactionsViewModel.getTransactions(from: self.from, to: self.to)
-                if transactions.count < 1 {
+                if self.userViewModel.user.id.count == 0 {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                }
+                else if transactions.count < 1 {
                     Text("noTransactionsThisPeriod")
                         .font(.footnote)
                 } else {
-                    ForEach(transactions) { transaction in
+                    ForEach(transactions, id:\.id) { transaction in
                         NavigationLink {
                             TransactionView(transaction: transaction, myId: self.userViewModel.user.id)
                         } label: {
