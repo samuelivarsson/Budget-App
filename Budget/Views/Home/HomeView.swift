@@ -211,7 +211,8 @@ struct HomeView: View {
                         Text("difference")
                             .font(.caption)
                         Spacer()
-                        Text(Utility.doubleToLocalCurrency(value: balance - quickBalance))
+                        let difference = round(quickBalance*100) - round(balance*100) == 0 ? 0 : quickBalance - balance
+                        Text(Utility.doubleToLocalCurrency(value: difference))
                             .font(.caption)
                     }
 
