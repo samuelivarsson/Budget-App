@@ -259,7 +259,7 @@ class UserViewModel: ObservableObject {
     }
     
     func addQuickBalanceAccount(account: QuickBalanceAccount, completion: @escaping (Error?) -> Void) {
-        self.user.quickBalanceAccounts = self.user.quickBalanceAccounts + [account]
+        self.user.quickBalanceAccounts = self.user.quickBalanceAccounts.filter { $0.budgetAccountId != account.budgetAccountId } + [account]
         
         self.setUserData(completion: completion)
     }
