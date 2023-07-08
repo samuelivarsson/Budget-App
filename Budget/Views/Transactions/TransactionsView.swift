@@ -15,7 +15,6 @@ struct TransactionsView: View {
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     
     @State private var level: Int = 2
-    @State private var isLoading = false
     
     var body: some View {
         NavigationView {
@@ -52,7 +51,7 @@ struct TransactionsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
-                        .disabled(self.isLoading)
+                        .disabled(self.userViewModel.user.id.count == 0)
                 }
                 ToolbarItem {
                     NavigationLink {
@@ -60,11 +59,8 @@ struct TransactionsView: View {
                     } label: {
                         Label("Add Item", systemImage: "plus")
                     }
-                    .disabled(self.isLoading)
+                    .disabled(self.userViewModel.user.id.count == 0)
                 }
-            }
-            .onLoad {
-                self.isLoading = self.userViewModel.user.id.count == 0
             }
         }
     }
