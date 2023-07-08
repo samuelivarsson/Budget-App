@@ -17,6 +17,8 @@ struct QuickBalanceAccountView: View {
     @State var quickBalanceAccount: QuickBalanceAccount
     @State var add: Bool = false
     @State private var apiCallsFinished: Bool = true
+    @State private var chooseButtonPressed: Bool = false
+    @State private var addButtonPressed: Bool = false
     @State private var mobileBankIdResponse: MobileBankIDResponse = .getDummyResponse()
     @State private var quickBalanceAccountsResponse: QuickBalanceAccountsResponse = .getDummyResponse()
     @State private var quickBalanceAccountResponse: QuickBalanceAccountsResponse.QuickBalanceAccountResponse = .getDummyResponse()
@@ -67,17 +69,25 @@ struct QuickBalanceAccountView: View {
                 }
                 
                 Section {
-                    Button {
-                        if self.add {
-                            self.addAccount()
-                        } else {
-                            self.editAccount()
-                        }
-                    } label: {
+                    if self.addButtonPressed {
                         HStack {
                             Spacer()
-                            Text(self.add ? "add" : "apply")
+                            ProgressView()
                             Spacer()
+                        }
+                    } else {
+                        Button {
+                            if self.add {
+                                self.addAccount()
+                            } else {
+                                self.editAccount()
+                            }
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Text(self.add ? "add" : "apply")
+                                Spacer()
+                            }
                         }
                     }
                 }
@@ -92,13 +102,21 @@ struct QuickBalanceAccountView: View {
                 }
                 
                 Section {
-                    Button {
-                        self.chooseAccount()
-                    } label: {
+                    if self.chooseButtonPressed {
                         HStack {
                             Spacer()
-                            Text("choose")
+                            ProgressView()
                             Spacer()
+                        }
+                    } else {
+                        Button {
+                            self.chooseAccount()
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Text("choose")
+                                Spacer()
+                            }
                         }
                     }
                 }
@@ -139,6 +157,11 @@ struct QuickBalanceAccountView: View {
     }
     
     private func addAccount() {
+        if self.addButtonPressed {
+            return
+        }
+        self.addButtonPressed = true
+        
         self.userViewModel.addQuickBalanceAccount(account: self.quickBalanceAccount) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
@@ -147,18 +170,31 @@ struct QuickBalanceAccountView: View {
             
             // Success
             self.presentationMode.wrappedValue.dismiss()
-            self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccounts: self.userViewModel.user.quickBalanceAccounts) { error in
+            MobileBankID.terminate { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
                     return
                 }
                 
                 // Success
+                self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccounts: self.userViewModel.user.quickBalanceAccounts) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                
+                    // Success
+                }
             }
         }
     }
     
     private func editAccount() {
+        if self.addButtonPressed {
+            return
+        }
+        self.addButtonPressed = true
+        
         self.userViewModel.editQuickBalanceAccount(account: self.quickBalanceAccount) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
@@ -171,6 +207,11 @@ struct QuickBalanceAccountView: View {
     }
     
     private func chooseAccount() {
+        if self.chooseButtonPressed {
+            return
+        }
+        self.chooseButtonPressed = true
+        
         MobileBankID.quickBalanceSubscription(quickbalanceSubscriptionID: self.quickBalanceAccountResponse.quickBalanceSubscription.id) { quickBalanceSubscriptionResponse, error in
             if let error = error {
                 self.errorHandling.handle(error: error)

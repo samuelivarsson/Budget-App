@@ -29,7 +29,7 @@ struct QuickBalanceAccountsResponse: Codable, Hashable {
         
         init(data: [String: Any]) {
             self.name = data["name"] as? String ?? ""
-            self.quickBalanceSubscription = QuickBalanceSubscription(data:  data["quickbalanceSubscription"] as? [String: Any] ?? .init())
+            self.quickBalanceSubscription = QuickBalanceSubscription(data: data["quickbalanceSubscription"] as? [String: Any] ?? .init())
         }
         
         static func getDummyResponse() -> QuickBalanceAccountResponse {
