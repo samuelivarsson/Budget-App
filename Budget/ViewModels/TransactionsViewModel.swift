@@ -170,7 +170,7 @@ class TransactionsViewModel: ObservableObject {
                 } else {
                     sub = transaction.desc
                 }
-            } else {
+            } else if transaction.payerId == friend.id {
                 sum -= transaction.getShare(userId: myId)
                 if add.count > 0 {
                     add += "+" + transaction.desc
