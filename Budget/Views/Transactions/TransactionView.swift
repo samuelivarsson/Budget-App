@@ -281,7 +281,7 @@ struct TransactionView: View {
             self.transaction.payerName = self.transaction.getPayerName()
             self.addParticipantIds()
             self.applyLoading = true
-            self.standingsViewModel.setStandings(transaction: self.transaction) { error in
+            self.standingsViewModel.setStandings(transaction: self.transaction, myUserName: self.userViewModel.user.name, myPhoneNumber: self.userViewModel.user.phone, friends: self.userViewModel.friends, customFriends: self.userViewModel.user.customFriends) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)
                     self.applyLoading = false
@@ -346,7 +346,7 @@ struct TransactionView: View {
                 }
                     
                 // Success
-                self.standingsViewModel.setStandings(transaction: oldTransaction, delete: true) { error in
+                self.standingsViewModel.setStandings(transaction: oldTransaction, myUserName: self.userViewModel.user.name, myPhoneNumber: self.userViewModel.user.phone, friends: self.userViewModel.friends, customFriends: self.userViewModel.user.customFriends, delete: true) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         self.applyLoading = false
@@ -354,7 +354,7 @@ struct TransactionView: View {
                     }
                         
                     // Succes
-                    self.standingsViewModel.setStandings(transaction: self.transaction) { error in
+                    self.standingsViewModel.setStandings(transaction: self.transaction, myUserName: self.userViewModel.user.name, myPhoneNumber: self.userViewModel.user.phone, friends: self.userViewModel.friends, customFriends: self.userViewModel.user.customFriends) { error in
                         self.applyLoading = false
                         if let error = error {
                             self.errorHandling.handle(error: error)

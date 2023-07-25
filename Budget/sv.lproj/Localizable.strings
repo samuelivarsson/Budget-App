@@ -186,6 +186,7 @@
 "searchForUser" = "Sök efter en användare";
 "userName" = "Användarnamn";
 "customFriends" = "Anpassade vänner";
+"temporaryFriends" = "Tillfälliga vänner";
 "makeFavourite" = "Gör till favorit";
 "removeFromFavourites" = "Ta bort från favoriter";
 
@@ -245,6 +246,7 @@
 "bankIdLoginFailed" = "Inloggning med Bank-ID misslyckades. Vänligen försök igen";
 "notLoggedIn" = "Du är inte inloggad";
 "lessThanTenSeconds" = "Du måste vänta minst 10 sekunder mellan varje uppdatering av ditt snabbsaldo";
+"noFriendWithId" = "Kunde inte hitta en vän i dina vänners vänlistor";
 
 // Swish
 "squaringUpTransactions" = "Kvitterar ut transaktioner";

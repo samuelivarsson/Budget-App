@@ -148,7 +148,7 @@ struct TransactionsGroupView: View {
                     }
                     
                     // Success
-                    self.standingsViewModel.setStandings(transaction: transaction, delete: true) { error in
+                    self.standingsViewModel.setStandings(transaction: transaction, myUserName: self.userViewModel.user.name, myPhoneNumber: self.userViewModel.user.phone, friends: self.userViewModel.friends, customFriends: self.userViewModel.user.customFriends, delete: true) { error in
                         if let error = error {
                             self.errorHandling.handle(error: error)
                             return

@@ -72,6 +72,7 @@ enum UserError: Error {
     case bankIdLoginFailed
     case notLoggedIn
     case lessThanTenSeconds
+    case noFriendWithId
 }
 
 extension UserError: LocalizedError {
@@ -93,6 +94,8 @@ extension UserError: LocalizedError {
             return NSLocalizedString("notLoggedIn", comment: "User Error")
         case .lessThanTenSeconds:
             return NSLocalizedString("lessThanTenSeconds", comment: "User Error")
+        case .noFriendWithId:
+            return NSLocalizedString("noFriendWithId", comment: "User Error")
         }
     }
 }

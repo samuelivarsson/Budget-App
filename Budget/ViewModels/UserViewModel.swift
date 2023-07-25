@@ -14,6 +14,7 @@ class UserViewModel: ObservableObject {
     @Published var friends: [User] = .init()
     @Published var favouriteIds: [String] = .init()
     @Published var friendRequests: [String] = .init()
+    @Published var temporaryStandings: [CustomFriend] = .init()
     
     private var db = Firestore.firestore()
     
@@ -437,8 +438,38 @@ class UserViewModel: ObservableObject {
         return self.friendRequests.contains(uid)
     }
     
+    func isFriend(uid: String) -> Bool {
+        return self.friends.contains { $0.id == uid } || self.user.customFriends.contains { $0.id == uid }
+    }
+    
     func isFriendFavourite(user: User) -> Bool {
         return self.favouriteIds.contains(user.id)
+    }
+    
+    func getPhoneFromFriendsFriend(friendId: String, completion: @escaping (String?, Error?) -> Void) {
+        self.friends.forEach { friend in
+            friend.friends.forEach { friendsFriend in
+                let documentReference: DocumentReference = friendsFriend.documentReference
+                if documentReference.documentID == friendId {
+                    documentReference.getDocument(as: User.self) { result in
+                        switch result {
+                        case .success(let user):
+                            completion(user.phone, nil)
+                        case .failure(let error):
+                            completion(nil, error)
+                        }
+                    }
+                    return
+                }
+            }
+            friend.customFriends.forEach { friendsCustomFriend in
+                if friendsCustomFriend.id == friendId {
+                    completion(friendsCustomFriend.phone, nil)
+                    return
+                }
+            }
+        }
+        completion(nil, UserError.noFriendWithId)
     }
     
     func getFavouriteFriends() -> [User] {

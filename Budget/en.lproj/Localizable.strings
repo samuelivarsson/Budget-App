@@ -186,6 +186,7 @@
 "searchForUser" = "Search for a user";
 "userName" = "User name";
 "customFriends" = "Custom friends";
+"temporaryFriends" = "Temporary friends";
 "makeFavourite" = "Make favourite";
 "removeFromFavourites" = "Remove from favourites";
 
@@ -245,6 +246,7 @@
 "bankIdLoginFailed" = "Login with Bank-ID failed. Please try again";
 "notLoggedIn" = "You are not logged in";
 "lessThanTenSeconds" = "You have to wait at least 10 seconds before you can fetch your quick balance again";
+"noFriendWithId" = "Could not find friend in your friends friend lists";
 
 // Swish
 "squaringUpTransactions" = "Squaring up transactions";

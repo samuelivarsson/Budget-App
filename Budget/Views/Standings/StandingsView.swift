@@ -48,6 +48,15 @@ struct StandingsView: View {
                         Text("customFriends")
                     }
                 }
+
+                let temporaryFriends = self.getTemporaryFriends()
+                if temporaryFriends.count > 0 && self.isShowingTemporaryFriends(temporaryFriends: temporaryFriends) {
+                    Section {
+                        self.getStandings(friends: temporaryFriends, temporary: true)
+                    } header: {
+                        Text("temporaryFriends")
+                    }
+                }
             }
             .navigationTitle("standings")
         }
@@ -137,32 +146,67 @@ struct StandingsView: View {
         }
     }
 
-    private func getStandings(friends: [any Named], customFriends: Bool = false) -> some View {
+    private func getStandings(friends: [any Named], customFriends: Bool = false, temporary: Bool = false) -> some View {
         ForEach(friends, id: \.id) { friend in
             let amount = self.standingsViewModel.getStandingAmount(myId: self.userViewModel.user.id, friendId: friend.id)
-            Button {
-                if amount < 0 {
-                    let info = self.transactionsViewModel.getSwishInfo(myId: self.userViewModel.user.id, standing: amount, friend: friend)
-                    AppOpener.openSwish(amount: amount, friend: friend, info: info)
-                } else if amount > 0 {
-                    if customFriends {
-                        self.swishFriendId = friend.id
-                        self.showDidFriendSwish = true
-                    } else {
-                        self.swishFriendId = friend.id
-                        self.showSendReminderAlert = true
+            if !(round(amount * 100) == 0 && temporary) {
+                Button {
+                    if amount < 0 {
+                        let info = self.transactionsViewModel.getSwishInfo(myId: self.userViewModel.user.id, standing: amount, friendId: friend.id)
+                        AppOpener.openSwish(amount: amount, friend: friend, info: info)
+                    } else if amount > 0 {
+                        if customFriends || temporary {
+                            self.swishFriendId = friend.id
+                            self.showDidFriendSwish = true
+                        } else {
+                            self.swishFriendId = friend.id
+                            self.showSendReminderAlert = true
+                        }
                     }
-                }
-            } label: {
-                HStack {
-                    Text(friend.name)
-                        .foregroundColor(.primary)
-                    Spacer()
-                    Text(Utility.doubleToLocalCurrency(value: amount))
-                        .foregroundColor(amount < 0 ? Color.red : Color.green)
+                } label: {
+                    HStack {
+                        Text(friend.name)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Text(Utility.doubleToLocalCurrency(value: amount))
+                            .foregroundColor(amount < 0 ? Color.red : Color.green)
+                    }
                 }
             }
         }
+    }
+
+    private func getTemporaryFriends() -> [CustomFriend] {
+        var temporaryFriends: [CustomFriend] = .init()
+        for standing in self.standingsViewModel.standings {
+            for userId in standing.userIds {
+                if userId != self.userViewModel.user.id && !self.userViewModel.isFriend(uid: userId) {
+                    guard let name = standing.userNames[userId] else {
+                        let info = "Found nil when extracting name in getTemporaryFriends in StandingsView"
+                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                        return .init()
+                    }
+                    guard let phone = standing.phoneNumbers[userId] else {
+                        let info = "Found nil when extracting phone in getTemporaryFriends in StandingsView"
+                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                        return .init()
+                    }
+                    let customFriend = CustomFriend(id: userId, name: name, phone: phone)
+                    temporaryFriends.append(customFriend)
+                }
+            }
+        }
+        return temporaryFriends
+    }
+    
+    private func isShowingTemporaryFriends(temporaryFriends: [CustomFriend]) -> Bool {
+        for temporaryFriend in temporaryFriends {
+            let amount = self.standingsViewModel.getStandingAmount(myId: self.userViewModel.user.id, friendId: temporaryFriend.id)
+            if round(amount * 100) != 0 {
+                return true
+            }
+        }
+        return false
     }
 
     private func handleUrlOpen(url: URL) {

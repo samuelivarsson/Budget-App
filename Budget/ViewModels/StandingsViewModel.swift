@@ -87,50 +87,136 @@ class StandingsViewModel: ObservableObject {
         return userIds
     }
     
-    func setStandings(transaction: Transaction, delete: Bool = false, completion: @escaping (Error?) -> Void) {
+    struct FireTransactionUpdate {
+        var data: [AnyHashable: Any]
+        var reference: DocumentReference
+    }
+    
+    struct FireTransactionSet {
+        var standing: Standing
+        var reference: DocumentReference
+    }
+    
+    func setStandings(transaction: Transaction, myUserName: String, myPhoneNumber: String, friends: [User], customFriends: [CustomFriend], delete: Bool = false, completion: @escaping (Error?) -> Void) {
         let standingIds = self.getStandingIds(transaction: transaction)
+        
+        self.db.runTransaction { fireTransaction, errorPointer in
+            var updates: [FireTransactionUpdate] = .init()
+            var sets: [FireTransactionSet] = .init()
             
-        let batch = self.db.batch()
-            
-        for standingId in standingIds {
-            for userId in self.getUserIds(transaction: transaction) {
-                if !standingId.contains(userId) {
-                    continue
-                }
-                var amount: Double = 0
-                if userId == transaction.payerId {
-                    let userId1 = userId
-                    let userId2 = standingId.replacingOccurrences(of: userId, with: "")
-                    
-                    if delete {
-                        amount -= transaction.getShare(userId: userId2)
-                    } else {
-                        amount += transaction.getShare(userId: userId2)
-                    }
-                    let standingRef = self.db.collection("Standings").document(standingId)
-                    
-                    if let _ = self.getStanding(userId1: userId1, userId2: userId2) {
-                        batch.updateData(["amounts.\(userId)": FieldValue.increment(amount)], forDocument: standingRef)
+            for standingId in standingIds {
+                for userId in self.getUserIds(transaction: transaction) {
+                    if !standingId.contains(userId) {
                         continue
                     }
-                    do {
-                        try batch.setData(from: Standing(userId1: userId1, userId2: userId2, amount1: amount), forDocument: standingRef)
-                    } catch {
-                        completion(error)
+                    var amount: Double = 0
+                    if userId == transaction.payerId {
+                        let userId1 = userId
+                        let userId2 = standingId.replacingOccurrences(of: userId, with: "")
+                        
+                        if delete {
+                            amount -= transaction.getShare(userId: userId2)
+                        } else {
+                            amount += transaction.getShare(userId: userId2)
+                        }
+                        let standingRef = self.db.collection("Standings").document(standingId)
+                        let standingDocument: DocumentSnapshot
+                        do {
+                            try standingDocument = fireTransaction.getDocument(standingRef)
+                        } catch let fetchError as NSError {
+                            errorPointer?.pointee = fetchError
+                            return nil
+                        }
+                        
+                        if standingDocument.exists {
+                            updates.append(FireTransactionUpdate(data: ["amounts.\(userId)": FieldValue.increment(amount)], reference: standingRef))
+                            continue
+                        }
+                        guard let myId = Auth.auth().currentUser?.uid else {
+                            let info = "Found nil when extracting displayName in setStandings in StandingsViewModel"
+                            completion(ApplicationError.unexpectedNil(info))
+                            return
+                        }
+                            
+                        var userName1 = myUserName
+                        var userName2 = myUserName
+                        var phoneNumber1 = myPhoneNumber
+                        var phoneNumber2 = myPhoneNumber
+                            
+                        if userId1 != myId {
+                            guard let friend1 = self.findFriendById(userId: userId1, friends: friends, customFriends: customFriends) else {
+                                let info = "Found nil when extracting friend1 in setStandings in StandingsViewModel"
+                                completion(ApplicationError.unexpectedNil(info))
+                                return
+                            }
+                            userName1 = friend1.name
+                            phoneNumber1 = friend1.phone
+                        }
+                            
+                        if userId2 != myId {
+                            guard let friend2 = self.findFriendById(userId: userId2, friends: friends, customFriends: customFriends) else {
+                                let info = "Found nil when extracting friend2 in setStandings in StandingsViewModel"
+                                completion(ApplicationError.unexpectedNil(info))
+                                return
+                            }
+                            userName2 = friend2.name
+                            phoneNumber2 = friend2.phone
+                        }
+                            
+                        let standing = Standing(
+                            userId1: userId1,
+                            userId2: userId2,
+                            amount1: amount,
+                            userName1: userName1,
+                            userName2: userName2,
+                            phoneNumber1: phoneNumber1,
+                            phoneNumber2: phoneNumber2
+                        )
+                        sets.append(FireTransactionSet(standing: standing, reference: standingRef))
                     }
                 }
             }
-        }
             
-        batch.commit { error in
+            for update in updates {
+                fireTransaction.updateData(update.data, forDocument: update.reference)
+            }
+            for set in sets {
+                do {
+                    try fireTransaction.setData(from: set.standing, forDocument: set.reference)
+                } catch let setError as NSError {
+                    errorPointer?.pointee = setError
+                    return nil
+                }
+            }
+            
+            return nil
+        } completion: { _, error in
             if let error = error {
                 completion(error)
                 return
             }
-                
+            
             // Success
             completion(nil)
         }
+    }
+    
+    func findFriendById(userId: String, friends: [User], customFriends: [CustomFriend]) -> (any Named)? {
+        print(userId)
+        for friend in friends {
+            print(friend)
+            if friend.id == userId {
+                return friend
+            }
+        }
+        for customFriend in customFriends {
+            print(customFriend)
+            if customFriend.id == userId {
+                return customFriend
+            }
+        }
+        
+        return nil
     }
     
     func squareUp(myId: String, friendId: String, completion: @escaping (Error?) -> Void) {

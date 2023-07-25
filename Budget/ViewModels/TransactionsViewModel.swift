@@ -156,21 +156,21 @@ class TransactionsViewModel: ObservableObject {
         return self.transactions.filter { $0.participantIds.contains(withParticipant) }
     }
     
-    func getSwishInfo(myId: String, standing: Double, friend: any Named) -> String {
+    func getSwishInfo(myId: String, standing: Double, friendId: String) -> String {
         var add = ""
         var sub = ""
         
-        let transactionsWithFriend = self.getTransactions(withParticipant: friend.id)
+        let transactionsWithFriend = self.getTransactions(withParticipant: friendId)
         var sum: Double = 0
         for transaction in transactionsWithFriend {
             if transaction.payerId == myId {
-                sum += transaction.getShare(userId: friend.id)
+                sum += transaction.getShare(userId: friendId)
                 if sub.count > 0 {
                     sub += "-" + transaction.desc
                 } else {
                     sub = transaction.desc
                 }
-            } else if transaction.payerId == friend.id {
+            } else if transaction.payerId == friendId {
                 sum -= transaction.getShare(userId: myId)
                 if add.count > 0 {
                     add += "+" + transaction.desc

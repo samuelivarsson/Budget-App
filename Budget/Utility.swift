@@ -296,7 +296,7 @@ class Utility {
         return "\(Int(seconds)) " + NSLocalizedString("shortSeconds", comment: "")
     }
 
-    static func getSwishUrl(amount: Double, friend: any Named, info: String) -> URL? {
+    static func getSwishUrl(amount: Double, friendId: String, friendPhone: String, info: String) -> URL? {
         let amountTwoDecimals = Utility.doubleToTwoDecimals(value: abs(amount))
         // TODO: - Fix to reflect date of transaction after last swish
         let data =
@@ -308,12 +308,12 @@ class Utility {
             "\"value\":\"\(info)\"" +
             "}," +
             "\"payee\":{" +
-            "\"value\":\"\(friend.phone)\"" +
+            "\"value\":\"\(friendPhone)\"" +
             "}," +
             "\"version\":1" +
             "}"
 
-        let callbackUrl = "budgetapp%3A%2F%2F?sourceApplication=swish%26userId=\(friend.id)"
+        let callbackUrl = "budgetapp%3A%2F%2F?sourceApplication=swish%26userId=\(friendId)"
 
         let queryItems = [URLQueryItem(name: "callbackurl", value: callbackUrl), URLQueryItem(name: "data", value: data)]
         var urlComps = URLComponents(string: "swish://payment") ?? .init()
