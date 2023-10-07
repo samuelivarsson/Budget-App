@@ -20,6 +20,8 @@ struct TransactionView: View {
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
     
     @State private var transaction: Transaction
+    @State private var totalAmountString: String = ""
+
     @State private var applyLoading: Bool = false
     @FocusState var isInputActive: Bool
     
@@ -197,6 +199,7 @@ struct TransactionView: View {
                                 Spacer()
                                 
                                 Button("Done") {
+                                    self.totalAmountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: self.transaction.totalAmount as NSNumber) ?? "-999"
                                     self.isInputActive = false
                                 }
                             }
@@ -217,19 +220,21 @@ struct TransactionView: View {
             } else {
                 HStack(spacing: 5) {
                     Text("amount")
-                    TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: self.$transaction.totalAmount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
+                    TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", text: self.$totalAmountString)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
                         .focused(self.$isInputActive)
-                        .onChange(of: self.transaction.totalAmount) { newValue in
-                            self.transaction.totalAmount = Utility.doubleToTwoDecimals(value: newValue)
-                            // If splitEvenly is true, divide the total amount evenly among the participants
-                            if self.transaction.splitEvenly {
-                                let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: newValue / Double(self.transaction.participants.count))
-                                var val = newValue
-                                for i in (0 ..< self.transaction.participants.count).reversed() {
-                                    self.transaction.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
-                                    val -= amountPerParticipant
+                        .onChange(of: self.totalAmountString) { newValue in
+                            if let doubleTotalAmount = Double(newValue.replacingOccurrences(of: ",", with: ".")) {
+                                self.transaction.totalAmount = doubleTotalAmount
+                                // If splitEvenly is true, divide the total amount evenly among the participants
+                                if self.transaction.splitEvenly {
+                                    let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: doubleTotalAmount / Double(self.transaction.participants.count))
+                                    var val = doubleTotalAmount
+                                    for i in (0 ..< self.transaction.participants.count).reversed() {
+                                        self.transaction.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
+                                        val -= amountPerParticipant
+                                    }
                                 }
                             }
                         }
