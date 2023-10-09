@@ -13,6 +13,7 @@ class UserViewModel: ObservableObject {
     @Published var user: User = .getDummyUser()
     @Published var friends: [User] = .init()
     @Published var favouriteIds: [String] = .init()
+    @Published var groupIds: [String: String] = .init()
     @Published var friendRequests: [String] = .init()
     @Published var temporaryStandings: [CustomFriend] = .init()
     
@@ -103,6 +104,7 @@ class UserViewModel: ObservableObject {
                 if friend.favourite {
                     self.favouriteIds.append(friend.documentReference.documentID)
                 }
+                self.groupIds[friend.id] = friend.group
             }
         }
         
@@ -430,6 +432,22 @@ class UserViewModel: ObservableObject {
         }
     }
     
+    func toggleCustomFriendFavourite(friendId: String, completion: @escaping (Error?) -> Void) {
+        // Make friend favourite
+        let newFriend = self.user.customFriends.first(where: { $0.id == friendId })
+        
+        guard var newFriend = newFriend else {
+            let info = "Found nil when extracting newFriend in makeFriendFavourite in UserViewModel"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+        
+        newFriend.favourite = !newFriend.favourite
+        self.user.customFriends = self.user.customFriends.filter { $0.id != friendId } + [newFriend]
+        // Update our user data
+        self.setUserData(completion: completion)
+    }
+    
     func isUserFriend(uid: String) -> Bool {
         return self.friends.contains { $0.id == uid }
     }
@@ -497,14 +515,28 @@ class UserViewModel: ObservableObject {
         return self.user.customFriends
     }
     
-    func getCustomFriendsSorted() -> [CustomFriend] {
-        return self.getCustomFriends().sorted(by: { friend1, friend2 -> Bool in
+    func getCustomFriendsSorted(favourites: Bool = false) -> [CustomFriend] {
+        let customFriends = self.getCustomFriends().sorted(by: { friend1, friend2 -> Bool in
             friend1.name.lowercased() < friend2.name.lowercased()
         })
+        if favourites {
+            return customFriends.filter { $0.favourite }
+        }
+        return customFriends
     }
     
     func getAllFriendsSorted(exceptFor: [Participant] = []) -> [any Named] {
         let sortedFriends: [any Named] = self.getFriendsSorted() + self.getCustomFriendsSorted()
+        if exceptFor.isEmpty {
+            return sortedFriends
+        }
+        return sortedFriends.filter { friend in
+            !exceptFor.contains { $0.userId == friend.id }
+        }
+    }
+    
+    func getFavouritesSorted(exceptFor: [Participant] = []) -> [any Named] {
+        let sortedFriends: [any Named] = self.getFriendsSorted(favourites: true) + self.getCustomFriendsSorted(favourites: true)
         if exceptFor.isEmpty {
             return sortedFriends
         }
@@ -614,5 +646,85 @@ class UserViewModel: ObservableObject {
     func getQuickBalanceAccount(budgetAccountId: String) -> QuickBalanceAccount? {
         let accounts = self.user.quickBalanceAccounts.filter { $0.budgetAccountId == budgetAccountId }
         return accounts.first
+    }
+    
+    func getFriendGroupsSorted() -> [String] {
+        var friendGroups = self.getFriendGroups().sorted().filter { !$0.isEmpty }
+        friendGroups.append("")
+        return friendGroups
+    }
+    
+    func getFriendGroups() -> [String] {
+        var result = [String]()
+        self.friends.forEach { friend in
+            let group = self.getFriendGroup(friendId: friend.id)
+            if !group.isEmpty {
+                if !result.contains(group) {
+                    result.append(group)
+                }
+            }
+        }
+        self.getCustomFriendsSorted().forEach { customFriend in
+            if !result.contains(customFriend.group) {
+                result.append(customFriend.group)
+            }
+        }
+        return result
+    }
+    
+    func getFriendGroup(friendId: String, isCustomFriend: Bool = false) -> String {
+        if isCustomFriend {
+            for customFriend in self.user.customFriends {
+                if customFriend.id == friendId {
+                    return customFriend.group
+                }
+            }
+            
+            return ""
+        }
+        return self.groupIds[friendId] ?? ""
+    }
+    
+    func setFriendGroup(group: String, friendId: String, completion: @escaping (Error?) -> Void) {
+        for i in 0..<self.user.friends.count {
+            if self.user.friends[i].documentReference.documentID == friendId {
+                self.user.friends[i].group = group
+                print("hej")
+            }
+        }
+        
+        self.setUserData { error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            // Success
+            self.user.friends.forEach { friend in
+                if friend.documentReference.documentID == friendId {
+                    self.groupIds[friendId] = friend.group
+                }
+            }
+            completion(nil)
+        }
+    }
+    
+    func setCustomFriendGroup(group: String, friendId: String, completion: @escaping (Error?) -> Void) {
+        for i in 0..<self.user.customFriends.count {
+            if self.user.customFriends[i].id == friendId {
+                self.user.customFriends[i].group = group
+            }
+        }
+        
+        self.setUserData(completion: completion)
+    }
+    
+    func getName(friendId: String) -> String? {
+        for friend in self.getAllFriendsSorted() {
+            if friend.id == friendId {
+                return friend.name
+            }
+        }
+        return nil
     }
 }

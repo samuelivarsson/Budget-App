@@ -11,4 +11,6 @@ struct CustomFriend: Identifiable, Codable, Hashable, Named {
     var id: String = UUID().uuidString
     var name: String
     var phone: String
+    var group: String = ""
+    var favourite: Bool = false
 }

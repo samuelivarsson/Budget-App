@@ -110,6 +110,8 @@
 "noTransactionsThisPeriod" = "Du har inga transaktioner under denna period";
 "transactionCreatedBy" = "Transaktion skapad av";
 "transactionCreatedByYou" = "Transaktion skapad av dig";
+"seeAll" = "Se alla";
+"chooseFriends" = "Välj vänner";
 
 // Settings
 "myInformation" = "Mina uppgifter";
@@ -189,6 +191,11 @@
 "temporaryFriends" = "Tillfälliga vänner";
 "makeFavourite" = "Gör till favorit";
 "removeFromFavourites" = "Ta bort från favoriter";
+"group" = "Grupp";
+"editFriendGroup" = "Redigera vännens grupp";
+"newGroup" = "Ny grupp";
+"groupName" = "Grupp namn";
+"noGroup" = "Ingen grupp";
 
 // Transaction Categories
 "food" = "Mat";

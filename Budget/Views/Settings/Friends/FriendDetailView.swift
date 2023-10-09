@@ -70,6 +70,15 @@ struct FriendDetailView: View {
                     Spacer()
                     Text(self.friend.email)
                 }
+                NavigationLink {
+                    EditFriendGroupView(friend: self.friend)
+                } label: {
+                    HStack {
+                        Text("group")
+                        Spacer()
+                        Text(self.userViewModel.getFriendGroup(friendId: self.friend.id))
+                    }
+                }
             }
             
             Section {

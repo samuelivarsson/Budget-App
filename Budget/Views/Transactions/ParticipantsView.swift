@@ -25,14 +25,12 @@ struct ParticipantsView: View {
         if self.action != .view {
             HStack(spacing: 10) {
                 Text("addFriend")
-            
+                
                 Spacer()
-            
-                // TODO: - Move this down one step and add see all button here
-                // TODO: - See all should show friendsview but with exceptFor argument
+                    
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
-                        let friends = self.userViewModel.getAllFriendsSorted(exceptFor: self.participants)
+                        let friends = self.userViewModel.getFavouritesSorted(exceptFor: self.participants)
                         ForEach(friends, id: \.id) { friend in
                             Button {
                                 self.participants.append(Participant(userId: friend.id, userName: friend.name))
@@ -46,9 +44,24 @@ struct ParticipantsView: View {
                         .background(Color.accentColor)
                         .foregroundColor(.white)
                         .cornerRadius(15)
-                        .padding(EdgeInsets(top: 5, leading: 0, bottom: 0.6, trailing: 0))
+                        .padding(EdgeInsets(top: 5, leading: 0, bottom: 0.8, trailing: 0))
                     }
                 }
+                .frame(maxWidth: .infinity)
+                .scaledToFit()
+                
+                Divider()
+                
+                NavigationLink {
+                    SeeAllFriendsView(participants: self.$participants)
+                } label: {
+                    Text("seeAll")
+                        .scaledToFit()
+                        .foregroundStyle(Color.accentColor)
+                }
+                .frame(width: 70)
+                .padding(0)
+                .buttonStyle(PlainButtonStyle())
             }
             .onChange(of: self.participants) { _ in
                 // If splitEvenly is true, divide the total amount evenly among the participants

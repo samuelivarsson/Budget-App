@@ -110,6 +110,8 @@
 "noTransactionsThisPeriod" = "You have no transactions during this period";
 "transactionCreatedBy" = "Transaction created by";
 "transactionCreatedByYou" = "Transaction created by you";
+"seeAll" = "See all";
+"chooseFriends" = "Choose friends";
 
 // Settings
 "myInformation" = "My information";
@@ -189,6 +191,11 @@
 "temporaryFriends" = "Temporary friends";
 "makeFavourite" = "Make favourite";
 "removeFromFavourites" = "Remove from favourites";
+"group" = "Group";
+"editFriendGroup" = "Edit group of friend";
+"newGroup" = "New group";
+"groupName" = "Group name";
+"noGroup" = "No group";
 
 // Transaction Categories
 "food" = "Food";

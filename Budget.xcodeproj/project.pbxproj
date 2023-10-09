@@ -103,6 +103,8 @@
 		4D18ABC92813155E00B39744 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABC82813155E00B39744 /* FirebaseMessaging */; };
 		4D18ABCB2813155E00B39744 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABCA2813155E00B39744 /* FirebaseStorage */; };
 		4D18ABCE2813163B00B39744 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 4D18ABCD2813163B00B39744 /* GoogleSignIn */; };
+		4D1E41202AD1A47B00086E75 /* SeeAllFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E411F2AD1A47B00086E75 /* SeeAllFriendsView.swift */; };
+		4D1E41222AD1AB1000086E75 /* EditFriendGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E41212AD1AB1000086E75 /* EditFriendGroupView.swift */; };
 		4D1E5E9C28E9C9FA0054CF2F /* TransactionCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E5E9B28E9C9FA0054CF2F /* TransactionCategoryView.swift */; };
 		4D1E973F28085459003C8802 /* WelcomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E973E28085459003C8802 /* WelcomeScreenView.swift */; };
 		4D1E974228085626003C8802 /* TransactionCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1E974128085626003C8802 /* TransactionCategoriesView.swift */; };
@@ -279,6 +281,8 @@
 		4D13AEDE29CCFF9B000B6D9F /* QuickBalanceResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceResponse.swift; sourceTree = "<group>"; };
 		4D13AEE029CD11B6000B6D9F /* QuickBalanceAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceAccount.swift; sourceTree = "<group>"; };
 		4D13AEE329CD1335000B6D9F /* QuickBalanceAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceAccountView.swift; sourceTree = "<group>"; };
+		4D1E411F2AD1A47B00086E75 /* SeeAllFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeeAllFriendsView.swift; sourceTree = "<group>"; };
+		4D1E41212AD1AB1000086E75 /* EditFriendGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendGroupView.swift; sourceTree = "<group>"; };
 		4D1E5E9B28E9C9FA0054CF2F /* TransactionCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoryView.swift; sourceTree = "<group>"; };
 		4D1E973E28085459003C8802 /* WelcomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreenView.swift; sourceTree = "<group>"; };
 		4D1E974128085626003C8802 /* TransactionCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategoriesView.swift; sourceTree = "<group>"; };
@@ -823,6 +827,7 @@
 				4DDA445C282354B90045C58E /* TransactionsGroupView.swift */,
 				4D0F05CA280793FA0030AB5B /* TransactionView.swift */,
 				4DF808B3281ECDBC00E19A8D /* ParticipantsView.swift */,
+				4D1E411F2AD1A47B00086E75 /* SeeAllFriendsView.swift */,
 			);
 			path = Transactions;
 			sourceTree = "<group>";
@@ -886,6 +891,7 @@
 			children = (
 				4DFF75B02810739E00C40FF6 /* EditFriendNameView.swift */,
 				4DFF75B22810772B00C40FF6 /* EditFriendPhoneView.swift */,
+				4D1E41212AD1AB1000086E75 /* EditFriendGroupView.swift */,
 			);
 			path = Edit;
 			sourceTree = "<group>";
@@ -996,7 +1002,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1400;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					4DAC5C6929D5EB8A00892053 = {
 						CreatedOnToolsVersion = 14.2;
@@ -1187,11 +1193,13 @@
 				4D20A6F729DB86F90009A5D7 /* PushNotification.swift in Sources */,
 				4DFF75AC28106E3100C40FF6 /* AddFriendView.swift in Sources */,
 				4D6CA59529B2AFD100487669 /* TransactionAction.swift in Sources */,
+				4D1E41202AD1A47B00086E75 /* SeeAllFriendsView.swift in Sources */,
 				4D008F4B29CE849800B3C3FE /* HTTPMethod.swift in Sources */,
 				4D7ADA52282BCABB0051460B /* User.swift in Sources */,
 				4DAD763229E0F867001B3C41 /* Secrets.swift in Sources */,
 				4D6CA5A629B2E4CC00487669 /* BudgetView.swift in Sources */,
 				4DE5B44929C6162D002340A2 /* StandingsViewModel.swift in Sources */,
+				4D1E41222AD1AB1000086E75 /* EditFriendGroupView.swift in Sources */,
 				4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */,
 				4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */,
 				4D65306A281B60BA00641570 /* ImagePicker.swift in Sources */,
@@ -1551,6 +1559,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1613,6 +1622,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
