@@ -9,7 +9,7 @@ import Foundation
 
 struct QuickBalanceURL {
     private static var _baseUri = "https://auth.api.swedbank.se/TDE_DAP_Portal_REST_WEB/api/"
-    private static var _appId: String = "nJO5W26M8ENvUTKm"
+    private static var _appId: String = "wZxjQ7okCtpFZm1i"
     private static var _userAgent: String = "SamuelIvarssonWidgetApp"
     
     static func genAuthorizationKey(appId: String) -> String {

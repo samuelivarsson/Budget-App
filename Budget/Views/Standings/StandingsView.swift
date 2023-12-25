@@ -22,39 +22,26 @@ struct StandingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                let favouriteFriends = self.userViewModel.getFriendsSorted(favourites: true)
+                let favouriteFriends = self.userViewModel.getFavouritesSorted()
                 if favouriteFriends.count > 0 {
-                    Section {
+                    Section("favourites") {
                         self.getStandings(friends: favouriteFriends)
-                    } header: {
-                        Text("favourites")
                     }
                 }
-
-                let otherFriends = self.userViewModel.getFriendsSorted(favourites: false)
-                if otherFriends.count > 0 {
-                    Section {
-                        self.getStandings(friends: otherFriends)
-                    } header: {
-                        Text("otherFriends")
-                    }
-                }
-
-                let customFriends = self.userViewModel.getCustomFriendsSorted()
-                if customFriends.count > 0 {
-                    Section {
-                        self.getStandings(friends: customFriends, customFriends: true)
-                    } header: {
-                        Text("customFriends")
+                let groups = self.userViewModel.getFriendGroupsSorted()
+                ForEach(groups, id: \.self) { group in
+                    let friends = self.userViewModel.getAllNonFavouriteFriendsSorted().filter { self.userViewModel.getFriendGroup(friendId: $0.id) == group }
+                    if friends.count > 0 {
+                        Section(group) {
+                            self.getStandings(friends: friends)
+                        }
                     }
                 }
 
                 let temporaryFriends = self.getTemporaryFriends()
                 if temporaryFriends.count > 0 && self.isShowingTemporaryFriends(temporaryFriends: temporaryFriends) {
-                    Section {
-                        self.getStandings(friends: temporaryFriends, temporary: true)
-                    } header: {
-                        Text("temporaryFriends")
+                    Section("temporaryFriends") {
+                        self.getStandings(friends: temporaryFriends)
                     }
                 }
             }
@@ -146,21 +133,21 @@ struct StandingsView: View {
         }
     }
 
-    private func getStandings(friends: [any Named], customFriends: Bool = false, temporary: Bool = false) -> some View {
+    private func getStandings(friends: [any Named]) -> some View {
         ForEach(friends, id: \.id) { friend in
             let amount = self.standingsViewModel.getStandingAmount(myId: self.userViewModel.user.id, friendId: friend.id)
-            if !(round(amount * 100) == 0 && temporary) {
+            if !(round(amount * 100) == 0 && !(friend is User || friend is CustomFriend)) {
                 Button {
                     if amount < 0 {
                         let info = self.transactionsViewModel.getSwishInfo(myId: self.userViewModel.user.id, standing: amount, friendId: friend.id)
                         AppOpener.openSwish(amount: amount, friend: friend, info: info)
                     } else if amount > 0 {
-                        if customFriends || temporary {
-                            self.swishFriendId = friend.id
-                            self.showDidFriendSwish = true
-                        } else {
+                        if friend is User {
                             self.swishFriendId = friend.id
                             self.showSendReminderAlert = true
+                        } else {
+                            self.swishFriendId = friend.id
+                            self.showDidFriendSwish = true
                         }
                     }
                 } label: {
@@ -198,7 +185,7 @@ struct StandingsView: View {
         }
         return temporaryFriends
     }
-    
+
     private func isShowingTemporaryFriends(temporaryFriends: [CustomFriend]) -> Bool {
         for temporaryFriend in temporaryFriends {
             let amount = self.standingsViewModel.getStandingAmount(myId: self.userViewModel.user.id, friendId: temporaryFriend.id)

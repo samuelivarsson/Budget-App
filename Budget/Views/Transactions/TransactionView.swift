@@ -36,6 +36,7 @@ struct TransactionView: View {
     
     init(transaction: Transaction, myId: String) {
         self._transaction = State(initialValue: transaction)
+        self._totalAmountString = State(initialValue: Utility.currencyFormatterNoSymbol.string(from: transaction.totalAmount as NSNumber) ?? "")
         self.action = transaction.creatorId == myId ? .edit : .view
         self.oldTransaction = transaction
     }

@@ -38,11 +38,7 @@ struct EditFriendGroupView: View {
                     .pickerStyle(.menu)
                     .disabled(self.isNewGroup)
                     .onLoad {
-                        if self.isCustomFriend {
-                            self.group = self.userViewModel.getFriendGroup(friendId: self.friendId, isCustomFriend: self.isCustomFriend)
-                        } else {
-                            self.group = self.userViewModel.getFriendGroup(friendId: self.friendId)
-                        }
+                        self.group = self.userViewModel.getFriendGroup(friendId: self.friendId)
                     }
                 }
                 
@@ -78,7 +74,7 @@ struct EditFriendGroupView: View {
     
     private func editFriend() {
         self.applyLoading = true
-        let finalGroup = isNewGroup ? newGroup.capitalized : group
+        let finalGroup = self.isNewGroup ? self.newGroup.capitalized : self.group
         
         if self.isCustomFriend {
             self.userViewModel.setCustomFriendGroup(group: finalGroup, friendId: self.friendId) { error in

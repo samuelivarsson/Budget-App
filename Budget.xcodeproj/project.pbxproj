@@ -92,6 +92,7 @@
 		4D08D9A229D67C46003A09B5 /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
 		4D08D9A329D67C46003A09B5 /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
 		4D08D9A429D680B1003A09B5 /* MobileBankID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */; };
+		4D0C5CB82B373ED000B16A39 /* SplitOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0C5CB72B373ED000B16A39 /* SplitOption.swift */; };
 		4D0ED15029CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0ED14F29CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift */; };
 		4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F05CA280793FA0030AB5B /* TransactionView.swift */; };
 		4D12984B28E4A33900BDCAA8 /* TransactionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */; };
@@ -119,6 +120,7 @@
 		4D28F0DD2919F046006E2AAF /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28F0DC2919F046006E2AAF /* FriendView.swift */; };
 		4D28F0DF2919F7A8006E2AAF /* CustomFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28F0DE2919F7A8006E2AAF /* CustomFriendView.swift */; };
 		4D3563A3280DC39D007B83B0 /* ErrorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */; };
+		4D37D4AD2B124B46001B75C8 /* BudgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D37D4AC2B124B46001B75C8 /* BudgetTests.swift */; };
 		4D40510828E8B3950043D844 /* TransactionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D40510728E8B3950043D844 /* TransactionCategory.swift */; };
 		4D423DB0280F680300565641 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D423DAF280F680300565641 /* NotificationsView.swift */; };
 		4D4B3E6C280C4AB100B78860 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4B3E6B280C4AB100B78860 /* SignUpView.swift */; };
@@ -219,6 +221,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4D37D4AE2B124B46001B75C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4DFD3D8A28073E4A00D5FFB4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4DFD3D9128073E4A00D5FFB4;
+			remoteInfo = Budget;
+		};
 		4DAC5C7F29D5EB8B00892053 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4DFD3D8A28073E4A00D5FFB4 /* Project object */;
@@ -273,6 +282,7 @@
 		4D02890C280B304B0053D15D /* MyInformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyInformationView.swift; sourceTree = "<group>"; };
 		4D08D98D29D660DA003A09B5 /* BudgetWidgetIntentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BudgetWidgetIntentExtension.entitlements; sourceTree = "<group>"; };
 		4D08D98E29D663AC003A09B5 /* AppOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOpener.swift; sourceTree = "<group>"; };
+		4D0C5CB72B373ED000B16A39 /* SplitOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitOption.swift; sourceTree = "<group>"; };
 		4D0ED14F29CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceSubscriptionResponse.swift; sourceTree = "<group>"; };
 		4D0ED15629D208CE000DE8C2 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		4D0ED15829D208CE000DE8C2 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -297,6 +307,8 @@
 		4D28F0DC2919F046006E2AAF /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
 		4D28F0DE2919F7A8006E2AAF /* CustomFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFriendView.swift; sourceTree = "<group>"; };
 		4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorEnums.swift; sourceTree = "<group>"; };
+		4D37D4AA2B124B46001B75C8 /* BudgetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BudgetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D37D4AC2B124B46001B75C8 /* BudgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetTests.swift; sourceTree = "<group>"; };
 		4D40510728E8B3950043D844 /* TransactionCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategory.swift; sourceTree = "<group>"; };
 		4D423DAF280F680300565641 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		4D4B3E6B280C4AB100B78860 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -391,6 +403,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4D37D4A72B124B46001B75C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4DAC5C6729D5EB8A00892053 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -503,6 +522,7 @@
 				4D6CA59E29B2CCE600487669 /* AccountType.swift */,
 				4D6CA59629B2CA7C00487669 /* Budget.swift */,
 				4D6CA59A29B2CC0400487669 /* Overhead.swift */,
+				4D0C5CB72B373ED000B16A39 /* SplitOption.swift */,
 				4DE5B44629C61574002340A2 /* Standing.swift */,
 				4D40510728E8B3950043D844 /* TransactionCategory.swift */,
 			);
@@ -582,6 +602,14 @@
 				4D653069281B60BA00641570 /* ImagePicker.swift */,
 			);
 			path = MyInformation;
+			sourceTree = "<group>";
+		};
+		4D37D4AB2B124B46001B75C8 /* BudgetTests */ = {
+			isa = PBXGroup;
+			children = (
+				4D37D4AC2B124B46001B75C8 /* BudgetTests.swift */,
+			);
+			path = BudgetTests;
 			sourceTree = "<group>";
 		};
 		4D653057281764B800641570 /* GeneralSettings */ = {
@@ -746,6 +774,7 @@
 				4DAFD79229D30A1D0018B8C7 /* BudgetWidget */,
 				4DAC5C6D29D5EB8A00892053 /* BudgetWidgetIntentExtension */,
 				4DAC5C7829D5EB8A00892053 /* BudgetWidgetIntentExtensionUI */,
+				4D37D4AB2B124B46001B75C8 /* BudgetTests */,
 				4DFD3D9328073E4A00D5FFB4 /* Products */,
 				4DBD3150280F8453009F5D8E /* Frameworks */,
 			);
@@ -758,6 +787,7 @@
 				4DAFD78F29D30A1D0018B8C7 /* BudgetWidgetExtension.appex */,
 				4DAC5C6A29D5EB8A00892053 /* BudgetWidgetIntentExtension.appex */,
 				4DAC5C7529D5EB8A00892053 /* BudgetWidgetIntentExtensionUI.appex */,
+				4D37D4AA2B124B46001B75C8 /* BudgetTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -899,6 +929,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4D37D4A92B124B46001B75C8 /* BudgetTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D37D4B02B124B46001B75C8 /* Build configuration list for PBXNativeTarget "BudgetTests" */;
+			buildPhases = (
+				4D37D4A62B124B46001B75C8 /* Sources */,
+				4D37D4A72B124B46001B75C8 /* Frameworks */,
+				4D37D4A82B124B46001B75C8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4D37D4AF2B124B46001B75C8 /* PBXTargetDependency */,
+			);
+			name = BudgetTests;
+			productName = BudgetTests;
+			productReference = 4D37D4AA2B124B46001B75C8 /* BudgetTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		4DAC5C6929D5EB8A00892053 /* BudgetWidgetIntentExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4DAC5C8829D5EB8B00892053 /* Build configuration list for PBXNativeTarget "BudgetWidgetIntentExtension" */;
@@ -1001,9 +1049,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1420;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					4D37D4A92B124B46001B75C8 = {
+						CreatedOnToolsVersion = 15.0.1;
+						TestTargetID = 4DFD3D9128073E4A00D5FFB4;
+					};
 					4DAC5C6929D5EB8A00892053 = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -1040,11 +1092,19 @@
 				4DAFD78E29D30A1D0018B8C7 /* BudgetWidgetExtension */,
 				4DAC5C6929D5EB8A00892053 /* BudgetWidgetIntentExtension */,
 				4DAC5C7429D5EB8A00892053 /* BudgetWidgetIntentExtensionUI */,
+				4D37D4A92B124B46001B75C8 /* BudgetTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4D37D4A82B124B46001B75C8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4DAC5C6829D5EB8A00892053 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1088,6 +1148,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4D37D4A62B124B46001B75C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D37D4AD2B124B46001B75C8 /* BudgetTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4DAC5C6629D5EB8A00892053 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1260,6 +1328,7 @@
 				4D4B3E6C280C4AB100B78860 /* SignUpView.swift in Sources */,
 				4D671E3728EF01EC0071A60E /* CustomFriendDetailView.swift in Sources */,
 				4D6626E129C7C01B00C0F4D5 /* SavingView.swift in Sources */,
+				4D0C5CB82B373ED000B16A39 /* SplitOption.swift in Sources */,
 				4D2255322809B65C00C80851 /* Utility.swift in Sources */,
 				4D28F0DB2919E316006E2AAF /* TransactionNotificationView.swift in Sources */,
 				4D7AE0AF295280DA009E0845 /* Participant.swift in Sources */,
@@ -1292,6 +1361,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4D37D4AF2B124B46001B75C8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4DFD3D9128073E4A00D5FFB4 /* Budget */;
+			targetProxy = 4D37D4AE2B124B46001B75C8 /* PBXContainerItemProxy */;
+		};
 		4DAC5C8029D5EB8B00892053 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4DAC5C7429D5EB8A00892053 /* BudgetWidgetIntentExtensionUI */;
@@ -1339,6 +1413,53 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		4D37D4B12B124B46001B75C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NNPX5ZKT2A;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.BudgetTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Budget.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Budget";
+			};
+			name = Debug;
+		};
+		4D37D4B22B124B46001B75C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NNPX5ZKT2A;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.BudgetTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Budget.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Budget";
+			};
+			name = Release;
+		};
 		4DAC5C8629D5EB8B00892053 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1656,6 +1777,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Budget/Preview Content\"";
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTING_SEARCH_PATHS = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Budget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Budget;
@@ -1695,6 +1817,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Budget/Preview Content\"";
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTING_SEARCH_PATHS = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Budget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Budget;
@@ -1724,6 +1847,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4D37D4B02B124B46001B75C8 /* Build configuration list for PBXNativeTarget "BudgetTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4D37D4B12B124B46001B75C8 /* Debug */,
+				4D37D4B22B124B46001B75C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4DAC5C8529D5EB8B00892053 /* Build configuration list for PBXNativeTarget "BudgetWidgetIntentExtensionUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

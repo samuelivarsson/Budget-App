@@ -464,6 +464,15 @@ class UserViewModel: ObservableObject {
         return self.favouriteIds.contains(user.id)
     }
     
+    func isFriendFavourite(userId: String) -> Bool {
+        for customFriend in self.user.customFriends {
+            if customFriend.id == userId {
+                return customFriend.favourite
+            }
+        }
+        return self.favouriteIds.contains(userId)
+    }
+    
     func getPhoneFromFriendsFriend(friendId: String, completion: @escaping (String?, Error?) -> Void) {
         self.friends.forEach { friend in
             friend.friends.forEach { friendsFriend in
@@ -532,6 +541,18 @@ class UserViewModel: ObservableObject {
         }
         return sortedFriends.filter { friend in
             !exceptFor.contains { $0.userId == friend.id }
+        }
+    }
+    
+    func getAllNonFavouriteFriendsSorted(exceptFor: [Participant] = []) -> [any Named] {
+        let sortedFriends: [any Named] = self.getFriendsSorted() + self.getCustomFriendsSorted()
+        if exceptFor.isEmpty {
+            return sortedFriends.filter { friend in
+                !self.isFriendFavourite(userId: friend.id)
+            }
+        }
+        return sortedFriends.filter { friend in
+            !exceptFor.contains { $0.userId == friend.id } && !self.isFriendFavourite(userId: friend.id)
         }
     }
     
@@ -672,16 +693,13 @@ class UserViewModel: ObservableObject {
         return result
     }
     
-    func getFriendGroup(friendId: String, isCustomFriend: Bool = false) -> String {
-        if isCustomFriend {
-            for customFriend in self.user.customFriends {
-                if customFriend.id == friendId {
-                    return customFriend.group
-                }
+    func getFriendGroup(friendId: String) -> String {
+        for customFriend in self.user.customFriends {
+            if customFriend.id == friendId {
+                return customFriend.group
             }
-            
-            return ""
         }
+            
         return self.groupIds[friendId] ?? ""
     }
     
