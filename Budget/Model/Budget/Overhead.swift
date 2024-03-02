@@ -50,6 +50,8 @@ struct Overhead: Identifiable, Codable, Hashable {
         }
         let fromDate = Utility.getBudgetPeriod(date: self.startDate, monthStartsOn: monthStartsOn).0
         let toDate = Utility.getBudgetPeriod(date: date, monthStartsOn: monthStartsOn).0
+//        print(self.name)
+//        print(Calendar.current.dateComponents([.month], from: fromDate, to: toDate).month ?? 0)
         return Calendar.current.dateComponents([.month], from: fromDate, to: toDate).month ?? 0
     }
     

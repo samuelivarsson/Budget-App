@@ -52,7 +52,7 @@ struct TransactionView: View {
             }
             
             Section(self.participantText) {
-                ParticipantsView(totalAmount: self.$transaction.totalAmount, splitEvenly: self.$transaction.splitEvenly, participants: self.$transaction.participants, payer: self.$transaction.payerId, isInputActive: self.$isInputActive, action: self.action)
+                ParticipantsView(totalAmount: self.$transaction.totalAmount, splitOption: self.$transaction.splitOption, participants: self.$transaction.participants, payer: self.$transaction.payerId, isInputActive: self.$isInputActive, action: self.action)
             }
             
             Section {
@@ -229,7 +229,7 @@ struct TransactionView: View {
                             if let doubleTotalAmount = Double(newValue.replacingOccurrences(of: ",", with: ".")) {
                                 self.transaction.totalAmount = doubleTotalAmount
                                 // If splitEvenly is true, divide the total amount evenly among the participants
-                                if self.transaction.splitEvenly {
+                                if self.transaction.splitOption.rawValue == SplitOption.splitEvenly.rawValue {
                                     let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: doubleTotalAmount / Double(self.transaction.participants.count))
                                     var val = doubleTotalAmount
                                     for i in (0 ..< self.transaction.participants.count).reversed() {

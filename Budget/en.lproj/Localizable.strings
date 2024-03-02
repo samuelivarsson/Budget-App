@@ -112,6 +112,7 @@
 "transactionCreatedByYou" = "Transaction created by you";
 "seeAll" = "See all";
 "chooseFriends" = "Choose friends";
+"splitOption" = "Split option";
 
 // Settings
 "myInformation" = "My information";

@@ -298,14 +298,18 @@ class Utility {
 
     static func getSwishUrl(amount: Double, friendId: String, friendPhone: String, info: String) -> URL? {
         let amountTwoDecimals = Utility.doubleToTwoDecimals(value: abs(amount))
-        // TODO: - Fix to reflect date of transaction after last swish
+        var newInfo = info
+        if info.count > 50 {
+            newInfo = String(newInfo.prefix(46))
+            newInfo.append("...")
+        }
         let data =
             "{" +
             "\"amount\":{" +
             "\"value\":\(amountTwoDecimals)" +
             "}," +
             "\"message\":{" +
-            "\"value\":\"\(info)\"" +
+            "\"value\":\"\(newInfo)\"" +
             "}," +
             "\"payee\":{" +
             "\"value\":\"\(friendPhone)\"" +

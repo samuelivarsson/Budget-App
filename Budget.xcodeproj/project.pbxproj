@@ -93,6 +93,8 @@
 		4D08D9A329D67C46003A09B5 /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
 		4D08D9A429D680B1003A09B5 /* MobileBankID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */; };
 		4D0C5CB82B373ED000B16A39 /* SplitOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0C5CB72B373ED000B16A39 /* SplitOption.swift */; };
+		4D0C5CB92B3A3DEE00B16A39 /* SplitOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0C5CB72B373ED000B16A39 /* SplitOption.swift */; };
+		4D0C5CBA2B3A3DEE00B16A39 /* SplitOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0C5CB72B373ED000B16A39 /* SplitOption.swift */; };
 		4D0ED15029CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0ED14F29CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift */; };
 		4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F05CA280793FA0030AB5B /* TransactionView.swift */; };
 		4D12984B28E4A33900BDCAA8 /* TransactionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D12984A28E4A33900BDCAA8 /* TransactionsViewModel.swift */; };
@@ -119,6 +121,8 @@
 		4D28F0DB2919E316006E2AAF /* TransactionNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28F0DA2919E316006E2AAF /* TransactionNotificationView.swift */; };
 		4D28F0DD2919F046006E2AAF /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28F0DC2919F046006E2AAF /* FriendView.swift */; };
 		4D28F0DF2919F7A8006E2AAF /* CustomFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28F0DE2919F7A8006E2AAF /* CustomFriendView.swift */; };
+		4D2C37B52B9348AB00CD5D7B /* OverheadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */; };
+		4D2C37B62B9348B300CD5D7B /* Overhead.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59A29B2CC0400487669 /* Overhead.swift */; };
 		4D3563A3280DC39D007B83B0 /* ErrorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */; };
 		4D37D4AD2B124B46001B75C8 /* BudgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D37D4AC2B124B46001B75C8 /* BudgetTests.swift */; };
 		4D40510828E8B3950043D844 /* TransactionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D40510728E8B3950043D844 /* TransactionCategory.swift */; };
@@ -306,6 +310,7 @@
 		4D28F0DA2919E316006E2AAF /* TransactionNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionNotificationView.swift; sourceTree = "<group>"; };
 		4D28F0DC2919F046006E2AAF /* FriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendView.swift; sourceTree = "<group>"; };
 		4D28F0DE2919F7A8006E2AAF /* CustomFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFriendView.swift; sourceTree = "<group>"; };
+		4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverheadTests.swift; sourceTree = "<group>"; };
 		4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorEnums.swift; sourceTree = "<group>"; };
 		4D37D4AA2B124B46001B75C8 /* BudgetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BudgetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D37D4AC2B124B46001B75C8 /* BudgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetTests.swift; sourceTree = "<group>"; };
@@ -493,6 +498,7 @@
 				4D6CA59429B2AFD100487669 /* TransactionAction.swift */,
 				4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */,
 				4D7AE0AE295280DA009E0845 /* Participant.swift */,
+				4D0C5CB72B373ED000B16A39 /* SplitOption.swift */,
 			);
 			path = Transaction;
 			sourceTree = "<group>";
@@ -522,7 +528,6 @@
 				4D6CA59E29B2CCE600487669 /* AccountType.swift */,
 				4D6CA59629B2CA7C00487669 /* Budget.swift */,
 				4D6CA59A29B2CC0400487669 /* Overhead.swift */,
-				4D0C5CB72B373ED000B16A39 /* SplitOption.swift */,
 				4DE5B44629C61574002340A2 /* Standing.swift */,
 				4D40510728E8B3950043D844 /* TransactionCategory.swift */,
 			);
@@ -608,6 +613,7 @@
 			isa = PBXGroup;
 			children = (
 				4D37D4AC2B124B46001B75C8 /* BudgetTests.swift */,
+				4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */,
 			);
 			path = BudgetTests;
 			sourceTree = "<group>";
@@ -1153,6 +1159,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D37D4AD2B124B46001B75C8 /* BudgetTests.swift in Sources */,
+				4D2C37B62B9348B300CD5D7B /* Overhead.swift in Sources */,
+				4D2C37B52B9348AB00CD5D7B /* OverheadTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1196,6 +1204,7 @@
 				4D08D99529D66D5D003A09B5 /* QuickBalanceResponse.swift in Sources */,
 				4D08D97E29D65D37003A09B5 /* Overhead.swift in Sources */,
 				4D08D99D29D66E70003A09B5 /* QuickBalanceURL.swift in Sources */,
+				4D0C5CBA2B3A3DEE00B16A39 /* SplitOption.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1248,6 +1257,7 @@
 				4D08D97529D65D37003A09B5 /* Standing.swift in Sources */,
 				4D08D95929D659BC003A09B5 /* QuickBalanceResponse.swift in Sources */,
 				4D08D96929D65D27003A09B5 /* Friend.swift in Sources */,
+				4D0C5CB92B3A3DEE00B16A39 /* SplitOption.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

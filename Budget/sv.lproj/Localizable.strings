@@ -112,6 +112,7 @@
 "transactionCreatedByYou" = "Transaktion skapad av dig";
 "seeAll" = "Se alla";
 "chooseFriends" = "Välj vänner";
+"splitOption" = "Delningsalternativ";
 
 // Settings
 "myInformation" = "Mina uppgifter";

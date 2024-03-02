@@ -12,7 +12,7 @@ struct ParticipantsView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
     
     @Binding var totalAmount: Double
-    @Binding var splitEvenly: Bool
+    @Binding var splitOption: SplitOption
     @Binding var participants: [Participant]
     @Binding var payer: String
     var isInputActive: FocusState<Bool>.Binding
@@ -65,7 +65,7 @@ struct ParticipantsView: View {
             }
             .onChange(of: self.participants) { _ in
                 // If splitEvenly is true, divide the total amount evenly among the participants
-                if self.splitEvenly {
+                if self.splitOption == SplitOption.splitEvenly {
                     let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: self.totalAmount / Double(self.participants.count))
                     var val = self.totalAmount
                     for i in (0 ..< self.participants.count).reversed() {
@@ -99,28 +99,50 @@ struct ParticipantsView: View {
                 }
             }
         }
-            
-        // Use a Toggle to allow the user to turn splitEvenly on or off
-        Toggle("splitEvenly", isOn: self.$splitEvenly)
-            .disabled(self.action == .view)
-            .onChange(of: self.splitEvenly) { _ in
-                // If splitEvenly is true, divide the total amount evenly among the participants
-                if self.splitEvenly {
-                    let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: self.totalAmount / Double(self.participants.count))
-                    var val = self.totalAmount
-                    for i in (0 ..< self.participants.count).reversed() {
-                        self.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
-                        val -= amountPerParticipant
+        
+        HStack {
+            Text("splitOption")
+            Spacer()
+            Picker("", selection: self.$splitOption) {
+                    ForEach(SplitOption.allCases, id: \.self) { splitOption in
+                        Text(splitOption.description()).tag(splitOption)
                     }
+            }
+            .disabled(self.action == .view)
+            .onLoad {
+                if self.action == .add {
+                    guard let first = self.participants.first else {
+                        let info = "Found nil when extracting first in onLoad in payer picker in ParticipantsView"
+                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                        return
+                    }
+                    
+                    self.payer = first.userId
                 }
             }
+        }
+            
+        // Use a Toggle to allow the user to turn splitEvenly on or off
+//        Toggle("splitEvenly", isOn: self.$splitEvenly)
+//            .disabled(self.action == .view)
+//            .onChange(of: self.splitEvenly) { _ in
+//                // If splitEvenly is true, divide the total amount evenly among the participants
+//                if self.splitEvenly {
+//                    let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: self.totalAmount / Double(self.participants.count))
+//                    var val = self.totalAmount
+//                    for i in (0 ..< self.participants.count).reversed() {
+//                        self.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
+//                        val -= amountPerParticipant
+//                    }
+//                }
+//            }
             
         // Use a ForEach loop to display a list of participants
         ForEach(self.$participants, id: \.id) { $participant in
             HStack {
                 Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : participant.userName)
                 Spacer()
-                if self.splitEvenly || self.action == .view {
+                if self.splitOption == SplitOption.splitEvenly || self.action == .view {
                     Text(Utility.doubleToLocalCurrency(value: participant.amount))
                         .padding(5)
                 } else {
