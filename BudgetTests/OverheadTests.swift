@@ -20,13 +20,11 @@ final class OverheadTests: XCTestCase {
         dateComponents.month = 1
         dateComponents.day = 2
         startDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(startDate)
         
         dateComponents.year = 2024
         dateComponents.month = 2
         dateComponents.day = 27
         nowDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(nowDate)
     }
 
     override func tearDownWithError() throws {
@@ -38,7 +36,6 @@ final class OverheadTests: XCTestCase {
         dateComponents.month = 1
         dateComponents.day = 23
         nowDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(nowDate)
         
         let overhead = Overhead(
             name: "Test1",
@@ -60,7 +57,6 @@ final class OverheadTests: XCTestCase {
         dateComponents.month = 1
         dateComponents.day = 25
         nowDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(nowDate)
         
         let overhead = Overhead(
             name: "Test1",
@@ -82,7 +78,6 @@ final class OverheadTests: XCTestCase {
         dateComponents.month = 2
         dateComponents.day = 1
         nowDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(nowDate)
         
         let overhead = Overhead(
             name: "Test1",
@@ -152,7 +147,6 @@ final class OverheadTests: XCTestCase {
         dateComponents.month = 3
         dateComponents.day = 2
         nowDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(nowDate)
         
         let overhead = Overhead(
             name: "Test1",
@@ -176,7 +170,6 @@ final class OverheadTests: XCTestCase {
         dateComponents.month = 1
         dateComponents.day = 23
         nowDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(nowDate)
         
         let overhead = Overhead(
             name: "Test1",
@@ -198,7 +191,6 @@ final class OverheadTests: XCTestCase {
         dateComponents.month = 1
         dateComponents.day = 25
         nowDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(nowDate)
         
         let overhead = Overhead(
             name: "Test1",
@@ -220,7 +212,6 @@ final class OverheadTests: XCTestCase {
         dateComponents.month = 2
         dateComponents.day = 1
         nowDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(nowDate)
         
         let overhead = Overhead(
             name: "Test1",
@@ -290,7 +281,6 @@ final class OverheadTests: XCTestCase {
         dateComponents.month = 3
         dateComponents.day = 2
         nowDate = Calendar.current.date(from: dateComponents) ?? Date.now
-        print(nowDate)
         
         let overhead = Overhead(
             name: "Test1",
