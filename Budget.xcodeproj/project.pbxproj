@@ -122,9 +122,16 @@
 		4D28F0DD2919F046006E2AAF /* FriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28F0DC2919F046006E2AAF /* FriendView.swift */; };
 		4D28F0DF2919F7A8006E2AAF /* CustomFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28F0DE2919F7A8006E2AAF /* CustomFriendView.swift */; };
 		4D2C37B52B9348AB00CD5D7B /* OverheadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */; };
-		4D2C37B62B9348B300CD5D7B /* Overhead.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59A29B2CC0400487669 /* Overhead.swift */; };
+		4D2C37B72B934A8C00CD5D7B /* OverheadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */; };
+		4D2C37B82B934AA800CD5D7B /* Overhead.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59A29B2CC0400487669 /* Overhead.swift */; };
+		4D2C37B92B934BEC00CD5D7B /* OverheadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */; };
+		4D2C37BA2B934BED00CD5D7B /* OverheadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */; };
+		4D2C37BB2B934C0300CD5D7B /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2255312809B65C00C80851 /* Utility.swift */; };
+		4D2C37BC2B934C8100CD5D7B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4229CE6C4000B3C3FE /* Extensions.swift */; };
+		4D2C37BD2B934C9B00CD5D7B /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6AC16C280CD86C00B8EA41 /* ErrorHandling.swift */; };
+		4D2C37BE2B934CC900CD5D7B /* ErrorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */; };
+		4D2C37BF2B934CDB00CD5D7B /* QuickBalanceErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6579AF29CFCB2000EBCF6A /* QuickBalanceErrorResponse.swift */; };
 		4D3563A3280DC39D007B83B0 /* ErrorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */; };
-		4D37D4AD2B124B46001B75C8 /* BudgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D37D4AC2B124B46001B75C8 /* BudgetTests.swift */; };
 		4D40510828E8B3950043D844 /* TransactionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D40510728E8B3950043D844 /* TransactionCategory.swift */; };
 		4D423DB0280F680300565641 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D423DAF280F680300565641 /* NotificationsView.swift */; };
 		4D4B3E6C280C4AB100B78860 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4B3E6B280C4AB100B78860 /* SignUpView.swift */; };
@@ -313,7 +320,6 @@
 		4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverheadTests.swift; sourceTree = "<group>"; };
 		4D3563A2280DC39D007B83B0 /* ErrorEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorEnums.swift; sourceTree = "<group>"; };
 		4D37D4AA2B124B46001B75C8 /* BudgetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BudgetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4D37D4AC2B124B46001B75C8 /* BudgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetTests.swift; sourceTree = "<group>"; };
 		4D40510728E8B3950043D844 /* TransactionCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategory.swift; sourceTree = "<group>"; };
 		4D423DAF280F680300565641 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		4D4B3E6B280C4AB100B78860 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -612,7 +618,6 @@
 		4D37D4AB2B124B46001B75C8 /* BudgetTests */ = {
 			isa = PBXGroup;
 			children = (
-				4D37D4AC2B124B46001B75C8 /* BudgetTests.swift */,
 				4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */,
 			);
 			path = BudgetTests;
@@ -1056,7 +1061,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					4D37D4A92B124B46001B75C8 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -1158,8 +1163,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D37D4AD2B124B46001B75C8 /* BudgetTests.swift in Sources */,
-				4D2C37B62B9348B300CD5D7B /* Overhead.swift in Sources */,
+				4D2C37BC2B934C8100CD5D7B /* Extensions.swift in Sources */,
+				4D2C37BB2B934C0300CD5D7B /* Utility.swift in Sources */,
+				4D2C37BD2B934C9B00CD5D7B /* ErrorHandling.swift in Sources */,
+				4D2C37BE2B934CC900CD5D7B /* ErrorEnums.swift in Sources */,
+				4D2C37B82B934AA800CD5D7B /* Overhead.swift in Sources */,
+				4D2C37BF2B934CDB00CD5D7B /* QuickBalanceErrorResponse.swift in Sources */,
 				4D2C37B52B9348AB00CD5D7B /* OverheadTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1197,6 +1206,7 @@
 				4DAC5C6F29D5EB8A00892053 /* IntentHandler.swift in Sources */,
 				4D08D96E29D65D28003A09B5 /* CustomFriend.swift in Sources */,
 				4D08D97229D65D2E003A09B5 /* Notification.swift in Sources */,
+				4D2C37BA2B934BED00CD5D7B /* OverheadTests.swift in Sources */,
 				4D08D96C29D65D28003A09B5 /* Friend.swift in Sources */,
 				4DAC5C8B29D5ECB800892053 /* BudgetWidget.intentdefinition in Sources */,
 				4D08D96429D65CF4003A09B5 /* Extensions.swift in Sources */,
@@ -1240,6 +1250,7 @@
 				4D08D99329D66D5C003A09B5 /* ProfileListResponse.swift in Sources */,
 				4D08D97329D65D37003A09B5 /* TransactionCategory.swift in Sources */,
 				4DAFD79829D30A1D0018B8C7 /* BudgetWidget.swift in Sources */,
+				4D2C37B92B934BEC00CD5D7B /* OverheadTests.swift in Sources */,
 				4D08D98229D65D63003A09B5 /* Transaction.swift in Sources */,
 				4DAD763429E0F9AE001B3C41 /* Secrets.swift in Sources */,
 				4D08D96529D65D1C003A09B5 /* User.swift in Sources */,
@@ -1323,6 +1334,7 @@
 				4D6626EA29CBB21400C0F4D5 /* AccountHistory.swift in Sources */,
 				4D08D98F29D663AC003A09B5 /* AppOpener.swift in Sources */,
 				4D671E3928EF84330071A60E /* UsersLookupViewModel.swift in Sources */,
+				4D2C37B72B934A8C00CD5D7B /* OverheadTests.swift in Sources */,
 				4D7ADA54282C54420051460B /* UserViewModel.swift in Sources */,
 				4DFD3DBE2807414500D5FFB4 /* TransactionType.swift in Sources */,
 				4D28F0D62919ADEB006E2AAF /* NotificationView.swift in Sources */,
@@ -1657,6 +1669,7 @@
 			baseConfigurationReference = 4DAD763329E0F8DD001B3C41 /* project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1690,6 +1703,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1720,6 +1734,7 @@
 			baseConfigurationReference = 4DAD763329E0F8DD001B3C41 /* project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1753,6 +1768,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1787,7 +1803,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Budget/Preview Content\"";
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_TESTING_SEARCH_PATHS = NO;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Budget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Budget;
@@ -1827,7 +1843,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Budget/Preview Content\"";
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_TESTING_SEARCH_PATHS = NO;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Budget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Budget;

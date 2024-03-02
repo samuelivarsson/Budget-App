@@ -56,14 +56,14 @@ struct Overhead: Identifiable, Codable, Hashable {
     }
     
     private func getAmountMultiplier(monthStartsOn: Int, date: Date = Date()) -> Int {
-        return self.months < 2 ? 1 : self.getMonthsSinceLastPay(monthStartsOn: monthStartsOn, date: date) % self.months
+        return self.months < 2 ? 1 : self.getMonthsSinceLastPay(monthStartsOn: monthStartsOn, date: date) % (self.months + 1)
     }
     
     private func isPayMonth(monthStartsOn: Int, date: Date = Date()) -> Bool {
         if self.months < 2 {
             return true
         }
-        return self.getAmountMultiplier(monthStartsOn: monthStartsOn, date: date) == 0
+        return self.getAmountMultiplier(monthStartsOn: monthStartsOn, date: date) == self.months
     }
     
     func isPaid(monthStartsOn: Int, nowDate: Date = Date.now) -> Bool {
