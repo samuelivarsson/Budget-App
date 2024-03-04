@@ -25,7 +25,7 @@ struct ParticipantsView: View {
         if action != .view {
             HStack(spacing: 10) {
                 Text("addFriend")
-                
+                    
                 Spacer()
                     
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -49,9 +49,9 @@ struct ParticipantsView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .scaledToFit()
-                
+                    
                 Divider()
-                
+                    
                 NavigationLink {
                     SeeAllFriendsView(participants: self.$participants)
                 } label: {
@@ -63,15 +63,8 @@ struct ParticipantsView: View {
                 .padding(0)
                 .buttonStyle(PlainButtonStyle())
             }
-            .onChange(of: participants.count) { _ in
-                DispatchQueue.main.async {
-                    if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten) {
-                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
-                    }
-                }
-            }
         }
-        
+            
         HStack {
             Text("payer")
             Spacer()
@@ -91,26 +84,18 @@ struct ParticipantsView: View {
                         self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                         return
                     }
-                    
+                        
                     self.payer = first.userId
                 }
             }
         }
-        
+            
         HStack {
             Text("splitOption")
             Spacer()
             Picker("", selection: self.$splitOption) {
                 ForEach(SplitOption.allCases, id: \.self) { splitOption in
                     Text(splitOption.description()).tag(splitOption)
-                }
-            }
-            .onChange(of: self.splitOption) { newValue in
-                if newValue == .meEverything {
-                    self.hasWritten = .init()
-                }
-                if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten) {
-                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }
             }
             .disabled(self.action == .view)
@@ -121,7 +106,7 @@ struct ParticipantsView: View {
                         self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                         return
                     }
-                    
+                        
                     self.payer = first.userId
                 }
             }
@@ -132,11 +117,31 @@ struct ParticipantsView: View {
             ParticipantView(participant: $participant, splitOption: self.$splitOption, participants: self.$participants, totalAmount: self.$totalAmount, hasWritten: self.$hasWritten, action: self.action)
         }
         .onDelete(perform: deleteParticipants)
+        .onChange(of: participants.count) { _ in
+            DispatchQueue.main.async {
+                if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten) {
+                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                }
+            }
+        }
+        .onChange(of: splitOption) { newValue in
+            DispatchQueue.main.async {
+                if newValue == .meEverything {
+                    self.hasWritten = []
+                }
+                if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten) {
+                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                }
+            }
+        }
     }
     
     private func deleteParticipants(offsets: IndexSet) {
         withAnimation {
             self.participants.remove(atOffsets: offsets)
+            self.hasWritten.removeAll { userId in
+                !self.participants.contains(where: { $0.userId == userId })
+            }
         }
     }
 }

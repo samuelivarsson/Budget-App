@@ -126,6 +126,13 @@ struct TransactionView: View {
                 self.transaction.payerId = self.transaction.participants[0].userId
             }
         }
+        .onChange(of: self.transaction.totalAmount) { _ in
+            DispatchQueue.main.async {
+                if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten) {
+                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                }
+            }
+        }
     }
     
     private var titleText: LocalizedStringKey {
@@ -265,13 +272,6 @@ struct TransactionView: View {
                                 Button("Done") {
                                     self.isInputActive = false
                                 }
-                            }
-                        }
-                    }
-                    .onChange(of: self.transaction.totalAmount) { _ in
-                        DispatchQueue.main.async {
-                            if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten) {
-                                self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                             }
                         }
                     }

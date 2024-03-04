@@ -19,7 +19,6 @@ struct ParticipantView: View {
     @State var amountString: String = ""
     @State var amountSelected: Bool = false
     @Binding var hasWritten: [String]
-    @State var hasAddedToWritten: Bool = false
     
     @FocusState var isInputActive: Bool
     
@@ -59,17 +58,6 @@ struct ParticipantView: View {
                     .background(Color.tertiaryBackground)
                     .cornerRadius(8)
                     .fixedSize()
-                    .onChange(of: self.amountString) { newValue in
-                        if self.amountSelected && !self.hasAddedToWritten {
-                            self.hasWritten.append(self.participant.userId)
-                            self.hasAddedToWritten = true
-                        }
-                    }
-                    .onChange(of: self.splitOption) { newValue in
-                        if newValue == .meEverything {
-                            self.hasAddedToWritten = false
-                        }
-                    }
                     .toolbar {
                         if self.amountSelected {
                             ToolbarItemGroup(placement: .keyboard) {
@@ -87,11 +75,17 @@ struct ParticipantView: View {
                 }
             }
         }
-        .deleteDisabled(participant.userId == userViewModel.user.id || action == .view)
-        .onChange(of: participant.amount) { newValue in
+        .deleteDisabled(self.participant.userId == userViewModel.user.id || action == .view)
+        .onChange(of: self.amountString) { _ in
             DispatchQueue.main.async {
-                self.amountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(
-                    from: newValue as NSNumber) ?? "-999"
+                if self.amountSelected && !self.hasWritten.contains(self.participant.userId) {
+                    self.hasWritten.append(self.participant.userId)
+                }
+            }
+        }
+        .onChange(of: self.participant.amount) { newValue in
+            DispatchQueue.main.async {
+                self.amountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: newValue as NSNumber) ?? "-999"
             }
         }
     }
