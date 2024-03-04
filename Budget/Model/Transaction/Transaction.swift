@@ -23,7 +23,7 @@ struct Transaction: Identifiable, Codable {
     var participants: [Participant]
     var participantIds: [String] = .init()
     var type: TransactionType
-    var splitOption: SplitOption = .splitEvenly
+    var splitOption: SplitOption = .standard
 
     var id: String { documentId ?? UUID().uuidString }
     
@@ -62,10 +62,10 @@ struct Transaction: Identifiable, Codable {
            let splitOption = SplitOption(rawValue: splitOptionInt)
         {
             self.splitOption = splitOption
-        } else if let splitEvenly = try? container.decode(Bool.self, forKey: .splitOption) {
-            splitOption = splitEvenly ? .splitEvenly : .manual
+        } else if let _ = try? container.decode(Bool.self, forKey: .splitOption) {
+            splitOption = .standard
         } else {
-            splitOption = .splitEvenly // Default value or other error handling
+            splitOption = .standard // Default value or other error handling
         }
     }
     

@@ -136,6 +136,8 @@ enum InputError: Error {
     case addYourself
     case userIsAlreadyFriend
     case totalAmountMisMatch
+    case participantNegativeAmount
+    case participantAmountLargerThanTotal
     case transactionCategoryAmountsAddsUpToMoreThanRemaining
     case deleteTransactionCreatedBySomeoneElse
 }
@@ -159,6 +161,10 @@ extension InputError: LocalizedError {
             return NSLocalizedString("userIsAlreadyFriend", comment: "Input Error")
         case .totalAmountMisMatch:
             return NSLocalizedString("totalAmountMisMatch", comment: "Input Error")
+        case .participantNegativeAmount:
+            return NSLocalizedString("participantNegativeAmount", comment: "Input Error")
+        case .participantAmountLargerThanTotal:
+            return NSLocalizedString("participantAmountLargerThanTotal", comment: "Input Error")
         case .transactionCategoryAmountsAddsUpToMoreThanRemaining:
             return NSLocalizedString("transactionCategoryAmountsAddsUpToMoreThanRemaining", comment: "Input Error")
         case .deleteTransactionCreatedBySomeoneElse:

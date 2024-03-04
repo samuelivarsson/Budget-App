@@ -15,14 +15,14 @@ struct ParticipantsView: View {
     @Binding var splitOption: SplitOption
     @Binding var participants: [Participant]
     @Binding var payer: String
-    var isInputActive: FocusState<Bool>.Binding
+    @Binding var hasWritten: [String]
     
     var action: TransactionAction
     
     private let friendText: Font = .footnote
     
     var body: some View {
-        if self.action != .view {
+        if action != .view {
             HStack(spacing: 10) {
                 Text("addFriend")
                 
@@ -63,14 +63,10 @@ struct ParticipantsView: View {
                 .padding(0)
                 .buttonStyle(PlainButtonStyle())
             }
-            .onChange(of: self.participants) { _ in
-                // If splitEvenly is true, divide the total amount evenly among the participants
-                if self.splitOption == SplitOption.splitEvenly {
-                    let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: self.totalAmount / Double(self.participants.count))
-                    var val = self.totalAmount
-                    for i in (0 ..< self.participants.count).reversed() {
-                        self.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
-                        val -= amountPerParticipant
+            .onChange(of: participants.count) { _ in
+                DispatchQueue.main.async {
+                    if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten) {
+                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                     }
                 }
             }
@@ -81,7 +77,8 @@ struct ParticipantsView: View {
             Spacer()
             Picker("", selection: self.$payer) {
                 ForEach(self.participants, id: \.userId) { participant in
-                    Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : participant.userName).tag(participant.userId)
+                    Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : participant.userName)
+                        .tag(participant.userId)
                         .minimumScaleFactor(0.1)
                         .lineLimit(1)
                 }
@@ -104,9 +101,17 @@ struct ParticipantsView: View {
             Text("splitOption")
             Spacer()
             Picker("", selection: self.$splitOption) {
-                    ForEach(SplitOption.allCases, id: \.self) { splitOption in
-                        Text(splitOption.description()).tag(splitOption)
-                    }
+                ForEach(SplitOption.allCases, id: \.self) { splitOption in
+                    Text(splitOption.description()).tag(splitOption)
+                }
+            }
+            .onChange(of: self.splitOption) { newValue in
+                if newValue == .meEverything {
+                    self.hasWritten = .init()
+                }
+                if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten) {
+                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                }
             }
             .disabled(self.action == .view)
             .onLoad {
@@ -122,45 +127,9 @@ struct ParticipantsView: View {
             }
         }
             
-        // Use a Toggle to allow the user to turn splitEvenly on or off
-//        Toggle("splitEvenly", isOn: self.$splitEvenly)
-//            .disabled(self.action == .view)
-//            .onChange(of: self.splitEvenly) { _ in
-//                // If splitEvenly is true, divide the total amount evenly among the participants
-//                if self.splitEvenly {
-//                    let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: self.totalAmount / Double(self.participants.count))
-//                    var val = self.totalAmount
-//                    for i in (0 ..< self.participants.count).reversed() {
-//                        self.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
-//                        val -= amountPerParticipant
-//                    }
-//                }
-//            }
-            
         // Use a ForEach loop to display a list of participants
-        ForEach(self.$participants, id: \.id) { $participant in
-            HStack {
-                Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : participant.userName)
-                Spacer()
-                if self.splitOption == SplitOption.splitEvenly || self.action == .view {
-                    Text(Utility.doubleToLocalCurrency(value: participant.amount))
-                        .padding(5)
-                } else {
-                    HStack {
-                        TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", value: $participant.amount, formatter: Utility.currencyFormatterNoSymbolNoZeroSymbol)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .focused(self.isInputActive)
-                            .padding(5)
-                            .background(Color.tertiaryBackground)
-                            .cornerRadius(8)
-                            .fixedSize()
-                        
-                        Text(Utility.currencyFormatter.currencySymbol)
-                    }
-                }
-            }
-            .deleteDisabled(participant.userId == self.userViewModel.user.id || self.action == .view)
+        ForEach(Array($participants.enumerated()), id: \.element.id) { _, $participant in
+            ParticipantView(participant: $participant, splitOption: self.$splitOption, participants: self.$participants, totalAmount: self.$totalAmount, hasWritten: self.$hasWritten, action: self.action)
         }
         .onDelete(perform: deleteParticipants)
     }

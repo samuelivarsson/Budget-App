@@ -9,24 +9,18 @@ import Foundation
 import SwiftUI
 
 enum SplitOption: Int16, CaseIterable, Codable {
-    case splitEvenly = 1
-    case meSmallShare
-    case meEverything
-    case percentage
-    case manual = 0
+    case standard = 0
+    case meEverything = 2
+    case ownItems = 3
     
     func description() -> LocalizedStringKey {
         switch self {
-        case .splitEvenly:
-            return "splitEvenly"
-        case .meSmallShare:
-            return "meSmallShare"
+        case .standard:
+            return "standard"
         case .meEverything:
             return "meEverything"
-        case .percentage:
-            return "percentage"
-        case .manual:
-            return "manual"
+        case .ownItems:
+            return "ownItems"
         }
     }
 }

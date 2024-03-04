@@ -21,6 +21,10 @@ struct TransactionView: View {
     
     @State private var transaction: Transaction
     @State private var totalAmountString: String = ""
+    
+    @State private var selection: Int?
+    
+    @State private var hasWritten: [String] = .init()
 
     @State private var applyLoading: Bool = false
     @FocusState var isInputActive: Bool
@@ -52,7 +56,13 @@ struct TransactionView: View {
             }
             
             Section(self.participantText) {
-                ParticipantsView(totalAmount: self.$transaction.totalAmount, splitOption: self.$transaction.splitOption, participants: self.$transaction.participants, payer: self.$transaction.payerId, isInputActive: self.$isInputActive, action: self.action)
+                ParticipantsView(
+                    totalAmount: self.$transaction.totalAmount,
+                    splitOption: self.$transaction.splitOption,
+                    participants: self.$transaction.participants,
+                    payer: self.$transaction.payerId,
+                    hasWritten: self.$hasWritten,
+                    action: self.action)
             }
             
             Section {
@@ -90,11 +100,13 @@ struct TransactionView: View {
                     }
                 }
             } footer: {
-                if self.action != .add {
-                    if self.transaction.creatorId == self.userViewModel.user.id {
-                        Text("transactionCreatedByYou")
-                    } else {
-                        Text("transactionCreatedBy".localizeString() + " " + self.transaction.creatorName)
+                VStack {
+                    if self.action != .add {
+                        if self.transaction.creatorId == self.userViewModel.user.id {
+                            Text("transactionCreatedByYou")
+                        } else {
+                            Text("transactionCreatedBy".localizeString() + " " + self.transaction.creatorName)
+                        }
                     }
                 }
             }
@@ -111,7 +123,7 @@ struct TransactionView: View {
                 self.transaction.participants = [Participant(userId: user.id, userName: user.name)]
             }
             if self.transaction.payerId == "" {
-                self.transaction.payerId = self.transaction.participants[0].id
+                self.transaction.payerId = self.transaction.participants[0].userId
             }
         }
     }
@@ -192,19 +204,22 @@ struct TransactionView: View {
             } else {
                 HStack(spacing: 30) {
                     Text("description")
-                    TextField("description", text: self.$transaction.desc, prompt: Text("shortDescription"))
-                        .multilineTextAlignment(.trailing)
-                        .focused(self.$isInputActive)
-                        .toolbar {
+                    TextField("shortDescription", text: self.$transaction.desc, onEditingChanged: { isEditing in
+                        self.selection = isEditing ? 0 : nil
+                    })
+                    .multilineTextAlignment(.trailing)
+                    .focused(self.$isInputActive)
+                    .toolbar {
+                        if self.selection == 0 {
                             ToolbarItemGroup(placement: .keyboard) {
                                 Spacer()
-                                
+                                    
                                 Button("Done") {
-                                    self.totalAmountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: self.transaction.totalAmount as NSNumber) ?? "-999"
                                     self.isInputActive = false
                                 }
                             }
                         }
+                    }
                 }
             }
         }
@@ -221,24 +236,45 @@ struct TransactionView: View {
             } else {
                 HStack(spacing: 5) {
                     Text("amount")
-                    TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", text: self.$totalAmountString)
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.trailing)
-                        .focused(self.$isInputActive)
-                        .onChange(of: self.totalAmountString) { newValue in
-                            if let doubleTotalAmount = Double(newValue.replacingOccurrences(of: ",", with: ".")) {
-                                self.transaction.totalAmount = doubleTotalAmount
-                                // If splitEvenly is true, divide the total amount evenly among the participants
-                                if self.transaction.splitOption.rawValue == SplitOption.splitEvenly.rawValue {
-                                    let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: doubleTotalAmount / Double(self.transaction.participants.count))
-                                    var val = doubleTotalAmount
-                                    for i in (0 ..< self.transaction.participants.count).reversed() {
-                                        self.transaction.participants[i].amount = Utility.doubleToTwoDecimals(value: i == 0 ? val : amountPerParticipant)
-                                        val -= amountPerParticipant
-                                    }
+                    TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", text: self.$totalAmountString, onEditingChanged: { isEditing in
+                        self.selection = isEditing ? 1 : nil
+                        if !isEditing {
+                            let expression = self.totalAmountString
+                                .replacingOccurrences(of: ",", with: ".")
+                                .replacingOccurrences(of: "÷", with: "/")
+                                .replacingOccurrences(of: "×", with: "*")
+                            if let doubleAmount = Math.evaluateExpression(expression) {
+                                DispatchQueue.main.async {
+                                    self.transaction.totalAmount = doubleAmount
+                                    self.totalAmountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(
+                                        from: self.transaction.totalAmount as NSNumber) ?? "-999"
                                 }
                             }
                         }
+                    })
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.trailing)
+                    .focused(self.$isInputActive)
+                    .toolbar {
+                        if self.selection == 1 {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                CalculatorToolbarView(amountString: self.$totalAmountString)
+                                    
+                                Spacer()
+                                    
+                                Button("Done") {
+                                    self.isInputActive = false
+                                }
+                            }
+                        }
+                    }
+                    .onChange(of: self.transaction.totalAmount) { _ in
+                        DispatchQueue.main.async {
+                            if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten) {
+                                self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                            }
+                        }
+                    }
                     Text(Utility.currencyFormatter.currencySymbol)
                 }
             }
@@ -257,7 +293,7 @@ struct TransactionView: View {
     
     private func addParticipantIds() {
         self.transaction.participantIds = .init()
-        self.transaction.participants.forEach { participant in
+        for participant in self.transaction.participants {
             self.transaction.participantIds.append(participant.userId)
         }
     }
@@ -277,6 +313,14 @@ struct TransactionView: View {
                 self.errorHandling.handle(error: InputError.totalAmountMisMatch)
                 print(self.transaction.totalAmount)
                 print(totalAmount)
+                return
+            }
+            guard self.transaction.participants.allSatisfy({$0.amount >= 0}) else {
+                self.errorHandling.handle(error: InputError.participantNegativeAmount)
+                return
+            }
+            guard self.transaction.participants.allSatisfy({$0.amount <= self.transaction.totalAmount}) else {
+                self.errorHandling.handle(error: InputError.participantAmountLargerThanTotal)
                 return
             }
             

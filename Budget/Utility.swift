@@ -324,6 +324,59 @@ class Utility {
         urlComps.queryItems = queryItems
         return urlComps.url
     }
+    
+    static func setAmountPerParticipant(splitOption: SplitOption, participants: Binding<[Participant]>, totalAmount: Double, hasWritten: [String]) -> String? {
+        switch splitOption {
+        case .standard:
+            var nonManualParticipantsCount: Double = 0
+            var manualParticipantsTotalAmount: Double = 0
+            for participant in participants.wrappedValue {
+                if hasWritten.contains(participant.userId) {
+                    manualParticipantsTotalAmount += participant.amount
+                } else {
+                    nonManualParticipantsCount += 1
+                }
+            }
+            
+            let totalAmountLeft = totalAmount - manualParticipantsTotalAmount
+            let amountPerParticipant = Utility.doubleToTwoDecimalsFloored(value: totalAmountLeft / nonManualParticipantsCount)
+            var val = totalAmountLeft
+            
+            guard let firstNonManualIndex = self.getFirstNonManualIndex(participants: participants, hasWritten: hasWritten) else {
+                return nil
+            }
+            
+            for i in (0 ..< participants.wrappedValue.count).reversed() {
+                if !hasWritten.contains(participants.wrappedValue[i].userId) {
+                    participants.wrappedValue[i].amount = Utility.doubleToTwoDecimals(value: i == firstNonManualIndex ? val : amountPerParticipant)
+                    val -= amountPerParticipant
+                }
+            }
+            
+            return nil
+            
+        case .meEverything:
+            participants.wrappedValue[0].amount = totalAmount
+            
+            for i in 1..<participants.wrappedValue.count {
+                participants.wrappedValue[i].amount = 0
+            }
+            return nil
+            
+        case .ownItems:
+            return nil
+        }
+    }
+    
+    private static func getFirstNonManualIndex(participants: Binding<[Participant]>, hasWritten: [String]) -> Int? {
+        for i in 0 ..< participants.wrappedValue.count {
+            if !hasWritten.contains(participants.wrappedValue[i].userId) {
+                return i
+            }
+        }
+        return nil
+    }
+    
 }
 
 /// A view that shows an optional UIImage, if nil, its shows the failImage.

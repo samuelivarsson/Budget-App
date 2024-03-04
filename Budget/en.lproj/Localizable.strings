@@ -213,7 +213,9 @@
 "useSavingsAccount" = "Use savings account";
 "useBuffer" = "Use buffer";
 "noCategoriesFound" = "You have no transaction categories!";
-"splitEvenly" = "Split evenly";
+"standard" = "Standard";
+"meEverything" = "Me everything";
+"ownItems" = "Own items";
 "me" = "Me";
 "you" = "You";
 
@@ -242,6 +244,8 @@
 "pleaseEnterPhone" = "Please enter a phone number";
 "userIsAlreadyFriend" = "This user is already your friend";
 "totalAmountMisMatch" = "The total amount does not match the amount of the participants";
+"participantNegativeAmount" = "A participant has a negative amount";
+"participantAmountLargerThanTotal" = "A participant has an amount larger than the total";
 "phoneTooShort" = "The phone number you entered is too short";
 "documentNotExist" = "The document does not exist";
 "noPhotoURL" = "Found nil when extracting url in setProfilePicture in AuthViewModel, this can be ignored if the user hasn't uploaded a profile picture yet";

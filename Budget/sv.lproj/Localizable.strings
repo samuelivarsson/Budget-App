@@ -213,7 +213,9 @@
 "useSavingsAccount" = "Använd sparkonto";
 "useBuffer" = "Använd buffert";
 "noCategoriesFound" = "Du har inga transaktionskategorier!";
-"splitEvenly" = "Dela jämnt";
+"standard" = "Standard";
+"meEverything" = "Jag allt";
+"ownItems" = "Egna köp";
 "me" = "Jag";
 "you" = "Du";
 
@@ -242,6 +244,8 @@
 "pleaseEnterPhone" = "Vänligen ange ett telefonnummer";
 "userIsAlreadyFriend" = "Den här användaren är redan din vän";
 "totalAmountMisMatch" = "Det totala beloppet matchar inte beloppet från deltagarna";
+"participantNegativeAmount" = "En deltagare har ett negativt belopp";
+"participantAmountLargerThanTotal" = "En deltagare har ett belopp större än totalen";
 "phoneTooShort" = "Telefonnumret du angav är för kort";
 "documentNotExist" = "Dokumentet som du försökte hämta finns inte";
 "noPhotoURL" = "Hittade nil vid extrahering av profilbilden, detta kan ignoreras om användaren inte har laddat up en profilbild än";

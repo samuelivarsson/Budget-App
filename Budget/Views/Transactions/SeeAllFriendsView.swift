@@ -39,12 +39,11 @@ struct SeeAllFriendsView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
+                    self.participants = self.participants.filter({ $0.userId == self.userViewModel.user.id })
                     self.selectedRows.forEach { friendId in
                         if friendId != self.userViewModel.user.id {
                             if let friendName = self.userViewModel.getName(friendId: friendId) {
-                                if !self.participants.contains(where: { $0.userId == friendId }) {
-                                    self.participants.append(Participant(userId: friendId, userName: friendName))
-                                }
+                                self.participants.append(Participant(userId: friendId, userName: friendName))
                             } else {
                                 self.errorHandling.handle(error: ApplicationError.unexpectedNil("Found nil when extracting friendName for friend with id \(friendId) in toolbar in SeeAllFriendsView"))
                             }
