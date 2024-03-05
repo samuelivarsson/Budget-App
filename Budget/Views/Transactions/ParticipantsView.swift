@@ -119,7 +119,7 @@ struct ParticipantsView: View {
         .onDelete(perform: deleteParticipants)
         .onChange(of: participants.count) { _ in
             DispatchQueue.main.async {
-                if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten) {
+                if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
                     self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }
             }
@@ -129,7 +129,7 @@ struct ParticipantsView: View {
                 if newValue == .meEverything {
                     self.hasWritten = []
                 }
-                if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten) {
+                if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
                     self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }
             }

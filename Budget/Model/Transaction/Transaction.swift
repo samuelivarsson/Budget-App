@@ -149,4 +149,8 @@ struct Transaction: Identifiable, Codable {
     func isMine(userId: String) -> Bool {
         return creatorId == userId
     }
+    
+    func isMyCategory(user: User) -> Bool {
+        return user.budget.transactionCategories.contains(where: { $0.id == self.category.id })
+    }
 }

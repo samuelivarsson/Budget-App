@@ -125,7 +125,8 @@ class TransactionsViewModel: ObservableObject {
                     total += transaction.getShare(userId: user.id)
                 }
             } else if let accountId = accountId {
-                let isNotMineButMainAccount = !transaction.isMine(userId: user.id) && user.budget.getMainAccountId(type: .transaction) == accountId
+                // TODO: If category with same name exists, get that and use the takeFromAccount to decide
+                let isNotMineButMainAccount = !transaction.isMine(userId: user.id) && !transaction.isMyCategory(user: user) && user.budget.getMainAccountId(type: .transaction) == accountId
                 if transaction.category.takesFromAccount == accountId || isNotMineButMainAccount {
                     total += transaction.getShare(userId: user.id)
                 }

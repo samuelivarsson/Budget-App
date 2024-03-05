@@ -325,7 +325,7 @@ class Utility {
         return urlComps.url
     }
     
-    static func setAmountPerParticipant(splitOption: SplitOption, participants: Binding<[Participant]>, totalAmount: Double, hasWritten: [String]) -> String? {
+    static func setAmountPerParticipant(splitOption: SplitOption, participants: Binding<[Participant]>, totalAmount: Double, hasWritten: [String], myUserId: String) -> String? {
         switch splitOption {
         case .standard:
             var nonManualParticipantsCount: Double = 0
@@ -356,10 +356,12 @@ class Utility {
             return nil
             
         case .meEverything:
-            participants.wrappedValue[0].amount = totalAmount
-            
-            for i in 1..<participants.wrappedValue.count {
-                participants.wrappedValue[i].amount = 0
+            for i in 0..<participants.wrappedValue.count {
+                if participants.wrappedValue[i].userId == myUserId {
+                    participants.wrappedValue[i].amount = Utility.doubleToTwoDecimals(value: totalAmount)
+                } else {
+                    participants.wrappedValue[i].amount = 0
+                }
             }
             return nil
             
@@ -377,6 +379,13 @@ class Utility {
         return nil
     }
     
+    static func getTransactionAction(transaction: Transaction, userId: String, role: UserRole) -> TransactionAction {
+        if role == .superAdmin {
+            return .edit
+        }
+        
+        return transaction.isMine(userId: userId) ? .edit : .view
+    }
 }
 
 /// A view that shows an optional UIImage, if nil, its shows the failImage.

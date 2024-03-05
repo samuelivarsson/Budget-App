@@ -44,7 +44,15 @@ struct TransactionsGroupView: View {
                 } else {
                     ForEach(transactions, id:\.id) { transaction in
                         NavigationLink {
-                            TransactionView(transaction: transaction, myId: self.userViewModel.user.id)
+                            TransactionView(
+                                transaction: transaction,
+                                user: self.userViewModel.user,
+                                action: Utility.getTransactionAction(
+                                    transaction: transaction,
+                                    userId: self.userViewModel.user.id,
+                                    role: self.userViewModel.user.role
+                                )
+                            )
                         } label: {
                             VStack(alignment: .leading) {
                                 HStack {

@@ -38,10 +38,25 @@ struct TransactionView: View {
         self._transaction = State(initialValue: Transaction.getDummyTransaction(category: firstCategory))
     }
     
-    init(transaction: Transaction, myId: String) {
-        self._transaction = State(initialValue: transaction)
+    init(transaction: Transaction, user: User, action: TransactionAction) {
+        var newTransaction = transaction
+        if !transaction.isMyCategory(user: user) {
+            var changed = false
+            for category in user.budget.transactionCategories {
+                if !changed && category.name == transaction.category.name {
+                    newTransaction.category = category
+                    changed = true
+                }
+            }
+            
+            if !changed {
+                newTransaction.category = user.budget.transactionCategories.first ?? TransactionCategory.getDummyCategory()
+            }
+        }
+        
+        self._transaction = State(initialValue: newTransaction)
         self._totalAmountString = State(initialValue: Utility.currencyFormatterNoSymbol.string(from: transaction.totalAmount as NSNumber) ?? "")
-        self.action = transaction.creatorId == myId ? .edit : .view
+        self.action = action
         self.oldTransaction = transaction
     }
     
@@ -128,7 +143,7 @@ struct TransactionView: View {
         }
         .onChange(of: self.transaction.totalAmount) { _ in
             DispatchQueue.main.async {
-                if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten) {
+                if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
                     self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }
             }
@@ -252,7 +267,7 @@ struct TransactionView: View {
                                 .replacingOccurrences(of: "×", with: "*")
                             if let doubleAmount = Math.evaluateExpression(expression) {
                                 DispatchQueue.main.async {
-                                    self.transaction.totalAmount = doubleAmount
+                                    self.transaction.totalAmount = Utility.doubleToTwoDecimals(value: doubleAmount)
                                     self.totalAmountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(
                                         from: self.transaction.totalAmount as NSNumber) ?? "-999"
                                 }
@@ -298,6 +313,13 @@ struct TransactionView: View {
         }
     }
     
+    private func allAmountsToTwoDecimals() {
+        self.transaction.totalAmount = Utility.doubleToTwoDecimals(value: self.transaction.totalAmount)
+        for i in 0..<self.transaction.participants.count {
+            self.transaction.participants[i].amount = Utility.doubleToTwoDecimals(value: self.transaction.participants[i].amount)
+        }
+    }
+    
     private func addTransaction() {
         withAnimation {
             guard let user = authViewModel.auth.currentUser else {
@@ -306,6 +328,8 @@ struct TransactionView: View {
                 self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                 return
             }
+            self.allAmountsToTwoDecimals()
+            
             let totalAmount = Utility.doubleToTwoDecimals(value: self.transaction.participants.reduce(0) { result, participant in
                 result + participant.amount
             })
@@ -369,12 +393,21 @@ struct TransactionView: View {
             if self.action == .view {
                 return
             }
+            self.allAmountsToTwoDecimals()
             
-            let totalAmount = self.transaction.participants.reduce(0) { result, participant in
+            let totalAmount = Utility.doubleToTwoDecimals(value: self.transaction.participants.reduce(0) { result, participant in
                 result + participant.amount
-            }
+            })
             guard self.transaction.totalAmount == totalAmount else {
                 self.errorHandling.handle(error: InputError.totalAmountMisMatch)
+                return
+            }
+            guard self.transaction.participants.allSatisfy({$0.amount >= 0}) else {
+                self.errorHandling.handle(error: InputError.participantNegativeAmount)
+                return
+            }
+            guard self.transaction.participants.allSatisfy({$0.amount <= self.transaction.totalAmount}) else {
+                self.errorHandling.handle(error: InputError.participantAmountLargerThanTotal)
                 return
             }
             

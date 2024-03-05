@@ -163,6 +163,9 @@
 		4D6CA59D29B2CCA500487669 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59C29B2CCA500487669 /* Account.swift */; };
 		4D6CA59F29B2CCE600487669 /* AccountType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59E29B2CCE600487669 /* AccountType.swift */; };
 		4D6CA5A629B2E4CC00487669 /* BudgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA5A529B2E4CC00487669 /* BudgetView.swift */; };
+		4D6DDDC72B9690BA00A382C6 /* UserRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6DDDC62B9690BA00A382C6 /* UserRole.swift */; };
+		4D6DDDC82B9690BA00A382C6 /* UserRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6DDDC62B9690BA00A382C6 /* UserRole.swift */; };
+		4D6DDDC92B9690BA00A382C6 /* UserRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6DDDC62B9690BA00A382C6 /* UserRole.swift */; };
 		4D7ADA50282ACBB80051460B /* StorageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */; };
 		4D7ADA52282BCABB0051460B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA51282BCABB0051460B /* User.swift */; };
 		4D7ADA54282C54420051460B /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA53282C54420051460B /* UserViewModel.swift */; };
@@ -358,6 +361,7 @@
 		4D6CA59C29B2CCA500487669 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		4D6CA59E29B2CCE600487669 /* AccountType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountType.swift; sourceTree = "<group>"; };
 		4D6CA5A529B2E4CC00487669 /* BudgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetView.swift; sourceTree = "<group>"; };
+		4D6DDDC62B9690BA00A382C6 /* UserRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRole.swift; sourceTree = "<group>"; };
 		4D7ADA4F282ACBB80051460B /* StorageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageViewModel.swift; sourceTree = "<group>"; };
 		4D7ADA51282BCABB0051460B /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		4D7ADA53282C54420051460B /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
@@ -562,6 +566,7 @@
 			children = (
 				4DD27E77295230E10011D002 /* Named.swift */,
 				4D7ADA51282BCABB0051460B /* User.swift */,
+				4D6DDDC62B9690BA00A382C6 /* UserRole.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -1207,6 +1212,7 @@
 				4D08D98429D65D63003A09B5 /* Participant.swift in Sources */,
 				4D08D99B29D66E51003A09B5 /* HTTPMethod.swift in Sources */,
 				4D08D97A29D65D37003A09B5 /* Account.swift in Sources */,
+				4D6DDDC92B9690BA00A382C6 /* UserRole.swift in Sources */,
 				4D08D97C29D65D37003A09B5 /* AccountType.swift in Sources */,
 				4D08D97129D65D2E003A09B5 /* NotificationType.swift in Sources */,
 				4D08D95F29D65C8E003A09B5 /* QuickBalanceErrorResponse.swift in Sources */,
@@ -1243,6 +1249,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D6DDDC82B9690BA00A382C6 /* UserRole.swift in Sources */,
 				4D08D96F29D65D2D003A09B5 /* NotificationType.swift in Sources */,
 				4D08D99129D66D5C003A09B5 /* MobileBankIDResponse.swift in Sources */,
 				4D08D99229D66D5C003A09B5 /* QuickBalanceAccountsResponse.swift in Sources */,
@@ -1324,6 +1331,7 @@
 				4DD27E78295230E10011D002 /* Named.swift in Sources */,
 				4D6CA59B29B2CC0400487669 /* Overhead.swift in Sources */,
 				4DF808B4281ECDBC00E19A8D /* ParticipantsView.swift in Sources */,
+				4D6DDDC72B9690BA00A382C6 /* UserRole.swift in Sources */,
 				4D02890B280B196B0053D15D /* GoogleSignInButton.swift in Sources */,
 				4DFF75B5281077E500C40FF6 /* FriendDetailView.swift in Sources */,
 				4DFF75B12810739E00C40FF6 /* EditFriendNameView.swift in Sources */,

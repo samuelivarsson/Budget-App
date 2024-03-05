@@ -42,9 +42,9 @@ struct ParticipantView: View {
                                 .replacingOccurrences(of: "×", with: "*")
                             if let doubleAmount = Math.evaluateExpression(expression) {
                                 DispatchQueue.main.async {
-                                    self.participant.amount = doubleAmount
+                                    self.participant.amount = Utility.doubleToTwoDecimals(value: doubleAmount)
                                     
-                                    if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten) {
+                                    if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
                                         self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                                     }
                                 }
@@ -87,6 +87,9 @@ struct ParticipantView: View {
             DispatchQueue.main.async {
                 self.amountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: newValue as NSNumber) ?? "-999"
             }
+        }
+        .onLoad {
+            self.amountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: participant.amount as NSNumber) ?? "-999"
         }
     }
 }
