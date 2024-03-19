@@ -214,6 +214,35 @@
 		4DE907C229BFDE5C00CB4F99 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4DE907C129BFDE5C00CB4F99 /* FirebaseFirestore */; };
 		4DE907C429C0E02E00CB4F99 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE907C329C0E02E00CB4F99 /* AccountView.swift */; };
 		4DE907C629C0E3FA00CB4F99 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE907C529C0E3FA00CB4F99 /* AccountsView.swift */; };
+		4DF102422BA9B20600239ED7 /* Participant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7AE0AE295280DA009E0845 /* Participant.swift */; };
+		4DF102432BA9B21600239ED7 /* SplitOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0C5CB72B373ED000B16A39 /* SplitOption.swift */; };
+		4DF102442BA9B22500239ED7 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA5728D78E990051460B /* Transaction.swift */; };
+		4DF102452BA9B28F00239ED7 /* UserRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6DDDC62B9690BA00A382C6 /* UserRole.swift */; };
+		4DF102462BA9B2A800239ED7 /* TransactionAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59429B2AFD100487669 /* TransactionAction.swift */; };
+		4DF102472BA9B2BE00239ED7 /* TransactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */; };
+		4DF102482BA9B2C100239ED7 /* TransactionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D40510728E8B3950043D844 /* TransactionCategory.swift */; };
+		4DF102492BA9B2D300239ED7 /* Budget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59629B2CA7C00487669 /* Budget.swift */; };
+		4DF1024A2BA9B2E200239ED7 /* AccountType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59E29B2CCE600487669 /* AccountType.swift */; };
+		4DF1024B2BA9B2E500239ED7 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6CA59C29B2CCA500487669 /* Account.swift */; };
+		4DF1024C2BA9B2EA00239ED7 /* Standing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5B44629C61574002340A2 /* Standing.swift */; };
+		4DF1024D2BA9B2FC00239ED7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7ADA51282BCABB0051460B /* User.swift */; };
+		4DF1024E2BA9B33600239ED7 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD27E77295230E10011D002 /* Named.swift */; };
+		4DF1024F2BA9B36600239ED7 /* QuickBalanceAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13AEE029CD11B6000B6D9F /* QuickBalanceAccount.swift */; };
+		4DF102502BA9B37D00239ED7 /* QuickBalanceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13AEDE29CCFF9B000B6D9F /* QuickBalanceResponse.swift */; };
+		4DF102512BA9B37E00239ED7 /* QuickBalanceAccountsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F5529CF4A4500B3C3FE /* QuickBalanceAccountsResponse.swift */; };
+		4DF102522BA9B38000239ED7 /* QuickBalanceSubscriptionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0ED14F29CEE171000DE8C2 /* QuickBalanceSubscriptionResponse.swift */; };
+		4DF102532BA9B38600239ED7 /* ProfileListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4C29CECDEA00B3C3FE /* ProfileListResponse.swift */; };
+		4DF102542BA9B38800239ED7 /* MobileBankIDResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4829CE835700B3C3FE /* MobileBankIDResponse.swift */; };
+		4DF102552BA9B39B00239ED7 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4A29CE849800B3C3FE /* HTTPMethod.swift */; };
+		4DF102562BA9B39F00239ED7 /* MobileBankID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */; };
+		4DF102572BA9B3A100239ED7 /* QuickBalanceURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4429CE6E8B00B3C3FE /* QuickBalanceURL.swift */; };
+		4DF102582BA9B3B400239ED7 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FB1AE2905FFA400E9A2D9 /* Friend.swift */; };
+		4DF102592BA9B3B600239ED7 /* CustomFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D671E3428EF015C0071A60E /* CustomFriend.swift */; };
+		4DF1025A2BA9B3B900239ED7 /* FriendStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7E2A602915DD6200E16314 /* FriendStatus.swift */; };
+		4DF1025B2BA9B3BB00239ED7 /* AccountHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E929CBB21400C0F4D5 /* AccountHistory.swift */; };
+		4DF1025C2BA9B3BD00239ED7 /* CategoryHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E729CB823900C0F4D5 /* CategoryHistory.swift */; };
+		4DF1025D2BA9B3BF00239ED7 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FB1B02905FFA400E9A2D9 /* Notification.swift */; };
+		4DF1025E2BA9B3C100239ED7 /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FB1B22905FFA400E9A2D9 /* NotificationType.swift */; };
 		4DF808B4281ECDBC00E19A8D /* ParticipantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF808B3281ECDBC00E19A8D /* ParticipantsView.swift */; };
 		4DF808B6282178AC00E19A8D /* FriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF808B5282178AC00E19A8D /* FriendsViewModel.swift */; };
 		4DFD3D9628073E4A00D5FFB4 /* BudgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3D9528073E4A00D5FFB4 /* BudgetApp.swift */; };
@@ -1182,13 +1211,42 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DF1024F2BA9B36600239ED7 /* QuickBalanceAccount.swift in Sources */,
 				4D2C37BC2B934C8100CD5D7B /* Extensions.swift in Sources */,
 				4D2C37BB2B934C0300CD5D7B /* Utility.swift in Sources */,
+				4DF102502BA9B37D00239ED7 /* QuickBalanceResponse.swift in Sources */,
+				4DF102492BA9B2D300239ED7 /* Budget.swift in Sources */,
+				4DF102592BA9B3B600239ED7 /* CustomFriend.swift in Sources */,
 				4D2C37BD2B934C9B00CD5D7B /* ErrorHandling.swift in Sources */,
+				4DF102532BA9B38600239ED7 /* ProfileListResponse.swift in Sources */,
+				4DF102422BA9B20600239ED7 /* Participant.swift in Sources */,
+				4DF1025A2BA9B3B900239ED7 /* FriendStatus.swift in Sources */,
+				4DF102572BA9B3A100239ED7 /* QuickBalanceURL.swift in Sources */,
+				4DF102442BA9B22500239ED7 /* Transaction.swift in Sources */,
+				4DF102522BA9B38000239ED7 /* QuickBalanceSubscriptionResponse.swift in Sources */,
+				4DF102452BA9B28F00239ED7 /* UserRole.swift in Sources */,
 				4D2C37BE2B934CC900CD5D7B /* ErrorEnums.swift in Sources */,
+				4DF102472BA9B2BE00239ED7 /* TransactionType.swift in Sources */,
+				4DF102482BA9B2C100239ED7 /* TransactionCategory.swift in Sources */,
 				4D2C37B82B934AA800CD5D7B /* Overhead.swift in Sources */,
+				4DF1024E2BA9B33600239ED7 /* Named.swift in Sources */,
+				4DF1024B2BA9B2E500239ED7 /* Account.swift in Sources */,
+				4DF1024A2BA9B2E200239ED7 /* AccountType.swift in Sources */,
 				4D2C37BF2B934CDB00CD5D7B /* QuickBalanceErrorResponse.swift in Sources */,
+				4DF1025E2BA9B3C100239ED7 /* NotificationType.swift in Sources */,
+				4DF102432BA9B21600239ED7 /* SplitOption.swift in Sources */,
+				4DF102512BA9B37E00239ED7 /* QuickBalanceAccountsResponse.swift in Sources */,
+				4DF1025B2BA9B3BB00239ED7 /* AccountHistory.swift in Sources */,
+				4DF1024C2BA9B2EA00239ED7 /* Standing.swift in Sources */,
+				4DF102562BA9B39F00239ED7 /* MobileBankID.swift in Sources */,
+				4DF102462BA9B2A800239ED7 /* TransactionAction.swift in Sources */,
+				4DF102552BA9B39B00239ED7 /* HTTPMethod.swift in Sources */,
 				4D2C37B52B9348AB00CD5D7B /* OverheadTests.swift in Sources */,
+				4DF1025C2BA9B3BD00239ED7 /* CategoryHistory.swift in Sources */,
+				4DF1025D2BA9B3BF00239ED7 /* Notification.swift in Sources */,
+				4DF102582BA9B3B400239ED7 /* Friend.swift in Sources */,
+				4DF1024D2BA9B2FC00239ED7 /* User.swift in Sources */,
+				4DF102542BA9B38800239ED7 /* MobileBankIDResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
