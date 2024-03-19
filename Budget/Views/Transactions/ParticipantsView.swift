@@ -128,6 +128,9 @@ struct ParticipantsView: View {
             DispatchQueue.main.async {
                 if newValue == .meEverything {
                     self.hasWritten = []
+                    if let notMe = self.participants.first(where: { $0.userId != self.userViewModel.user.id }) {
+                        self.payer = notMe.userId
+                    }
                 }
                 if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
                     self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
