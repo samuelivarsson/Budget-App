@@ -272,7 +272,7 @@ struct TransactionView: View {
                                 .replacingOccurrences(of: ",", with: ".")
                                 .replacingOccurrences(of: "÷", with: "/")
                                 .replacingOccurrences(of: "×", with: "*")
-                            if let doubleAmount = Math.evaluateExpression(expression) {
+                            if let doubleAmount = try? expression.evaluate() {
                                 DispatchQueue.main.async {
                                     self.transaction.totalAmount = Utility.doubleToTwoDecimals(value: doubleAmount)
                                     self.totalAmountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(

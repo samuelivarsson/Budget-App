@@ -1,4 +1,5 @@
 {
+  "originHash" : "1a8700f68f67eafe58aa761d1196a3b55bd613c1816f53e5418b66842d1833a2",
   "pins" : [
     {
       "identity" : "abseil-cpp-swiftpm",
@@ -25,6 +26,15 @@
       "state" : {
         "revision" : "79db6516894a932d0ddaff3b05b9da1e4f6c4069",
         "version" : "0.9.0"
+      }
+    },
+    {
+      "identity" : "ddmathparser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/davedelong/DDMathParser.git",
+      "state" : {
+        "revision" : "0a159109e2393c3e1db4e2b638009c82e6650b4d",
+        "version" : "3.1.0"
       }
     },
     {
@@ -136,5 +146,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

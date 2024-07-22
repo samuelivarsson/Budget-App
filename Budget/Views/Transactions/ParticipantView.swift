@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MathParser
 
 struct ParticipantView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
@@ -40,15 +41,7 @@ struct ParticipantView: View {
                                 .replacingOccurrences(of: ",", with: ".")
                                 .replacingOccurrences(of: "÷", with: "/")
                                 .replacingOccurrences(of: "×", with: "*")
-                            print(expression)
-                            let exp = NSExpression(format: expression)
-                            if let test = exp.expressionValue(with: nil, context: nil) {
-                                print(test)
-                            }
-                            print(expression.evaluate())
-                            let result: Double = exp.expressionValue(with: nil, context: nil) as! Double
-                            if let doubleAmount = Math.evaluateExpression(expression) {
-                                print(doubleAmount)
+                            if let doubleAmount = try? expression.evaluate() {
                                 DispatchQueue.main.async {
                                     self.participant.amount = Utility.doubleToTwoDecimals(value: doubleAmount)
                                     
