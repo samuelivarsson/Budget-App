@@ -72,6 +72,8 @@ struct OverheadView: View {
                 .pickerStyle(.menu)
                 .disabled(self.overhead.lastDay)
                 
+                Toggle("lastDay", isOn: self.$overhead.lastDay)
+                
                 Stepper(value: self.$overhead.months, in: 1 ... 6) {
                     HStack {
                         Text("months")

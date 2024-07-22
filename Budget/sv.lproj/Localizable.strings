@@ -157,6 +157,7 @@
 "noOverheads" = "Du har inga fasta kostnader";
 "sum" = "Summa";
 "dayOfPay" = "Dragningsdag";
+"lastDay" = "Sista dagen i månaden";
 "startDate" = "Start datum";
 "months" = "Månader";
 "share" = "Dela";
@@ -215,6 +216,7 @@
 "noCategoriesFound" = "Du har inga transaktionskategorier!";
 "standard" = "Standard";
 "meEverything" = "Jag allt";
+"heSheEverything" = "Han/Hon allt";
 "ownItems" = "Egna köp";
 "me" = "Jag";
 "you" = "Du";

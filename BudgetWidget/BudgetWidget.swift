@@ -72,7 +72,7 @@ struct Provider: IntentTimelineProvider {
             completion(ApplicationError.unexpectedNil(info))
             return
         }
-        
+
         let quickBalanceAccount = QuickBalanceAccount(name: name, subscriptionId: subscriptionId, budgetAccountId: budgetAccountId)
         self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccount: quickBalanceAccount, completion: completion)
     }
@@ -92,37 +92,34 @@ struct SingleQuickBalanceWidgetEntryView: View {
     var entry: Provider.Entry
 
     var body: some View {
-        ZStack(alignment: Alignment(horizontal: .center, vertical: .center)) {
-            if self.colorScheme == .dark {
-                Color(red: 44/255, green: 44/255, blue: 44/255).edgesIgnoringSafeArea(.all)
-            }
+        VStack(alignment: .center, spacing: 10) {
+            let balanceText = self.entry.balance + " " + self.entry.currency
+            Text("amountAvailable".localizeString())
+                .font(.system(size: 13))
 
-            VStack(alignment: .center, spacing: 10) {
-                let balanceText = self.entry.balance + " " + self.entry.currency
-                Text("amountAvailable".localizeString())
-                    .font(.system(size: 13))
+            Text(balanceText)
+                .font(.system(size: 22))
+                .bold()
+                .lineLimit(1)
+                .minimumScaleFactor(0.3)
 
-                Text(balanceText)
-                    .font(.system(size: 22))
-                    .bold()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.3)
-
-                if self.entry.error.isEmpty {
-                    HStack(spacing: 0) {
-                        Text("\("latestUpdate".localizeString()): ")
-                            .font(.system(size: 9))
-                        Text(self.entry.date, style: .time)
-                            .font(.system(size: 9))
-                    }
-                } else {
-                    Text(self.entry.error)
-                        .font(.system(size: 8))
-                        .bold()
-                        .multilineTextAlignment(.center)
+            if self.entry.error.isEmpty {
+                HStack(spacing: 0) {
+                    Text("\("latestUpdate".localizeString()): ")
+                        .font(.system(size: 9))
+                    Text(self.entry.date, style: .time)
+                        .font(.system(size: 9))
                 }
-            }.padding()
-        }.widgetURL(URL(string: "budgetapp://?sourceApplication=widget&kind=singleQuickBalance"))
+            } else {
+                Text(self.entry.error)
+                    .font(.system(size: 8))
+                    .bold()
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding()
+        .widgetURL(URL(string: "budgetapp://?sourceApplication=widget&kind=singleQuickBalance"))
+        .widgetBackground(self.colorScheme == .dark ? Color(red: 44/255, green: 44/255, blue: 44/255) : Color.white)
     }
 }
 
@@ -135,6 +132,7 @@ struct SingleQuickBalanceWidget: Widget {
         }
         .configurationDisplayName("quickBalance".localizeString())
         .description("seeYourQuickBalance".localizeString())
+        .contentMarginsDisabled()
     }
 }
 
@@ -142,5 +140,17 @@ struct SingleQuickBalanceWidget_Previews: PreviewProvider {
     static var previews: some View {
         SingleQuickBalanceWidgetEntryView(entry: SimpleEntry(date: Date.now, balance: "1234,56", currency: "SEK", error: "", configuration: SelectAccountIntent()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
+    }
+}
+
+extension View {
+    func widgetBackground(_ backgroundView: some View) -> some View {
+        if #available(iOSApplicationExtension 17.0, *) {
+            return containerBackground(for: .widget) {
+                backgroundView
+            }
+        } else {
+            return background(backgroundView)
+        }
     }
 }

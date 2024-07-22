@@ -157,6 +157,7 @@
 "noOverheads" = "You have no overheads";
 "sum" = "Sum";
 "dayOfPay" = "Day of pay";
+"lastDay" = "Last day of month";
 "startDate" = "Start date";
 "months" = "Months";
 "share" = "Share";
@@ -215,6 +216,7 @@
 "noCategoriesFound" = "You have no transaction categories!";
 "standard" = "Standard";
 "meEverything" = "Me everything";
+"heSheEverything" = "He/She everything";
 "ownItems" = "Own items";
 "me" = "Me";
 "you" = "You";

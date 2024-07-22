@@ -36,12 +36,24 @@ struct Overhead: Identifiable, Codable, Hashable {
         return self.lastDay ? nowDate.endOfMonth().get(.day) : self.dayOfPay
     }
     
-    private func isAfterPayDate(monthStartsOn: Int, nowDate: Date = Date.now) -> Bool {
-        let dayComponent = Calendar.current.dateComponents([.day], from: nowDate)
-        if let currentDay = dayComponent.day {
-            return (monthStartsOn <= self.getDayOfPay() && self.getDayOfPay() <= currentDay) || (self.getDayOfPay() <= currentDay && currentDay < monthStartsOn) || (currentDay < monthStartsOn && monthStartsOn <= self.getDayOfPay())
+    private func isNowDateAfterOrSameDayAsDate(monthStartsOn: Int, nowDate: Date = Date.now, date: Date) -> Bool {
+        let dayComponent = Calendar.current.dateComponents([.day], from: date)
+        if let day = dayComponent.day {
+            return isNowDateAfterOrSameDay(monthStartsOn: monthStartsOn, nowDate: nowDate, day: day)
         }
         return true
+    }
+    
+    private func isNowDateAfterOrSameDay(monthStartsOn: Int, nowDate: Date = Date.now, day: Int) -> Bool {
+        let currentDayComponent = Calendar.current.dateComponents([.day], from: nowDate)
+        if let currentDay = currentDayComponent.day {
+            return (monthStartsOn <= day && day <= currentDay) || (day <= currentDay && currentDay < monthStartsOn) || (currentDay < monthStartsOn && monthStartsOn <= day)
+        }
+        return true
+    }
+    
+    private func isAfterOrSameDayAsPayDate(monthStartsOn: Int, nowDate: Date = Date.now) -> Bool {
+        return isNowDateAfterOrSameDay(monthStartsOn: monthStartsOn, nowDate: nowDate, day: self.getDayOfPay(nowDate: nowDate))
     }
     
     private func getMonthsSinceLastPay(monthStartsOn: Int, date: Date = Date()) -> Int {
@@ -50,7 +62,8 @@ struct Overhead: Identifiable, Codable, Hashable {
         }
         let fromDate = Utility.getBudgetPeriod(date: self.startDate, monthStartsOn: monthStartsOn).0
         let toDate = Utility.getBudgetPeriod(date: date, monthStartsOn: monthStartsOn).0
-        return Calendar.current.dateComponents([.month], from: fromDate, to: toDate).month ?? 0
+        let diff = Calendar.current.dateComponents([.month], from: fromDate, to: toDate)
+        return (diff.month ?? 0) + (diff.year ?? 0) * 12
     }
     
     private func getAmountMultiplier(monthStartsOn: Int, date: Date = Date()) -> Int {
@@ -58,8 +71,8 @@ struct Overhead: Identifiable, Codable, Hashable {
             return 1
         }
         
-        if self.isPayMonth(monthStartsOn: monthStartsOn, date: date) && !self.isAfterPayDate(monthStartsOn: monthStartsOn, nowDate: date) {
-            return self.getMonthsSinceLastPay(monthStartsOn: monthStartsOn, date: date) % (self.months + 1)
+        if self.isPayMonth(monthStartsOn: monthStartsOn, date: date) && !self.isAfterOrSameDayAsPayDate(monthStartsOn: monthStartsOn, nowDate: date) {
+            return self.months
         }
         
         return self.getMonthsSinceLastPay(monthStartsOn: monthStartsOn, date: date) % self.months
@@ -73,16 +86,17 @@ struct Overhead: Identifiable, Codable, Hashable {
     }
     
     func isPaid(monthStartsOn: Int, nowDate: Date = Date.now) -> Bool {
-        return self.isAfterPayDate(monthStartsOn: monthStartsOn, nowDate: nowDate) && self.isPayMonth(monthStartsOn: monthStartsOn, date: nowDate)
+        return self.isAfterOrSameDayAsPayDate(monthStartsOn: monthStartsOn, nowDate: nowDate) && self.isPayMonth(monthStartsOn: monthStartsOn, date: nowDate)
     }
     
     private func getTemporaryExtraFromShare(monthStartsOn: Int, nowDate: Date = Date.now) -> Double {
         if !self.share {
             return 0
         }
-        let dayComponent = Calendar.current.dateComponents([.day], from: nowDate)
-        if let currentDay = dayComponent.day {
-            return self.isPayMonth(monthStartsOn: monthStartsOn) && self.receiveDay <= currentDay ? self.amount / 2 : 0
+        if self.isPayMonth(monthStartsOn: monthStartsOn, date: nowDate) {
+            if self.imPaying && !self.isAfterOrSameDayAsPayDate(monthStartsOn: monthStartsOn, nowDate: nowDate) {
+                return self.isNowDateAfterOrSameDay(monthStartsOn: monthStartsOn, nowDate: nowDate, day: self.receiveDay) ? self.amount / 2 : 0
+            }
         }
         return 0
     }
@@ -94,9 +108,9 @@ struct Overhead: Identifiable, Codable, Hashable {
         var total: Double = 0
         let monthsSinceLastPay = self.getAmountMultiplier(monthStartsOn: monthStartsOn, date: nowDate)
         for i in 0..<monthsSinceLastPay {
-            total += self.getShareOfAmount(monthStartsOn: monthStartsOn, monthsBack: i)
+            total += self.getShareOfAmount(monthStartsOn: monthStartsOn, monthsBack: i, nowDate: nowDate)
         }
-        total += self.getTemporaryExtraFromShare(monthStartsOn: monthStartsOn)
+        total += self.getTemporaryExtraFromShare(monthStartsOn: monthStartsOn, nowDate: nowDate)
         return total
     }
 }

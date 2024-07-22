@@ -141,12 +141,15 @@ struct TransactionView: View {
                 self.transaction.payerId = self.transaction.participants[0].userId
             }
         }
-        .onChange(of: self.transaction.totalAmount) { _ in
+        .onChange(of: self.transaction.totalAmount) { newValue in
             DispatchQueue.main.async {
                 if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
                     self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }
             }
+        }
+        .onChange(of: self.transaction.type) { newValue in
+            self.transaction.category = self.getFirstCategory(type: newValue)
         }
     }
     
@@ -187,6 +190,10 @@ struct TransactionView: View {
                 .pickerStyle(.segmented)
             }
         }
+    }
+    
+    private func getFirstCategory(type: TransactionType) -> TransactionCategory {
+        return self.userViewModel.getTransactionCategoriesSorted(type: type).first ?? TransactionCategory.getDummyCategory()
     }
     
     private var categoryView: some View {

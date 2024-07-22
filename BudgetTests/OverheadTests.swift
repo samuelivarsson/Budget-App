@@ -46,7 +46,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: false,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -67,7 +67,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: false,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(140, temporaryBalance)
@@ -88,7 +88,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: false,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(140, temporaryBalance)
@@ -104,7 +104,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: false,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: nowDate)
         XCTAssertEqual(280, temporaryBalance)
@@ -120,7 +120,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: false,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: nowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -136,7 +136,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: false,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: nowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -157,7 +157,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: false,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -180,7 +180,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -201,7 +201,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(70, temporaryBalance)
@@ -222,7 +222,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(70, temporaryBalance)
@@ -238,7 +238,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: nowDate)
         XCTAssertEqual(140, temporaryBalance)
@@ -254,7 +254,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: nowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -270,7 +270,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: nowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -291,7 +291,7 @@ final class OverheadTests: XCTestCase {
             startDate: startDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -317,7 +317,7 @@ final class OverheadTests: XCTestCase {
             startDate: customStartDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -343,7 +343,7 @@ final class OverheadTests: XCTestCase {
             startDate: customStartDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(141.5, temporaryBalance)
@@ -369,7 +369,7 @@ final class OverheadTests: XCTestCase {
             startDate: customStartDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(141.5, temporaryBalance)
@@ -395,7 +395,7 @@ final class OverheadTests: XCTestCase {
             startDate: customStartDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(1698/2, temporaryBalance)
@@ -421,7 +421,7 @@ final class OverheadTests: XCTestCase {
             startDate: customStartDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(0, temporaryBalance)
@@ -447,7 +447,7 @@ final class OverheadTests: XCTestCase {
             startDate: customStartDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(141.5, temporaryBalance)
@@ -473,10 +473,114 @@ final class OverheadTests: XCTestCase {
             startDate: customStartDate,
             share: true,
             imPaying: false,
-            receiveDay: 27
+            receiveDay: 25
         )
         let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
         XCTAssertEqual(566, temporaryBalance)
+    }
+
+    func testOverheadMultipleMonthsShare8() throws {
+        dateComponents.year = 2023
+        dateComponents.month = 5
+        dateComponents.day = 1
+        let customStartDate = Calendar.current.date(from: dateComponents) ?? Date.now
+        
+        dateComponents.year = 2024
+        dateComponents.month = 3
+        dateComponents.day = 25
+        let customNowDate = Calendar.current.date(from: dateComponents) ?? Date.now
+        
+        let overhead = Overhead(
+            name: "Test1",
+            amount: 1698,
+            dayOfPay: 27,
+            lastDay: false,
+            months: 6,
+            startDate: customStartDate,
+            share: true,
+            imPaying: false,
+            receiveDay: 25
+        )
+        let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
+        XCTAssertEqual(707.5, temporaryBalance) // 1698/2 * 5/6
+    }
+
+    func testOverheadMultipleMonthsShare9() throws {
+        dateComponents.year = 2023
+        dateComponents.month = 5
+        dateComponents.day = 1
+        let customStartDate = Calendar.current.date(from: dateComponents) ?? Date.now
+        
+        dateComponents.year = 2024
+        dateComponents.month = 4
+        dateComponents.day = 24
+        let customNowDate = Calendar.current.date(from: dateComponents) ?? Date.now
+        
+        let overhead = Overhead(
+            name: "Test1",
+            amount: 1698,
+            dayOfPay: 27,
+            lastDay: false,
+            months: 6,
+            startDate: customStartDate,
+            share: true,
+            imPaying: false,
+            receiveDay: 25
+        )
+        let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
+        XCTAssertEqual(707.5, temporaryBalance) // 1698/2 * 5/6
+    }
+    
+    func testOverheadMultipleMonthsShare10() throws {
+        dateComponents.year = 2023
+        dateComponents.month = 5
+        dateComponents.day = 1
+        let customStartDate = Calendar.current.date(from: dateComponents) ?? Date.now
+        
+        dateComponents.year = 2024
+        dateComponents.month = 4
+        dateComponents.day = 25
+        let customNowDate = Calendar.current.date(from: dateComponents) ?? Date.now
+        
+        let overhead = Overhead(
+            name: "Test1",
+            amount: 1698,
+            dayOfPay: 27,
+            lastDay: false,
+            months: 6,
+            startDate: customStartDate,
+            share: true,
+            imPaying: false,
+            receiveDay: 25
+        )
+        let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
+        XCTAssertEqual(1698/2, temporaryBalance)
+    }
+    
+    func testOverheadMultipleMonthsShare11() throws {
+        dateComponents.year = 2023
+        dateComponents.month = 5
+        dateComponents.day = 1
+        let customStartDate = Calendar.current.date(from: dateComponents) ?? Date.now
+        
+        dateComponents.year = 2024
+        dateComponents.month = 5
+        dateComponents.day = 25
+        let customNowDate = Calendar.current.date(from: dateComponents) ?? Date.now
+        
+        let overhead = Overhead(
+            name: "Test1",
+            amount: 1698,
+            dayOfPay: 27,
+            lastDay: false,
+            months: 6,
+            startDate: customStartDate,
+            share: true,
+            imPaying: false,
+            receiveDay: 25
+        )
+        let temporaryBalance = overhead.getTemporaryBalanceOnAccount(monthStartsOn: 25, nowDate: customNowDate)
+        XCTAssertEqual(1698/2/6, temporaryBalance)
     }
 
 //    func testPerformanceExample() throws {

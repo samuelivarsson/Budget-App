@@ -365,6 +365,16 @@ class Utility {
             }
             return nil
             
+        case .heSheEverything:
+            for i in 0..<participants.wrappedValue.count {
+                if participants.wrappedValue[i].userId != myUserId {
+                    participants.wrappedValue[i].amount = Utility.doubleToTwoDecimals(value: totalAmount)
+                } else {
+                    participants.wrappedValue[i].amount = 0
+                }
+            }
+            return nil
+
         case .ownItems:
             return nil
         }

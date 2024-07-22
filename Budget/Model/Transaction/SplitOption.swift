@@ -11,6 +11,7 @@ import SwiftUI
 enum SplitOption: Int16, CaseIterable, Codable {
     case standard = 0
     case meEverything = 2
+    case heSheEverything = 4
     case ownItems = 3
     
     func description() -> LocalizedStringKey {
@@ -19,6 +20,8 @@ enum SplitOption: Int16, CaseIterable, Codable {
             return "standard"
         case .meEverything:
             return "meEverything"
+        case .heSheEverything:
+            return "heSheEverything"
         case .ownItems:
             return "ownItems"
         }

@@ -139,7 +139,7 @@ struct HomeView: View {
         var total: Double
         
         var body: some View {
-            let progress = CGFloat(min(max(value/total, 0), 1))
+            let progress = value == 0 || total == 0 ? 0 : CGFloat(min(max(value/total, 0), 1))
             let startColor = Color.green
             let endColor: Color
             
@@ -150,8 +150,9 @@ struct HomeView: View {
                 endColor = .yellow.interpolate(to: .orange, fraction: (progress - 0.5) * 2)
             }
             
-            return ProgressView(value: value, total: total)
-                .tint(value < total ? endColor : Color.red)
+            let newTotal = total == 0 ? 0.000001 : total
+            return ProgressView(value: value, total: newTotal)
+                .tint(value < newTotal ? endColor : Color.red)
         }
     }
 

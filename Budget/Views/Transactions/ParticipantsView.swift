@@ -95,7 +95,9 @@ struct ParticipantsView: View {
             Spacer()
             Picker("", selection: self.$splitOption) {
                 ForEach(SplitOption.allCases, id: \.self) { splitOption in
-                    Text(splitOption.description()).tag(splitOption)
+                    if splitOption != .heSheEverything || participants.count == 2 {
+                        Text(splitOption.description()).tag(splitOption)
+                    }
                 }
             }
             .disabled(self.action == .view)
@@ -117,8 +119,12 @@ struct ParticipantsView: View {
             ParticipantView(participant: $participant, splitOption: self.$splitOption, participants: self.$participants, totalAmount: self.$totalAmount, hasWritten: self.$hasWritten, action: self.action)
         }
         .onDelete(perform: deleteParticipants)
-        .onChange(of: participants.count) { _ in
+        .onChange(of: participants.count) { newValue in
             DispatchQueue.main.async {
+                if newValue > 2 && splitOption == .heSheEverything {
+                    self.splitOption = .standard
+                }
+
                 if let errorString = Utility.setAmountPerParticipant(splitOption: self.splitOption, participants: self.$participants, totalAmount: self.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
                     self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }

@@ -28,7 +28,7 @@ struct ParticipantView: View {
         HStack {
             Text(participant.userId == userViewModel.user.id ? "you".localizeString() : participant.userName)
             Spacer()
-            if splitOption == SplitOption.meEverything || action == .view {
+            if splitOption == SplitOption.meEverything || splitOption == SplitOption.heSheEverything || action == .view {
                 Text(Utility.doubleToLocalCurrency(value: participant.amount))
                     .padding(5)
             } else {
@@ -40,7 +40,15 @@ struct ParticipantView: View {
                                 .replacingOccurrences(of: ",", with: ".")
                                 .replacingOccurrences(of: "÷", with: "/")
                                 .replacingOccurrences(of: "×", with: "*")
+                            print(expression)
+                            let exp = NSExpression(format: expression)
+                            if let test = exp.expressionValue(with: nil, context: nil) {
+                                print(test)
+                            }
+                            print(expression.evaluate())
+                            let result: Double = exp.expressionValue(with: nil, context: nil) as! Double
                             if let doubleAmount = Math.evaluateExpression(expression) {
+                                print(doubleAmount)
                                 DispatchQueue.main.async {
                                     self.participant.amount = Utility.doubleToTwoDecimals(value: doubleAmount)
                                     
