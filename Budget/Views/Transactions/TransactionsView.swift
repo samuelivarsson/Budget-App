@@ -16,8 +16,13 @@ struct TransactionsView: View {
     
     @State private var level: Int = 2
     
+    @State private var transactionFromUrl: Transaction?
+    
+    @State private var urlSchemeNavigation = false
+    
+
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 TransactionsGroupView(level: 0, monthStartsOn: self.userViewModel.user.budget.monthStartsOn, showChildren: true)
                 
@@ -62,8 +67,43 @@ struct TransactionsView: View {
                     .disabled(self.userViewModel.user.id.count == 0)
                 }
             }
+            .onOpenURL { url in
+                if (url.absoluteString.contains("transactionFromUrl")) {
+                    handleUrlOpen(url: url)
+                }
+            }
+            .navigationDestination(isPresented: self.$urlSchemeNavigation) {
+                if let transaction = self.transactionFromUrl {
+                    TransactionView(transaction: transaction, user: self.userViewModel.user, action: .add)
+                }
+            }
         }
     }
+    
+    private func handleUrlOpen(url: URL) {
+        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        if let queryItems = urlComponents?.queryItems {
+            var amount: Double? = nil
+            var description = ""
+            for queryItem in queryItems {
+                if let value = queryItem.value {
+                    if queryItem.name == "sourceApplication" && value != "transactionFromUrl" {
+                        return
+                    } else if queryItem.name == "description" && !value.isEmpty {
+                        description = value
+                    } else if queryItem.name == "amount" && !value.isEmpty {
+                        amount = Double(value)
+                    }
+                }
+            }
+            
+            self.transactionFromUrl = Transaction.getDummyTransaction(category: self.userViewModel.getFirstTransactionCategory(type: .expense))
+            self.transactionFromUrl?.totalAmount = amount ?? 0
+            self.transactionFromUrl?.desc = description
+            self.urlSchemeNavigation.toggle()
+        }
+    }
+
 }
 
 struct TransactionsView_Previews: PreviewProvider {

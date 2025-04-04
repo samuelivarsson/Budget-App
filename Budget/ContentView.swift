@@ -22,6 +22,8 @@ struct ContentView: View {
     @EnvironmentObject private var historyViewModel: HistoryViewModel
     @EnvironmentObject private var quickBalanceViewModel: QuickBalanceViewModel
 
+    @StateObject private var tabRouter = TabRouter()
+    
     var body: some View {
         VStack {
             switch self.authViewModel.state {
@@ -39,27 +41,32 @@ struct ContentView: View {
     }
 
     private var content: some View {
-        TabView {
+        TabView(selection: $tabRouter.selectedTab) {
             HomeView().tabItem {
                 Image(systemName: "house")
                 Text("home")
             }
+            .tag(TabRouter.Tab.home)
             TransactionsView().tabItem {
                 Image(systemName: "arrow.left.arrow.right")
                 Text("transactions")
             }
+            .tag(TabRouter.Tab.transactions)
             StandingsView().tabItem {
                 Image(systemName: "person.2")
                 Text("standings")
             }
+            .tag(TabRouter.Tab.standings)
             HistoryView().tabItem {
                 Image(systemName: "clock")
                 Text("history")
             }
+            .tag(TabRouter.Tab.history)
             SettingsView().tabItem {
                 Image(systemName: "gear")
                 Text("settings")
             }
+            .tag(TabRouter.Tab.settings)
         }
         .onLoad {
             do {
@@ -238,6 +245,9 @@ struct ContentView: View {
             var kind = ""
             for queryItem in queryItems {
                 if let value = queryItem.value {
+                    if queryItem.name == "sourceApplication" && value == "transactionFromUrl" {
+                        tabRouter.selectedTab = .transactions
+                    }
                     if queryItem.name == "sourceApplication" && value != "widget" {
                         return
                     }
