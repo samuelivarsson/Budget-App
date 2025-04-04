@@ -18,6 +18,7 @@ struct StandingsView: View {
     @State private var showDidSwishGoThrough: Bool = false
     @State private var showDidFriendSwish: Bool = false
     @State private var swishFriendId: String? = nil
+    @State private var amountSwished: Double? = nil
 
     var body: some View {
         NavigationView {
@@ -76,11 +77,20 @@ struct StandingsView: View {
             Button("yes", role: .destructive) {
                 // TODO: - Send notification that you swished
                 guard let swishFriendId = self.swishFriendId else {
-                    let info = "Found nil when extracting swishFriendId in alert in HomeView"
+                    let info = "Found nil when extracting swishFriendId in alert in StandingsView"
                     self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                     return
                 }
-                self.standingsViewModel.squareUp(myId: self.userViewModel.user.id, friendId: swishFriendId) { error in
+                
+                guard let amountSwished = self.amountSwished else {
+                    let info = "Found nil when extracting amountSwished in alert in StandingsView"
+                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
+                    return
+                }
+                
+                self.standingsViewModel.squareUpAfterOutgoingSwish(myId: self.userViewModel.user.id, friendId: swishFriendId, amount: amountSwished) { error in
+                    self.amountSwished = nil
+                    
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return
@@ -114,7 +124,7 @@ struct StandingsView: View {
                     self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                     return
                 }
-                self.standingsViewModel.squareUp(myId: self.userViewModel.user.id, friendId: swishFriendId) { error in
+                self.standingsViewModel.squareUpAfterIncomingSwish(myId: self.userViewModel.user.id, friendId: swishFriendId) { error in
                     if let error = error {
                         self.errorHandling.handle(error: error)
                         return
@@ -206,6 +216,8 @@ struct StandingsView: View {
                         return
                     } else if queryItem.name == "userId" && !value.isEmpty {
                         userId = value
+                    } else if queryItem.name == "amount" && !value.isEmpty {
+                        self.amountSwished = Double(value)
                     }
                 }
             }

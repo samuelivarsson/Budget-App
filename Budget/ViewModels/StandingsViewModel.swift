@@ -219,7 +219,37 @@ class StandingsViewModel: ObservableObject {
         return nil
     }
     
-    func squareUp(myId: String, friendId: String, completion: @escaping (Error?) -> Void) {
+    func squareUpAfterOutgoingSwish(myId: String, friendId: String, amount: Double, completion: @escaping (Error?) -> Void) {
+        let standingId = self.getStandingId(userId1: myId, userId2: friendId)
+        
+        self.db.collection("Standings").document(standingId).updateData([
+            "amounts." + myId : FieldValue.increment(amount)
+        ], completion: completion)
+
+//        let standing = self.getStanding(userId1: myId, userId2: friendId)
+//        
+//        guard var standing = standing else {
+//            let info = "Found nil when extracting standing in squareUp in StandingsViewModel"
+//            completion(ApplicationError.unexpectedNil(info))
+//            return
+//        }
+//        
+//        guard let myAmount = standing.amounts[myId] else {
+//            let info = "Found nil when extracting friendAmount in squareUp in StandingsViewModel"
+//            completion(ApplicationError.unexpectedNil(info))
+//            return
+//        }
+//        
+//        standing.amounts[myId] = myAmount + amount
+        
+//        do {
+//            try self.db.collection("Standings").document(standingId).setData(from: standing, completion: completion)
+//        } catch {
+//            completion(error)
+//        }
+    }
+    
+    func squareUpAfterIncomingSwish(myId: String, friendId: String, completion: @escaping (Error?) -> Void) {
         let standingId = self.getStandingId(userId1: myId, userId2: friendId)
         let standing = self.getStanding(userId1: myId, userId2: friendId)
         
@@ -229,20 +259,20 @@ class StandingsViewModel: ObservableObject {
             return
         }
         
-        guard let friendAmount = standing.amounts[friendId] else {
+        guard let myAmount = standing.amounts[myId] else {
             let info = "Found nil when extracting friendAmount in squareUp in StandingsViewModel"
             completion(ApplicationError.unexpectedNil(info))
             return
         }
         
-        standing.amounts[myId] = friendAmount
+        standing.amounts[friendId] = myAmount
         do {
             try self.db.collection("Standings").document(standingId).setData(from: standing, completion: completion)
         } catch {
             completion(error)
         }
     }
-    
+
     func getStanding(userId1: String, userId2: String) -> Standing? {
         for standing in self.standings {
             if standing.userIds.contains(userId1) && standing.userIds.contains(userId2) {

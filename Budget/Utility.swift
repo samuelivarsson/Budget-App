@@ -317,7 +317,7 @@ class Utility {
             "\"version\":1" +
             "}"
 
-        let callbackUrl = "budgetapp%3A%2F%2F?sourceApplication=swish%26userId=\(friendId)"
+        let callbackUrl = "budgetapp%3A%2F%2F?sourceApplication=swish%26userId=\(friendId)%26amount=\(amountTwoDecimals)"
 
         let queryItems = [URLQueryItem(name: "callbackurl", value: callbackUrl), URLQueryItem(name: "data", value: data)]
         var urlComps = URLComponents(string: "swish://payment") ?? .init()
