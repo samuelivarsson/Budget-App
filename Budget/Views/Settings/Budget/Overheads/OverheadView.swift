@@ -12,10 +12,12 @@ struct OverheadView: View {
 
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var nextMonthChangesViewModel: NextMonthChangesViewModel
     
     @State private var overhead: Overhead
     @State private var day: Int
     @State private var receiveDay: Int
+    @State private var changeNextMonth: Bool
     @FocusState var isInputActive: Bool
     
     private var add: Bool
@@ -26,13 +28,15 @@ struct OverheadView: View {
         self._overhead = State(initialValue: overhead)
         self._day = State(initialValue: overhead.dayOfPay - 1)
         self._receiveDay = State(initialValue: overhead.receiveDay - 1)
+        self._changeNextMonth = State(initialValue: false)
     }
     
-    init(overhead: Overhead) {
+    init(overhead: Overhead, nextMonthChanges: Bool = false) {
         self.add = false
         self._overhead = State(initialValue: overhead)
         self._day = State(initialValue: overhead.dayOfPay - 1)
         self._receiveDay = State(initialValue: overhead.receiveDay - 1)
+        self._changeNextMonth = State(initialValue: nextMonthChanges)
     }
     
     var body: some View {
@@ -111,6 +115,8 @@ struct OverheadView: View {
             }
             
             Section {
+                Toggle("changeNextMonth", isOn: self.$changeNextMonth)
+                
                 Button {
                     if self.add {
                         self.addOverhead()
@@ -133,6 +139,20 @@ struct OverheadView: View {
     private func addOverhead() {
         self.overhead.dayOfPay = self.day + 1
         self.overhead.receiveDay = self.receiveDay + 1
+        
+        if self.changeNextMonth {
+            self.nextMonthChangesViewModel.addNextMonthChange(change: self.overhead) { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+                self.presentationMode.wrappedValue.dismiss()
+            }
+            return
+        }
+        
         self.userViewModel.addOverhead(overhead: self.overhead) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
@@ -147,6 +167,20 @@ struct OverheadView: View {
     private func editOverhead() {
         self.overhead.dayOfPay = self.day + 1
         self.overhead.receiveDay = self.receiveDay + 1
+        
+        if self.changeNextMonth {
+            self.nextMonthChangesViewModel.addNextMonthChange(change: self.overhead) { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+                self.presentationMode.wrappedValue.dismiss()
+            }
+            return
+        }
+        
         self.userViewModel.editOverhead(overhead: self.overhead) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)

@@ -12,14 +12,17 @@ struct SavingView: View {
 
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var nextMonthChangesViewModel: NextMonthChangesViewModel
 
     @State private var savingAmount: Double
+    @State private var changeNextMonth: Bool
     @FocusState var isInputActive: Bool
     
     private var accountId: String
 
     init(savingAmount: Double, accountId: String) {
         self._savingAmount = State(initialValue: savingAmount)
+        self._changeNextMonth = State(initialValue: false)
         self.accountId = accountId
     }
 
@@ -54,6 +57,8 @@ struct SavingView: View {
             }
             
             Section {
+                Toggle("changeNextMonth", isOn: self.$changeNextMonth)
+                
                 Button("apply") {
                     self.applySavingAmount()
                 }
@@ -65,6 +70,19 @@ struct SavingView: View {
     }
 
     private func applySavingAmount() {
+        if self.changeNextMonth {
+            self.nextMonthChangesViewModel.addNextMonthChange(change: (self.accountId, self.savingAmount)) { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    return
+                }
+                
+                // Success
+                self.presentationMode.wrappedValue.dismiss()
+            }
+            return
+        }
+        
         self.userViewModel.setSavingAmount(savingAmount: self.savingAmount, accountId: self.accountId) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)

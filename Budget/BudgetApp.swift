@@ -24,6 +24,7 @@ struct BudgetApp: App {
     @StateObject var standingsViewModel = StandingsViewModel()
     @StateObject var historyViewModel = HistoryViewModel()
     @StateObject var quickBalanceViewModel = QuickBalanceViewModel()
+    @StateObject var nextMonthChangesViewModel = NextMonthChangesViewModel()
 
     init() {
         setUpFirebase()
@@ -43,6 +44,7 @@ struct BudgetApp: App {
                 .environmentObject(standingsViewModel)
                 .environmentObject(historyViewModel)
                 .environmentObject(quickBalanceViewModel)
+                .environmentObject(nextMonthChangesViewModel)
         }
     }
 }

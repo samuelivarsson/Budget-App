@@ -21,7 +21,8 @@ struct ContentView: View {
     @EnvironmentObject private var standingsViewModel: StandingsViewModel
     @EnvironmentObject private var historyViewModel: HistoryViewModel
     @EnvironmentObject private var quickBalanceViewModel: QuickBalanceViewModel
-
+    @EnvironmentObject private var nextMonthChangesViewModel: NextMonthChangesViewModel
+    
     @StateObject private var tabRouter = TabRouter()
     
     var body: some View {
@@ -118,24 +119,35 @@ struct ContentView: View {
                     if Utility.firstLoadFinished {
                         return
                     }
-                    self.historyViewModel.fetchData { error in
+                    self.nextMonthChangesViewModel.fetchData { error in
                         if let error = error {
                             self.errorHandling.handle(error: error)
                             return
                         }
-
+                        
                         // Success
                         if Utility.firstLoadFinished {
                             return
                         }
-                        Utility.firstLoadFinished = true
-                        self.saveIfNeeded { error in
+                        self.historyViewModel.fetchData { error in
                             if let error = error {
                                 self.errorHandling.handle(error: error)
                                 return
                             }
 
                             // Success
+                            if Utility.firstLoadFinished {
+                                return
+                            }
+                            Utility.firstLoadFinished = true
+                            self.saveIfNeeded { error in
+                                if let error = error {
+                                    self.errorHandling.handle(error: error)
+                                    return
+                                }
+
+                                // Success
+                            }
                         }
                     }
                 }
@@ -235,6 +247,31 @@ struct ContentView: View {
                 }
 
                 // Success
+            }
+        }
+        
+        // Save next month changes
+        for change in self.nextMonthChangesViewModel.changes {
+            if let overhead = change as? Overhead {
+                self.userViewModel.editOverhead(overhead: overhead) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
+                }
+            }
+            
+            if let savingAmount = change as? (String, Double) {
+                self.userViewModel.setSavingAmount(savingAmount: savingAmount.1, accountId: savingAmount.0) { error in
+                    if let error = error {
+                        self.errorHandling.handle(error: error)
+                        return
+                    }
+                    
+                    // Success
+                }
             }
         }
     }

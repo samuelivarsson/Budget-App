@@ -54,6 +54,11 @@ struct SettingsView: View {
                     } label: {
                         Label("quickBalance", systemImage: "creditcard")
                     }
+                    NavigationLink {
+                        
+                    } label: {
+                        Label("nextMonthChanges", systemImage: "calendar.badge.plus")
+                    }
                 }
             }
             .navigationTitle("settings")
