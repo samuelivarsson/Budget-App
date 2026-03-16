@@ -23,6 +23,14 @@ struct StandingsView: View {
     var body: some View {
         NavigationView {
             Form {
+                let friendsWithDiff = self.userViewModel.getAllNonFavouriteFriendsSorted().filter {
+                    round((self.standingsViewModel.getStanding(userId1: self.userViewModel.user.id, userId2: $0.id)?.getStanding(myId: self.userViewModel.user.id) ?? 0) * 100) != 0
+                }
+                if friendsWithDiff.count > 0 {
+                    Section {
+                        self.getStandings(friends: friendsWithDiff)
+                    }
+                }
                 let favouriteFriends = self.userViewModel.getFavouritesSorted()
                 if favouriteFriends.count > 0 {
                     Section("favourites") {
