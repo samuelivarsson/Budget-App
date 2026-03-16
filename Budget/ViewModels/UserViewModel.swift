@@ -22,58 +22,58 @@ class UserViewModel: ObservableObject {
     var listener: ListenerRegistration?
     
     func fetchData(setFriends: Bool = true, completion: @escaping (Error?) -> Void) {
+        print("Fetch data called in UserViewModel")
         guard let uid = Auth.auth().currentUser?.uid else {
             let info = "Found nil when extracting uid in fetchData in UserViewModel"
             print(info)
             completion(ApplicationError.unexpectedNil(info))
             return
         }
-        self.db.collection("Users").document(uid).getDocument { snapshot, error in
-            if let error = error {
-                completion(error)
+        // Remove old listener
+        Utility.removeListener(listener: self.listener)
+        
+        var hasCalledCompletion = false
+        
+        // Add new listener
+        self.listener = self.db.collection("Users").document(uid).addSnapshotListener { documentSnapshot, error in
+            guard let document = documentSnapshot else {
+                // If querySnapshot is nil then error is not nil
+                print("Error fetching document: \(error!)")
+                completion(error!)
                 return
             }
-            guard let snapshot = snapshot, snapshot.exists else {
-                completion(FirestoreError.documentNotExist)
-                return
-            }
-            // Remove old listener
-            Utility.removeListener(listener: self.listener)
-            // Add new listener
-            self.listener = self.db.collection("Users").document(uid).addSnapshotListener { documentSnapshot, error in
-                guard let document = documentSnapshot else {
-                    // If querySnapshot is nil then error is not nil
-                    print("Error fetching document: \(error!)")
-                    completion(error!)
+            
+            // Succes
+            do {
+                let data = try document.data(as: User.self)
+                
+                // Success
+                print("Successfully set user in fetchData in UserViewModel")
+                self.user = data
+                if !setFriends {
+                    if (!hasCalledCompletion) {
+                        hasCalledCompletion = true
+                        completion(nil)
+                    }
                     return
                 }
-                
-                // Succes
-                do {
-                    let data = try document.data(as: User.self)
-                    
-                    // Success
-                    print("Successfully set user in fetchData in UserViewModel")
-                    self.user = data
-                    if !setFriends {
-                        completion(nil)
+                self.setFriends(from: data) { error in
+                    if let error = error {
+                        completion(error)
                         return
                     }
-                    self.setFriends(from: data) { error in
-                        if let error = error {
-                            completion(error)
-                            return
-                        }
-                        
-                        // Success
-                        self.addListener()
-                        print("Successfully set friends in fetchData in UserViewModel")
+                    
+                    // Success
+                    self.addListener()
+                    print("Successfully set friends in fetchData in UserViewModel")
+                    if (!hasCalledCompletion) {
+                        hasCalledCompletion = true
                         completion(nil)
                     }
-                } catch {
-                    print("No document with id \(uid) found, error message: \(error)")
-                    completion(error)
                 }
+            } catch {
+                print("No document with id \(uid) found, error message: \(error)")
+                completion(error)
             }
         }
     }

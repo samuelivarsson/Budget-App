@@ -21,8 +21,8 @@ struct ContentView: View {
     @EnvironmentObject private var standingsViewModel: StandingsViewModel
     @EnvironmentObject private var historyViewModel: HistoryViewModel
     @EnvironmentObject private var quickBalanceViewModel: QuickBalanceViewModel
-
-    @StateObject private var tabRouter = TabRouter()
+    @EnvironmentObject private var nextMonthChangesViewModel: NextMonthChangesViewModel
+    @EnvironmentObject private var tabRouter: TabRouter
     
     var body: some View {
         VStack {
@@ -76,86 +76,123 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            self.fetchData()
+            self.fetchData { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                    Utility.firstLoadFinished = true
+                    return
+                }
+            }
         }
         .onOpenURL { url in
             self.handleUrlOpen(url: url)
         }
     }
 
-    private func fetchData() {
-        if Utility.firstLoadFinished {
-            print("nope")
+    private func fetchData(completion: @escaping (Error?) -> Void) {
+        guard !Utility.firstLoadFinished && !Utility.firstLoadInProgress else {
+            print("Skipping data fetch")
+            completion(nil)
             return
         }
-        self.userViewModel.fetchData { error in
-            if let error = error {
-                self.errorHandling.handle(error: error)
-                return
-            }
+        
+        print("Starting data fetch...")
 
-            // Success
-            if Utility.firstLoadFinished {
-                return
-            }
-            self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn, monthsBack: 1) { error in
-                if let error = error {
-                    self.errorHandling.handle(error: error)
-                    return
-                }
+        Utility.firstLoadInProgress = true
 
-                // Success
-                if Utility.firstLoadFinished {
-                    return
-                }
-                self.standingsViewModel.fetchData { error in
-                    if let error = error {
-                        self.errorHandling.handle(error: error)
-                        return
-                    }
-
-                    // Success
-                    if Utility.firstLoadFinished {
-                        return
-                    }
-                    self.historyViewModel.fetchData { error in
-                        if let error = error {
-                            self.errorHandling.handle(error: error)
-                            return
-                        }
-
-                        // Success
-                        if Utility.firstLoadFinished {
-                            return
-                        }
-                        Utility.firstLoadFinished = true
-                        self.saveIfNeeded { error in
-                            if let error = error {
-                                self.errorHandling.handle(error: error)
-                                return
-                            }
-
-                            // Success
-                        }
-                    }
-                }
-            }
-            self.quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccounts: self.userViewModel.user.quickBalanceAccounts) { error in
-                if let error = error {
-                    self.errorHandling.handle(error: error)
-                    return
-                }
-
-                // Success
-            }
-        }
+        // Start parallel tasks
         self.notificationsViewModel.fetchData { error in
             if let error = error {
                 self.errorHandling.handle(error: error)
+            }
+        }
+
+        var alreadyCompleted = false
+        self.userViewModel.fetchData { error in
+            guard !alreadyCompleted else {
+                print("🚨 Completion already called once — skipping duplicate")
+                return
+            }
+            alreadyCompleted = true
+            print("User data fetched")
+            if let error = error {
+                completion(error)
                 return
             }
 
-            // Success
+            // Fire quickBalance fetch in parallel
+            self.quickBalanceViewModel.fetchQuickBalanceFromApi(
+                quickBalanceAccounts: self.userViewModel.user.quickBalanceAccounts
+            ) { error in
+                if let error = error {
+                    self.errorHandling.handle(error: error)
+                }
+            }
+            
+//            self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn, monthsBack: 1) { error in
+//                if let error = error {
+//                    completion(error)
+//                    return
+//                }
+//                
+//                // Success
+//                self.standingsViewModel.fetchData { error in
+//                    if let error = error {
+//                        completion(error)
+//                        return
+//                    }
+//                    
+//                    // Success
+//                    self.nextMonthChangesViewModel.fetchData { error in
+//                        if let error = error {
+//                            completion(error)
+//                            return
+//                        }
+//                        
+//                        // Success
+//                        self.historyViewModel.fetchData { error in
+//                            if let error = error {
+//                                completion(error)
+//                                return
+//                            }
+//                            
+//                            // Success
+//                            self.saveIfNeeded { error in
+//                                if let error = error {
+//                                    completion(error)
+//                                    return
+//                                }
+//                                
+//                                // Success
+//                                Utility.firstLoadFinished = true
+//                                Utility.firstLoadInProgress = false
+//                                completion(nil)
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+
+            let sequence: [(@escaping (Error?) -> Void) -> Void] = [
+                { done in self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn, monthsBack: 1, completion: done) },
+                { done in self.standingsViewModel.fetchData(completion: done) },
+                { done in self.nextMonthChangesViewModel.fetchData(completion: done) },
+                { done in self.historyViewModel.fetchData(completion: done) },
+                { done in self.saveIfNeeded(completion: done) }
+            ]
+
+            Utility.runTasksInSequence(sequence) { error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                
+                print("First load finished")
+
+                Utility.firstLoadFinished = true
+                Utility.firstLoadInProgress = false
+                completion(nil)
+            }
         }
     }
 
@@ -170,6 +207,8 @@ struct ContentView: View {
             completion(nil)
             return
         }
+        
+        self.userViewModel.user.lastSaveDate = Date.now
 
         // Save this months category amounts
         var categoryHistories: [CategoryHistory] = .init()
@@ -218,23 +257,32 @@ struct ContentView: View {
                 self.userViewModel.user.budget.accounts = self.userViewModel.user.budget.accounts.filter { $0.id != account.id } + [newAccount]
             }
         }
+        
+        print("1")
+        var hasCalledCompletion = false
 
         // Save the histories
         self.historyViewModel.addHistories(accountHistories: accountHistories, categoryHistories: categoryHistories) { error in
+            print("2")
             if let error = error {
                 self.errorHandling.handle(error: error)
                 return
             }
 
             // Success
-            self.userViewModel.user.lastSaveDate = Date.now
             self.userViewModel.setUserData { error in
+                print("3")
                 if let error = error {
                     completion(error)
                     return
                 }
 
                 // Success
+                if (!hasCalledCompletion) {
+                    print("4")
+                    hasCalledCompletion = true
+                    completion(nil)
+                }
             }
         }
     }
@@ -246,7 +294,21 @@ struct ContentView: View {
             for queryItem in queryItems {
                 if let value = queryItem.value {
                     if queryItem.name == "sourceApplication" && value == "transactionFromUrl" {
-                        tabRouter.selectedTab = .transactions
+                        if Utility.firstLoadFinished {
+                            tabRouter.selectedTab = .transactions
+                            tabRouter.appStartFromUrl = url
+                            return
+                        }
+                        
+                        self.fetchData { error in
+                            if let error = error {
+                                self.errorHandling.handle(error: error)
+                                return
+                            }
+                            
+                            tabRouter.selectedTab = .transactions
+                            tabRouter.appStartFromUrl = url
+                        }
                     }
                     if queryItem.name == "sourceApplication" && value != "widget" {
                         return

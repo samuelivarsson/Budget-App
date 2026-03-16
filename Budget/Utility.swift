@@ -17,6 +17,7 @@ class Utility {
     static var listeners: [ListenerRegistration] = .init()
     
     static var firstLoadFinished = false
+    static var firstLoadInProgress: Bool = false
 
     static var currencyFormatter: NumberFormatter {
         let currencyFormatter = NumberFormatter()
@@ -303,6 +304,7 @@ class Utility {
             newInfo = String(newInfo.prefix(46))
             newInfo.append("...")
         }
+        newInfo = newInfo.replacingOccurrences(of: "_", with: " ")
         let data =
             "{" +
             "\"amount\":{" +
@@ -322,6 +324,7 @@ class Utility {
         let queryItems = [URLQueryItem(name: "callbackurl", value: callbackUrl), URLQueryItem(name: "data", value: data)]
         var urlComps = URLComponents(string: "swish://payment") ?? .init()
         urlComps.queryItems = queryItems
+        print("Resulting Swish URL: \(String(describing: urlComps.url))")
         return urlComps.url
     }
     
@@ -395,6 +398,28 @@ class Utility {
         }
         
         return transaction.isMine(userId: userId) ? .edit : .view
+    }
+    
+    static func runTasksInSequence(_ tasks: [(@escaping (Error?) -> Void) -> Void], completion: @escaping (Error?) -> Void) {
+        guard let firstTask = tasks.first else {
+            completion(nil)
+            return
+        }
+        
+        
+        
+        let remainingTasks = Array(tasks.dropFirst())
+        
+        print("Remaining tasks:")
+        print(remainingTasks)
+        
+        firstTask { error in
+            if let error = error {
+                completion(error)
+            } else {
+                runTasksInSequence(remainingTasks, completion: completion)
+            }
+        }
     }
 }
 

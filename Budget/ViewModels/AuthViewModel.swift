@@ -200,6 +200,8 @@ class AuthViewModel: ObservableObject {
             
             DispatchQueue.main.async {
                 self.state = .signedOut
+                Utility.firstLoadFinished = false
+                Utility.firstLoadInProgress = false
             }
             completion(nil)
         } catch {

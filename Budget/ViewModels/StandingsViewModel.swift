@@ -24,6 +24,9 @@ class StandingsViewModel: ObservableObject {
         }
         // Remove old listener
         Utility.removeListener(listener: self.listener)
+        
+        var hasCalledCompletion = false
+        
         // Add new listener
         self.listener = self.db.collection("Standings").whereField("userIds", arrayContains: uid)
             .addSnapshotListener { querySnapshot, error in
@@ -42,7 +45,10 @@ class StandingsViewModel: ObservableObject {
                     self.standings = data
                     self.addListener()
                     print("Successfully set standings in fetchData in StandingsViewModel")
-                    completion(nil)
+                    if (!hasCalledCompletion) {
+                        hasCalledCompletion = true
+                        completion(nil)
+                    }
                 } catch {
                     print("Something went wrong when fetching transactions documents: \(error)")
                     completion(error)

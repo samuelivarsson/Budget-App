@@ -8,6 +8,7 @@
 
 class TabRouter: ObservableObject {
     @Published var selectedTab: Tab = .home
+    @Published var appStartFromUrl: URL?
     
     enum Tab {
         case home

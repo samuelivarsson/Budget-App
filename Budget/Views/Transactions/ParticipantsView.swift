@@ -18,7 +18,8 @@ struct ParticipantsView: View {
     @Binding var hasWritten: [String]
     
     var action: TransactionAction
-    
+    var fromUrl: Bool = false
+
     private let friendText: Font = .footnote
     
     var body: some View {
@@ -78,7 +79,7 @@ struct ParticipantsView: View {
             }
             .disabled(self.action == .view)
             .onLoad {
-                if self.action == .add {
+                if self.action == .add && !self.fromUrl {
                     guard let first = self.participants.first else {
                         let info = "Found nil when extracting first in onLoad in payer picker in ParticipantsView"
                         self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))

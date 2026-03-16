@@ -32,13 +32,14 @@ struct TransactionView: View {
     private var oldTransaction: Transaction? = nil
     
     private var action: TransactionAction
+    private var fromUrl: Bool = false
     
     init(action: TransactionAction, firstCategory: TransactionCategory) {
         self.action = action
         self._transaction = State(initialValue: Transaction.getDummyTransaction(category: firstCategory))
     }
     
-    init(transaction: Transaction, user: User, action: TransactionAction) {
+    init(transaction: Transaction, user: User, action: TransactionAction, fromUrl: Bool = false) {
         var newTransaction = transaction
         if !transaction.isMyCategory(user: user) {
             var changed = false
@@ -58,6 +59,7 @@ struct TransactionView: View {
         self._totalAmountString = State(initialValue: Utility.currencyFormatterNoSymbol.string(from: transaction.totalAmount as NSNumber) ?? "")
         self.action = action
         self.oldTransaction = transaction
+        self.fromUrl = fromUrl
     }
     
     var body: some View {
@@ -77,7 +79,9 @@ struct TransactionView: View {
                     participants: self.$transaction.participants,
                     payer: self.$transaction.payerId,
                     hasWritten: self.$hasWritten,
-                    action: self.action)
+                    action: self.action,
+                    fromUrl: self.fromUrl
+                )
             }
             
             Section {
@@ -139,6 +143,13 @@ struct TransactionView: View {
             }
             if self.transaction.payerId == "" {
                 self.transaction.payerId = self.transaction.participants[0].userId
+            }
+            if self.fromUrl {
+                DispatchQueue.main.async {
+                    if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
+                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                    }
+                }
             }
         }
         .onChange(of: self.transaction.totalAmount) { newValue in
@@ -213,7 +224,7 @@ struct TransactionView: View {
                     }
                     .pickerStyle(.menu)
                     .onLoad {
-                        if self.action == .add {
+                        if self.action == .add && !self.fromUrl {
                             self.transaction.category = self.userViewModel.getFirstTransactionCategory(type: self.transaction.type)
                         }
                     }

@@ -25,6 +25,9 @@ class HistoryViewModel: ObservableObject {
         }
         // Remove old listener
         Utility.removeListener(listener: self.accountListener)
+        
+        var hasCalledCompletion = false
+        
         // Add new listener
         self.accountListener = self.db.collection("AccountHistories").whereField("userId", isEqualTo: uid).order(by: "saveDate", descending: true).addSnapshotListener { querySnapshot, error in
             guard let documents = querySnapshot?.documents else {
@@ -60,7 +63,10 @@ class HistoryViewModel: ObservableObject {
                         self.categoryHistories = data
                         self.addListeners()
                         print("Successfully set category histories in fetchData in HistoryViewModel")
-                        completion(nil)
+                        if (!hasCalledCompletion) {
+                            hasCalledCompletion = true
+                            completion(nil)
+                        }
                         return
                     } catch {
                         print("Something went wrong when fetching transactions documents: \(error)")
