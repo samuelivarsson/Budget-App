@@ -26,6 +26,9 @@ class NextMonthChangesViewModel: ObservableObject {
         
         // Remove old listener
         Utility.removeListener(listener: self.listener)
+        
+        var hasCalledCompletion = false
+        
         // Add new listener
         self.listener = self.db.collection("NextMonthChanges").whereField("userId", isEqualTo: uid).addSnapshotListener { querySnapshot, error in
             if let error = error {
@@ -43,7 +46,10 @@ class NextMonthChangesViewModel: ObservableObject {
             }
             self.addListener()
             print("Successfully set nextMonthChanges in NextMonthChangesViewModel")
-            completion(nil)
+            if (!hasCalledCompletion) {
+                hasCalledCompletion = true
+                completion(nil)
+            }
         }
     }
     
