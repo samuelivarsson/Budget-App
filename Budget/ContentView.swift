@@ -22,7 +22,7 @@ struct ContentView: View {
     @EnvironmentObject private var historyViewModel: HistoryViewModel
     @EnvironmentObject private var quickBalanceViewModel: QuickBalanceViewModel
     @EnvironmentObject private var tabRouter: TabRouter
-    
+
     var body: some View {
         VStack {
             switch self.authViewModel.state {
@@ -40,7 +40,7 @@ struct ContentView: View {
     }
 
     private var content: some View {
-        TabView(selection: $tabRouter.selectedTab) {
+        TabView(selection: self.$tabRouter.selectedTab) {
             HomeView().tabItem {
                 Image(systemName: "house")
                 Text("home")
@@ -89,12 +89,12 @@ struct ContentView: View {
     }
 
     private func fetchData(completion: @escaping (Error?) -> Void) {
-        guard !Utility.firstLoadFinished && !Utility.firstLoadInProgress else {
+        guard !Utility.firstLoadFinished, !Utility.firstLoadInProgress else {
             print("Skipping data fetch")
             completion(nil)
             return
         }
-        
+
         print("Starting data fetch...")
 
         Utility.firstLoadInProgress = true
@@ -127,41 +127,41 @@ struct ContentView: View {
                     self.errorHandling.handle(error: error)
                 }
             }
-            
+
 //            self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn, monthsBack: 1) { error in
 //                if let error = error {
 //                    completion(error)
 //                    return
 //                }
-//                
+//
 //                // Success
 //                self.standingsViewModel.fetchData { error in
 //                    if let error = error {
 //                        completion(error)
 //                        return
 //                    }
-//                    
+//
 //                    // Success
 //                    self.nextMonthChangesViewModel.fetchData { error in
 //                        if let error = error {
 //                            completion(error)
 //                            return
 //                        }
-//                        
+//
 //                        // Success
 //                        self.historyViewModel.fetchData { error in
 //                            if let error = error {
 //                                completion(error)
 //                                return
 //                            }
-//                            
+//
 //                            // Success
 //                            self.saveIfNeeded { error in
 //                                if let error = error {
 //                                    completion(error)
 //                                    return
 //                                }
-//                                
+//
 //                                // Success
 //                                Utility.firstLoadFinished = true
 //                                Utility.firstLoadInProgress = false
@@ -184,7 +184,7 @@ struct ContentView: View {
                     completion(error)
                     return
                 }
-                
+
                 print("First load finished")
 
                 Utility.firstLoadFinished = true
@@ -205,7 +205,7 @@ struct ContentView: View {
             completion(nil)
             return
         }
-        
+
         self.userViewModel.user.lastSaveDate = Date.now
 
         // Save this months category amounts
@@ -255,7 +255,7 @@ struct ContentView: View {
                 self.userViewModel.user.budget.accounts = self.userViewModel.user.budget.accounts.filter { $0.id != account.id } + [newAccount]
             }
         }
-        
+
         print("1")
         var hasCalledCompletion = false
 
@@ -276,7 +276,7 @@ struct ContentView: View {
                 }
 
                 // Success
-                if (!hasCalledCompletion) {
+                if !hasCalledCompletion {
                     print("4")
                     hasCalledCompletion = true
                     completion(nil)
@@ -291,27 +291,27 @@ struct ContentView: View {
             var kind = ""
             for queryItem in queryItems {
                 if let value = queryItem.value {
-                    if queryItem.name == "sourceApplication" && value == "transactionFromUrl" {
+                    if queryItem.name == "sourceApplication", value == "transactionFromUrl" {
                         if Utility.firstLoadFinished {
-                            tabRouter.selectedTab = .transactions
-                            tabRouter.appStartFromUrl = url
+                            self.tabRouter.selectedTab = .transactions
+                            self.tabRouter.appStartFromUrl = url
                             return
                         }
-                        
+
                         self.fetchData { error in
                             if let error = error {
                                 self.errorHandling.handle(error: error)
                                 return
                             }
-                            
-                            tabRouter.selectedTab = .transactions
-                            tabRouter.appStartFromUrl = url
+
+                            self.tabRouter.selectedTab = .transactions
+                            self.tabRouter.appStartFromUrl = url
                         }
                     }
-                    if queryItem.name == "sourceApplication" && value != "widget" {
+                    if queryItem.name == "sourceApplication", value != "widget" {
                         return
                     }
-                    if queryItem.name == "kind" && !value.isEmpty {
+                    if queryItem.name == "kind", !value.isEmpty {
                         kind = value
                     }
                 }
