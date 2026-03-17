@@ -176,8 +176,6 @@
 		4D92143829BDD32A0064ACC7 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4D92143729BDD32A0064ACC7 /* FirebaseFirestoreSwift */; };
 		4D949A2D2C8EDADA0035A877 /* OAuth2 in Frameworks */ = {isa = PBXBuildFile; productRef = 4D949A2C2C8EDADA0035A877 /* OAuth2 */; };
 		4D949A2F2C8EE74E0035A877 /* budget-5cc74-firebase-adminsdk-v95r1-4f8acf0ca8.json in Resources */ = {isa = PBXBuildFile; fileRef = 4D949A2E2C8EE74B0035A877 /* budget-5cc74-firebase-adminsdk-v95r1-4f8acf0ca8.json */; };
-		4DA4E1512C637498005194CA /* NextMonthChangesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4E1502C637498005194CA /* NextMonthChangesViewModel.swift */; };
-		4DA4E1542C639291005194CA /* NextMonthChangesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4E1532C639291005194CA /* NextMonthChangesView.swift */; };
 		4DAB3B6529C6C9E60001BB4E /* OverheadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAB3B6429C6C9E60001BB4E /* OverheadsView.swift */; };
 		4DAB3B6729C782770001BB4E /* OverheadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAB3B6629C782770001BB4E /* OverheadView.swift */; };
 		4DAC5C5A29D3AA5300892053 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D225533280A1F4500C80851 /* GoogleService-Info.plist */; };
@@ -404,8 +402,6 @@
 		4D7AE0AE295280DA009E0845 /* Participant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Participant.swift; sourceTree = "<group>"; };
 		4D7E2A602915DD6200E16314 /* FriendStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendStatus.swift; sourceTree = "<group>"; };
 		4D949A2E2C8EE74B0035A877 /* budget-5cc74-firebase-adminsdk-v95r1-4f8acf0ca8.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "budget-5cc74-firebase-adminsdk-v95r1-4f8acf0ca8.json"; path = "Budget/budget-5cc74-firebase-adminsdk-v95r1-4f8acf0ca8.json"; sourceTree = "<group>"; };
-		4DA4E1502C637498005194CA /* NextMonthChangesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextMonthChangesViewModel.swift; sourceTree = "<group>"; };
-		4DA4E1532C639291005194CA /* NextMonthChangesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextMonthChangesView.swift; sourceTree = "<group>"; };
 		4DAB3B6429C6C9E60001BB4E /* OverheadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverheadsView.swift; sourceTree = "<group>"; };
 		4DAB3B6629C782770001BB4E /* OverheadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverheadView.swift; sourceTree = "<group>"; };
 		4DAC5C5829D3A16700892053 /* Budget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Budget.entitlements; sourceTree = "<group>"; };
@@ -739,7 +735,6 @@
 			isa = PBXGroup;
 			children = (
 				4DE907C729C14F6800CB4F99 /* Accounts */,
-				4DA4E1522C639276005194CA /* NextMonthChanges */,
 				4DAB3B6329C6C9CE0001BB4E /* Overheads */,
 				4D6626DF29C7C00100C0F4D5 /* Savings */,
 				4D6CA5A429B2E49800487669 /* TransactionCategories */,
@@ -747,14 +742,6 @@
 				4DD8713229BCFC7A00BA8809 /* IncomeView.swift */,
 			);
 			path = Budget;
-			sourceTree = "<group>";
-		};
-		4DA4E1522C639276005194CA /* NextMonthChanges */ = {
-			isa = PBXGroup;
-			children = (
-				4DA4E1532C639291005194CA /* NextMonthChangesView.swift */,
-			);
-			path = NextMonthChanges;
 			sourceTree = "<group>";
 		};
 		4DAB3B6329C6C9CE0001BB4E /* Overheads */ = {
@@ -986,7 +973,6 @@
 				4DFF75A3281066BF00C40FF6 /* FirestoreViewModel.swift */,
 				4DF808B5282178AC00E19A8D /* FriendsViewModel.swift */,
 				4D6626EB29CBB55300C0F4D5 /* HistoryViewModel.swift */,
-				4DA4E1502C637498005194CA /* NextMonthChangesViewModel.swift */,
 				4D4FB1B42906057600E9A2D9 /* NotificationsViewModel.swift */,
 				4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */,
 				4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */,
@@ -1134,7 +1120,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					4D37D4A92B124B46001B75C8 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -1401,7 +1387,6 @@
 				4D65306A281B60BA00641570 /* ImagePicker.swift in Sources */,
 				4D12984B28E4A33900BDCAA8 /* TransactionsViewModel.swift in Sources */,
 				4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */,
-				4DA4E1542C639291005194CA /* NextMonthChangesView.swift in Sources */,
 				4D6530562817645B00641570 /* GeneralSettingsView.swift in Sources */,
 				4D3563A3280DC39D007B83B0 /* ErrorEnums.swift in Sources */,
 				4D6626EC29CBB55300C0F4D5 /* HistoryViewModel.swift in Sources */,
@@ -1440,7 +1425,6 @@
 				4DFD3DA228073E4B00D5FFB4 /* Budget.xcdatamodeld in Sources */,
 				4D008F4929CE835700B3C3FE /* MobileBankIDResponse.swift in Sources */,
 				4D02890D280B304B0053D15D /* MyInformationView.swift in Sources */,
-				4DA4E1512C637498005194CA /* NextMonthChangesViewModel.swift in Sources */,
 				4D1E973F28085459003C8802 /* WelcomeScreenView.swift in Sources */,
 				4D6626EA29CBB21400C0F4D5 /* AccountHistory.swift in Sources */,
 				4D08D98F29D663AC003A09B5 /* AppOpener.swift in Sources */,
@@ -1907,7 +1891,6 @@
 		4DFD3DA628073E4B00D5FFB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1951,7 +1934,6 @@
 		4DFD3DA728073E4B00D5FFB4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
