@@ -21,7 +21,6 @@ struct ContentView: View {
     @EnvironmentObject private var standingsViewModel: StandingsViewModel
     @EnvironmentObject private var historyViewModel: HistoryViewModel
     @EnvironmentObject private var quickBalanceViewModel: QuickBalanceViewModel
-    @EnvironmentObject private var nextMonthChangesViewModel: NextMonthChangesViewModel
     @EnvironmentObject private var tabRouter: TabRouter
     
     var body: some View {
@@ -176,7 +175,6 @@ struct ContentView: View {
             let sequence: [(@escaping (Error?) -> Void) -> Void] = [
                 { done in self.transactionsViewModel.fetchData(monthStartsOn: self.userViewModel.user.budget.monthStartsOn, monthsBack: 1, completion: done) },
                 { done in self.standingsViewModel.fetchData(completion: done) },
-                { done in self.nextMonthChangesViewModel.fetchData(completion: done) },
                 { done in self.historyViewModel.fetchData(completion: done) },
                 { done in self.saveIfNeeded(completion: done) }
             ]
