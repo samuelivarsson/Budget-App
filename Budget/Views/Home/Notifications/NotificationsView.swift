@@ -22,7 +22,7 @@ struct NotificationsView: View {
                 Text("youHaveNoNotifications")
             } else {
                 Form {
-                    ForEach(self.notificationsViewModel.notifications) { notification in
+                    ForEach(Array(self.notificationsViewModel.notifications.prefix(50))) { notification in
                         ZStack {
                             HStack {
                                 Spacer()

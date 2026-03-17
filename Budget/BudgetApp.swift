@@ -24,6 +24,7 @@ struct BudgetApp: App {
     @StateObject var standingsViewModel = StandingsViewModel()
     @StateObject var historyViewModel = HistoryViewModel()
     @StateObject var quickBalanceViewModel = QuickBalanceViewModel()
+    @StateObject var tabRouter = TabRouter()
     @StateObject var nextMonthChangesViewModel = NextMonthChangesViewModel()
 
     init() {
@@ -44,6 +45,7 @@ struct BudgetApp: App {
                 .environmentObject(standingsViewModel)
                 .environmentObject(historyViewModel)
                 .environmentObject(quickBalanceViewModel)
+                .environmentObject(tabRouter)
                 .environmentObject(nextMonthChangesViewModel)
         }
     }
