@@ -78,17 +78,6 @@ struct ParticipantsView: View {
                 }
             }
             .disabled(self.action == .view)
-            .onLoad {
-                if self.action == .add && !self.fromUrl {
-                    guard let first = self.participants.first else {
-                        let info = "Found nil when extracting first in onLoad in payer picker in ParticipantsView"
-                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                        return
-                    }
-                        
-                    self.payer = first.userId
-                }
-            }
         }
             
         HStack {
@@ -102,17 +91,6 @@ struct ParticipantsView: View {
                 }
             }
             .disabled(self.action == .view)
-            .onLoad {
-                if self.action == .add {
-                    guard let first = self.participants.first else {
-                        let info = "Found nil when extracting first in onLoad in payer picker in ParticipantsView"
-                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
-                        return
-                    }
-                        
-                    self.payer = first.userId
-                }
-            }
         }
             
         // Use a ForEach loop to display a list of participants

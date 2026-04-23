@@ -18,6 +18,7 @@ class Utility {
     
     static var firstLoadFinished = false
     static var firstLoadInProgress: Bool = false
+    static var firstLoadCompletions: [(Error?) -> Void] = []
 
     static var currencyFormatter: NumberFormatter {
         let currencyFormatter = NumberFormatter()

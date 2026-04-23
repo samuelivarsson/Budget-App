@@ -89,15 +89,21 @@ struct ContentView: View {
     }
 
     private func fetchData(completion: @escaping (Error?) -> Void) {
-        guard !Utility.firstLoadFinished, !Utility.firstLoadInProgress else {
-            print("Skipping data fetch")
+        guard !Utility.firstLoadFinished else {
+            print("Skipping data fetch - already finished")
             completion(nil)
+            return
+        }
+        guard !Utility.firstLoadInProgress else {
+            print("Skipping data fetch - in progress")
+            Utility.firstLoadCompletions.append(completion)
             return
         }
 
         print("Starting data fetch...")
 
         Utility.firstLoadInProgress = true
+        Utility.firstLoadCompletions.append(completion)
 
         // Start parallel tasks
         self.notificationsViewModel.fetchData { error in
@@ -115,7 +121,10 @@ struct ContentView: View {
             alreadyCompleted = true
             print("User data fetched")
             if let error = error {
-                completion(error)
+                Utility.firstLoadInProgress = false
+                let completions = Utility.firstLoadCompletions
+                Utility.firstLoadCompletions.removeAll()
+                completions.forEach { $0(error) }
                 return
             }
 
@@ -181,7 +190,10 @@ struct ContentView: View {
 
             Utility.runTasksInSequence(sequence) { error in
                 if let error = error {
-                    completion(error)
+                    Utility.firstLoadInProgress = false
+                    let completions = Utility.firstLoadCompletions
+                    Utility.firstLoadCompletions.removeAll()
+                    completions.forEach { $0(error) }
                     return
                 }
 
@@ -189,7 +201,9 @@ struct ContentView: View {
 
                 Utility.firstLoadFinished = true
                 Utility.firstLoadInProgress = false
-                completion(nil)
+                let completions = Utility.firstLoadCompletions
+                Utility.firstLoadCompletions.removeAll()
+                completions.forEach { $0(nil) }
             }
         }
     }
