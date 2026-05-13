@@ -35,7 +35,7 @@ struct Provider: IntentTimelineProvider {
 
         self.fetchQuickBalance(configuration: configuration, budgetAccountId: budgetAccountId) { error in
             if let error = error {
-                print(error.localizedDescription)
+                print("🚨 Widget Fetch Error for ID \(budgetAccountId): \(error.localizedDescription)")
                 let entry = SimpleEntry(date: Date.now, balance: prevBalance, currency: prevCurrency, error: error.localizedDescription, configuration: configuration)
                 let entry2 = SimpleEntry(date: Date(timeIntervalSinceNow: 5), balance: prevBalance, currency: prevCurrency, error: "", configuration: configuration)
                 completion(Timeline(entries: [entry, entry2], policy: .after(Date(timeInterval: 15, since: Date.now))))
@@ -67,7 +67,16 @@ struct Provider: IntentTimelineProvider {
             return
         }
 
-        guard let subscriptionId = configuration.account?.subscriptionId else {
+        guard let budgetAccountId = configuration.account?.budgetAccountId else {
+            let info = "Found nil when extracting budgetAccountId in fetchQuickBalance in Provider (Widget)"
+            completion(ApplicationError.unexpectedNil(info))
+            return
+        }
+
+        // Use latest subscriptionId from shared storage if available
+        let subscriptionId = self.quickBalanceViewModel.getSubscriptionId(budgetAccountId: budgetAccountId) ?? configuration.account?.subscriptionId
+        
+        guard let subscriptionId = subscriptionId else {
             let info = "Found nil when extracting subscriptionId in fetchQuickBalance in Provider (Widget)"
             completion(ApplicationError.unexpectedNil(info))
             return

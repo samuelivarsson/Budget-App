@@ -152,6 +152,8 @@ struct QuickBalanceURL {
         
         guard response.statusCode >= 200, response.statusCode < 300 else {
             let quickBalanceErrorResponse = QuickBalanceErrorResponse(data: data)
+            let errorMessage = quickBalanceErrorResponse.errorMessages.generals.message
+            print("🚨 HTTP Error \(response.statusCode): \(errorMessage)")
             return HTTPError.badQuickBalanceCode(quickBalanceErrorResponse, response)
         }
         

@@ -8,11 +8,20 @@
 import Foundation
 
 class QuickBalanceViewModel: ObservableObject {
-    let userDefaults: UserDefaults = .init(suiteName: "com.samuelivarsson.Budget") ?? .init()
+    let userDefaults: UserDefaults = {
+        let suite = "group.com.samuelivarsson.Budget"
+        if let defaults = UserDefaults(suiteName: suite) {
+            print("✅ UserDefaults initialized with suite: \(suite)")
+            return defaults
+        }
+        print("🚨 UserDefaults failed to initialize with suite: \(suite). Falling back to standard.")
+        return .standard
+    }()
     let quickBalancePrefix: String = "QuickBalance:"
     let rawQuickBalancePrefix: String = "RawQuickBalance:"
     let lastUpdatePrefix: String = "LastUpdate:"
     let currencyPrefix: String = "Currency:"
+    let subscriptionIdPrefix: String = "SubscriptionId:"
     let expirationMessagePrefix: String = "ExpirationMessage:"
     let expirationDatePrefix: String = "ExpirationDate:"
     
@@ -21,7 +30,7 @@ class QuickBalanceViewModel: ObservableObject {
     }
     
     func getRawQuickBalance(budgetAccountId: String) -> String {
-        return self.userDefaults.string(forKey: self.rawQuickBalancePrefix + budgetAccountId) ?? "BudgetAppError404"
+        return self.userDefaults.string(forKey: self.rawQuickBalancePrefix + budgetAccountId) ?? ""
     }
     
     func getLastUpdate(budgetAccountId: String) -> String {
@@ -40,6 +49,10 @@ class QuickBalanceViewModel: ObservableObject {
         return self.userDefaults.string(forKey: self.expirationDatePrefix + budgetAccountId) ?? ""
     }
     
+    func getSubscriptionId(budgetAccountId: String) -> String? {
+        return self.userDefaults.string(forKey: self.subscriptionIdPrefix + budgetAccountId)
+    }
+    
     func fetchQuickBalanceFromApi(index: Int = 0, quickBalanceAccounts: [QuickBalanceAccount], completion: @escaping (Error?) -> Void) {
         if quickBalanceAccounts.isEmpty {
             completion(nil)
@@ -53,18 +66,25 @@ class QuickBalanceViewModel: ObservableObject {
         }
         
         let budgetAccountId = quickBalanceAccounts[index].budgetAccountId
+        let subscriptionId = quickBalanceAccounts[index].subscriptionId
+        self.userDefaults.setValue(subscriptionId, forKey: self.subscriptionIdPrefix + budgetAccountId)
+        
         if let lastUpdate: Date = Utility.stringToDate(string: self.getLastUpdate(budgetAccountId: budgetAccountId), style: .short, timeStyle: .medium) {
             if abs(lastUpdate.timeIntervalSinceNow) < 10 {
-                completion(UserError.lessThanTenSeconds)
+                // Already fresh, skip this one and move to next
+                self.fetchQuickBalanceFromApi(index: index + 1, quickBalanceAccounts: quickBalanceAccounts, completion: completion)
                 return
             }
         }
         
         let dateString = Utility.dateToString(date: Date.now, style: .short, timeStyle: .medium)
         self.userDefaults.setValue(dateString, forKey: self.lastUpdatePrefix + budgetAccountId)
+        self.userDefaults.setValue("", forKey: self.expirationMessagePrefix + budgetAccountId)
         
+        print("Attempting to fetch quickBalance for \(quickBalanceAccounts[index].name) (SubscriptionID: \(quickBalanceAccounts[index].subscriptionId))")
         MobileBankID.quickBalance(subscriptionId: quickBalanceAccounts[index].subscriptionId) { quickBalanceResponse, error in
             if let error = error {
+                print("🚨 API Error for \(quickBalanceAccounts[index].name): \(error.localizedDescription)")
                 completion(error)
                 return
             }
