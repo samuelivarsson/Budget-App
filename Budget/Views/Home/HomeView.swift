@@ -174,8 +174,8 @@ struct HomeView: View {
             self.account = account
             self.balance = balance
             self.quickBalanceAccount = quickBalanceAccount
-            self._quickBalance = AppStorage(wrappedValue: quickBalance, "QuickBalance:" + account.id)
-            self._lastUpdate = AppStorage(wrappedValue: "somethingWentWrong".localizeString(), "LastUpdate:" + account.id)
+            self._quickBalance = AppStorage(wrappedValue: quickBalance, "QuickBalance:" + account.id, store: QuickBalanceViewModel.sharedUserDefaults)
+            self._lastUpdate = AppStorage(wrappedValue: "somethingWentWrong".localizeString(), "LastUpdate:" + account.id, store: QuickBalanceViewModel.sharedUserDefaults)
         }
 
         var body: some View {
