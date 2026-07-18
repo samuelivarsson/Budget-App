@@ -266,6 +266,11 @@
 		4DFF75B12810739E00C40FF6 /* EditFriendNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75B02810739E00C40FF6 /* EditFriendNameView.swift */; };
 		4DFF75B32810772B00C40FF6 /* EditFriendPhoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75B22810772B00C40FF6 /* EditFriendPhoneView.swift */; };
 		4DFF75B5281077E500C40FF6 /* FriendDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75B4281077E500C40FF6 /* FriendDetailView.swift */; };
+		4E7C5A8FD85BBD7B80146080 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8C7F1FE720279F2123C566 /* Theme.swift */; };
+		53DDBD32606487C9771FC806 /* RedesignLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F436EFBB91364893DFDD5FE1 /* RedesignLogicTests.swift */; };
+		8561554506F312DC253357D8 /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15181CB6E03C749977FED0A0 /* SharedComponents.swift */; };
+		8E2756D3950E45BACD4D78CA /* HomeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD9BE8DDF348000B3F7C06E /* HomeComponents.swift */; };
+		CFA1848BA8F95FCD59F87E96 /* TransactionComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B634ACD249C9411FC7567A1F /* TransactionComponents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -316,6 +321,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		15181CB6E03C749977FED0A0 /* SharedComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SharedComponents.swift; path = Budget/Views/Components/SharedComponents.swift; sourceTree = "<group>"; };
+		2B8C7F1FE720279F2123C566 /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Budget/Views/Components/Theme.swift; sourceTree = "<group>"; };
 		4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceViewModel.swift; sourceTree = "<group>"; };
 		4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileBankID.swift; sourceTree = "<group>"; };
 		4D008F4229CE6C4000B3C3FE /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -457,6 +464,9 @@
 		4DFF75B02810739E00C40FF6 /* EditFriendNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendNameView.swift; sourceTree = "<group>"; };
 		4DFF75B22810772B00C40FF6 /* EditFriendPhoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendPhoneView.swift; sourceTree = "<group>"; };
 		4DFF75B4281077E500C40FF6 /* FriendDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendDetailView.swift; sourceTree = "<group>"; };
+		AAD9BE8DDF348000B3F7C06E /* HomeComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeComponents.swift; path = Budget/Views/Components/HomeComponents.swift; sourceTree = "<group>"; };
+		B634ACD249C9411FC7567A1F /* TransactionComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TransactionComponents.swift; path = Budget/Views/Components/TransactionComponents.swift; sourceTree = "<group>"; };
+		F436EFBB91364893DFDD5FE1 /* RedesignLogicTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RedesignLogicTests.swift; path = BudgetTests/RedesignLogicTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -668,9 +678,10 @@
 			isa = PBXGroup;
 			children = (
 				4D2C37B42B9348AB00CD5D7B /* OverheadTests.swift */,
+				F436EFBB91364893DFDD5FE1 /* RedesignLogicTests.swift */,
 			);
 			path = BudgetTests;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		4D653057281764B800641570 /* GeneralSettings */ = {
 			isa = PBXGroup;
@@ -902,6 +913,7 @@
 				4D6626E429C819A300C0F4D5 /* Standings */,
 				4DFD3DB1280740C700D5FFB4 /* History */,
 				4DFD3DB2280740D500D5FFB4 /* Settings */,
+				F07F7B49BA8984D1F2B4269B /* Components */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -993,6 +1005,17 @@
 			);
 			path = Edit;
 			sourceTree = "<group>";
+		};
+		F07F7B49BA8984D1F2B4269B /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				2B8C7F1FE720279F2123C566 /* Theme.swift */,
+				15181CB6E03C749977FED0A0 /* SharedComponents.swift */,
+				AAD9BE8DDF348000B3F7C06E /* HomeComponents.swift */,
+				B634ACD249C9411FC7567A1F /* TransactionComponents.swift */,
+			);
+			name = Components;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -1284,6 +1307,7 @@
 				4DF102582BA9B3B400239ED7 /* Friend.swift in Sources */,
 				4DF1024D2BA9B2FC00239ED7 /* User.swift in Sources */,
 				4DF102542BA9B38800239ED7 /* MobileBankIDResponse.swift in Sources */,
+				53DDBD32606487C9771FC806 /* RedesignLogicTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1496,6 +1520,10 @@
 				4D008F5629CF4A4500B3C3FE /* QuickBalanceAccountsResponse.swift in Sources */,
 				4DE907C429C0E02E00CB4F99 /* AccountView.swift in Sources */,
 				4DC4BDB3280B915E009E5859 /* EditPhoneView.swift in Sources */,
+				4E7C5A8FD85BBD7B80146080 /* Theme.swift in Sources */,
+				8561554506F312DC253357D8 /* SharedComponents.swift in Sources */,
+				8E2756D3950E45BACD4D78CA /* HomeComponents.swift in Sources */,
+				CFA1848BA8F95FCD59F87E96 /* TransactionComponents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
