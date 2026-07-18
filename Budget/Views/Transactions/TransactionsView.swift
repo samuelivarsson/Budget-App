@@ -131,6 +131,14 @@ struct TransactionsView: View {
             ScreenHeader(eyebrow: "expensesAndSharing".localizeString(),
                          title: "transactions".localizeString()) {
                 HStack(spacing: 8) {
+                    EditButton()
+                        .font(.system(size: 14, weight: .semibold))
+                        .tint(.appInk)
+                        .padding(.horizontal, 16).frame(height: 42)
+                        .background(Color.appCard)
+                        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.appLine))
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .disabled(userViewModel.user.id.isEmpty)
                     NavigationLink {
                         TransactionView(action: .add,
                                         firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
@@ -140,7 +148,6 @@ struct TransactionsView: View {
                             .background(Color.appPine).clipShape(RoundedRectangle(cornerRadius: 14))
                     }
                     .disabled(userViewModel.user.id.isEmpty)
-                    EditButton().disabled(userViewModel.user.id.isEmpty)
                 }
             }
             PeriodSelector(range: rangeText(0), count: "\(transactions(0).count) st",
@@ -153,14 +160,17 @@ struct TransactionsView: View {
     }
 
     private func transactionLink(_ transaction: Transaction) -> some View {
-        NavigationLink {
-            TransactionView(transaction: transaction, user: userViewModel.user,
-                            action: Utility.getTransactionAction(transaction: transaction,
-                                userId: userViewModel.user.id, role: userViewModel.user.role))
-        } label: {
-            TransactionCard(transaction: transaction, userId: userViewModel.user.id)
-        }
-        .buttonStyle(.plain)
+        // NavigationLink lives in the background so the List row is not itself a
+        // NavigationLink and therefore shows no trailing disclosure chevron.
+        TransactionCard(transaction: transaction, userId: userViewModel.user.id)
+            .background(
+                NavigationLink {
+                    TransactionView(transaction: transaction, user: userViewModel.user,
+                                    action: Utility.getTransactionAction(transaction: transaction,
+                                        userId: userViewModel.user.id, role: userViewModel.user.role))
+                } label: { EmptyView() }
+                .opacity(0)
+            )
     }
 
     private var loadMoreButton: some View {

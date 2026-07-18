@@ -124,17 +124,13 @@ struct PeriodSelector: View {
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 10) {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(isOpen ? .appPine : .appMuted)
-                    .rotationEffect(.degrees(isOpen ? 90 : 0))
                 Text(range).font(.system(size: 15, weight: .semibold)).foregroundColor(.appInk)
                 Spacer()
                 if let count { Text(count).font(.mono(12, weight: .regular)).foregroundColor(.appMuted) }
             }
             .padding(.horizontal, 15).padding(.vertical, 13)
             .background(Color.appCard)
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.appLine))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(isOpen ? Color.appPine.opacity(0.5) : Color.appLine))
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }.buttonStyle(.plain)
     }

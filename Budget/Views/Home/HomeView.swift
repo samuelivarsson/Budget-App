@@ -77,7 +77,11 @@ struct HomeView: View {
             .background(Color.appBackground.ignoresSafeArea())
             .navigationBarHidden(true)
         }
-        .redacted(when: !Utility.firstLoadFinished)
+        // Redact while the user is still loading. `user.id.isEmpty` is an
+        // observable signal (the codebase's convention for "not loaded yet"),
+        // so the view reliably un-redacts once data arrives — unlike the
+        // non-observable `Utility.firstLoadFinished` static.
+        .redacted(when: userViewModel.user.id.isEmpty)
     }
 
     private var accountsSection: some View {
