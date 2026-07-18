@@ -58,4 +58,23 @@ final class RedesignLogicTests: XCTestCase {
         ]
         XCTAssertEqual(vm.getTotalIOwe(myId: me), 0, accuracy: 0.0001)
     }
+
+    func testHomeSummaryAggregates() {
+        let s = HomeSummary(income: 36628, rows: [
+            (spent: 3357, ceiling: 1200),   // over
+            (spent: 242.5, ceiling: 400),   // within
+            (spent: 0, ceiling: 12500),     // within
+        ])
+        XCTAssertEqual(s.spent, 3599.5, accuracy: 0.001)
+        XCTAssertEqual(s.ceiling, 14100, accuracy: 0.001)
+        XCTAssertEqual(s.remaining, 14100 - 3599.5, accuracy: 0.001)
+        XCTAssertEqual(s.withinTakCount, 2)
+        XCTAssertEqual(s.totalCount, 3)
+    }
+    func testHomeSummaryProgressClamped() {
+        let s = HomeSummary(income: 0, rows: [(spent: 5000, ceiling: 1000)])
+        XCTAssertEqual(s.progress, 1, accuracy: 0.001)
+        let z = HomeSummary(income: 0, rows: [(spent: 0, ceiling: 0)])
+        XCTAssertEqual(z.progress, 0, accuracy: 0.001)
+    }
 }
