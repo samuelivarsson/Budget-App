@@ -296,4 +296,13 @@ class StandingsViewModel: ObservableObject {
         }
         return 0
     }
+
+    /// Total amount I currently owe across all standings (absolute).
+    /// Uses the same sign convention as StandingsView: negative standing = I owe.
+    func getTotalIOwe(myId: String) -> Double {
+        self.standings.reduce(0) { partial, standing in
+            let mine = standing.getStanding(myId: myId)
+            return mine < 0 ? partial - mine : partial
+        }
+    }
 }

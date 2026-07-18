@@ -1,10 +1,10 @@
 import SwiftUI
 
-// Colors whose asset names camel-case to the exact symbol we want
-// (appBackground, heroTop, heroBottom, heroInk, heroMuted, heroTrack, heroFill)
-// are provided by Xcode's auto-generated asset symbols, so they are not
-// re-declared here to avoid "invalid redeclaration" errors.
+// Asset-symbol generation is disabled for the Budget target, so all color
+// tokens are declared here explicitly. This keeps them available to both the
+// app and the BudgetTests target (which compiles these sources directly).
 extension Color {
+    static let appBackground = Color("AppBackground")
     static let appCard       = Color("Card")
     static let appCard2      = Color("Card2")
     static let appInk        = Color("Ink")
@@ -23,6 +23,12 @@ extension Color {
     static let appInfo       = Color("Info")
     static let appInfoSoft   = Color("InfoSoft")
     static let appChipBg     = Color("ChipBg")
+    static let heroTop       = Color("HeroTop")
+    static let heroBottom    = Color("HeroBottom")
+    static let heroInk       = Color("HeroInk")
+    static let heroMuted     = Color("HeroMuted")
+    static let heroTrack     = Color("HeroTrack")
+    static let heroFill      = Color("HeroFill")
 }
 
 extension Font {

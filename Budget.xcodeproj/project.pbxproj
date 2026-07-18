@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		43032194065CBED6E9E6B0B2 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */; };
 		4D008F3C29CE63D000B3C3FE /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
 		4D008F3F29CE654B00B3C3FE /* MobileBankID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */; };
 		4D008F4329CE6C4000B3C3FE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F4229CE6C4000B3C3FE /* Extensions.swift */; };
@@ -268,8 +269,12 @@
 		4DFF75B5281077E500C40FF6 /* FriendDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFF75B4281077E500C40FF6 /* FriendDetailView.swift */; };
 		4E7C5A8FD85BBD7B80146080 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8C7F1FE720279F2123C566 /* Theme.swift */; };
 		53DDBD32606487C9771FC806 /* RedesignLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F436EFBB91364893DFDD5FE1 /* RedesignLogicTests.swift */; };
+		564508C590CC0CDA04C10899 /* HomeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD9BE8DDF348000B3F7C06E /* HomeComponents.swift */; };
 		8561554506F312DC253357D8 /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15181CB6E03C749977FED0A0 /* SharedComponents.swift */; };
+		85F9D90FC92EB81A7B79B359 /* TransactionComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B634ACD249C9411FC7567A1F /* TransactionComponents.swift */; };
+		8CA09EE524F77F7AEC222321 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8C7F1FE720279F2123C566 /* Theme.swift */; };
 		8E2756D3950E45BACD4D78CA /* HomeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD9BE8DDF348000B3F7C06E /* HomeComponents.swift */; };
+		A40E21595A0F67B7489A91BF /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15181CB6E03C749977FED0A0 /* SharedComponents.swift */; };
 		CFA1848BA8F95FCD59F87E96 /* TransactionComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B634ACD249C9411FC7567A1F /* TransactionComponents.swift */; };
 /* End PBXBuildFile section */
 
@@ -1308,6 +1313,11 @@
 				4DF1024D2BA9B2FC00239ED7 /* User.swift in Sources */,
 				4DF102542BA9B38800239ED7 /* MobileBankIDResponse.swift in Sources */,
 				53DDBD32606487C9771FC806 /* RedesignLogicTests.swift in Sources */,
+				8CA09EE524F77F7AEC222321 /* Theme.swift in Sources */,
+				A40E21595A0F67B7489A91BF /* SharedComponents.swift in Sources */,
+				564508C590CC0CDA04C10899 /* HomeComponents.swift in Sources */,
+				85F9D90FC92EB81A7B79B359 /* TransactionComponents.swift in Sources */,
+				43032194065CBED6E9E6B0B2 /* StandingsViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1951,6 +1961,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Budget/Budget.entitlements;
@@ -1993,6 +2004,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Budget/Budget.entitlements;
