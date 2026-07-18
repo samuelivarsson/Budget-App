@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		267BEA6B8063F38E7322188B /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
 		43032194065CBED6E9E6B0B2 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */; };
 		4D008F3C29CE63D000B3C3FE /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
 		4D008F3F29CE654B00B3C3FE /* MobileBankID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */; };
@@ -1318,6 +1319,7 @@
 				564508C590CC0CDA04C10899 /* HomeComponents.swift in Sources */,
 				85F9D90FC92EB81A7B79B359 /* TransactionComponents.swift in Sources */,
 				43032194065CBED6E9E6B0B2 /* StandingsViewModel.swift in Sources */,
+				267BEA6B8063F38E7322188B /* QuickBalanceViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

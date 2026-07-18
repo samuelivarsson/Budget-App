@@ -16,6 +16,7 @@ struct TransactionsView: View {
 
     @State private var level: Int = 2
     @State private var openPeriods: Set<Int> = [0]
+    @State private var editMode: EditMode = .inactive
     @State private var transactionFromUrl: Transaction?
     @State private var urlSchemeNavigation = false
 
@@ -52,13 +53,39 @@ struct TransactionsView: View {
 
     var body: some View {
         NavigationStack {
-            List {
+            VStack(spacing: 0) {
                 headerBlock
-                    .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20))
-                    .listRowSeparator(.hidden).listRowBackground(Color.clear)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                    .padding(.bottom, 12)
 
-                // Current period, expanded with day groups
-                if openPeriods.contains(0) {
+                transactionList
+            }
+            .background(Color.appBackground.ignoresSafeArea())
+            .navigationBarHidden(true)
+            .environment(\.editMode, $editMode)
+            .onLoad {
+                if let url = tabRouter.appStartFromUrl {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        handleUrlOpen(url: url); tabRouter.appStartFromUrl = nil
+                    }
+                }
+            }
+            .onOpenURL { url in
+                if url.absoluteString.contains("transactionFromUrl") { handleUrlOpen(url: url) }
+            }
+            .navigationDestination(isPresented: $urlSchemeNavigation) {
+                if let transaction = transactionFromUrl {
+                    TransactionView(transaction: transaction, user: userViewModel.user, action: .add, fromUrl: true)
+                }
+            }
+        }
+    }
+
+    private var transactionList: some View {
+        List {
+            // Current period, expanded with day groups
+            if openPeriods.contains(0) {
                     let groups = groupTransactionsByDay(transactions(0))
                     if groups.isEmpty {
                         Text("noTransactionsThisPeriod".localizeString())
@@ -106,24 +133,6 @@ struct TransactionsView: View {
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
-            .background(Color.appBackground.ignoresSafeArea())
-            .navigationBarHidden(true)
-            .onLoad {
-                if let url = tabRouter.appStartFromUrl {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        handleUrlOpen(url: url); tabRouter.appStartFromUrl = nil
-                    }
-                }
-            }
-            .onOpenURL { url in
-                if url.absoluteString.contains("transactionFromUrl") { handleUrlOpen(url: url) }
-            }
-            .navigationDestination(isPresented: $urlSchemeNavigation) {
-                if let transaction = transactionFromUrl {
-                    TransactionView(transaction: transaction, user: userViewModel.user, action: .add, fromUrl: true)
-                }
-            }
-        }
     }
 
     private var headerBlock: some View {
@@ -131,27 +140,8 @@ struct TransactionsView: View {
             ScreenHeader(eyebrow: "expensesAndSharing".localizeString(),
                          title: "transactions".localizeString()) {
                 HStack(spacing: 8) {
-                    EditButton()
-                        .font(.system(size: 14, weight: .semibold))
-                        .tint(.appInk)
-                        .padding(.horizontal, 16).frame(height: 42)
-                        .background(Color.appCard)
-                        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.appLine))
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                        .disabled(userViewModel.user.id.isEmpty)
-                    // NavigationLink lives in the background so the List header
-                    // row is not itself a NavigationLink (no disclosure chevron).
-                    Image(systemName: "plus").font(.system(size: 20, weight: .semibold))
-                        .foregroundColor(.white).frame(width: 42, height: 42)
-                        .background(Color.appPine).clipShape(RoundedRectangle(cornerRadius: 14))
-                        .background(
-                            NavigationLink {
-                                TransactionView(action: .add,
-                                                firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
-                            } label: { EmptyView() }
-                            .opacity(0)
-                        )
-                        .disabled(userViewModel.user.id.isEmpty)
+                    addButton
+                    editButton
                 }
             }
             PeriodSelector(range: rangeText(0), count: "\(transactions(0).count) st",
@@ -161,6 +151,37 @@ struct TransactionsView: View {
                           oweLabel: "youOwe".localizeString(),
                           oweValue: standingsViewModel.getTotalIOwe(myId: userViewModel.user.id))
         }
+    }
+
+    // Green round "add" button on the left. Lives outside the List, so it is a
+    // normal NavigationLink with no disclosure chevron and no hit-test crossing.
+    private var addButton: some View {
+        NavigationLink {
+            TransactionView(action: .add,
+                            firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
+        } label: {
+            Image(systemName: "plus").font(.system(size: 20, weight: .semibold))
+                .foregroundColor(.white).frame(width: 42, height: 42)
+                .background(Color.appPine).clipShape(RoundedRectangle(cornerRadius: 14))
+        }
+        .disabled(userViewModel.user.id.isEmpty)
+    }
+
+    // "Ändra"/"Klar" pill that toggles the List's edit mode via the shared
+    // editMode binding injected on the container.
+    private var editButton: some View {
+        Button {
+            withAnimation { editMode = editMode.isEditing ? .inactive : .active }
+        } label: {
+            Text(editMode.isEditing ? "done".localizeString() : "edit".localizeString())
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.appInk)
+                .padding(.horizontal, 16).frame(height: 42)
+                .background(Color.appCard)
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.appLine))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+        }
+        .disabled(userViewModel.user.id.isEmpty)
     }
 
     private func transactionLink(_ transaction: Transaction) -> some View {
