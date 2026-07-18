@@ -127,6 +127,10 @@ struct PeriodSelector: View {
                 Text(range).font(.system(size: 15, weight: .semibold)).foregroundColor(.appInk)
                 Spacer()
                 if let count { Text(count).font(.mono(12, weight: .regular)).foregroundColor(.appMuted) }
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(isOpen ? .appPine : .appMuted)
+                    .rotationEffect(.degrees(isOpen ? 0 : -90))
             }
             .padding(.horizontal, 15).padding(.vertical, 13)
             .background(Color.appCard)
