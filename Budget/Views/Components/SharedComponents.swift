@@ -48,31 +48,27 @@ struct Chip: View {
     }
 }
 
+/// A progress bar showing how much of a category's ceiling has been used.
+/// The fill width is `spent / ceiling` (0–100%); when the ceiling is exceeded
+/// the bar is full and turns red. Amber warns at ≥50% of the ceiling.
 struct TakBar: View {
     let spent: Double
     let ceiling: Double
     private var state: BudgetBarState { BudgetBarState.classify(spent: spent, ceiling: ceiling) }
     private var ratio: Double { ceiling <= 0 ? (spent > 0 ? 1 : 0) : min(max(spent / ceiling, 0), 1) }
+    private var fillRatio: Double { state == .over ? 1 : ratio }
+    private var fillColor: Color {
+        switch state {
+        case .over: return .appRedBar
+        case .warn: return .appAmberBar
+        case .normal: return .appPine
+        }
+    }
     var body: some View {
         GeometryReader { geo in
-            let w = geo.size.width
             ZStack(alignment: .leading) {
                 Capsule().fill(Color.appTrack)
-                switch state {
-                case .over:
-                    // fill to ~82% then a hatched spill, with a ceiling tick
-                    Capsule().fill(Color.appRedBar).frame(width: w * 0.82)
-                    Rectangle()
-                        .fill(Color.appRedBar.opacity(0.85))
-                        .frame(width: w * 0.18).offset(x: w * 0.82)
-                        .mask(Capsule())
-                    Rectangle().fill(Color.appRed).frame(width: 2, height: 14)
-                        .offset(x: w * 0.82 - 1, y: -3)
-                case .warn:
-                    Capsule().fill(Color.appAmberBar).frame(width: w * ratio)
-                case .normal:
-                    Capsule().fill(Color.appPine).frame(width: w * ratio)
-                }
+                Capsule().fill(fillColor).frame(width: geo.size.width * fillRatio)
             }
         }
         .frame(height: 8)

@@ -24,6 +24,17 @@ struct HomeView: View {
         userViewModel.getTransactionCategoriesSorted(type: .expense)
     }
 
+    private var mainTransactionAccountId: String {
+        userViewModel.user.budget.getMainAccountId(type: .transaction)
+    }
+
+    /// Only categories that draw from the main transaction account count toward
+    /// the hero totals (Spenderat / Budgettak / Kvar) — excludes e.g. Sparkonto
+    /// and Resor categories that take from other accounts.
+    private var mainExpenseCategories: [TransactionCategory] {
+        expenseCategories.filter { $0.takesFromAccount == mainTransactionAccountId }
+    }
+
     private func spent(_ c: TransactionCategory) -> Double {
         transactionsViewModel.getSpent(user: userViewModel.user, transactionCategory: c)
     }
@@ -33,7 +44,7 @@ struct HomeView: View {
 
     private var summary: HomeSummary {
         HomeSummary(income: userViewModel.user.budget.income,
-                    rows: expenseCategories.map { (spent($0), ceiling($0)) })
+                    rows: mainExpenseCategories.map { (spent($0), ceiling($0)) })
     }
 
     private var accountsTotal: Double {
@@ -93,17 +104,9 @@ struct HomeView: View {
                 let i = transactionsViewModel.getIncomes(user: userViewModel.user, accountId: account.id)
                 let balance = userViewModel.getBalance(accountId: account.id, spent: s, incomes: i)
                 if let qba = userViewModel.getQuickBalanceAccount(budgetAccountId: account.id) {
-                    let qb = quickBalanceViewModel.getQuickBalance(budgetAccountId: account.id)
-                    let last = QuickBalanceViewModel.sharedUserDefaults
-                        .string(forKey: "LastUpdate:" + account.id)
-                    let dev = (round(qb * 100) - round(balance * 100)) == 0 ? nil : (qb - balance)
-                    AccountRow(name: account.name,
-                               meta: last.map { "updated".localizeString() + " " + $0 },
-                               amount: balance, deviation: dev) {
-                        quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccount: qba) { error in
-                            if let error = error { errorHandling.handle(error: error) }
-                        }
-                    }
+                    HomeQuickBalanceRow(account: account, balance: balance,
+                                        quickBalanceAccount: qba,
+                                        updatedLabel: "updated".localizeString())
                 } else {
                     AccountRow(name: account.name, meta: nil, amount: balance, deviation: nil, onTap: nil)
                 }

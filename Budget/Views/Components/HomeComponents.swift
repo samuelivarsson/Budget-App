@@ -91,6 +91,72 @@ struct AccountRow: View {
     }
 }
 
+/// Account row for quick-balance ("snabbsaldo") accounts. Uses @AppStorage so it
+/// observes UserDefaults and re-renders + animates when a refresh completes.
+struct HomeQuickBalanceRow: View {
+    @EnvironmentObject private var errorHandling: ErrorHandling
+    @EnvironmentObject private var quickBalanceViewModel: QuickBalanceViewModel
+
+    @AppStorage private var quickBalance: Double
+    @AppStorage private var lastUpdate: String
+    @State private var animate = false
+
+    let account: Account
+    let balance: Double
+    let quickBalanceAccount: QuickBalanceAccount
+    let updatedLabel: String
+
+    init(account: Account, balance: Double, quickBalanceAccount: QuickBalanceAccount, updatedLabel: String) {
+        self.account = account
+        self.balance = balance
+        self.quickBalanceAccount = quickBalanceAccount
+        self.updatedLabel = updatedLabel
+        self._quickBalance = AppStorage(wrappedValue: 0, "QuickBalance:" + account.id,
+                                        store: QuickBalanceViewModel.sharedUserDefaults)
+        self._lastUpdate = AppStorage(wrappedValue: "-", "LastUpdate:" + account.id,
+                                      store: QuickBalanceViewModel.sharedUserDefaults)
+    }
+
+    private var deviation: Double? {
+        (round(quickBalance * 100) - round(balance * 100)) == 0 ? nil : (quickBalance - balance)
+    }
+
+    var body: some View {
+        Button {
+            quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccount: quickBalanceAccount) { error in
+                if let error = error { errorHandling.handle(error: error) }
+            }
+        } label: {
+            AppCard {
+                HStack(alignment: .center, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(account.name).font(.system(size: 16, weight: .semibold)).foregroundColor(.appInk)
+                        Text("\(updatedLabel) \(lastUpdate)")
+                            .font(.system(size: 11)).foregroundColor(.appMuted)
+                            .lineLimit(1).minimumScaleFactor(0.7)
+                        if let deviation {
+                            let sign = deviation >= 0 ? "+" : ""
+                            Chip("Avviker \(sign)\(Utility.doubleToLocalCurrency(value: deviation))", style: .deviation)
+                                .scaleEffect(animate ? 1.06 : 1)
+                        }
+                    }
+                    Spacer(minLength: 8)
+                    Text(Utility.doubleToLocalCurrency(value: balance))
+                        .font(.mono(17)).foregroundColor(.appInk)
+                        .lineLimit(1).minimumScaleFactor(0.7)
+                        .scaleEffect(animate ? 1.12 : 1)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .animation(.spring(dampingFraction: 0.5), value: animate)
+        .onChange(of: lastUpdate) { _ in
+            animate = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { animate = false }
+        }
+    }
+}
+
 struct BudgetRow: View {
     let name: String
     let spent: Double
