@@ -99,9 +99,11 @@ struct ScreenHeader<Trailing: View>: View {
                 Text(eyebrow.uppercased())
                     .font(.system(size: 12, weight: .semibold)).kerning(1)
                     .foregroundColor(.appMuted)
+                    .lineLimit(1)
                 Text(title).font(.system(size: 30, weight: .bold)).foregroundColor(.appInk)
+                    .lineLimit(1).minimumScaleFactor(0.6)
             }
-            Spacer()
+            Spacer(minLength: 8)
             trailing
         }
         .padding(.horizontal, 4)

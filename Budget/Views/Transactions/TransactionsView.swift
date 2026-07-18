@@ -139,15 +139,19 @@ struct TransactionsView: View {
                         .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.appLine))
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                         .disabled(userViewModel.user.id.isEmpty)
-                    NavigationLink {
-                        TransactionView(action: .add,
-                                        firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
-                    } label: {
-                        Image(systemName: "plus").font(.system(size: 20, weight: .semibold))
-                            .foregroundColor(.white).frame(width: 42, height: 42)
-                            .background(Color.appPine).clipShape(RoundedRectangle(cornerRadius: 14))
-                    }
-                    .disabled(userViewModel.user.id.isEmpty)
+                    // NavigationLink lives in the background so the List header
+                    // row is not itself a NavigationLink (no disclosure chevron).
+                    Image(systemName: "plus").font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(.white).frame(width: 42, height: 42)
+                        .background(Color.appPine).clipShape(RoundedRectangle(cornerRadius: 14))
+                        .background(
+                            NavigationLink {
+                                TransactionView(action: .add,
+                                                firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
+                            } label: { EmptyView() }
+                            .opacity(0)
+                        )
+                        .disabled(userViewModel.user.id.isEmpty)
                 }
             }
             PeriodSelector(range: rangeText(0), count: "\(transactions(0).count) st",
