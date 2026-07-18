@@ -290,3 +290,19 @@
 "hasEditedTheTransaction" = "har redigerat transaktionen";
 "youAreNowEvenWith" = "Du är nu kvitt med";
 "hasSentYouAReminder" = "har skickat en påminnelse till dig om att swisha";
+
+// Redesign — Home & Transactions
+"budgetRemaining" = "Kvar av månadens budget";
+"total" = "Totalt";
+"withinCeiling" = "%d av %d inom tak";
+"remainingShort" = "Kvar";
+"overCeilingBy" = "Över tak med";
+"updated" = "Uppdaterat";
+"expensesAndSharing" = "Utgifter & delning";
+"yourShare" = "Din del";
+"youOwe" = "Du är skyldig";
+"yourSharePercent" = "Din del %d%%";
+"personPaid" = "%@ betalade";
+"of" = "av";
+"today" = "Idag";
+"yesterday" = "Igår";

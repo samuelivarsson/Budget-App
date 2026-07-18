@@ -290,3 +290,19 @@
 "hasEditedTheTransaction" = "has edited the transaction";
 "youAreNowEvenWith" = "You are now even with";
 "hasSentYouAReminder" = "has sent you a reminder to swish";
+
+// Redesign — Home & Transactions
+"budgetRemaining" = "Remaining this month";
+"total" = "Total";
+"withinCeiling" = "%d of %d within ceiling";
+"remainingShort" = "Left";
+"overCeilingBy" = "Over ceiling by";
+"updated" = "Updated";
+"expensesAndSharing" = "Expenses & sharing";
+"yourShare" = "Your share";
+"youOwe" = "You owe";
+"yourSharePercent" = "Your share %d%%";
+"personPaid" = "%@ paid";
+"of" = "of";
+"today" = "Today";
+"yesterday" = "Yesterday";

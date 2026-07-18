@@ -67,6 +67,7 @@ struct ContentView: View {
             }
             .tag(TabRouter.Tab.settings)
         }
+        .tint(Color.appPine)
         .onLoad {
             do {
                 try Auth.auth().useUserAccessGroup("\(Secrets.teamId).com.samuelivarsson.Budget")
