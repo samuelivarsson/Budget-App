@@ -142,6 +142,12 @@ struct Transaction: Identifiable, Codable {
                 ?? budget.transactionCategories.first(where: { $0.name == ownCategory.name })
                 ?? ownCategory
         }
+        // No participant override: if the stored category is already this user's
+        // own (matches by id), use it directly — robust to two categories sharing
+        // a name (e.g. "Övrigt"). Otherwise map by name (the historical default).
+        if let mine = budget.transactionCategories.first(where: { $0.id == self.category.id }) {
+            return mine
+        }
         return budget.transactionCategories.first(where: { $0.name == self.category.name }) ?? self.category
     }
 
