@@ -12,12 +12,10 @@ import SwiftUI
 // Darker, closer to the mockup than the system grays. Translucent card fills are
 // cheap (alpha compositing, no blur) so they don't affect scroll performance.
 extension Color {
-    static let iosBG = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark
-        ? UIColor(white: 0.02, alpha: 1)                                   // ~#050507
-        : UIColor(red: 0.957, green: 0.957, blue: 0.972, alpha: 1) })      // ~#f4f4f8
-    static let iosCardFill = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark
-        ? UIColor(white: 1, alpha: 0.055)
-        : UIColor.white })
+    // Use the system grouped colors so the redesigned cards and the default
+    // Form/List cells are identical across the whole app.
+    static let iosBG = Color(uiColor: .systemGroupedBackground)
+    static let iosCardFill = Color(uiColor: .secondarySystemGroupedBackground)
     static let iosBorder = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark
         ? UIColor(white: 1, alpha: 0.09)
         : UIColor(white: 0, alpha: 0.06) })

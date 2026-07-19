@@ -65,11 +65,21 @@ struct TransactionsView: View {
     private var expenseCategories: [TransactionCategory] { userViewModel.getTransactionCategoriesSorted(type: .expense) }
     private var mainCats: [TransactionCategory] { expenseCategories.filter { $0.takesFromAccount == mainAccountId } }
     private var sepCats: [TransactionCategory] { expenseCategories.filter { $0.takesFromAccount != mainAccountId } }
-    private func spentIn(_ cats: [TransactionCategory]) -> Double {
-        cats.reduce(0) { $0 + transactionsViewModel.getSpent(user: user, transactionCategory: $1) }
+    /// Sums my share of ONLY expense-type ("Utgifter") transactions, split into
+    /// main-account vs separate-account categories (by the user's effective category).
+    private func split(_ txs: [Transaction]) -> (main: Double, separate: Double) {
+        var main = 0.0, separate = 0.0
+        for tx in txs where tx.type == .expense {
+            let cat = tx.categoryForUser(userId: user.id, budget: budget)
+            let share = tx.getShare(userId: user.id)
+            if mainCats.contains(where: { $0.id == cat.id }) { main += share }
+            else if sepCats.contains(where: { $0.id == cat.id }) { separate += share }
+        }
+        return (main, separate)
     }
-    private var savingsPart: Double { spentIn(sepCats) }       // categories drawing from separate accounts
-    private var mainSpent: Double { spentIn(mainCats) }         // main-account categories only
+    private var currentSplit: (main: Double, separate: Double) { split(transactions(0)) }
+    private var savingsPart: Double { currentSplit.separate }   // expenses drawing from separate accounts
+    private var mainSpent: Double { currentSplit.main }          // main-account expenses only
     private var mainTak: Double { mainCats.reduce(0) { $0 + $1.getRealAmount(budget: budget) } }
 
     private var daysElapsed: Int {
@@ -77,19 +87,11 @@ struct TransactionsView: View {
         let end = min(Date(), to)
         return max(1, Calendar.current.dateComponents([.day], from: from, to: end).day ?? 1)
     }
-    /// Previous period's spend up to the same number of days into the cycle,
-    /// split into main-account vs separate-account categories.
+    /// Previous period's expenses up to the same number of days into the cycle.
     private var prevSplit: (main: Double, separate: Double) {
         let from1 = period(1).0
         let prevEnd = Calendar.current.date(byAdding: .day, value: daysElapsed, to: from1) ?? from1
-        var main = 0.0, separate = 0.0
-        for tx in transactionsViewModel.getTransactions(from: from1, to: prevEnd) where tx.type == .expense {
-            let cat = tx.categoryForUser(userId: user.id, budget: budget)
-            let share = tx.getShare(userId: user.id)
-            if mainCats.contains(where: { $0.id == cat.id }) { main += share }
-            else if sepCats.contains(where: { $0.id == cat.id }) { separate += share }
-        }
-        return (main, separate)
+        return split(transactionsViewModel.getTransactions(from: from1, to: prevEnd))
     }
     private func deltaPct(_ current: Double, _ previous: Double) -> Int? {
         guard previous > 0 else { return nil }
