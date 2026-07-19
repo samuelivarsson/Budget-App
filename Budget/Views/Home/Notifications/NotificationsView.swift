@@ -59,6 +59,7 @@ struct NotificationsView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("notifications")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

@@ -220,13 +220,22 @@ struct ContentView: View {
             return
         }
 
-        self.userViewModel.user.lastSaveDate = Date.now
+        let saveDate = Date.now
+        self.userViewModel.user.lastSaveDate = saveDate
 
-        // Save this months category amounts
+        // Save this months category amounts and accumulate the realised totals per type
         var categoryHistories: [CategoryHistory] = .init()
+        var actualIncome: Double = 0
+        var actualExpenses: Double = 0
+        var actualSavings: Double = 0
         for transactionCategory in self.userViewModel.user.budget.transactionCategories {
             let totalAmount = self.transactionsViewModel.getSpent(user: self.userViewModel.user, transactionCategory: transactionCategory, monthsBack: 1)
-            categoryHistories.append(CategoryHistory(categoryId: transactionCategory.id, categoryName: transactionCategory.name, totalAmount: totalAmount, saveDate: Date.now, userId: self.userViewModel.user.id))
+            categoryHistories.append(CategoryHistory(categoryId: transactionCategory.id, categoryName: transactionCategory.name, totalAmount: totalAmount, saveDate: saveDate, userId: self.userViewModel.user.id, categoryType: transactionCategory.type))
+            switch transactionCategory.type {
+            case .income: actualIncome += totalAmount
+            case .expense: actualExpenses += totalAmount
+            case .saving: actualSavings += totalAmount
+            }
         }
 
         // Save this months final account balances
@@ -243,7 +252,7 @@ struct ContentView: View {
             let incomes = self.transactionsViewModel.getIncomes(user: self.userViewModel.user, accountId: account.id, monthsBack: 1)
             let balance = self.userViewModel.getBalance(accountId: account.id, spent: spent, incomes: incomes, monthsBack: 1)
 
-            accountHistories.append(AccountHistory(accountId: account.id, accountName: account.name, balance: balance, saveDate: Date.now, userId: self.userViewModel.user.id))
+            accountHistories.append(AccountHistory(accountId: account.id, accountName: account.name, balance: balance, saveDate: saveDate, userId: self.userViewModel.user.id))
 
             // Set new base amounts
             if account.id != mainTransactionAccountId {
@@ -270,11 +279,26 @@ struct ContentView: View {
             }
         }
 
+        // Save this months planned budget figures (income / fixed costs / scheduled
+        // saving) so the History view can show a truthful Netto over time — these
+        // only ever live in the current budget config otherwise.
+        let budget = self.userViewModel.user.budget
+        let monthlySummary = MonthlySummary(
+            income: budget.income,
+            fixedCosts: budget.getOverheadsAmount(monthsBack: 1),
+            scheduledSavings: budget.getSavings(),
+            actualIncome: actualIncome,
+            actualExpenses: actualExpenses,
+            actualSavings: actualSavings,
+            saveDate: saveDate,
+            userId: self.userViewModel.user.id
+        )
+
         print("1")
         var hasCalledCompletion = false
 
         // Save the histories
-        self.historyViewModel.addHistories(accountHistories: accountHistories, categoryHistories: categoryHistories) { error in
+        self.historyViewModel.addHistories(accountHistories: accountHistories, categoryHistories: categoryHistories, monthlySummary: monthlySummary) { error in
             print("2")
             if let error = error {
                 self.errorHandling.handle(error: error)

@@ -80,11 +80,35 @@
 "standings" = "Standings";
 "favourites" = "Favourites";
 "otherFriends" = "Other friends";
+"youGetBack" = "You get back";
+"toSettle" = "To settle";
+"settleUp" = "Settle up";
+"remindButton" = "Remind";
+"regulate" = "Settle";
+"even" = "Even";
+"withoutAccount" = "no account";
+"owesYou" = "owes you";
+"youAreOwingShort" = "you owe";
 
 // History View
-"averageSpent" = "Transaction cateogries - Average amount you spend in each category\n\nAccounts - What the account balance was at the end of last budget month";
+"averageSpent" = "The period at the top selects which months are shown. Total/Average toggles between the sum and the per-month average (per day for This month).\n\nNet = income − fixed costs − scheduled saving − expenses, i.e. how much was saved beyond the scheduled saving.\n\nSaved = what was deposited into savings accounts.\n\nIncome, fixed costs and scheduled saving come from settings and are estimated for months without saved data.\n\nAccounts show current balances.";
 "info" = "Info";
 "ok" = "Ok";
+"net" = "Net";
+"saved" = "Saved";
+"thisMonth" = "This month";
+"threeMonths" = "3 mo";
+"thisYear" = "This year";
+"allTime" = "All";
+"savingsAccountPurchases" = "Savings acc. purchases";
+"depositedToSavings" = "deposited to savings";
+"fixedCostsEstimated" = "fixed costs estimated";
+"monthlyIncome" = "Monthly income";
+"scheduledSaving" = "Scheduled saving";
+"estimatedNote" = "Income, fixed costs and scheduled saving are estimated for months without saved data";
+"average" = "Average";
+"perMonthSuffix" = "/mo";
+"perDaySuffix" = "/day";
 
 // Years, months etc abbreviations
 "shortYears" = "y";
@@ -290,3 +314,74 @@
 "hasEditedTheTransaction" = "has edited the transaction";
 "youAreNowEvenWith" = "You are now even with";
 "hasSentYouAReminder" = "has sent you a reminder to swish";
+
+// Redesign — Home & Transactions
+"budgetRemaining" = "Remaining this month";
+"total" = "Total";
+"withinCeiling" = "%d of %d within ceiling";
+"remainingShort" = "Left";
+"overCeilingBy" = "Over ceiling by";
+"updated" = "Updated";
+"expensesAndSharing" = "Expenses & sharing";
+"yourShare" = "Your share";
+"youOwe" = "You owe";
+"yourSharePercent" = "Your share %d%%";
+"personPaid" = "%@ paid";
+"of" = "of";
+"today" = "Today";
+"yesterday" = "Yesterday";
+
+"edit" = "Edit";
+"done" = "Done";
+
+// Add transaction redesign
+"distribution" = "Distribution";
+"searchFriendOrGroup" = "Search friend or group…";
+"showAllCount" = "Show all (%d)";
+"addAll" = "Add all";
+"removeAll" = "Remove all";
+"noMatches" = "No matches";
+
+// Home v3 (iOS)
+"monthlyBudget" = "Monthly budget";
+"overBudget" = "over budget";
+"budgetLeftTag" = "left";
+"categoriesOverCeiling" = "%d categories over budget";
+"allWithinCeiling" = "All within budget";
+"totalBalance" = "Total balance";
+"snabbsaldo" = "Quick balance";
+"updatedAt" = "Updated";
+"mainAccount" = "Main account";
+"separateAccounts" = "Separate accounts";
+"overCeiling" = "Over";
+"categoriesOverOfTotal" = "%d of %d categories over budget";
+
+// Transactions v2 (iOS)
+"all" = "All";
+"topUps" = "Top-ups";
+"transfers" = "Transfers";
+"transactionsCount" = "%d transactions";
+"show" = "Show";
+"spentInMonth" = "Spent in %@";
+"avgPerDay" = "Avg per day · %@";
+"vsLastMonthSameDay" = "vs %@ · same day";
+"forecast" = "forecast";
+"savings" = "Savings";
+
+// Add transaction v2 (iOS)
+"newTransaction" = "New transaction";
+"allFriends" = "All friends";
+"showMoreCount" = "Show %d more";
+"splitting" = "Splitting";
+"selectedCount" = "%d selected";
+
+// Own items split
+"ownLabel" = "Own";
+"splitShared" = "shared";
+"splitOwn" = "own";
+
+"ownItemsNote" = "Own purchases deducted first · the rest %@ split equally";
+
+// General settings
+"filledTransactionIcons" = "Filled transaction icons";
+"filledTransactionIconsDescription" = "Show the transaction type icon filling the whole tile instead of a letter with a small badge in the corner.";

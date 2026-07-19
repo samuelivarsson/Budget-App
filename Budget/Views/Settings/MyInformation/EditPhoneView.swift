@@ -38,6 +38,7 @@ struct EditPhoneView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("editPhone")
         .navigationBarTitleDisplayMode(.inline)
         .onLoad {

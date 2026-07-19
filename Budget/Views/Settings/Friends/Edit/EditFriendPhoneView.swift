@@ -40,6 +40,7 @@ struct EditFriendPhoneView: View {
                 Spacer()
             }
         }
+        .iosFormBackground()
         .navigationTitle("editFriendPhone")
         .navigationBarTitleDisplayMode(.inline)
     }

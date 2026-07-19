@@ -45,6 +45,7 @@ struct BudgetView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("budget")
         .navigationBarTitleDisplayMode(.inline)
     }

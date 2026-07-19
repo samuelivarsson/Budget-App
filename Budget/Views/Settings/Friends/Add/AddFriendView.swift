@@ -20,27 +20,33 @@ struct AddFriendView: View {
     @State private var search: String = ""
     @State private var name: String = ""
     @State private var phone: String = ""
+    @State private var group: String = ""
+    @State private var newGroup: String = ""
+    @State private var isNewGroup: Bool = false
     @State private var addUserLoading: Bool = false
     @State var keyword: String = ""
-    
+
     @FocusState var isInputActive: Bool
-    
+
     var body: some View {
         Form {
             Section("searchForUser") {
                 ProfileSearchView(isInputActive: self.$isInputActive)
             }
-            
+
             Section("addFriendManually") {
                 nameView
                 phoneView
+                groupPicker
                 Button("add") {
-                    addCustomFriend(name: self.name, phone: self.phone)
+                    let finalGroup = self.isNewGroup ? self.newGroup.capitalized : self.group
+                    addCustomFriend(name: self.name, phone: self.phone, group: finalGroup)
                     presentationMode.wrappedValue.dismiss()
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
             }
         }
+        .iosFormBackground()
         .navigationTitle("addFriend")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -76,10 +82,33 @@ struct AddFriendView: View {
         }
     }
     
-    private func addCustomFriend(name: String, phone: String) {
+    private var groupPicker: some View {
+        Group {
+            Picker("group", selection: self.$group) {
+                ForEach(self.userViewModel.getFriendGroupsSorted(), id: \.self) { group in
+                    Text(LocalizedStringKey(group.isEmpty ? "noGroup" : group)).tag(group)
+                }
+            }
+            .pickerStyle(.menu)
+            .disabled(self.isNewGroup)
+
+            Toggle("newGroup", isOn: self.$isNewGroup)
+
+            if self.isNewGroup {
+                HStack {
+                    Text("groupName")
+                    Spacer()
+                    TextField("groupName", text: self.$newGroup)
+                        .multilineTextAlignment(.trailing)
+                }
+            }
+        }
+    }
+
+    private func addCustomFriend(name: String, phone: String, group: String) {
         withAnimation {
-            let newFriend = CustomFriend(name: name, phone: phone)
-            
+            let newFriend = CustomFriend(name: name, phone: phone, group: group)
+
             self.userViewModel.addCustomFriend(friend: newFriend) { error in
                 if let error = error {
                     self.errorHandling.handle(error: error)

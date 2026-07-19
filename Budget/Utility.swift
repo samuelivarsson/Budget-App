@@ -380,6 +380,20 @@ class Utility {
             return nil
 
         case .ownItems:
+            // Each participant's own amount is deducted first; the remainder is
+            // split equally. amount = ownAmount + sharedPortion.
+            let count = participants.wrappedValue.count
+            guard count > 0 else { return nil }
+            let totalOwn = participants.wrappedValue.reduce(0.0) { $0 + ($1.ownAmount ?? 0) }
+            let rest = totalAmount - totalOwn
+            let perPerson = Utility.doubleToTwoDecimalsFloored(value: rest / Double(count))
+            var sharedLeft = rest
+            for i in (0 ..< count).reversed() {
+                let shared = (i == 0) ? sharedLeft : perPerson
+                let own = participants.wrappedValue[i].ownAmount ?? 0
+                participants.wrappedValue[i].amount = Utility.doubleToTwoDecimals(value: own + shared)
+                sharedLeft -= perPerson
+            }
             return nil
         }
     }

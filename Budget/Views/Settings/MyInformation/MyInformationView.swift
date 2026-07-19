@@ -104,6 +104,7 @@ struct MyInformationView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("myInformation")
         .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog("", isPresented: self.$isShowPhotoChoices) {

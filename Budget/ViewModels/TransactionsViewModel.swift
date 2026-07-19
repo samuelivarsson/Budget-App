@@ -11,6 +11,9 @@ import Foundation
 class TransactionsViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
     @Published var standings: [String: Double] = .init()
+    /// True once the first Firestore fetch of transactions has completed, so
+    /// views can keep placeholders redacted until real numbers are available.
+    @Published var hasLoaded: Bool = false
     
     private var db = Firestore.firestore()
     
@@ -45,6 +48,7 @@ class TransactionsViewModel: ObservableObject {
                     
                     // Success
                     self.transactions = data
+                    self.hasLoaded = true
                     self.addListener()
                     print("Successfully set transactions in fetchData in TransactionsViewModel")
                     if (!hasCalledCompletion) {
@@ -89,6 +93,7 @@ class TransactionsViewModel: ObservableObject {
                     
                     // Success
                     self.transactions = data
+                    self.hasLoaded = true
                     print("Successfully set transactions in fetchAllData in TransactionsViewModel")
                     completion(nil)
                 } catch {

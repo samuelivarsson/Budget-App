@@ -10,7 +10,10 @@ import Foundation
 
 class StandingsViewModel: ObservableObject {
     @Published var standings: [Standing] = []
-    
+    /// True once the first Firestore fetch of standings has completed, so views
+    /// can keep placeholders redacted until real balances are available.
+    @Published var hasLoaded: Bool = false
+
     private var db = Firestore.firestore()
     
     var listener: ListenerRegistration?
@@ -43,6 +46,7 @@ class StandingsViewModel: ObservableObject {
                     
                     // Success
                     self.standings = data
+                    self.hasLoaded = true
                     self.addListener()
                     print("Successfully set standings in fetchData in StandingsViewModel")
                     if (!hasCalledCompletion) {
@@ -295,5 +299,38 @@ class StandingsViewModel: ObservableObject {
             }
         }
         return 0
+    }
+
+    /// Total amount I currently owe across all standings (absolute).
+    /// Uses the same sign convention as StandingsView: negative standing = I owe.
+    func getTotalIOwe(myId: String) -> Double {
+        self.standings.reduce(0) { partial, standing in
+            let mine = standing.getStanding(myId: myId)
+            return mine < 0 ? partial - mine : partial
+        }
+    }
+
+    /// Total amount friends currently owe me across all standings.
+    /// Positive standing = they owe me.
+    func getTotalOwedToMe(myId: String) -> Double {
+        self.standings.reduce(0) { partial, standing in
+            let mine = standing.getStanding(myId: myId)
+            return mine > 0 ? partial + mine : partial
+        }
+    }
+
+    /// Number of standings where I currently owe money.
+    func oweCount(myId: String) -> Int {
+        self.standings.filter { round($0.getStanding(myId: myId) * 100) < 0 }.count
+    }
+
+    /// Number of standings where a friend currently owes me money.
+    func owedToMeCount(myId: String) -> Int {
+        self.standings.filter { round($0.getStanding(myId: myId) * 100) > 0 }.count
+    }
+
+    /// Number of standings with a non-zero balance (anything left to settle).
+    func toSettleCount(myId: String) -> Int {
+        self.standings.filter { round($0.getStanding(myId: myId) * 100) != 0 }.count
     }
 }

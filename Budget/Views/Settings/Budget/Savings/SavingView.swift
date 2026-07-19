@@ -60,6 +60,7 @@ struct SavingView: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .iosFormBackground()
         .navigationTitle("savingAmount")
         .navigationBarTitleDisplayMode(.inline)
     }

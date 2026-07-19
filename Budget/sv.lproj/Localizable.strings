@@ -80,11 +80,35 @@
 "standings" = "Ställningar";
 "favourites" = "Favoriter";
 "otherFriends" = "Andra vänner";
+"youGetBack" = "Du får tillbaka";
+"toSettle" = "Att göra upp";
+"settleUp" = "Gör upp";
+"remindButton" = "Påminn";
+"regulate" = "Reglera";
+"even" = "Kvitt";
+"withoutAccount" = "utan konto";
+"owesYou" = "är skyldig dig";
+"youAreOwingShort" = "du är skyldig";
 
 // History View
-"averageSpent" = "Transaktionskategorier - Genomsnittlig summa spenderat inom varje kategori\n\nKonton - Vad saldot var i slutet av förra budgetmånaden";
+"averageSpent" = "Perioden överst väljer vilka månader som visas. Total/Snitt växlar mellan summa och genomsnitt per månad (per dag för Denna månad).\n\nNetto = inkomst − fasta kostnader − planerat sparande − utgifter, alltså hur mycket som sparades utöver det planerade sparandet.\n\nSparat = det som satts in på sparkonton.\n\nInkomst, fasta kostnader och planerat sparande kommer från inställningarna och uppskattas för månader utan sparad data.\n\nKonton visar nuvarande saldon.";
 "info" = "Info";
 "ok" = "Ok";
+"net" = "Netto";
+"saved" = "Sparat";
+"thisMonth" = "Denna månad";
+"threeMonths" = "3 mån";
+"thisYear" = "I år";
+"allTime" = "Allt";
+"savingsAccountPurchases" = "Sparkonto köp";
+"depositedToSavings" = "insatt på sparkonton";
+"fixedCostsEstimated" = "fasta kostnader uppskattade";
+"monthlyIncome" = "Månadsinkomst";
+"scheduledSaving" = "Planerat sparande";
+"estimatedNote" = "Inkomst, fasta kostnader och planerat sparande är uppskattade för månader utan sparad data";
+"average" = "Snitt";
+"perMonthSuffix" = "/mån";
+"perDaySuffix" = "/dag";
 
 // Years, months etc abbreviations
 "shortYears" = "å";
@@ -290,3 +314,74 @@
 "hasEditedTheTransaction" = "har redigerat transaktionen";
 "youAreNowEvenWith" = "Du är nu kvitt med";
 "hasSentYouAReminder" = "har skickat en påminnelse till dig om att swisha";
+
+// Redesign — Home & Transactions
+"budgetRemaining" = "Kvar av månadens budget";
+"total" = "Totalt";
+"withinCeiling" = "%d av %d inom tak";
+"remainingShort" = "Kvar";
+"overCeilingBy" = "Över tak med";
+"updated" = "Uppdaterat";
+"expensesAndSharing" = "Utgifter & delning";
+"yourShare" = "Din del";
+"youOwe" = "Du är skyldig";
+"yourSharePercent" = "Din del %d%%";
+"personPaid" = "%@ betalade";
+"of" = "av";
+"today" = "Idag";
+"yesterday" = "Igår";
+
+"edit" = "Ändra";
+"done" = "Klar";
+
+// Add transaction redesign
+"distribution" = "Fördelning";
+"searchFriendOrGroup" = "Sök vän eller grupp…";
+"showAllCount" = "Visa alla (%d)";
+"addAll" = "Lägg till alla";
+"removeAll" = "Ta bort alla";
+"noMatches" = "Inga träffar";
+
+// Home v3 (iOS)
+"monthlyBudget" = "Månadsbudget";
+"overBudget" = "över budget";
+"budgetLeftTag" = "kvar";
+"categoriesOverCeiling" = "%d kategorier över tak";
+"allWithinCeiling" = "Allt inom tak";
+"totalBalance" = "Totalt saldo";
+"snabbsaldo" = "Snabbsaldo";
+"updatedAt" = "Uppdaterad";
+"mainAccount" = "Huvudkonto";
+"separateAccounts" = "Separata konton";
+"overCeiling" = "Över tak";
+"categoriesOverOfTotal" = "%d av %d kategorier över tak";
+
+// Transactions v2 (iOS)
+"all" = "Alla";
+"topUps" = "Påfyllningar";
+"transfers" = "Överföringar";
+"transactionsCount" = "%d transaktioner";
+"show" = "Visa";
+"spentInMonth" = "Spenderat i %@";
+"avgPerDay" = "Snitt per dag · %@";
+"vsLastMonthSameDay" = "mot %@ · samma dag";
+"forecast" = "prognos";
+"savings" = "Sparkonto";
+
+// Add transaction v2 (iOS)
+"newTransaction" = "Ny transaktion";
+"allFriends" = "Alla vänner";
+"showMoreCount" = "Visa %d till";
+"splitting" = "Delning";
+"selectedCount" = "%d valda";
+
+// Egna köp (own items split)
+"ownLabel" = "Eget";
+"splitShared" = "delat";
+"splitOwn" = "eget";
+
+"ownItemsNote" = "Egna köp dras av först · resten %@ delas lika";
+
+// General settings
+"filledTransactionIcons" = "Fyllda transaktionsikoner";
+"filledTransactionIconsDescription" = "Visa transaktionstypens ikon fylld i hela rutan istället för en bokstav med en liten symbol i hörnet.";

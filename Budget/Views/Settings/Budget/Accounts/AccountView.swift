@@ -83,6 +83,7 @@ struct AccountView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("budgetAccount")
         .navigationBarTitleDisplayMode(.inline)
     }

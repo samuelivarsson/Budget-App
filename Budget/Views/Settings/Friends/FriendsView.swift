@@ -3,6 +3,7 @@
 //  Budget
 //
 //  Created by Samuel Ivarsson on 2022-04-19.
+//  v2 — grouped by friend group (like the "Alla vänner" sheet), with avatar rows.
 //
 
 import Firebase
@@ -12,41 +13,35 @@ struct FriendsView: View {
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var fsViewModel: FirestoreViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
-    
-    private let rowHeight: CGFloat = 80
-    
+
+    @State private var expandedGroups: Set<String> = []
+    private let collapseLimit = 4
+
     var body: some View {
         Form {
-            let favouriteFriends = self.userViewModel.getFriendsSorted(favourites: true)
-            if favouriteFriends.count > 0 {
+            let favourites = self.userViewModel.getFavouritesSorted()
+            if !favourites.isEmpty {
                 Section {
-                    self.getFriends(friends: favouriteFriends)
+                    self.section(key: "__fav", members: favourites)
                 } header: {
                     Text("favourites")
                 }
             }
-            
-            let otherFriends = self.userViewModel.getFriendsSorted(favourites: false)
-            if otherFriends.count > 0 {
-                Section {
-                    self.getFriends(friends: otherFriends)
-                } header: {
-                    Text("otherFriends")
+
+            ForEach(self.userViewModel.getFriendGroupsSorted(), id: \.self) { group in
+                let members = self.userViewModel.getAllNonFavouriteFriendsSorted().filter {
+                    self.userViewModel.getFriendGroup(friendId: $0.id) == group
                 }
-            }
-            
-            let customFriends = self.userViewModel.getCustomFriendsSorted()
-            if customFriends.count > 0 {
-                Section {
-                    ForEach(self.userViewModel.getCustomFriendsSorted()) { friend in
-                        CustomFriendView(friend: friend, rowHeight: self.rowHeight)
+                if !members.isEmpty {
+                    Section {
+                        self.section(key: group.isEmpty ? "__nogroup" : group, members: members)
+                    } header: {
+                        Text(verbatim: self.groupHeader(group, count: members.count))
                     }
-                    .onDelete(perform: self.deleteCustomFriends)
-                } header: {
-                    Text("customFriends")
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("friends")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -62,41 +57,50 @@ struct FriendsView: View {
             }
         }
     }
-    
-    private func getFriends(friends: [User]) -> some View {
-        ForEach(friends) { friend in
-            FriendView(friend: friend, rowHeight: self.rowHeight)
+
+    @ViewBuilder
+    private func section(key: String, members: [any Named]) -> some View {
+        let expanded = self.expandedGroups.contains(key)
+        let shown = expanded ? members : Array(members.prefix(self.collapseLimit))
+        ForEach(shown, id: \.id) { member in
+            if let user = member as? User {
+                FriendView(friend: user)
+            } else if let customFriend = member as? CustomFriend {
+                CustomFriendView(friend: customFriend)
+            }
         }
         .onDelete { offsets in
-            self.deleteFriends(offsets: offsets, friends: friends)
+            self.deleteMembers(offsets: offsets, members: shown)
         }
-    }
-    
-    private func deleteFriends(offsets: IndexSet, friends: [User]) {
-        withAnimation {
-            offsets.map { friends[$0] }.forEach { friend in
-                self.userViewModel.deleteFriend(friend: friend) { error in
-                    if let error = error {
-                        self.errorHandling.handle(error: error)
-                        return
-                    }
-                    
-                    // Success
-                }
+        if !expanded && members.count > self.collapseLimit {
+            Button {
+                self.expandedGroups.insert(key)
+            } label: {
+                Text(String(format: "showMoreCount".localizeString(), members.count - self.collapseLimit))
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(.accentColor)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
         }
     }
-    
-    private func deleteCustomFriends(offsets: IndexSet) {
+
+    private func groupHeader(_ group: String, count: Int) -> String {
+        let name = group.isEmpty ? "noGroup".localizeString() : group
+        let word = (count == 1 ? "friend" : "friends").localizeString().lowercased()
+        return "\(name) · \(count) \(word)"
+    }
+
+    private func deleteMembers(offsets: IndexSet, members: [any Named]) {
         withAnimation {
-            offsets.map { self.userViewModel.getCustomFriendsSorted()[$0] }.forEach { customFriend in
-                self.userViewModel.deleteCustomFriend(customFriend: customFriend) { error in
-                    if let error = error {
-                        self.errorHandling.handle(error: error)
-                        return
+            offsets.map { members[$0] }.forEach { member in
+                if let user = member as? User {
+                    self.userViewModel.deleteFriend(friend: user) { error in
+                        if let error = error { self.errorHandling.handle(error: error) }
                     }
-                    
-                    // Success
+                } else if let customFriend = member as? CustomFriend {
+                    self.userViewModel.deleteCustomFriend(customFriend: customFriend) { error in
+                        if let error = error { self.errorHandling.handle(error: error) }
+                    }
                 }
             }
         }

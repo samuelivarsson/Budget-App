@@ -47,6 +47,7 @@ struct MonthStartsOnView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("monthStartsOn")
         .navigationBarTitleDisplayMode(.inline)
     }

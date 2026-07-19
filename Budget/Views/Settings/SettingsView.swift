@@ -56,6 +56,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .iosFormBackground()
             .navigationTitle("settings")
         }
     }

@@ -56,6 +56,7 @@ struct IncomeView: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .iosFormBackground()
         .navigationTitle("income")
         .navigationBarTitleDisplayMode(.inline)
     }

@@ -81,6 +81,7 @@ struct SavingsView: View {
                 Text("savingAccounts")
             }
         }
+        .iosFormBackground()
         .navigationTitle("savingsPercentage")
         .navigationBarTitleDisplayMode(.inline)
     }
