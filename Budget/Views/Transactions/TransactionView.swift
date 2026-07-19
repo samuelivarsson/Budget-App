@@ -2,7 +2,8 @@
 //  TransactionView.swift
 //  Budget
 //
-//  Created by Samuel Ivarsson on 2022-04-14.
+//  v2 — iOS 26 styled. Native navigation bar (so the interactive swipe-back
+//  gesture works), solid cards, pinned CTA via safeAreaInset.
 //
 
 import Combine
@@ -11,35 +12,31 @@ import SwiftUI
 
 struct TransactionView: View {
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
-    
+
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var authViewModel: AuthViewModel
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
     @EnvironmentObject private var standingsViewModel: StandingsViewModel
     @EnvironmentObject private var notificationsViewModel: NotificationsViewModel
-    
+
     @State private var transaction: Transaction
     @State private var totalAmountString: String = ""
-    
     @State private var selection: Int?
-    
     @State private var hasWritten: [String] = .init()
-
     @State private var applyLoading: Bool = false
     @State private var showFriendPicker: Bool = false
     @FocusState var isInputActive: Bool
-    
+
     private var oldTransaction: Transaction? = nil
-    
     private var action: TransactionAction
     private var fromUrl: Bool = false
-    
+
     init(action: TransactionAction, firstCategory: TransactionCategory) {
         self.action = action
         self._transaction = State(initialValue: Transaction.getDummyTransaction(category: firstCategory))
     }
-    
+
     init(transaction: Transaction, user: User, action: TransactionAction, fromUrl: Bool = false) {
         var newTransaction = transaction
         if !transaction.isMyCategory(user: user) {
@@ -50,517 +47,408 @@ struct TransactionView: View {
                     changed = true
                 }
             }
-            
             if !changed {
                 newTransaction.category = user.budget.transactionCategories.first ?? TransactionCategory.getDummyCategory()
             }
         }
-        
         self._transaction = State(initialValue: newTransaction)
         self._totalAmountString = State(initialValue: Utility.currencyFormatterNoSymbol.string(from: transaction.totalAmount as NSNumber) ?? "")
         self.action = action
         self.oldTransaction = transaction
         self.fromUrl = fromUrl
     }
-    
+
+    private var navTitle: LocalizedStringKey {
+        action == .add ? "newTransaction" : (action == .edit ? "editTransaction" : "details")
+    }
+    private func getFirstCategory(type: TransactionType) -> TransactionCategory {
+        userViewModel.getTransactionCategoriesSorted(type: type).first ?? TransactionCategory.getDummyCategory()
+    }
+    private func firstName(_ name: String) -> String { name.split(separator: " ").first.map(String.init) ?? name }
+    private func money(_ v: Double) -> String { Utility.doubleToLocalCurrency(value: v) }
+
+    // MARK: - Body
+
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                self.topBar
-
-                if self.action != .view {
-                    SegmentedTypePicker(selection: self.$transaction.type)
-                        .padding(.top, 6).padding(.bottom, 18)
-                } else {
-                    Spacer().frame(height: 8)
+                if action != .view {
+                    IOSTypeSegment(selection: $transaction.type).padding(.bottom, 4)
                 }
-
-                self.amountHero
-                self.detailsCard
-
-                self.sectionLabel("participants")
-                self.participantsCard
-
-                self.sectionLabel("payer")
-                self.payerCard
-
-                self.sectionLabel("splitOption")
-                self.splitCard
-
-                if self.action != .view {
-                    self.primaryButton
-                }
-                self.creatorFooter
+                amountCard
+                sectionLabel("details"); detailsCard
+                sectionLabel("participants"); participantsCard
+                sectionLabel("splitting"); splittingCard
+                creatorFooter
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 40)
+            .padding(.horizontal, 20).padding(.top, 8).padding(.bottom, 24)
         }
-        .background(Color.appBackground.ignoresSafeArea())
-        .toolbar(.hidden, for: .navigationBar)
-        .sheet(isPresented: self.$showFriendPicker) {
-            FriendPickerSheet(participants: self.$transaction.participants)
+        .background(Color.iosBG.ignoresSafeArea())
+        .navigationTitle(navTitle)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
+        .safeAreaInset(edge: .bottom) {
+            if action != .view { ctaBar }
+        }
+        .sheet(isPresented: $showFriendPicker) {
+            IOSFriendSheet(participants: $transaction.participants)
         }
         .onLoad {
-            if self.userViewModel.user.id.count == 0 {
-                self.presentationMode.wrappedValue.dismiss()
-                return
+            if userViewModel.user.id.count == 0 { presentationMode.wrappedValue.dismiss(); return }
+            let user = userViewModel.user
+            if transaction.participants.count < 1 {
+                transaction.participants = [Participant(userId: user.id, userName: user.name)]
             }
-            let user = self.userViewModel.user
-            if self.transaction.participants.count < 1 {
-                self.transaction.participants = [Participant(userId: user.id, userName: user.name)]
-            }
-            if self.transaction.payerId == "" {
-                self.transaction.payerId = self.transaction.participants[0].userId
-            }
-            if self.fromUrl {
+            if transaction.payerId == "" { transaction.payerId = transaction.participants[0].userId }
+            if fromUrl {
                 DispatchQueue.main.async {
-                    if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
-                        self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                    if let errorString = Utility.setAmountPerParticipant(splitOption: transaction.splitOption, participants: $transaction.participants, totalAmount: transaction.totalAmount, hasWritten: hasWritten, myUserId: userViewModel.user.id) {
+                        errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                     }
                 }
             }
         }
-        .onChange(of: self.transaction.totalAmount) { newValue in
+        .onChange(of: transaction.totalAmount) { _ in
             DispatchQueue.main.async {
-                if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
-                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                if let errorString = Utility.setAmountPerParticipant(splitOption: transaction.splitOption, participants: $transaction.participants, totalAmount: transaction.totalAmount, hasWritten: hasWritten, myUserId: userViewModel.user.id) {
+                    errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }
             }
         }
-        .onChange(of: self.transaction.type) { newValue in
-            self.transaction.category = self.getFirstCategory(type: newValue)
+        .onChange(of: transaction.type) { newValue in
+            transaction.category = getFirstCategory(type: newValue)
         }
-    }
-    
-    private var titleText: LocalizedStringKey {
-        if self.action == .add {
-            return "addTransaction"
-        } else if self.action == .edit {
-            return "editTransaction"
-        } else {
-            return "details"
-        }
-    }
-
-    private func getFirstCategory(type: TransactionType) -> TransactionCategory {
-        return self.userViewModel.getTransactionCategoriesSorted(type: type).first ?? TransactionCategory.getDummyCategory()
-    }
-
-    private func firstName(_ name: String) -> String {
-        name.split(separator: " ").first.map(String.init) ?? name
-    }
-
-    // MARK: - Top bar
-
-    private var topBar: some View {
-        ZStack {
-            Text(self.titleText).font(.system(size: 17, weight: .bold)).foregroundColor(.appInk)
-            HStack {
-                Button { self.presentationMode.wrappedValue.dismiss() } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 18, weight: .semibold)).foregroundColor(.appInk)
-                        .frame(width: 40, height: 40)
-                        .background(Color.appCard)
-                        .overlay(RoundedRectangle(cornerRadius: 13).stroke(Color.appLine))
-                        .clipShape(RoundedRectangle(cornerRadius: 13))
-                }
-                Spacer()
-            }
-        }
-        .padding(.top, 8).padding(.bottom, 14)
     }
 
     private func sectionLabel(_ key: String) -> some View {
         HStack {
-            Text(LocalizedStringKey(key)).font(.system(size: 12, weight: .bold)).kerning(0.8)
-                .foregroundColor(.appMuted)
+            Text(LocalizedStringKey(key)).font(.system(size: 11, weight: .bold)).kerning(0.7)
+                .textCase(.uppercase).foregroundColor(.secondary)
             Spacer()
         }
-        .padding(.top, 14).padding(.bottom, 8).padding(.horizontal, 4)
+        .padding(.top, 18).padding(.bottom, 8).padding(.horizontal, 6)
     }
 
-    // MARK: - Amount hero
+    // MARK: - Amount
 
-    private var amountHero: some View {
+    private var amountCard: some View {
         VStack(spacing: 6) {
-            Text("amount".localizeString().uppercased())
-                .font(.system(size: 12, weight: .semibold)).kerning(1)
-                .foregroundColor(.white.opacity(0.72))
+            Text("amount").font(.system(size: 12, weight: .semibold)).kerning(0.5).textCase(.uppercase)
+                .foregroundColor(.secondary)
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                if self.action == .view {
-                    Text(Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: self.transaction.totalAmount as NSNumber) ?? "0")
-                        .font(.mono(40)).foregroundColor(.white)
+                if action == .view {
+                    Text(Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: transaction.totalAmount as NSNumber) ?? "0")
+                        .font(.system(size: 44, weight: .bold)).monospacedDigit().foregroundColor(.primary)
                 } else {
-                    TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", text: self.$totalAmountString, onEditingChanged: { isEditing in
-                        self.selection = isEditing ? 1 : nil
+                    TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", text: $totalAmountString, onEditingChanged: { isEditing in
+                        selection = isEditing ? 1 : nil
                         if !isEditing {
-                            let expression = self.totalAmountString
-                                .components(separatedBy: .whitespaces).joined() // strip thousands separators (incl. non-breaking spaces)
+                            let expression = totalAmountString
+                                .components(separatedBy: .whitespaces).joined()
                                 .replacingOccurrences(of: ",", with: ".")
                                 .replacingOccurrences(of: "÷", with: "/")
                                 .replacingOccurrences(of: "×", with: "*")
                             if let doubleAmount = try? expression.evaluate() {
                                 DispatchQueue.main.async {
-                                    self.transaction.totalAmount = Utility.doubleToTwoDecimals(value: doubleAmount)
-                                    self.totalAmountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(
-                                        from: self.transaction.totalAmount as NSNumber) ?? "-999"
+                                    transaction.totalAmount = Utility.doubleToTwoDecimals(value: doubleAmount)
+                                    totalAmountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: transaction.totalAmount as NSNumber) ?? "-999"
                                 }
                             }
                         }
                     })
-                    .keyboardType(.decimalPad)
-                    .multilineTextAlignment(.center)
-                    .font(.mono(40)).foregroundColor(.white).tint(.white)
+                    .keyboardType(.decimalPad).multilineTextAlignment(.center)
+                    .font(.system(size: 44, weight: .bold)).monospacedDigit()
+                    .foregroundColor(.primary).tint(.accentColor)
                     .fixedSize()
-                    .focused(self.$isInputActive)
+                    .focused($isInputActive)
                     .toolbar {
-                        if self.selection == 1 {
+                        if selection == 1 {
                             ToolbarItemGroup(placement: .keyboard) {
-                                CalculatorToolbarView(amountString: self.$totalAmountString)
+                                CalculatorToolbarView(amountString: $totalAmountString)
                                 Spacer()
-                                Button("done".localizeString()) { self.isInputActive = false }
+                                Button("done".localizeString()) { isInputActive = false }
                             }
                         }
                     }
                 }
                 Text(Utility.currencyFormatter.currencySymbol)
-                    .font(.system(size: 22, weight: .medium)).foregroundColor(.white.opacity(0.72))
+                    .font(.system(size: 24, weight: .semibold)).foregroundColor(.secondary)
             }
+            DatePicker("", selection: $transaction.date, displayedComponents: [.date, .hourAndMinute])
+                .labelsHidden().disabled(action == .view)
+                .padding(.top, 6)
+                .onLoad { if action == .add { transaction.date = Date() } }
         }
         .frame(maxWidth: .infinity)
         .padding(20)
-        .background(LinearGradient(colors: [.heroTop, .heroBottom], startPoint: .topLeading, endPoint: .bottomTrailing))
-        .clipShape(RoundedRectangle(cornerRadius: 22))
-        .shadow(color: .black.opacity(0.12), radius: 16, y: 8)
-        .padding(.bottom, 16)
+        .iosCard(26)
     }
 
-    // MARK: - Details card (category, description, date)
+    // MARK: - Details
 
     private var detailsCard: some View {
-        AppCard(padding: 0) {
-            VStack(spacing: 0) {
-                categoryRow
-                Divider().overlay(Color.appLine)
-                descriptionRow
-                Divider().overlay(Color.appLine)
-                dateRow
-            }
-        }
-    }
-
-    private var categoryRow: some View {
-        HStack {
-            Text("category").font(.system(size: 15)).foregroundColor(.appInk)
-            Spacer()
-            Menu {
-                ForEach(self.userViewModel.getTransactionCategoriesSorted(type: self.transaction.type), id: \.self) { category in
-                    Button { self.transaction.category = category } label: { Text(LocalizedStringKey(category.name)) }
-                }
-            } label: {
-                HStack(spacing: 7) {
-                    Circle().fill(Color.forCategory(self.transaction.category.name)).frame(width: 9, height: 9)
-                    Text(LocalizedStringKey(self.transaction.category.name))
-                    if self.action != .view {
-                        Image(systemName: "chevron.up.chevron.down").font(.system(size: 12, weight: .semibold)).opacity(0.8)
-                    }
-                }
-                .font(.system(size: 15, weight: .semibold)).foregroundColor(.appPineInk)
-            }
-            .disabled(self.action == .view)
-        }
-        .padding(.horizontal, 16).padding(.vertical, 15)
-        .onLoad {
-            if self.action == .add && !self.fromUrl {
-                self.transaction.category = self.userViewModel.getFirstTransactionCategory(type: self.transaction.type)
-            }
-        }
-    }
-
-    private var descriptionRow: some View {
-        HStack {
-            Text("description").font(.system(size: 15)).foregroundColor(.appInk)
-            Spacer()
-            if self.action == .view {
-                Text(self.transaction.desc).font(.system(size: 15)).foregroundColor(.appMuted)
-            } else {
-                TextField("shortDescription", text: self.$transaction.desc, onEditingChanged: { isEditing in
-                    self.selection = isEditing ? 0 : nil
-                })
-                .multilineTextAlignment(.trailing)
-                .font(.system(size: 15)).foregroundColor(.appInk)
-                .focused(self.$isInputActive)
-                .toolbar {
-                    if self.selection == 0 {
-                        ToolbarItemGroup(placement: .keyboard) {
-                            Spacer()
-                            Button("done".localizeString()) { self.isInputActive = false }
+        VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("category").font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary)
+                    .padding(.top, 13)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(userViewModel.getTransactionCategoriesSorted(type: transaction.type), id: \.self) { category in
+                            let active = transaction.category.id == category.id
+                            Button { if action != .view { transaction.category = category } } label: {
+                                HStack(spacing: 6) {
+                                    Circle().fill(Color.forCategory(category.name)).frame(width: 7, height: 7)
+                                    Text(LocalizedStringKey(category.name)).font(.system(size: 13, weight: .semibold))
+                                }
+                                .foregroundColor(active ? Color.iosBG : .secondary)
+                                .padding(.horizontal, 13).padding(.vertical, 8)
+                                .background(active ? Color.primary : Color.primary.opacity(0.08))
+                                .clipShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
+                    .padding(.vertical, 12)
+                }
+                .onLoad { if action == .add && !fromUrl { transaction.category = userViewModel.getFirstTransactionCategory(type: transaction.type) } }
+            }
+            Divider().overlay(Color.iosBorder)
+            HStack {
+                Text("description").font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary)
+                Spacer()
+                if action == .view {
+                    Text(transaction.desc).font(.system(size: 15.5)).foregroundColor(.secondary)
+                } else {
+                    TextField("shortDescription", text: $transaction.desc, onEditingChanged: { editing in selection = editing ? 0 : nil })
+                        .multilineTextAlignment(.trailing).font(.system(size: 15.5)).foregroundColor(.primary)
+                        .focused($isInputActive)
+                        .toolbar {
+                            if selection == 0 {
+                                ToolbarItemGroup(placement: .keyboard) {
+                                    Spacer(); Button("done".localizeString()) { isInputActive = false }
+                                }
+                            }
+                        }
                 }
             }
+            .padding(.vertical, 13)
         }
-        .padding(.horizontal, 16).padding(.vertical, 15)
+        .padding(.horizontal, 16)
+        .iosCard(26)
     }
 
-    private var dateRow: some View {
-        HStack {
-            Text("date").font(.system(size: 15)).foregroundColor(.appInk)
-            Spacer()
-            DatePicker("", selection: self.$transaction.date, displayedComponents: [.date, .hourAndMinute])
-                .labelsHidden()
-                .disabled(self.action == .view)
-        }
-        .padding(.horizontal, 16).padding(.vertical, 9)
-        .onLoad {
-            if self.action == .add { self.transaction.date = Date() }
-        }
-    }
-
-    // MARK: - Participants
+    // MARK: - Participants (favorites + all friends)
 
     private var participantsCard: some View {
-        AppCard(padding: 0) {
-            VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 5) {
+                Image(systemName: "star.fill").font(.system(size: 10))
+                Text("favourites").font(.system(size: 11, weight: .bold)).kerning(0.5).textCase(.uppercase)
+            }
+            .foregroundColor(.secondary).padding(.top, 13)
+
+            let favs = userViewModel.getFavouritesSorted()
+            if favs.isEmpty {
+                Text("noFavourites").font(.system(size: 13)).foregroundColor(.secondary).padding(.vertical, 10)
+            } else {
                 FlowLayout(spacing: 8) {
-                    youChip
-                    ForEach(self.transaction.participants.filter { $0.userId != self.userViewModel.user.id }, id: \.userId) { participant in
-                        participantChip(participant)
-                    }
-                    if self.action != .view {
-                        Button { self.showFriendPicker = true } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: "plus").font(.system(size: 12, weight: .bold))
-                                Text("add").font(.system(size: 13.5, weight: .semibold))
+                    ForEach(favs, id: \.id) { friend in
+                        let on = transaction.participants.contains { $0.userId == friend.id }
+                        Button {
+                            if action == .view { return }
+                            if on { transaction.participants.removeAll { $0.userId == friend.id }; if transaction.payerId == friend.id { transaction.payerId = userViewModel.user.id } }
+                            else { transaction.participants.append(Participant(userId: friend.id, userName: friend.name)) }
+                        } label: {
+                            HStack(spacing: 7) {
+                                IOSPersonAvatar(name: friend.name, id: friend.id, size: 26)
+                                Text(firstName(friend.name)).font(.system(size: 13.5, weight: .semibold))
+                                if on { Image(systemName: "checkmark").font(.system(size: 10, weight: .bold)) }
                             }
-                            .foregroundColor(.appPineInk)
-                            .padding(.horizontal, 12).padding(.vertical, 6)
-                            .overlay(Capsule().stroke(style: StrokeStyle(lineWidth: 1, dash: [4])).foregroundColor(.appPine))
+                            .foregroundColor(on ? .accentColor : .secondary)
+                            .padding(.leading, 6).padding(.trailing, 12).padding(.vertical, 6)
+                            .background(on ? Color.accentColor.opacity(0.14) : Color.primary.opacity(0.08))
+                            .clipShape(Capsule())
                         }
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(14)
+                .padding(.vertical, 10)
+            }
 
-                let favs = self.userViewModel.getFavouritesSorted(exceptFor: self.transaction.participants)
-                if self.action != .view && !favs.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("favourites").font(.system(size: 12)).foregroundColor(.appMuted)
-                        FlowLayout(spacing: 8) {
-                            ForEach(favs, id: \.id) { friend in
-                                Button {
-                                    self.transaction.participants.append(Participant(userId: friend.id, userName: friend.name))
-                                } label: {
-                                    HStack(spacing: 7) {
-                                        Image(systemName: "plus").font(.system(size: 11, weight: .bold)).foregroundColor(.appPineInk)
-                                        PersonAvatar(name: friend.name, id: friend.id, size: 24)
-                                        Text(firstName(friend.name)).font(.system(size: 13, weight: .semibold)).foregroundColor(.appInk)
+            if action != .view {
+                Divider().overlay(Color.iosBorder)
+                Button { showFriendPicker = true } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "person.2.fill").font(.system(size: 13)).foregroundColor(.secondary)
+                            .frame(width: 30, height: 30).background(Color.primary.opacity(0.08)).clipShape(Circle())
+                        Text("allFriends").font(.system(size: 15, weight: .semibold)).foregroundColor(.primary)
+                        Spacer()
+                        let count = transaction.participants.filter { $0.userId != userViewModel.user.id }.count
+                        Text(String(format: "selectedCount".localizeString(), count)).font(.system(size: 13, weight: .semibold)).foregroundColor(.accentColor)
+                        Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundColor(.secondary)
+                    }
+                    .padding(.vertical, 13)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 16)
+        .iosCard(26)
+    }
+
+    // MARK: - Splitting (payer + distribution + breakdown)
+
+    private var splittingCard: some View {
+        VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("payer").font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary).padding(.top, 13)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 14) {
+                        ForEach(transaction.participants, id: \.userId) { participant in
+                            let sel = transaction.payerId == participant.userId
+                            let isYou = participant.userId == userViewModel.user.id
+                            VStack(spacing: 6) {
+                                ZStack(alignment: .bottomTrailing) {
+                                    IOSPersonAvatar(name: participant.userName, id: participant.userId, isYou: isYou, size: 48)
+                                        .overlay(Circle().stroke(Color.accentColor, lineWidth: sel ? 2.5 : 0).padding(-4))
+                                        .opacity(sel ? 1 : 0.55)
+                                    if sel {
+                                        Image(systemName: "checkmark").font(.system(size: 10, weight: .bold)).foregroundColor(.white)
+                                            .frame(width: 19, height: 19).background(Color.accentColor).clipShape(Circle())
+                                            .overlay(Circle().strokeBorder(Color.iosBG, lineWidth: 2))
+                                            .offset(x: 3, y: 3)
                                     }
-                                    .padding(.leading, 5).padding(.trailing, 12).padding(.vertical, 5)
-                                    .background(Color.appCard2)
-                                    .overlay(Capsule().stroke(Color.appLine))
-                                    .clipShape(Capsule())
+                                }
+                                Text(isYou ? "you".localizeString() : firstName(participant.userName))
+                                    .font(.system(size: 11.5, weight: .semibold)).foregroundColor(sel ? .primary : .secondary)
+                                    .lineLimit(1)
+                            }
+                            .frame(minWidth: 52)
+                            .contentShape(Rectangle())
+                            .onTapGesture { if action != .view { transaction.payerId = participant.userId } }
+                        }
+                    }
+                    .padding(.vertical, 12)
+                }
+            }
+
+            Divider().overlay(Color.iosBorder)
+
+            VStack(alignment: .leading, spacing: 0) {
+                Text("distribution").font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary).padding(.top, 13)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(SplitOption.allCases, id: \.self) { option in
+                            if option != .heSheEverything || transaction.participants.count == 2 {
+                                let active = transaction.splitOption == option
+                                Button { if action != .view { transaction.splitOption = option } } label: {
+                                    Text(option.description()).font(.system(size: 13, weight: .semibold))
+                                        .foregroundColor(active ? Color.iosBG : .secondary)
+                                        .padding(.horizontal, 13).padding(.vertical, 8)
+                                        .background(active ? Color.primary : Color.primary.opacity(0.08))
+                                        .clipShape(Capsule())
                                 }
                                 .buttonStyle(.plain)
                             }
                         }
                     }
-                    .padding(.horizontal, 16).padding(.bottom, 14)
+                    .padding(.vertical, 12)
                 }
             }
-        }
-    }
 
-    private var youChip: some View {
-        HStack(spacing: 7) {
-            PersonAvatar(name: "you".localizeString(), id: self.userViewModel.user.id, isYou: true, size: 24)
-            Text("you").font(.system(size: 13.5, weight: .semibold))
-        }
-        .foregroundColor(.appPineInk)
-        .padding(.leading, 5).padding(.trailing, 12).padding(.vertical, 5)
-        .background(Color.appPineSoft).clipShape(Capsule())
-    }
+            Divider().overlay(Color.iosBorder)
 
-    private func participantChip(_ participant: Participant) -> some View {
-        HStack(spacing: 7) {
-            PersonAvatar(name: participant.userName, id: participant.userId, size: 24)
-            Text(firstName(participant.userName)).font(.system(size: 13.5, weight: .semibold)).foregroundColor(.appInk)
-            if self.action != .view {
-                Button {
-                    self.transaction.participants.removeAll { $0.userId == participant.userId }
-                    if self.transaction.payerId == participant.userId {
-                        self.transaction.payerId = self.userViewModel.user.id
-                    }
-                } label: {
-                    Image(systemName: "xmark").font(.system(size: 9, weight: .bold)).foregroundColor(.appMuted)
-                        .frame(width: 18, height: 18).background(Color.appTrack).clipShape(Circle())
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.leading, 5).padding(.trailing, self.action != .view ? 5 : 12).padding(.vertical, 5)
-        .background(Color.appChipBg)
-        .overlay(Capsule().stroke(Color.appLine))
-        .clipShape(Capsule())
-    }
-
-    // MARK: - Payer
-
-    private var payerCard: some View {
-        AppCard(padding: 0) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 14) {
-                    ForEach(self.transaction.participants, id: \.userId) { participant in
-                        let selected = self.transaction.payerId == participant.userId
-                        VStack(spacing: 6) {
-                            PersonAvatar(name: participant.userName, id: participant.userId,
-                                         isYou: participant.userId == self.userViewModel.user.id, size: 46)
-                                .overlay(
-                                    Circle().stroke(Color.appPine, lineWidth: selected ? 2.5 : 0)
-                                        .padding(-4)
-                                )
-                            Text(participant.userId == self.userViewModel.user.id ? "you".localizeString() : firstName(participant.userName))
-                                .font(.system(size: 11.5, weight: .semibold))
-                                .foregroundColor(selected ? .appInk : .appMuted)
-                                .lineLimit(1)
-                        }
-                        .frame(minWidth: 52)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            if self.action != .view { self.transaction.payerId = participant.userId }
-                        }
-                    }
-                }
-                .padding(14)
-            }
-        }
-    }
-
-    // MARK: - Split
-
-    private var splitCard: some View {
-        AppCard(padding: 0) {
             VStack(spacing: 0) {
-                HStack {
-                    Text("distribution").font(.system(size: 15)).foregroundColor(.appInk)
-                    Spacer()
-                    Menu {
-                        ForEach(SplitOption.allCases, id: \.self) { option in
-                            if option != .heSheEverything || self.transaction.participants.count == 2 {
-                                Button { self.transaction.splitOption = option } label: { Text(option.description()) }
-                            }
-                        }
-                    } label: {
-                        HStack(spacing: 7) {
-                            Text(self.transaction.splitOption.description())
-                            if self.action != .view {
-                                Image(systemName: "chevron.up.chevron.down").font(.system(size: 12, weight: .semibold)).opacity(0.8)
-                            }
-                        }
-                        .font(.system(size: 15, weight: .semibold)).foregroundColor(.appPineInk)
-                    }
-                    .disabled(self.action == .view)
+                ForEach(Array($transaction.participants.enumerated()), id: \.element.id) { index, $participant in
+                    IOSShareRow(participant: $participant, splitOption: $transaction.splitOption,
+                                participants: $transaction.participants, totalAmount: $transaction.totalAmount,
+                                hasWritten: $hasWritten, action: action, showsTopDivider: index > 0)
                 }
-                .padding(.horizontal, 16).padding(.vertical, 15)
-
-                Divider().overlay(Color.appLine)
-
-                VStack(spacing: 0) {
-                    ForEach(Array(self.$transaction.participants.enumerated()), id: \.element.id) { index, $participant in
-                        if index > 0 { Divider().overlay(Color.appLine.opacity(0.6)) }
-                        SplitAmountRow(participant: $participant,
-                                       splitOption: self.$transaction.splitOption,
-                                       participants: self.$transaction.participants,
-                                       totalAmount: self.$transaction.totalAmount,
-                                       hasWritten: self.$hasWritten,
-                                       action: self.action)
-                    }
-                }
-                .padding(.horizontal, 16).padding(.bottom, 4)
             }
+            .padding(.bottom, 4)
         }
-        .onChange(of: self.transaction.participants.count) { newValue in
+        .padding(.horizontal, 16)
+        .iosCard(26)
+        .onChange(of: transaction.participants.count) { newValue in
             DispatchQueue.main.async {
-                if newValue > 2 && self.transaction.splitOption == .heSheEverything {
-                    self.transaction.splitOption = .standard
-                }
-                if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
-                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                if newValue > 2 && transaction.splitOption == .heSheEverything { transaction.splitOption = .standard }
+                if let errorString = Utility.setAmountPerParticipant(splitOption: transaction.splitOption, participants: $transaction.participants, totalAmount: transaction.totalAmount, hasWritten: hasWritten, myUserId: userViewModel.user.id) {
+                    errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }
             }
         }
-        .onChange(of: self.transaction.splitOption) { newValue in
+        .onChange(of: transaction.splitOption) { newValue in
             DispatchQueue.main.async {
                 if newValue == .meEverything {
-                    self.hasWritten = []
-                    if let notMe = self.transaction.participants.first(where: { $0.userId != self.userViewModel.user.id }) {
-                        self.transaction.payerId = notMe.userId
-                    }
+                    hasWritten = []
+                    if let notMe = transaction.participants.first(where: { $0.userId != userViewModel.user.id }) { transaction.payerId = notMe.userId }
                 }
-                if let errorString = Utility.setAmountPerParticipant(splitOption: self.transaction.splitOption, participants: self.$transaction.participants, totalAmount: self.transaction.totalAmount, hasWritten: self.hasWritten, myUserId: self.userViewModel.user.id) {
-                    self.errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                if let errorString = Utility.setAmountPerParticipant(splitOption: transaction.splitOption, participants: $transaction.participants, totalAmount: transaction.totalAmount, hasWritten: hasWritten, myUserId: userViewModel.user.id) {
+                    errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }
             }
         }
     }
 
-    // MARK: - Primary button & footer
+    // MARK: - CTA & footer
 
-    private var primaryButton: some View {
+    private var ctaText: String {
+        if action != .add { return "apply".localizeString() }
+        let typeKey = transaction.type == .expense ? "expense" : (transaction.type == .income ? "income" : "saving")
+        return "\("add".localizeString()) \(typeKey.localizeString().lowercased()) · \(money(transaction.totalAmount))"
+    }
+
+    private var ctaBar: some View {
         Button {
-            if !self.applyLoading {
-                if self.action == .add { self.addTransaction() } else { self.editTransaction() }
-            }
+            if !applyLoading { if action == .add { addTransaction() } else { editTransaction() } }
         } label: {
-            HStack {
-                Spacer()
-                if self.applyLoading {
+            HStack(spacing: 8) {
+                if applyLoading {
                     ProgressView().tint(.white)
                 } else {
-                    Text(self.action == .add ? "addTransaction" : "apply")
-                        .font(.system(size: 16, weight: .bold))
+                    if action == .add { Image(systemName: "plus").font(.system(size: 18, weight: .bold)) }
+                    Text(ctaText).font(.system(size: 16.5, weight: .bold)).monospacedDigit()
                 }
-                Spacer()
             }
-            .padding(16)
+            .frame(maxWidth: .infinity).frame(height: 54)
             .foregroundColor(.white)
-            .background(Color.appPine)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .background(Color.accentColor)
+            .clipShape(Capsule())
         }
         .buttonStyle(.plain)
-        .padding(.top, 20)
+        .padding(.horizontal, 16).padding(.top, 8).padding(.bottom, 4)
     }
 
     @ViewBuilder
     private var creatorFooter: some View {
-        if self.action != .add {
+        if action != .add {
             VStack {
-                if self.transaction.creatorId == self.userViewModel.user.id {
+                if transaction.creatorId == userViewModel.user.id {
                     Text("transactionCreatedByYou")
                 } else {
-                    Text("transactionCreatedBy".localizeString() + " " + self.transaction.creatorName)
+                    Text("transactionCreatedBy".localizeString() + " " + transaction.creatorName)
                 }
             }
-            .font(.footnote).foregroundColor(.appMuted)
-            .frame(maxWidth: .infinity)
-            .padding(.top, 14)
+            .font(.footnote).foregroundColor(.secondary).frame(maxWidth: .infinity).padding(.top, 16)
         }
     }
-    
+
+    // MARK: - Logic (unchanged)
+
     private func addParticipantIds() {
         self.transaction.participantIds = .init()
         for participant in self.transaction.participants {
             self.transaction.participantIds.append(participant.userId)
         }
     }
-    
+
     private func allAmountsToTwoDecimals() {
         self.transaction.totalAmount = Utility.doubleToTwoDecimals(value: self.transaction.totalAmount)
         for i in 0..<self.transaction.participants.count {
             self.transaction.participants[i].amount = Utility.doubleToTwoDecimals(value: self.transaction.participants[i].amount)
         }
     }
-    
+
     private func addTransaction() {
         withAnimation {
             guard let user = authViewModel.auth.currentUser else {
@@ -570,7 +458,7 @@ struct TransactionView: View {
                 return
             }
             self.allAmountsToTwoDecimals()
-            
+
             let totalAmount = Utility.doubleToTwoDecimals(value: self.transaction.participants.reduce(0) { result, participant in
                 result + participant.amount
             })
@@ -588,7 +476,7 @@ struct TransactionView: View {
                 self.errorHandling.handle(error: InputError.participantAmountLargerThanTotal)
                 return
             }
-            
+
             let creatorId = user.isAnonymous ? "createdByGuest" : user.uid
             let creatorName = user.isAnonymous ? "createdByGuest" : self.userViewModel.user.name
             self.transaction.creatorId = creatorId
@@ -602,7 +490,7 @@ struct TransactionView: View {
                     self.applyLoading = false
                     return
                 }
-                
+
                 // Success
                 self.transactionsViewModel.addTransaction(transaction: self.transaction) { error in
                     if let error = error {
@@ -610,7 +498,7 @@ struct TransactionView: View {
                         self.applyLoading = false
                         return
                     }
-                    
+
                     // Succes
                     self.notificationsViewModel.sendTransactionNotifications(me: self.userViewModel.user, transaction: self.transaction, friends: self.userViewModel.friends) { error in
                         self.applyLoading = false
@@ -618,7 +506,7 @@ struct TransactionView: View {
                             self.errorHandling.handle(error: error)
                             return
                         }
-                        
+
                         // Success
                         DispatchQueue.main.async {
                             self.presentationMode.wrappedValue.dismiss()
@@ -628,14 +516,14 @@ struct TransactionView: View {
             }
         }
     }
-    
+
     private func editTransaction() {
         withAnimation {
             if self.action == .view {
                 return
             }
             self.allAmountsToTwoDecimals()
-            
+
             let totalAmount = Utility.doubleToTwoDecimals(value: self.transaction.participants.reduce(0) { result, participant in
                 result + participant.amount
             })
@@ -651,16 +539,16 @@ struct TransactionView: View {
                 self.errorHandling.handle(error: InputError.participantAmountLargerThanTotal)
                 return
             }
-            
+
             self.transaction.payerName = self.transaction.getPayerName()
             self.addParticipantIds()
-            
+
             guard let oldTransaction = self.oldTransaction else {
                 let info = "Found nil when extracting oldTransaction in editTransaction in TransactionView"
                 self.errorHandling.handle(error: ApplicationError.unexpectedNil(info))
                 return
             }
-            
+
             self.applyLoading = true
             self.transactionsViewModel.editTransaction(transaction: self.transaction) { error in
                 if let error = error {
@@ -668,7 +556,7 @@ struct TransactionView: View {
                     self.applyLoading = false
                     return
                 }
-                    
+
                 // Success
                 self.standingsViewModel.setStandings(transaction: oldTransaction, myUserName: self.userViewModel.user.name, myPhoneNumber: self.userViewModel.user.phone, friends: self.userViewModel.friends, customFriends: self.userViewModel.user.customFriends, delete: true) { error in
                     if let error = error {
@@ -676,7 +564,7 @@ struct TransactionView: View {
                         self.applyLoading = false
                         return
                     }
-                        
+
                     // Succes
                     self.standingsViewModel.setStandings(transaction: self.transaction, myUserName: self.userViewModel.user.name, myPhoneNumber: self.userViewModel.user.phone, friends: self.userViewModel.friends, customFriends: self.userViewModel.user.customFriends) { error in
                         self.applyLoading = false
@@ -685,7 +573,7 @@ struct TransactionView: View {
                             self.applyLoading = false
                             return
                         }
-                            
+
                         // Success
                         DispatchQueue.main.async {
                             self.presentationMode.wrappedValue.dismiss()
@@ -695,7 +583,7 @@ struct TransactionView: View {
                                 self.errorHandling.handle(error: error)
                                 return
                             }
-                            
+
                             // Success
                         }
                     }
@@ -704,10 +592,3 @@ struct TransactionView: View {
         }
     }
 }
-
-// struct TransactionView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        TransactionView()
-//            .environmentObject(AuthViewModel())
-//    }
-// }

@@ -1,0 +1,319 @@
+//
+//  AddTransactionIOSComponents.swift
+//  Budget
+//
+//  iOS 26 styled pieces for the add/edit transaction screen (v2).
+//  Solid fills / system colors — no backdrop-blur materials.
+//
+
+import SwiftUI
+import MathParser
+
+// MARK: - Person avatar (iOS)
+
+struct IOSPersonAvatar: View {
+    let name: String
+    let id: String
+    var isYou: Bool = false
+    var size: CGFloat = 44
+    private var youColors: [Color] { [Color(red: 0.04, green: 0.52, blue: 1.0), Color(red: 0.29, green: 0.66, blue: 1.0)] }
+    var body: some View {
+        Circle()
+            .fill(isYou
+                  ? AnyShapeStyle(LinearGradient(colors: youColors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                  : AnyShapeStyle(PersonPalette.color(for: id)))
+            .frame(width: size, height: size)
+            .overlay(
+                Text(isYou ? "you".localizeString() : personInitials(name))
+                    .font(.system(size: size * 0.34, weight: .bold)).foregroundColor(.white)
+                    .lineLimit(1).minimumScaleFactor(0.5)
+            )
+    }
+}
+
+// MARK: - Type segmented control
+
+struct IOSTypeSegment: View {
+    @Binding var selection: TransactionType
+    private func color(_ t: TransactionType) -> Color {
+        switch t {
+        case .expense: return Color(red: 1.0, green: 0.36, blue: 0.32)
+        case .income:  return .green
+        case .saving:  return Color(red: 0.22, green: 0.82, blue: 0.88)
+        }
+    }
+    var body: some View {
+        HStack(spacing: 2) {
+            ForEach(TransactionType.allCases, id: \.self) { t in
+                let active = selection == t
+                Button { withAnimation(.easeInOut(duration: 0.15)) { selection = t } } label: {
+                    HStack(spacing: 6) {
+                        Circle().fill(color(t)).frame(width: 8, height: 8)
+                        Text(t.description()).font(.system(size: 14, weight: .semibold))
+                    }
+                    .foregroundColor(active ? color(t) : .secondary)
+                    .frame(maxWidth: .infinity).frame(height: 38)
+                    .background(active ? color(t).opacity(0.15) : Color.clear)
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(4)
+        .background(Color.iosCardFill, in: Capsule())
+        .overlay(Capsule().strokeBorder(Color.iosBorder, lineWidth: 1))
+    }
+}
+
+// MARK: - Editable per-participant share row
+
+struct IOSShareRow: View {
+    @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var errorHandling: ErrorHandling
+
+    @Binding var participant: Participant
+    @Binding var splitOption: SplitOption
+    @Binding var participants: [Participant]
+    @Binding var totalAmount: Double
+    @Binding var hasWritten: [String]
+    var action: TransactionAction
+    var showsTopDivider: Bool = true
+
+    @State private var amountString: String = ""
+    @State private var amountSelected: Bool = false
+    @FocusState private var isInputActive: Bool
+
+    private var isYou: Bool { participant.userId == userViewModel.user.id }
+    private var editable: Bool {
+        action != .view && splitOption != .meEverything && splitOption != .heSheEverything
+    }
+    private var name: String {
+        isYou ? "you".localizeString() : (participant.userName.split(separator: " ").first.map(String.init) ?? participant.userName)
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if showsTopDivider { Divider().overlay(Color.iosBorder) }
+            HStack(spacing: 10) {
+                IOSPersonAvatar(name: participant.userName, id: participant.userId, isYou: isYou, size: 30)
+                Text(name).font(.system(size: 14.5, weight: .semibold)).foregroundColor(.primary)
+                Spacer()
+                if editable {
+                    HStack(spacing: 3) {
+                        TextField("0", text: $amountString, onEditingChanged: { editing in
+                            amountSelected = editing
+                            if !editing {
+                                let expression = amountString
+                                    .components(separatedBy: .whitespaces).joined()
+                                    .replacingOccurrences(of: ",", with: ".")
+                                    .replacingOccurrences(of: "÷", with: "/")
+                                    .replacingOccurrences(of: "×", with: "*")
+                                if let doubleAmount = try? expression.evaluate() {
+                                    DispatchQueue.main.async {
+                                        participant.amount = Utility.doubleToTwoDecimals(value: doubleAmount)
+                                        if let errorString = Utility.setAmountPerParticipant(splitOption: splitOption, participants: $participants, totalAmount: totalAmount, hasWritten: hasWritten, myUserId: userViewModel.user.id) {
+                                            errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
+                        .font(.system(size: 14.5, weight: .bold)).monospacedDigit().fixedSize()
+                        .focused($isInputActive)
+                        .toolbar {
+                            if amountSelected {
+                                ToolbarItemGroup(placement: .keyboard) {
+                                    CalculatorToolbarView(amountString: $amountString)
+                                    Spacer()
+                                    Button("done".localizeString()) { isInputActive = false }
+                                }
+                            }
+                        }
+                        Text(Utility.currencyFormatter.currencySymbol).font(.system(size: 14.5, weight: .bold)).foregroundColor(.secondary)
+                    }
+                    .foregroundColor(.primary)
+                    .padding(.horizontal, 12).padding(.vertical, 5)
+                    .background(Color.primary.opacity(0.06)).clipShape(Capsule())
+                } else {
+                    Text(Utility.doubleToLocalCurrency(value: participant.amount))
+                        .font(.system(size: 14.5, weight: .bold)).monospacedDigit().foregroundColor(.primary)
+                        .padding(.horizontal, 12).padding(.vertical, 5)
+                        .background(Color.primary.opacity(0.06)).clipShape(Capsule())
+                }
+            }
+            .padding(.vertical, 11)
+        }
+        .onChange(of: amountString) { _ in
+            DispatchQueue.main.async {
+                if amountSelected && !hasWritten.contains(participant.userId) { hasWritten.append(participant.userId) }
+            }
+        }
+        .onChange(of: participant.amount) { newValue in
+            DispatchQueue.main.async {
+                amountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: newValue as NSNumber) ?? "0"
+            }
+        }
+        .onAppear {
+            amountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: participant.amount as NSNumber) ?? "0"
+        }
+    }
+}
+
+// MARK: - Friend picker sheet (iOS)
+
+struct IOSFriendSheet: View {
+    @EnvironmentObject private var userViewModel: UserViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    @Binding var participants: [Participant]
+    @State private var query: String = ""
+    @State private var expandedGroups: Set<String> = []
+    private let collapseLimit = 4
+
+    private var selectedIds: Set<String> {
+        Set(participants.map { $0.userId }).subtracting([userViewModel.user.id])
+    }
+    private func matches(_ f: any Named) -> Bool {
+        query.isEmpty || f.name.lowercased().contains(query.lowercased())
+    }
+    private func toggle(_ f: any Named) {
+        if participants.contains(where: { $0.userId == f.id }) {
+            participants.removeAll { $0.userId == f.id }
+        } else {
+            participants.append(Participant(userId: f.id, userName: f.name))
+        }
+    }
+    private var favourites: [any Named] { userViewModel.getFavouritesSorted() }
+    private var groups: [(name: String, members: [any Named])] {
+        userViewModel.getFriendGroupsSorted().map { group in
+            let members: [any Named] = userViewModel.getFriendsSorted().filter { userViewModel.getFriendGroup(friendId: $0.id) == group }
+                + userViewModel.getCustomFriendsSorted().filter { $0.group == group }
+            return (group.isEmpty ? "noGroup".localizeString() : group, members)
+        }.filter { !$0.members.isEmpty }
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(spacing: 9) {
+                        Image(systemName: "magnifyingglass").foregroundColor(.secondary)
+                        TextField("searchFriendOrGroup".localizeString(), text: $query)
+                            .autocorrectionDisabled()
+                    }
+                    .padding(.horizontal, 14).frame(height: 44)
+                    .background(Color.primary.opacity(0.06), in: Capsule())
+
+                    if !selectedIds.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(participants.filter { $0.userId != userViewModel.user.id }, id: \.userId) { p in
+                                    Button { participants.removeAll { $0.userId == p.userId } } label: {
+                                        HStack(spacing: 6) {
+                                            IOSPersonAvatar(name: p.userName, id: p.userId, size: 22)
+                                            Text(p.userName.split(separator: " ").first.map(String.init) ?? p.userName)
+                                                .font(.system(size: 13, weight: .semibold))
+                                            Image(systemName: "xmark").font(.system(size: 9, weight: .bold))
+                                        }
+                                        .foregroundColor(.accentColor)
+                                        .padding(.leading, 5).padding(.trailing, 8).padding(.vertical, 5)
+                                        .background(Color.accentColor.opacity(0.12)).clipShape(Capsule())
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                            .padding(.vertical, 12)
+                        }
+                    }
+
+                    let favs = favourites.filter(matches)
+                    if !favs.isEmpty {
+                        groupHeader("favourites".localizeString(), members: favourites)
+                        VStack(spacing: 0) { ForEach(favs, id: \.id) { friendRow($0) } }.padding(.horizontal, 14).iosCard(22)
+                    }
+                    ForEach(groups, id: \.name) { group in
+                        let visible = group.members.filter(matches)
+                        if !visible.isEmpty {
+                            let expanded = !query.isEmpty || expandedGroups.contains(group.name)
+                            let shown = expanded ? visible : Array(visible.prefix(collapseLimit))
+                            groupHeader("\(group.name) · \(group.members.count) \(("friends").localizeString().lowercased())", members: group.members)
+                            VStack(spacing: 0) {
+                                ForEach(shown, id: \.id) { friendRow($0) }
+                                if !expanded && visible.count > collapseLimit {
+                                    Button { expandedGroups.insert(group.name) } label: {
+                                        HStack(spacing: 6) {
+                                            Text(String(format: "showMoreCount".localizeString(), visible.count - collapseLimit))
+                                            Image(systemName: "chevron.down")
+                                        }
+                                        .font(.system(size: 13.5, weight: .semibold)).foregroundColor(.accentColor)
+                                        .frame(maxWidth: .infinity).padding(.vertical, 12)
+                                        .overlay(Divider().overlay(Color.iosBorder), alignment: .top)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                            .padding(.horizontal, 14).iosCard(22)
+                        }
+                    }
+                }
+                .padding(.horizontal, 18).padding(.top, 8).padding(.bottom, 100)
+            }
+            .background(Color.iosBG.ignoresSafeArea())
+            .navigationTitle("allFriends")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button { dismiss() } label: {
+                        Text(selectedIds.isEmpty ? "done".localizeString() : "\("done".localizeString()) · \(selectedIds.count)")
+                            .fontWeight(.semibold)
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func groupHeader(_ title: String, members: [any Named]) -> some View {
+        HStack {
+            Text(title).font(.system(size: 11, weight: .bold)).kerning(0.7).textCase(.uppercase).foregroundColor(.secondary)
+            Spacer()
+            Button {
+                let ids = members.map { $0.id }
+                let allIn = ids.allSatisfy { selectedIds.contains($0) }
+                if allIn { participants.removeAll { p in ids.contains(p.userId) } }
+                else { for m in members where !participants.contains(where: { $0.userId == m.id }) { participants.append(Participant(userId: m.id, userName: m.name)) } }
+            } label: {
+                let ids = members.map { $0.id }
+                let allIn = ids.allSatisfy { selectedIds.contains($0) }
+                HStack(spacing: 4) {
+                    Image(systemName: allIn ? "minus" : "plus").font(.system(size: 10, weight: .bold))
+                    Text(allIn ? "removeAll" : "addAll").font(.system(size: 12, weight: .bold))
+                }
+                .foregroundColor(.accentColor)
+                .padding(.horizontal, 11).padding(.vertical, 5)
+                .background(Color.accentColor.opacity(0.12)).clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.top, 18).padding(.bottom, 8).padding(.horizontal, 4)
+    }
+
+    private func friendRow(_ f: any Named) -> some View {
+        let selected = selectedIds.contains(f.id)
+        return Button { toggle(f) } label: {
+            HStack(spacing: 12) {
+                IOSPersonAvatar(name: f.name, id: f.id, size: 38)
+                Text(f.name).font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary)
+                Spacer()
+                ZStack {
+                    Circle().fill(selected ? Color.accentColor : Color.clear).frame(width: 24, height: 24)
+                        .overlay(Circle().strokeBorder(selected ? Color.accentColor : Color.primary.opacity(0.2), lineWidth: 2))
+                    if selected { Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundColor(.white) }
+                }
+            }
+            .padding(.vertical, 11)
+        }
+        .buttonStyle(.plain)
+    }
+}

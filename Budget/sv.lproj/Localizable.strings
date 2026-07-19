@@ -343,3 +343,10 @@
 "vsLastMonthSameDay" = "mot %@ · samma dag";
 "forecast" = "prognos";
 "savings" = "Sparkonto";
+
+// Add transaction v2 (iOS)
+"newTransaction" = "Ny transaktion";
+"allFriends" = "Alla vänner";
+"showMoreCount" = "Visa %d till";
+"splitting" = "Delning";
+"selectedCount" = "%d vald";

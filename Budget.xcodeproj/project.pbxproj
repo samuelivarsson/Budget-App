@@ -280,6 +280,7 @@
 		8EE85FCD5E0292C675A23B11 /* AddTransactionComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5DF7CA11747939E17B1E1B /* AddTransactionComponents.swift */; };
 		A40E21595A0F67B7489A91BF /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15181CB6E03C749977FED0A0 /* SharedComponents.swift */; };
 		CFA1848BA8F95FCD59F87E96 /* TransactionComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B634ACD249C9411FC7567A1F /* TransactionComponents.swift */; };
+		DF3B27134C8A3F3BD87DA378 /* AddTransactionIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D5328C19FDC858A68B4D07 /* AddTransactionIOSComponents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -478,6 +479,7 @@
 		AAD9BE8DDF348000B3F7C06E /* HomeComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeComponents.swift; path = Budget/Views/Components/HomeComponents.swift; sourceTree = "<group>"; };
 		B634ACD249C9411FC7567A1F /* TransactionComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TransactionComponents.swift; path = Budget/Views/Components/TransactionComponents.swift; sourceTree = "<group>"; };
 		CB5DF7CA11747939E17B1E1B /* AddTransactionComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AddTransactionComponents.swift; sourceTree = "<group>"; };
+		E4D5328C19FDC858A68B4D07 /* AddTransactionIOSComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AddTransactionIOSComponents.swift; sourceTree = "<group>"; };
 		F436EFBB91364893DFDD5FE1 /* RedesignLogicTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RedesignLogicTests.swift; path = RedesignLogicTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -953,6 +955,7 @@
 				4D2C37D12B95163B00CD5D7B /* Math.swift */,
 				CB5DF7CA11747939E17B1E1B /* AddTransactionComponents.swift */,
 				3199A6830BC57BB374E0DECD /* TransactionsIOSComponents.swift */,
+				E4D5328C19FDC858A68B4D07 /* AddTransactionIOSComponents.swift */,
 			);
 			path = Transactions;
 			sourceTree = "<group>";
@@ -1548,6 +1551,7 @@
 				8EE85FCD5E0292C675A23B11 /* AddTransactionComponents.swift in Sources */,
 				23D03DBA7BC1DD2E138671A5 /* HomeIOSComponents.swift in Sources */,
 				3BA75DBF363B4BB1075FC316 /* TransactionsIOSComponents.swift in Sources */,
+				DF3B27134C8A3F3BD87DA378 /* AddTransactionIOSComponents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

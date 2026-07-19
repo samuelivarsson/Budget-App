@@ -343,3 +343,10 @@
 "vsLastMonthSameDay" = "vs %@ · same day";
 "forecast" = "forecast";
 "savings" = "Savings";
+
+// Add transaction v2 (iOS)
+"newTransaction" = "New transaction";
+"allFriends" = "All friends";
+"showMoreCount" = "Show %d more";
+"splitting" = "Splitting";
+"selectedCount" = "%d selected";
