@@ -180,39 +180,39 @@ class HistoryViewModel: ObservableObject {
 
     // MARK: - History aggregation (redesigned History view)
 
-    /// The saveDate cutoff for a period. `nil` means "no lower bound" (.all), or
-    /// "handled live in the view" (.month).
-    private func cutoff(for period: HistoryPeriod) -> Date? {
-        let cal = Calendar.current
+    /// The saveDate cutoff for a period, anchored to budget-month boundaries
+    /// (`monthStartsOn`) rather than the calendar. `nil` means "no lower bound"
+    /// (.all), or "handled live in the view" (.month).
+    private func cutoff(for period: HistoryPeriod, monthStartsOn: Int) -> Date? {
         switch period {
         case .month: return nil
-        case .threeMonths: return cal.date(byAdding: .month, value: -3, to: Date())
-        case .year: return cal.date(from: cal.dateComponents([.year], from: Date()))
+        case .threeMonths: return Utility.getBudgetPeriod(monthsBack: 3, monthStartsOn: monthStartsOn).0
+        case .year: return Utility.getBudgetPeriod(monthsBack: 12, monthStartsOn: monthStartsOn).0
         case .all: return nil
         }
     }
 
     /// Saved category histories within a period (past/completed months only).
-    private func savedCategoryHistories(period: HistoryPeriod) -> [CategoryHistory] {
-        guard let cutoff = self.cutoff(for: period) else { return self.categoryHistories }
+    private func savedCategoryHistories(period: HistoryPeriod, monthStartsOn: Int) -> [CategoryHistory] {
+        guard let cutoff = self.cutoff(for: period, monthStartsOn: monthStartsOn) else { return self.categoryHistories }
         return self.categoryHistories.filter { $0.saveDate >= cutoff }
     }
 
     /// Saved monthly summaries within a period.
-    private func summaries(in period: HistoryPeriod) -> [MonthlySummary] {
-        guard let cutoff = self.cutoff(for: period) else { return self.monthlySummaries }
+    private func summaries(in period: HistoryPeriod, monthStartsOn: Int) -> [MonthlySummary] {
+        guard let cutoff = self.cutoff(for: period, monthStartsOn: monthStartsOn) else { return self.monthlySummaries }
         return self.monthlySummaries.filter { $0.saveDate >= cutoff }
     }
 
     /// The distinct months (keyed by save day) that have any saved history in a period.
-    private func monthKeys(period: HistoryPeriod) -> (keys: Set<Date>, summaries: [Date: MonthlySummary]) {
+    private func monthKeys(period: HistoryPeriod, monthStartsOn: Int) -> (keys: Set<Date>, summaries: [Date: MonthlySummary]) {
         let cal = Calendar.current
         var keys = Set<Date>()
-        for history in self.savedCategoryHistories(period: period) {
+        for history in self.savedCategoryHistories(period: period, monthStartsOn: monthStartsOn) {
             keys.insert(cal.startOfDay(for: history.saveDate))
         }
         var byMonth: [Date: MonthlySummary] = [:]
-        for summary in self.summaries(in: period) {
+        for summary in self.summaries(in: period, monthStartsOn: monthStartsOn) {
             let key = cal.startOfDay(for: summary.saveDate)
             byMonth[key] = summary
             keys.insert(key)
@@ -226,7 +226,7 @@ class HistoryViewModel: ObservableObject {
     /// counted in `estimatedMonths` so the UI can flag it.
     func plannedTotals(period: HistoryPeriod, budget: Budget)
         -> (income: Double, fixedCosts: Double, scheduledSavings: Double, estimatedMonths: Int, monthCount: Int) {
-        let (keys, summaryByMonth) = self.monthKeys(period: period)
+        let (keys, summaryByMonth) = self.monthKeys(period: period, monthStartsOn: budget.monthStartsOn)
         let currentIncome = budget.income
         let currentFixed = budget.getOverheadsAmount()
         let currentScheduled = budget.getSavings()
@@ -271,7 +271,7 @@ class HistoryViewModel: ObservableObject {
     func categoryStats(period: HistoryPeriod, type: TransactionType, budget: Budget) -> [CategoryStat] {
         var names: [String: String] = [:]
         var totals: [String: Double] = [:]
-        for history in self.savedCategoryHistories(period: period) {
+        for history in self.savedCategoryHistories(period: period, monthStartsOn: budget.monthStartsOn) {
             guard self.resolvedType(history, budget: budget) == type else { continue }
             totals[history.categoryId, default: 0] += history.totalAmount
             names[history.categoryId] = history.categoryName
@@ -289,7 +289,7 @@ class HistoryViewModel: ObservableObject {
     /// otherwise — flagged via `estimated`). Actuals are summed from the saved
     /// category histories (which every completed month has).
     func netStats(period: HistoryPeriod, budget: Budget) -> (net: Double, savingsAccountPurchases: Double, estimated: Bool) {
-        let histories = self.savedCategoryHistories(period: period)
+        let histories = self.savedCategoryHistories(period: period, monthStartsOn: budget.monthStartsOn)
         let planned = self.plannedTotals(period: period, budget: budget)
 
         func typeTotal(_ type: TransactionType) -> Double {

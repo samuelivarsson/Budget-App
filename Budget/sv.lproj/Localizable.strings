@@ -91,7 +91,7 @@
 "youAreOwingShort" = "du är skyldig";
 
 // History View
-"averageSpent" = "Transaktionskategorier - Genomsnittlig summa spenderat inom varje kategori\n\nKonton - Vad saldot var i slutet av förra budgetmånaden";
+"averageSpent" = "Perioden överst väljer vilka månader som visas. Total/Snitt växlar mellan summa och genomsnitt per månad (per dag för Denna månad).\n\nNetto = inkomst − fasta kostnader − planerat sparande − utgifter, alltså hur mycket som sparades utöver det planerade sparandet.\n\nSparat = det som satts in på sparkonton.\n\nInkomst, fasta kostnader och planerat sparande kommer från inställningarna och uppskattas för månader utan sparad data.\n\nKonton visar nuvarande saldon.";
 "info" = "Info";
 "ok" = "Ok";
 "net" = "Netto";
@@ -106,6 +106,9 @@
 "monthlyIncome" = "Månadsinkomst";
 "scheduledSaving" = "Planerat sparande";
 "estimatedNote" = "Inkomst, fasta kostnader och planerat sparande är uppskattade för månader utan sparad data";
+"average" = "Snitt";
+"perMonthSuffix" = "/mån";
+"perDaySuffix" = "/dag";
 
 // Years, months etc abbreviations
 "shortYears" = "å";

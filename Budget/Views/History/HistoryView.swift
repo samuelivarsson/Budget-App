@@ -16,13 +16,39 @@ struct HistoryView: View {
     @EnvironmentObject private var historyViewModel: HistoryViewModel
 
     @State private var showingInfo: Bool = false
-    @State private var period: HistoryPeriod = .all
+    @State private var period: HistoryPeriod = .month
     @State private var expandedFixed: Bool = false
+    @State private var showAverage: Bool = false
     private let collapseLimit = 4
 
     private var budget: Budget { userViewModel.user.budget }
     private func money(_ v: Double) -> String { Utility.doubleToLocalCurrency(value: v) }
     private func percentString(_ frac: Double) -> String { "\(Int((frac * 100).rounded())) %" }
+
+    /// Number of months the selected period spans (1 for the live current month).
+    private var monthCount: Int {
+        period == .month ? 1 : max(1, historyViewModel.plannedTotals(period: period, budget: budget).monthCount)
+    }
+    /// Days elapsed so far in the current budget month (at least 1). Matches the
+    /// Transactions view's "snitt per dag" day count so the two screens agree.
+    private var daysElapsedThisMonth: Int {
+        let (from, to) = Utility.getBudgetPeriod(monthStartsOn: budget.monthStartsOn)
+        let end = min(Date(), to)
+        return max(1, Calendar.current.dateComponents([.day], from: from, to: end).day ?? 1)
+    }
+    /// Divisor applied to displayed amounts in average mode: per day for the live
+    /// current month (a single partial month), per month otherwise.
+    private var factor: Double {
+        guard showAverage else { return 1.0 }
+        let divisor = period == .month ? Double(daysElapsedThisMonth) : Double(monthCount)
+        return 1.0 / divisor
+    }
+    /// Suffix shown after averaged summary values ("/dag" this month, "/mån" otherwise).
+    private var averageSuffix: String {
+        (period == .month ? "perDaySuffix" : "perMonthSuffix").localizeString()
+    }
+    /// A money string for an averageable amount (respects the Total/Snitt toggle).
+    private func avgMoney(_ v: Double) -> String { money(v * factor) }
 
     // MARK: Body
 
@@ -32,6 +58,12 @@ struct HistoryView: View {
                 VStack(spacing: 0) {
                     IOSHistoryPeriodBar(selection: $period)
                         .padding(.top, 4).padding(.bottom, 2)
+                    Picker("", selection: $showAverage) {
+                        Text("total").tag(false)
+                        Text("average").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.top, 10)
                     summaryRow.padding(.top, 12)
                     if hasEstimatedMonths { estimateHint }
 
@@ -70,17 +102,18 @@ struct HistoryView: View {
     private var summaryRow: some View {
         let netInfo = self.netInfo()
         let saved = self.categoryStats(.saving).reduce(0) { $0 + $1.total }
+        let suffix = showAverage ? " " + averageSuffix : ""
         return HStack(spacing: 10) {
             IOSHistorySummary(
                 title: "net",
-                value: money(netInfo.net),
+                value: avgMoney(netInfo.net) + suffix,
                 valueColor: netInfo.net < 0 ? HistoryColors.negative : .primary,
                 subtitleLabel: netInfo.purchases > 0.005 ? "savingsAccountPurchases" : nil,
-                subtitleValue: netInfo.purchases > 0.005 ? money(netInfo.purchases) : nil
+                subtitleValue: netInfo.purchases > 0.005 ? avgMoney(netInfo.purchases) : nil
             )
             IOSHistorySummary(
                 title: "saved",
-                value: money(saved),
+                value: avgMoney(saved) + suffix,
                 valueColor: HistoryColors.transfer,
                 subtitlePlain: "depositedToSavings"
             )
@@ -95,13 +128,13 @@ struct HistoryView: View {
         if !stats.isEmpty {
             let sectionTotal = stats.reduce(0) { $0 + $1.total }
             let maxTotal = stats.map { abs($0.total) }.max() ?? 1
-            IOSStatSectionHead(title: sectionTitle(type), dotColor: HistoryColors.dot(for: type), total: money(sectionTotal))
+            IOSStatSectionHead(title: sectionTitle(type), dotColor: HistoryColors.dot(for: type), total: avgMoney(sectionTotal))
             IOSStatCard {
                 ForEach(Array(stats.enumerated()), id: \.element.id) { i, stat in
                     if i > 0 { Divider().overlay(Color.iosBorder) }
                     IOSStatRow(
                         name: stat.name,
-                        amount: money(stat.total),
+                        amount: avgMoney(stat.total),
                         color: Color.forCategory(stat.name),
                         fraction: maxTotal == 0 ? 0 : abs(stat.total) / maxTotal,
                         percent: sectionTotal == 0 ? nil : percentString(stat.total / sectionTotal)
@@ -129,13 +162,13 @@ struct HistoryView: View {
             let total = rows.reduce(0) { $0 + $1.amount }
             let maxAmount = rows.map { abs($0.amount) }.max() ?? 1
             let shown = expandedFixed ? rows : Array(rows.prefix(collapseLimit))
-            IOSStatSectionHead(title: "overheads", dotColor: HistoryColors.expense, total: money(total))
+            IOSStatSectionHead(title: "overheads", dotColor: HistoryColors.expense, total: avgMoney(total))
             IOSStatCard {
                 ForEach(Array(shown.enumerated()), id: \.offset) { i, row in
                     if i > 0 { Divider().overlay(Color.iosBorder) }
                     IOSStatRow(
                         name: row.name,
-                        amount: money(row.amount),
+                        amount: avgMoney(row.amount),
                         color: Color.forCategory(row.name),
                         fraction: maxAmount == 0 ? 0 : abs(row.amount) / maxAmount
                     )
