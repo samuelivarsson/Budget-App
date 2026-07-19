@@ -331,3 +331,15 @@
 "separateAccounts" = "Separate accounts";
 "overCeiling" = "Over";
 "categoriesOverOfTotal" = "%d of %d categories over budget";
+
+// Transactions v2 (iOS)
+"all" = "All";
+"topUps" = "Top-ups";
+"transfers" = "Transfers";
+"transactionsCount" = "%d transactions";
+"show" = "Show";
+"spentInMonth" = "Spent in %@";
+"avgPerDay" = "Avg per day · %@";
+"vsLastMonthSameDay" = "vs %@ · same day";
+"forecast" = "forecast";
+"savings" = "Savings";

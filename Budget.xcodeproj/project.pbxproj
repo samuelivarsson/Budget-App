@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		23D03DBA7BC1DD2E138671A5 /* HomeIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B626F977D1DC366CFB8B60 /* HomeIOSComponents.swift */; };
 		267BEA6B8063F38E7322188B /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
+		3BA75DBF363B4BB1075FC316 /* TransactionsIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3199A6830BC57BB374E0DECD /* TransactionsIOSComponents.swift */; };
 		43032194065CBED6E9E6B0B2 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */; };
 		4D008F3C29CE63D000B3C3FE /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
 		4D008F3F29CE654B00B3C3FE /* MobileBankID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */; };
@@ -331,6 +332,7 @@
 /* Begin PBXFileReference section */
 		15181CB6E03C749977FED0A0 /* SharedComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SharedComponents.swift; path = Budget/Views/Components/SharedComponents.swift; sourceTree = "<group>"; };
 		2B8C7F1FE720279F2123C566 /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = Budget/Views/Components/Theme.swift; sourceTree = "<group>"; };
+		3199A6830BC57BB374E0DECD /* TransactionsIOSComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TransactionsIOSComponents.swift; sourceTree = "<group>"; };
 		4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceViewModel.swift; sourceTree = "<group>"; };
 		4D008F3E29CE654B00B3C3FE /* MobileBankID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileBankID.swift; sourceTree = "<group>"; };
 		4D008F4229CE6C4000B3C3FE /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -950,6 +952,7 @@
 				4D2C37CB2B94F5FB00CD5D7B /* CalculatorToolbarView.swift */,
 				4D2C37D12B95163B00CD5D7B /* Math.swift */,
 				CB5DF7CA11747939E17B1E1B /* AddTransactionComponents.swift */,
+				3199A6830BC57BB374E0DECD /* TransactionsIOSComponents.swift */,
 			);
 			path = Transactions;
 			sourceTree = "<group>";
@@ -1544,6 +1547,7 @@
 				CFA1848BA8F95FCD59F87E96 /* TransactionComponents.swift in Sources */,
 				8EE85FCD5E0292C675A23B11 /* AddTransactionComponents.swift in Sources */,
 				23D03DBA7BC1DD2E138671A5 /* HomeIOSComponents.swift in Sources */,
+				3BA75DBF363B4BB1075FC316 /* TransactionsIOSComponents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

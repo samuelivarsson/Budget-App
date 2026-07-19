@@ -2,12 +2,12 @@
 //  TransactionsView.swift
 //  Budget
 //
+//  v2 — iOS 26 styled. Solid cards, system colors, ScrollView + LazyVStack.
+//
 
 import SwiftUI
 
 struct TransactionsView: View {
-    @Environment(\.colorScheme) var colorScheme
-
     @EnvironmentObject private var errorHandling: ErrorHandling
     @EnvironmentObject private var userViewModel: UserViewModel
     @EnvironmentObject private var transactionsViewModel: TransactionsViewModel
@@ -16,11 +16,17 @@ struct TransactionsView: View {
 
     @State private var level: Int = 2
     @State private var openPeriods: Set<Int> = [0]
-    @State private var editMode: EditMode = .inactive
+    @State private var editing: Bool = false
+    @State private var filter: TxFilter = .all
     @State private var transactionFromUrl: Transaction?
     @State private var urlSchemeNavigation = false
 
-    private var monthStartsOn: Int { userViewModel.user.budget.monthStartsOn }
+    private var user: User { userViewModel.user }
+    private var monthStartsOn: Int { user.budget.monthStartsOn }
+    private var budget: Budget { user.budget }
+    private var mainAccountId: String { budget.getMainAccountId(type: .transaction) }
+
+    // MARK: Period helpers
 
     private func period(_ level: Int) -> (Date, Date) {
         Utility.getBudgetPeriod(monthsBack: level, monthStartsOn: monthStartsOn)
@@ -30,7 +36,6 @@ struct TransactionsView: View {
         let f = DateFormatter()
         f.locale = Locale(identifier: Locale.preferredLanguages.first ?? "sv")
         f.dateFormat = "d MMM yyyy"
-        // "to" is exclusive; show the last included day
         let lastDay = Calendar.current.date(byAdding: .day, value: -1, to: to) ?? to
         return "\(f.string(from: from)) – \(f.string(from: lastDay))"
     }
@@ -38,32 +43,96 @@ struct TransactionsView: View {
         let (from, to) = period(level)
         return transactionsViewModel.getTransactions(from: from, to: to)
     }
-
-    private func dayHeader(_ date: Date) -> String {
-        switch dayRelativity(date, now: Date()) {
-        case .today: return "today".localizeString()
-        case .yesterday: return "yesterday".localizeString()
-        case .other:
-            let f = DateFormatter()
-            f.locale = Locale(identifier: Locale.preferredLanguages.first ?? "sv")
-            f.dateFormat = "EEEE d MMM"
-            return f.string(from: date).capitalized
-        }
+    private func filtered(_ level: Int) -> [Transaction] {
+        transactions(level).filter { filter.matches($0.type) }
     }
+    private func monthName(_ level: Int) -> String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: Locale.preferredLanguages.first ?? "sv")
+        f.dateFormat = "LLLL"
+        return f.string(from: period(level).0.addingTimeInterval(60 * 60 * 24 * 3)).capitalized
+    }
+    private func dayLabel(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: Locale.preferredLanguages.first ?? "sv")
+        f.dateFormat = "EEEE d MMMM"
+        return f.string(from: date)
+    }
+
+    // MARK: Summary math
+
+    private var expenseCategories: [TransactionCategory] { userViewModel.getTransactionCategoriesSorted(type: .expense) }
+    private var mainCats: [TransactionCategory] { expenseCategories.filter { $0.takesFromAccount == mainAccountId } }
+    private var sepCats: [TransactionCategory] { expenseCategories.filter { $0.takesFromAccount != mainAccountId } }
+    private func spentIn(_ cats: [TransactionCategory]) -> Double {
+        cats.reduce(0) { $0 + transactionsViewModel.getSpent(user: user, transactionCategory: $1) }
+    }
+    private var spentThisMonth: Double { spentIn(expenseCategories) }
+    private var savingsPart: Double { spentIn(sepCats) }
+    private var mainSpent: Double { spentIn(mainCats) }
+    private var mainTak: Double { mainCats.reduce(0) { $0 + $1.getRealAmount(budget: budget) } }
+
+    private var daysElapsed: Int {
+        let (from, to) = period(0)
+        let end = min(Date(), to)
+        return max(1, Calendar.current.dateComponents([.day], from: from, to: end).day ?? 1)
+    }
+    private var prevSpent: Double {
+        let from1 = period(1).0
+        let prevEnd = Calendar.current.date(byAdding: .day, value: daysElapsed, to: from1) ?? from1
+        return transactionsViewModel.getTransactions(from: from1, to: prevEnd)
+            .filter { $0.type == .expense }
+            .reduce(0) { $0 + $1.getShare(userId: user.id) }
+    }
+    private var deltaPct: Int? {
+        guard prevSpent > 0 else { return nil }
+        return Int(((spentThisMonth - prevSpent) / prevSpent * 100).rounded())
+    }
+    private var avgPerDay: Double { mainSpent / Double(daysElapsed) }
+    private var forecast: Double { avgPerDay * 30 }
+    private var forecastState: BudgetBarState { BudgetBarState.classify(spent: forecast, ceiling: mainTak) }
+    private var forecastRatio: Double { forecastState == .over ? 1 : (mainTak <= 0 ? 0 : min(forecast / mainTak, 1)) }
+
+    private func money(_ v: Double) -> String { Utility.doubleToLocalCurrency(value: v) }
+    private var mainAccountName: String { budget.getAccount(id: mainAccountId).name }
+
+    // MARK: Body
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                headerBlock
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .padding(.bottom, 12)
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    navRow
+                    summaryRow
+                    IOSFilterBar(selection: $filter).padding(.top, 12)
 
-                transactionList
+                    let curr = filtered(0)
+                    IOSPeriodHead(range: rangeText(0), count: curr.count, isOpen: openPeriods.contains(0)) { toggle(0) }
+                    if openPeriods.contains(0) {
+                        if curr.isEmpty {
+                            Text("noTransactionsThisPeriod").font(.footnote).foregroundColor(.secondary)
+                                .padding(.horizontal, 6).padding(.vertical, 8)
+                        } else {
+                            dayGroups(curr)
+                        }
+                    }
+
+                    ForEach(1 ..< level, id: \.self) { lvl in
+                        if openPeriods.contains(lvl) {
+                            IOSPeriodHead(range: rangeText(lvl), count: filtered(lvl).count, isOpen: true) { toggle(lvl) }
+                            dayGroups(filtered(lvl))
+                        } else {
+                            IOSCollapsedPeriod(range: rangeText(lvl)) { toggle(lvl) }.padding(.top, 16)
+                        }
+                    }
+
+                    loadMoreButton
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 120)
             }
-            .background(Color.appBackground.ignoresSafeArea())
+            .background(Color(.systemBackground).ignoresSafeArea())
             .navigationBarHidden(true)
-            .environment(\.editMode, $editMode)
             .onLoad {
                 if let url = tabRouter.appStartFromUrl {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -76,126 +145,114 @@ struct TransactionsView: View {
             }
             .navigationDestination(isPresented: $urlSchemeNavigation) {
                 if let transaction = transactionFromUrl {
-                    TransactionView(transaction: transaction, user: userViewModel.user, action: .add, fromUrl: true)
+                    TransactionView(transaction: transaction, user: user, action: .add, fromUrl: true)
                 }
             }
         }
     }
 
-    private var transactionList: some View {
-        List {
-            // Current period, expanded with day groups
-            if openPeriods.contains(0) {
-                    let groups = groupTransactionsByDay(transactions(0))
-                    if groups.isEmpty {
-                        Text("noTransactionsThisPeriod".localizeString())
-                            .font(.footnote).foregroundColor(.appMuted)
-                            .listRowInsets(EdgeInsets(top: 4, leading: 24, bottom: 4, trailing: 20))
-                            .listRowSeparator(.hidden).listRowBackground(Color.clear)
-                    }
-                    ForEach(groups, id: \.day) { group in
-                        Text(dayHeader(group.day).uppercased())
-                            .font(.system(size: 12, weight: .bold)).kerning(0.8)
-                            .foregroundColor(.appMuted)
-                            .listRowInsets(EdgeInsets(top: 20, leading: 24, bottom: 8, trailing: 20))
-                            .listRowSeparator(.hidden).listRowBackground(Color.clear)
-                        ForEach(group.items, id: \.id) { transaction in
-                            transactionLink(transaction)
-                                .listRowInsets(EdgeInsets(top: 5, leading: 20, bottom: 5, trailing: 20))
-                                .listRowSeparator(.hidden).listRowBackground(Color.clear)
-                        }
-                        .onDelete { offsets in deleteTransactions(offsets, in: group.items) }
-                    }
-                }
+    // MARK: Nav row
 
-                // Earlier periods (collapsed selectors)
-                ForEach(1 ..< level, id: \.self) { lvl in
-                    PeriodSelector(range: rangeText(lvl),
-                                   count: openPeriods.contains(lvl) ? "\(transactions(lvl).count) st" : nil,
-                                   isOpen: openPeriods.contains(lvl)) {
-                        toggle(lvl)
-                    }
-                    .listRowInsets(EdgeInsets(top: 5, leading: 20, bottom: 5, trailing: 20))
-                    .listRowSeparator(.hidden).listRowBackground(Color.clear)
-
-                    if openPeriods.contains(lvl) {
-                        ForEach(transactions(lvl), id: \.id) { transaction in
-                            transactionLink(transaction)
-                                .listRowInsets(EdgeInsets(top: 5, leading: 20, bottom: 5, trailing: 20))
-                                .listRowSeparator(.hidden).listRowBackground(Color.clear)
-                        }
-                    }
-                }
-
-                loadMoreButton
-                    .listRowInsets(EdgeInsets(top: 10, leading: 20, bottom: 40, trailing: 20))
-                    .listRowSeparator(.hidden).listRowBackground(Color.clear)
-            }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-    }
-
-    private var headerBlock: some View {
-        VStack(spacing: 12) {
-            ScreenHeader(eyebrow: "expensesAndSharing".localizeString(),
-                         title: "transactions".localizeString()) {
-                HStack(spacing: 8) {
-                    addButton
-                    editButton
-                }
-            }
-            PeriodSelector(range: rangeText(0), count: "\(transactions(0).count) st",
-                           isOpen: openPeriods.contains(0)) { toggle(0) }
-            PeriodSummary(shareLabel: "yourShare".localizeString(),
-                          shareValue: sumMyShare(transactions(0), userId: userViewModel.user.id),
-                          oweLabel: "youOwe".localizeString(),
-                          oweValue: standingsViewModel.getTotalIOwe(myId: userViewModel.user.id))
-        }
-    }
-
-    // Green round "add" button on the left. Lives outside the List, so it is a
-    // normal NavigationLink with no disclosure chevron and no hit-test crossing.
-    private var addButton: some View {
-        NavigationLink {
-            TransactionView(action: .add,
-                            firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
-        } label: {
-            Image(systemName: "plus").font(.system(size: 20, weight: .semibold))
-                .foregroundColor(.white).frame(width: 42, height: 42)
-                .background(Color.appPine).clipShape(RoundedRectangle(cornerRadius: 14))
-        }
-        .disabled(userViewModel.user.id.isEmpty)
-    }
-
-    // "Ändra"/"Klar" pill that toggles the List's edit mode via the shared
-    // editMode binding injected on the container.
-    private var editButton: some View {
-        Button {
-            withAnimation { editMode = editMode.isEditing ? .inactive : .active }
-        } label: {
-            Text(editMode.isEditing ? "done".localizeString() : "edit".localizeString())
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(.appInk)
-                .padding(.horizontal, 16).frame(height: 42)
-                .background(Color.appCard)
-                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.appLine))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-        }
-        .disabled(userViewModel.user.id.isEmpty)
-    }
-
-    private func transactionLink(_ transaction: Transaction) -> some View {
-        // NavigationLink lives in the background so the List row is not itself a
-        // NavigationLink and therefore shows no trailing disclosure chevron.
-        TransactionCard(transaction: transaction, userId: userViewModel.user.id)
-            .background(
+    private var navRow: some View {
+        HStack {
+            Text("transactions").font(.system(size: 34, weight: .bold)).foregroundColor(.primary)
+                .lineLimit(1).minimumScaleFactor(0.6)
+            Spacer(minLength: 8)
+            HStack(spacing: 8) {
                 NavigationLink {
-                    TransactionView(transaction: transaction, user: userViewModel.user,
-                                    action: Utility.getTransactionAction(transaction: transaction,
-                                        userId: userViewModel.user.id, role: userViewModel.user.role))
-                } label: { EmptyView() }
-                .opacity(0)
-            )
+                    TransactionView(action: .add, firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
+                } label: {
+                    Image(systemName: "plus").font(.system(size: 18, weight: .semibold)).foregroundColor(.primary)
+                        .frame(width: 42, height: 42)
+                        .background(Color(.secondarySystemBackground), in: Circle())
+                        .overlay(Circle().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
+                }
+                .disabled(user.id.isEmpty)
+                Button { withAnimation { editing.toggle() } } label: {
+                    Text(editing ? "done" : "edit")
+                        .font(.system(size: 15, weight: .semibold)).foregroundColor(.accentColor)
+                        .frame(height: 42).padding(.horizontal, 16)
+                        .background(Color(.secondarySystemBackground), in: Capsule())
+                        .overlay(Capsule().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
+                }
+                .buttonStyle(.plain)
+                .disabled(user.id.isEmpty)
+            }
+        }
+        .padding(.top, 4)
+    }
+
+    // MARK: Summary
+
+    private var summaryRow: some View {
+        HStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(String(format: "spentInMonth".localizeString(), monthName(0)))
+                    .font(.system(size: 11, weight: .semibold)).foregroundColor(.secondary)
+                Text(money(spentThisMonth)).font(.system(size: 17.5, weight: .bold)).monospacedDigit()
+                if let delta = deltaPct {
+                    (Text(delta <= 0 ? "−\(abs(delta)) %" : "+\(delta) %").foregroundColor(delta <= 0 ? .green : .red).fontWeight(.bold)
+                     + Text(" " + String(format: "vsLastMonthSameDay".localizeString(), monthName(1))).foregroundColor(.secondary))
+                        .font(.system(size: 10.5, weight: .medium))
+                }
+                (Text("savings".localizeString() + " ").foregroundColor(.secondary)
+                 + Text(money(savingsPart)).foregroundColor(.primary).fontWeight(.bold))
+                    .font(.system(size: 10.5)).monospacedDigit()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(13).iosCard(22)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(String(format: "avgPerDay".localizeString(), mainAccountName))
+                    .font(.system(size: 11, weight: .semibold)).foregroundColor(.secondary).lineLimit(1)
+                Text(money(avgPerDay)).font(.system(size: 17.5, weight: .bold)).monospacedDigit()
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.primary.opacity(0.12))
+                    Rectangle().fill(forecastState.tint).scaleEffect(x: forecastRatio, y: 1, anchor: .leading)
+                }
+                .frame(height: 5).clipShape(Capsule()).padding(.vertical, 5)
+                (Text("forecast".localizeString() + " ~").foregroundColor(.secondary)
+                 + Text(money(forecast)).foregroundColor(.primary).fontWeight(.bold)
+                 + Text(" / \(money(mainTak))").foregroundColor(.secondary))
+                    .font(.system(size: 10.5)).monospacedDigit()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(13).iosCard(22)
+        }
+        .padding(.top, 14)
+    }
+
+    // MARK: Day groups
+
+    @ViewBuilder
+    private func dayGroups(_ txs: [Transaction]) -> some View {
+        ForEach(groupTransactionsByDay(txs), id: \.day) { group in
+            Text(dayLabel(group.day)).textCase(.uppercase)
+                .font(.system(size: 11, weight: .bold)).kerning(0.7).foregroundColor(.secondary)
+                .padding(.horizontal, 6).padding(.top, 14).padding(.bottom, 8)
+            VStack(spacing: 9) {
+                ForEach(group.items, id: \.id) { transaction in
+                    txRow(transaction)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func txRow(_ transaction: Transaction) -> some View {
+        if editing {
+            IOSTxCard(transaction: transaction, userId: user.id, editing: true) {
+                deleteTransaction(transaction)
+            }
+        } else {
+            NavigationLink {
+                TransactionView(transaction: transaction, user: user,
+                                action: Utility.getTransactionAction(transaction: transaction, userId: user.id, role: user.role))
+            } label: {
+                IOSTxCard(transaction: transaction, userId: user.id)
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     private var loadMoreButton: some View {
@@ -205,32 +262,32 @@ struct TransactionsView: View {
                 if let error = error { errorHandling.handle(error: error); level -= 5 }
             }
         } label: {
-            Text("loadMore".localizeString())
-                .font(.system(size: 14, weight: .semibold)).foregroundColor(.appPine)
-                .frame(maxWidth: .infinity).padding(13)
-                .overlay(RoundedRectangle(cornerRadius: 14)
-                    .stroke(style: StrokeStyle(lineWidth: 1, dash: [5])).foregroundColor(.appLine))
-        }.buttonStyle(.plain)
+            Text("loadMore")
+                .font(.system(size: 15, weight: .semibold)).foregroundColor(.accentColor)
+                .frame(maxWidth: .infinity).frame(height: 44)
+                .background(Color(.secondarySystemBackground), in: Capsule())
+                .overlay(Capsule().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .padding(.top, 16)
     }
+
+    // MARK: Actions
 
     private func toggle(_ lvl: Int) {
         withAnimation { if openPeriods.contains(lvl) { openPeriods.remove(lvl) } else { openPeriods.insert(lvl) } }
     }
 
-    private func deleteTransactions(_ offsets: IndexSet, in items: [Transaction]) {
+    private func deleteTransaction(_ transaction: Transaction) {
+        if transaction.creatorId != user.id {
+            errorHandling.handle(error: InputError.deleteTransactionCreatedBySomeoneElse); return
+        }
         withAnimation {
-            offsets.map { items[$0] }.forEach { transaction in
-                if transaction.creatorId != userViewModel.user.id {
-                    errorHandling.handle(error: InputError.deleteTransactionCreatedBySomeoneElse); return
-                }
-                transaction.delete { error in
-                    if let error = error { errorHandling.handle(error: error); return }
-                    standingsViewModel.setStandings(transaction: transaction,
-                        myUserName: userViewModel.user.name, myPhoneNumber: userViewModel.user.phone,
-                        friends: userViewModel.friends, customFriends: userViewModel.user.customFriends,
-                        delete: true) { error in
-                        if let error = error { errorHandling.handle(error: error) }
-                    }
+            transaction.delete { error in
+                if let error = error { errorHandling.handle(error: error); return }
+                standingsViewModel.setStandings(transaction: transaction, myUserName: user.name, myPhoneNumber: user.phone,
+                                                friends: userViewModel.friends, customFriends: user.customFriends, delete: true) { error in
+                    if let error = error { errorHandling.handle(error: error) }
                 }
             }
         }
@@ -257,7 +314,7 @@ struct TransactionsView: View {
             transactionFromUrl = Transaction.getDummyTransaction(category: userViewModel.getFirstTransactionCategory(type: .expense))
             transactionFromUrl?.totalAmount = amount ?? 0
             transactionFromUrl?.desc = description
-            transactionFromUrl?.participants = [Participant(userId: userViewModel.user.id, userName: userViewModel.user.name)] + participantsIds.map { Participant(userId: $0, userName: userViewModel.getName(friendId: $0) ?? "ERROR GETTING NAME") }
+            transactionFromUrl?.participants = [Participant(userId: user.id, userName: user.name)] + participantsIds.map { Participant(userId: $0, userName: userViewModel.getName(friendId: $0) ?? "ERROR GETTING NAME") }
             if categoryId != "" { transactionFromUrl?.category = userViewModel.getTransactionCategory(id: categoryId) }
             if payerId != "" { transactionFromUrl?.payerId = payerId }
             urlSchemeNavigation.toggle()

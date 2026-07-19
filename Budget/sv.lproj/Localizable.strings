@@ -331,3 +331,15 @@
 "separateAccounts" = "Separata konton";
 "overCeiling" = "Över tak";
 "categoriesOverOfTotal" = "%d av %d kategorier över tak";
+
+// Transactions v2 (iOS)
+"all" = "Alla";
+"topUps" = "Påfyllningar";
+"transfers" = "Överföringar";
+"transactionsCount" = "%d transaktioner";
+"show" = "Visa";
+"spentInMonth" = "Spenderat i %@";
+"avgPerDay" = "Snitt per dag · %@";
+"vsLastMonthSameDay" = "mot %@ · samma dag";
+"forecast" = "prognos";
+"savings" = "Sparkonto";
