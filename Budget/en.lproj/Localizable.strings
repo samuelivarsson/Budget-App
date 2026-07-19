@@ -357,3 +357,7 @@
 "splitOwn" = "own";
 
 "ownItemsNote" = "Own purchases deducted first · the rest %@ split equally";
+
+// General settings
+"filledTransactionIcons" = "Filled transaction icons";
+"filledTransactionIconsDescription" = "Show the transaction type icon filling the whole tile instead of a letter with a small badge in the corner.";

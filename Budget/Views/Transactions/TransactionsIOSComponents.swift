@@ -76,9 +76,10 @@ struct IOSFilterBar: View {
 // MARK: - Transaction avatar
 
 struct TxAvatar: View {
+    @AppStorage("transactionIconFilled") private var filled: Bool = false
     let letter: String
     let type: TransactionType
-    private var badge: (symbol: String, colors: [Color]) {
+    private var visual: (symbol: String, colors: [Color]) {
         switch type {
         case .expense: return ("arrow.down", [Color(red: 1.0, green: 0.36, blue: 0.32), Color(red: 1.0, green: 0.54, blue: 0.36)])
         case .income:  return ("arrow.up", [Color(red: 0.18, green: 0.71, blue: 0.42), Color(red: 0.20, green: 0.78, blue: 0.35)])
@@ -86,17 +87,26 @@ struct TxAvatar: View {
         }
     }
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Color.primary.opacity(0.06))
+        if filled {
+            // Type icon fills the whole gradient tile.
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(LinearGradient(colors: visual.colors, startPoint: .topLeading, endPoint: .bottomTrailing))
                 .frame(width: 44, height: 44)
-                .overlay(Text(letter).font(.system(size: 19, weight: .bold)).foregroundColor(.secondary))
-            Image(systemName: badge.symbol)
-                .font(.system(size: 9, weight: .bold)).foregroundColor(.white)
-                .frame(width: 18, height: 18)
-                .background(LinearGradient(colors: badge.colors, startPoint: .topLeading, endPoint: .bottomTrailing))
-                .clipShape(Circle())
-                .overlay(Circle().strokeBorder(Color.iosBG, lineWidth: 2))
-                .offset(x: 4, y: 4)
+                .overlay(Image(systemName: visual.symbol).font(.system(size: 20, weight: .bold)).foregroundColor(.white))
+        } else {
+            // Letter with a small type badge in the corner.
+            ZStack(alignment: .bottomTrailing) {
+                RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Color.primary.opacity(0.06))
+                    .frame(width: 44, height: 44)
+                    .overlay(Text(letter).font(.system(size: 19, weight: .bold)).foregroundColor(.secondary))
+                Image(systemName: visual.symbol)
+                    .font(.system(size: 9, weight: .bold)).foregroundColor(.white)
+                    .frame(width: 18, height: 18)
+                    .background(LinearGradient(colors: visual.colors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .clipShape(Circle())
+                    .overlay(Circle().strokeBorder(Color.iosBG, lineWidth: 2))
+                    .offset(x: 4, y: 4)
+            }
         }
     }
 }

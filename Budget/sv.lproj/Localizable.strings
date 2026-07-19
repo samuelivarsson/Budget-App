@@ -357,3 +357,7 @@
 "splitOwn" = "eget";
 
 "ownItemsNote" = "Egna köp dras av först · resten %@ delas lika";
+
+// General settings
+"filledTransactionIcons" = "Fyllda transaktionsikoner";
+"filledTransactionIconsDescription" = "Visa transaktionstypens ikon fylld i hela rutan istället för en bokstav med en liten symbol i hörnet.";

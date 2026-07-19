@@ -9,7 +9,9 @@ import SwiftUI
 
 struct GeneralSettingsView: View {
     @EnvironmentObject private var userViewModel: UserViewModel
-    
+
+    @AppStorage("transactionIconFilled") private var transactionIconFilled: Bool = false
+
     var body: some View {
         Form {
             NavigationLink {
@@ -20,6 +22,14 @@ struct GeneralSettingsView: View {
                     Spacer()
                     Text("\(self.userViewModel.user.budget.monthStartsOn)")
                 }
+            }
+
+            Section {
+                Toggle(isOn: self.$transactionIconFilled) {
+                    Text("filledTransactionIcons")
+                }
+            } footer: {
+                Text("filledTransactionIconsDescription")
             }
         }
         .iosFormBackground()
