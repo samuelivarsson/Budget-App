@@ -98,8 +98,8 @@ struct HomeView: View {
     private var backgroundView: some View {
         ZStack {
             Color(.systemBackground)
-            RadialGradient(colors: [Color.accentColor.opacity(0.14), .clear], center: .topLeading, startRadius: 0, endRadius: 420)
-            RadialGradient(colors: [Color.green.opacity(0.10), .clear], center: .bottomTrailing, startRadius: 0, endRadius: 460)
+            RadialGradient(colors: [Color.accentColor.opacity(0.10), .clear], center: .topLeading, startRadius: 0, endRadius: 360)
+            RadialGradient(colors: [Color.green.opacity(0.09), .clear], center: .topTrailing, startRadius: 0, endRadius: 360)
         }
         .ignoresSafeArea()
     }
@@ -133,27 +133,27 @@ struct HomeView: View {
                 .font(.system(size: 12, weight: .semibold)).textCase(.uppercase).kerning(0.5)
                 .foregroundColor(.secondary)
 
-                HStack(alignment: .firstTextBaseline) {
+                FlowLayout(spacing: 10) {
                     HStack(alignment: .firstTextBaseline, spacing: 6) {
                         Text(money(kvar))
                             .font(.system(size: 29, weight: .bold)).monospacedDigit()
                             .foregroundColor(kvar < 0 ? .red : .primary)
+                            .fixedSize()
                         Text(kvar < 0 ? "overBudget" : "budgetLeftTag")
                             .font(.system(size: 12.5, weight: .semibold)).foregroundColor(.secondary)
+                            .fixedSize()
                     }
-                    Spacer()
                     heroChip
                 }
                 .padding(.top, 7)
 
                 VStack(spacing: 6) {
-                    GeometryReader { geo in
-                        ZStack(alignment: .leading) {
-                            Capsule().fill(Color.primary.opacity(0.12))
-                            Capsule().fill(heroState.tint).frame(width: geo.size.width * heroRatio)
-                        }
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color.primary.opacity(0.12))
+                        Rectangle().fill(heroState.tint).scaleEffect(x: heroRatio, y: 1, anchor: .leading)
                     }
                     .frame(height: 9)
+                    .clipShape(Capsule())
                     HStack {
                         Text("\("spent".localizeString()) \(money(spenderat))")
                         Spacer()
@@ -177,18 +177,17 @@ struct HomeView: View {
     }
 
     private var heroChip: some View {
-        Group {
-            if overCount > 0 {
-                Text(String(format: "categoriesOverCeiling".localizeString(), overCount))
-                    .foregroundColor(.red).background(chip(Color.red.opacity(0.14)))
-            } else {
-                Text("allWithinCeiling")
-                    .foregroundColor(.secondary).background(chip(Color.primary.opacity(0.10)))
-            }
-        }
-        .font(.system(size: 12, weight: .semibold))
+        let over = overCount > 0
+        let text = over ? String(format: "categoriesOverCeiling".localizeString(), overCount)
+                        : "allWithinCeiling".localizeString()
+        return Text(text)
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundColor(over ? .red : .secondary)
+            .padding(.horizontal, 10).padding(.vertical, 5)
+            .background(over ? Color.red.opacity(0.14) : Color.primary.opacity(0.10))
+            .clipShape(Capsule())
+            .fixedSize()
     }
-    private func chip(_ color: Color) -> some View { color.clipShape(Capsule()) }
 
     private func footStat(_ labelKey: String, _ value: String) -> some View {
         (Text(LocalizedStringKey(labelKey)).foregroundColor(.secondary)
@@ -201,7 +200,9 @@ struct HomeView: View {
     private var accountsCard: some View {
         GlassCard {
             VStack(spacing: 0) {
-                let accounts = userViewModel.getAccountsSorted()
+                let all = userViewModel.getAccountsSorted()
+                let mains = all.filter { $0.main && $0.type == .transaction }
+                let accounts = mains + all.filter { !($0.main && $0.type == .transaction) }
                 ForEach(Array(accounts.enumerated()), id: \.element.id) { idx, account in
                     if idx > 0 {
                         Divider().overlay(Color.primary.opacity(0.06)).padding(.leading, 64)
@@ -229,7 +230,7 @@ struct HomeView: View {
 
     private var expensesCard: some View {
         GlassCard {
-            VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 12) {
                     BudgetRing(progress: heroRatio, color: heroState.tint,
                                label: "\(tak <= 0 ? 0 : Int((spenderat / tak * 100).rounded()))%")

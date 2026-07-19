@@ -19,7 +19,7 @@ struct GlassCard<Content: View>: View {
                 RoundedRectangle(cornerRadius: 26, style: .continuous)
                     .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
             )
-            .shadow(color: .black.opacity(0.06), radius: 16, y: 8)
+            .shadow(color: .black.opacity(0.04), radius: 6, y: 3)
     }
 }
 
@@ -134,7 +134,7 @@ struct IOSBudgetRow: View {
                     Text(LocalizedStringKey(name)).font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary)
                     if state == .over {
                         Text("overCeiling")
-                            .font(.system(size: 10, weight: .bold)).kerning(0.4)
+                            .font(.system(size: 10, weight: .bold)).kerning(0.4).textCase(.uppercase)
                             .foregroundColor(.red)
                             .padding(.horizontal, 7).padding(.vertical, 2)
                             .background(Color.red.opacity(0.14)).clipShape(Capsule())
@@ -146,13 +146,12 @@ struct IOSBudgetRow: View {
                     .font(.system(size: 13)).monospacedDigit()
             }
             HStack(spacing: 10) {
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        Capsule().fill(Color.primary.opacity(0.12))
-                        Capsule().fill(state.tint).frame(width: geo.size.width * ratio)
-                    }
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.primary.opacity(0.12))
+                    Rectangle().fill(state.tint).scaleEffect(x: ratio, y: 1, anchor: .leading)
                 }
                 .frame(height: 6)
+                .clipShape(Capsule())
                 let remaining = ceiling - spent
                 Text(remaining >= 0 ? "\(money(remaining)) \("remainingShort".localizeString().lowercased())" : money(remaining))
                     .font(.system(size: 12.5, weight: .semibold)).monospacedDigit()
@@ -193,6 +192,16 @@ struct IOSQuickBalanceRow: View {
     private var diff: Double { quickBalance - balance }
     private var isZero: Bool { abs(round(quickBalance * 100) - round(balance * 100)) < 0.5 }
 
+    private var lastUpdateText: String {
+        if let date = Utility.stringToDate(string: lastUpdate, style: .short, timeStyle: .medium) {
+            let f = DateFormatter()
+            f.locale = Locale(identifier: Locale.preferredLanguages.first ?? "sv")
+            f.dateFormat = "d MMM HH:mm"
+            return f.string(from: date)
+        }
+        return lastUpdate
+    }
+
     var body: some View {
         Button {
             quickBalanceViewModel.fetchQuickBalanceFromApi(quickBalanceAccount: quickBalanceAccount) { error in
@@ -208,7 +217,7 @@ struct IOSQuickBalanceRow: View {
                     }
                     Text("\("snabbsaldo".localizeString()) \(Utility.doubleToLocalCurrency(value: quickBalance))")
                         .font(.system(size: 12)).foregroundColor(.secondary).monospacedDigit()
-                    Text("\("updatedAt".localizeString()) \(lastUpdate)")
+                    Text("\("updatedAt".localizeString()) \(lastUpdateText)")
                         .font(.system(size: 12)).foregroundColor(.secondary)
                 }
                 Spacer(minLength: 8)
@@ -288,8 +297,10 @@ struct IOSGroupLabel: View {
                 if let dotColor { Circle().fill(dotColor).frame(width: 7, height: 7) }
                 Text(LocalizedStringKey(title)).font(.system(size: 11, weight: .bold)).kerning(0.7)
                     .textCase(.uppercase).foregroundColor(.secondary)
+                Spacer(minLength: 0)
             }
             .padding(.top, topBorder ? 0 : 14).padding(.bottom, 2)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
