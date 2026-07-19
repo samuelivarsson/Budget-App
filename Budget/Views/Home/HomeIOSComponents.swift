@@ -14,7 +14,11 @@ struct GlassCard<Content: View>: View {
     @ViewBuilder var content: Content
     var body: some View {
         content
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
+            // Solid fill rather than .ultraThinMaterial: a backdrop-blur material
+            // re-composites on every scroll frame and was the source of the
+            // scroll lag on this screen. The solid secondary-system-background
+            // reads almost identically while scrolling smoothly.
+            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 26, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 26, style: .continuous)
                     .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
