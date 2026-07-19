@@ -140,11 +140,13 @@ struct IOSShareRow: View {
         }
     }
 
+    // Read-only amount (auto-computed splits, or when this participant's amount
+    // isn't editable for the chosen Fördelning). Plain text — no input pill — so
+    // it's clearly not tappable, unlike the editable pill/dashed fields.
     private var totalChip: some View {
         Text(Utility.doubleToLocalCurrency(value: participant.amount))
-            .font(.system(size: 14.5, weight: .bold)).monospacedDigit().foregroundColor(.primary)
-            .padding(.horizontal, 12).padding(.vertical, 5)
-            .background(Color.primary.opacity(0.06)).clipShape(Capsule())
+            .font(.system(size: 14.5, weight: .bold)).monospacedDigit().foregroundColor(.secondary)
+            .padding(.vertical, 5)
     }
 
     private var totalField: some View {
@@ -194,7 +196,11 @@ struct IOSShareRow: View {
         }
         .foregroundColor(.primary)
         .padding(.horizontal, 11).padding(.vertical, 5)
-        .overlay(Capsule().strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [4])).foregroundColor(Color.primary.opacity(0.28)))
+        .overlay(
+            Capsule().strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [4]))
+                .foregroundColor(Color.primary.opacity(0.28))
+                .allowsHitTesting(false)   // don't steal taps from the text field
+        )
     }
 
     private func commit(_ string: String, _ assign: @escaping (Double) -> Void) {

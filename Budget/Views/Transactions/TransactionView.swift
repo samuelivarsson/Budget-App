@@ -26,6 +26,7 @@ struct TransactionView: View {
     @State private var hasWritten: [String] = .init()
     @State private var applyLoading: Bool = false
     @State private var showFriendPicker: Bool = false
+    @State private var keyboardUp: Bool = false
     @FocusState var isInputActive: Bool
 
     private var oldTransaction: Transaction? = nil
@@ -88,7 +89,14 @@ struct TransactionView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
         .safeAreaInset(edge: .bottom) {
-            if action != .view { ctaBar }
+            // Hidden while typing so it doesn't collide with the keyboard toolbar.
+            if action != .view && !keyboardUp { ctaBar }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+            keyboardUp = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+            keyboardUp = false
         }
         .sheet(isPresented: $showFriendPicker) {
             IOSFriendSheet(participants: $transaction.participants)
