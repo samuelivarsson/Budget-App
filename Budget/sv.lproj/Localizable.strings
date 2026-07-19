@@ -309,3 +309,11 @@
 
 "edit" = "Ändra";
 "done" = "Klar";
+
+// Add transaction redesign
+"distribution" = "Fördelning";
+"searchFriendOrGroup" = "Sök vän eller grupp…";
+"showAllCount" = "Visa alla (%d)";
+"addAll" = "Lägg till alla";
+"removeAll" = "Ta bort alla";
+"noMatches" = "Inga träffar";

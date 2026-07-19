@@ -309,3 +309,11 @@
 
 "edit" = "Edit";
 "done" = "Done";
+
+// Add transaction redesign
+"distribution" = "Distribution";
+"searchFriendOrGroup" = "Search friend or group…";
+"showAllCount" = "Show all (%d)";
+"addAll" = "Add all";
+"removeAll" = "Remove all";
+"noMatches" = "No matches";
