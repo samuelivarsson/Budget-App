@@ -98,11 +98,11 @@ struct TransactionsView: View {
     private func money(_ v: Double) -> String { Utility.doubleToLocalCurrency(value: v) }
     private func moneyNoDec(_ v: Double) -> String {
         let f = NumberFormatter()
-        f.numberStyle = .decimal
-        f.maximumFractionDigits = 0
+        f.numberStyle = .currency
         f.locale = Locale.current
-        let n = f.string(from: v.rounded() as NSNumber) ?? "\(Int(v.rounded()))"
-        return "\(n) \(Utility.currencyFormatter.currencySymbol)"
+        f.maximumFractionDigits = 0
+        f.minimumFractionDigits = 0
+        return f.string(from: v.rounded() as NSNumber) ?? "\(Int(v.rounded()))"
     }
     private var mainAccountName: String { budget.getAccount(id: mainAccountId).name }
 

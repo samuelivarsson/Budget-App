@@ -350,3 +350,8 @@
 "showMoreCount" = "Visa %d till";
 "splitting" = "Delning";
 "selectedCount" = "%d vald";
+
+// Egna köp (own items split)
+"ownLabel" = "Eget";
+"splitShared" = "delat";
+"splitOwn" = "eget";

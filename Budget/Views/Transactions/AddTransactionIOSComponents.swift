@@ -80,15 +80,27 @@ struct IOSShareRow: View {
     var showsTopDivider: Bool = true
 
     @State private var amountString: String = ""
+    @State private var ownString: String = ""
     @State private var amountSelected: Bool = false
-    @FocusState private var isInputActive: Bool
+    @State private var ownSelected: Bool = false
+    @FocusState private var focus: Field?
+    private enum Field { case amount, own }
 
     private var isYou: Bool { participant.userId == userViewModel.user.id }
-    private var editable: Bool {
-        action != .view && splitOption != .meEverything && splitOption != .heSheEverything
+    private var isOwnItems: Bool { splitOption == .ownItems }
+    private var totalEditable: Bool {
+        action != .view && splitOption != .meEverything && splitOption != .heSheEverything && !isOwnItems
     }
     private var name: String {
         isYou ? "you".localizeString() : (participant.userName.split(separator: " ").first.map(String.init) ?? participant.userName)
+    }
+    private func fmt(_ v: Double) -> String { Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: v as NSNumber) ?? "0" }
+
+    private var ownAmount: Double { participant.ownAmount ?? 0 }
+    private var sharedAmount: Double { participant.amount - ownAmount }
+    private var subline: String {
+        let shared = "\(fmt(sharedAmount)) \("splitShared".localizeString())"
+        return ownAmount > 0 ? "\(shared) + \(fmt(ownAmount)) \("splitOwn".localizeString())" : shared
     }
 
     var body: some View {
@@ -96,50 +108,20 @@ struct IOSShareRow: View {
             if showsTopDivider { Divider().overlay(Color.iosBorder) }
             HStack(spacing: 10) {
                 IOSPersonAvatar(name: participant.userName, id: participant.userId, isYou: isYou, size: 30)
-                Text(name).font(.system(size: 14.5, weight: .semibold)).foregroundColor(.primary)
-                Spacer()
-                if editable {
-                    HStack(spacing: 3) {
-                        TextField("0", text: $amountString, onEditingChanged: { editing in
-                            amountSelected = editing
-                            if !editing {
-                                let expression = amountString
-                                    .components(separatedBy: .whitespaces).joined()
-                                    .replacingOccurrences(of: ",", with: ".")
-                                    .replacingOccurrences(of: "÷", with: "/")
-                                    .replacingOccurrences(of: "×", with: "*")
-                                if let doubleAmount = try? expression.evaluate() {
-                                    DispatchQueue.main.async {
-                                        participant.amount = Utility.doubleToTwoDecimals(value: doubleAmount)
-                                        if let errorString = Utility.setAmountPerParticipant(splitOption: splitOption, participants: $participants, totalAmount: totalAmount, hasWritten: hasWritten, myUserId: userViewModel.user.id) {
-                                            errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
-                                        }
-                                    }
-                                }
-                            }
-                        })
-                        .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
-                        .font(.system(size: 14.5, weight: .bold)).monospacedDigit().fixedSize()
-                        .focused($isInputActive)
-                        .toolbar {
-                            if amountSelected {
-                                ToolbarItemGroup(placement: .keyboard) {
-                                    CalculatorToolbarView(amountString: $amountString)
-                                    Spacer()
-                                    Button("done".localizeString()) { isInputActive = false }
-                                }
-                            }
-                        }
-                        Text(Utility.currencyFormatter.currencySymbol).font(.system(size: 14.5, weight: .bold)).foregroundColor(.secondary)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(name).font(.system(size: 14.5, weight: .semibold)).foregroundColor(.primary)
+                    if isOwnItems {
+                        Text(subline).font(.system(size: 11)).foregroundColor(.secondary).monospacedDigit()
                     }
-                    .foregroundColor(.primary)
-                    .padding(.horizontal, 12).padding(.vertical, 5)
-                    .background(Color.primary.opacity(0.06)).clipShape(Capsule())
+                }
+                Spacer(minLength: 6)
+                if isOwnItems {
+                    if action != .view { ownField }
+                    totalChip
+                } else if totalEditable {
+                    totalField
                 } else {
-                    Text(Utility.doubleToLocalCurrency(value: participant.amount))
-                        .font(.system(size: 14.5, weight: .bold)).monospacedDigit().foregroundColor(.primary)
-                        .padding(.horizontal, 12).padding(.vertical, 5)
-                        .background(Color.primary.opacity(0.06)).clipShape(Capsule())
+                    totalChip
                 }
             }
             .padding(.vertical, 11)
@@ -150,12 +132,84 @@ struct IOSShareRow: View {
             }
         }
         .onChange(of: participant.amount) { newValue in
-            DispatchQueue.main.async {
-                amountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: newValue as NSNumber) ?? "0"
-            }
+            DispatchQueue.main.async { amountString = fmt(newValue) }
         }
         .onAppear {
-            amountString = Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: participant.amount as NSNumber) ?? "0"
+            amountString = fmt(participant.amount)
+            ownString = fmt(ownAmount)
+        }
+    }
+
+    private var totalChip: some View {
+        Text(Utility.doubleToLocalCurrency(value: participant.amount))
+            .font(.system(size: 14.5, weight: .bold)).monospacedDigit().foregroundColor(.primary)
+            .padding(.horizontal, 12).padding(.vertical, 5)
+            .background(Color.primary.opacity(0.06)).clipShape(Capsule())
+    }
+
+    private var totalField: some View {
+        HStack(spacing: 3) {
+            TextField("0", text: $amountString, onEditingChanged: { editing in
+                amountSelected = editing
+                if !editing { commit(amountString) { participant.amount = $0 } }
+            })
+            .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
+            .font(.system(size: 14.5, weight: .bold)).monospacedDigit().fixedSize()
+            .focused($focus, equals: .amount)
+            .toolbar {
+                if amountSelected {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        CalculatorToolbarView(amountString: $amountString)
+                        Spacer()
+                        Button("done".localizeString()) { focus = nil }
+                    }
+                }
+            }
+            Text(Utility.currencyFormatter.currencySymbol).font(.system(size: 14.5, weight: .bold)).foregroundColor(.secondary)
+        }
+        .foregroundColor(.primary)
+        .padding(.horizontal, 12).padding(.vertical, 5)
+        .background(Color.primary.opacity(0.06)).clipShape(Capsule())
+    }
+
+    private var ownField: some View {
+        HStack(spacing: 4) {
+            Text("ownLabel").font(.system(size: 12.5, weight: .semibold)).foregroundColor(.secondary)
+            TextField("0", text: $ownString, onEditingChanged: { editing in
+                ownSelected = editing
+                if !editing { commit(ownString) { participant.ownAmount = $0 } }
+            })
+            .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
+            .font(.system(size: 12.5, weight: .semibold)).monospacedDigit().fixedSize()
+            .focused($focus, equals: .own)
+            .toolbar {
+                if ownSelected {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        CalculatorToolbarView(amountString: $ownString)
+                        Spacer()
+                        Button("done".localizeString()) { focus = nil }
+                    }
+                }
+            }
+        }
+        .foregroundColor(.primary)
+        .padding(.horizontal, 11).padding(.vertical, 5)
+        .overlay(Capsule().strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [4])).foregroundColor(Color.primary.opacity(0.28)))
+    }
+
+    private func commit(_ string: String, _ assign: @escaping (Double) -> Void) {
+        let expression = string
+            .components(separatedBy: .whitespaces).joined()
+            .replacingOccurrences(of: ",", with: ".")
+            .replacingOccurrences(of: "÷", with: "/")
+            .replacingOccurrences(of: "×", with: "*")
+        if let value = try? expression.evaluate() {
+            DispatchQueue.main.async {
+                assign(Utility.doubleToTwoDecimals(value: value))
+                if let errorString = Utility.setAmountPerParticipant(splitOption: splitOption, participants: $participants, totalAmount: totalAmount, hasWritten: hasWritten, myUserId: userViewModel.user.id) {
+                    errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
+                }
+            }
         }
     }
 }

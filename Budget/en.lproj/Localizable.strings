@@ -350,3 +350,8 @@
 "showMoreCount" = "Show %d more";
 "splitting" = "Splitting";
 "selectedCount" = "%d selected";
+
+// Own items split
+"ownLabel" = "Own";
+"splitShared" = "shared";
+"splitOwn" = "own";

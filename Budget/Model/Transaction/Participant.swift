@@ -16,6 +16,9 @@ struct Participant: Identifiable, Codable {
     /// entries and for participants who haven't overridden the creator's choice;
     /// in that case the creator's category (resolved by name) is used as default.
     var category: TransactionCategory? = nil
+    /// Amount this participant bought only for themselves (the "Egna köp" split).
+    /// Deducted from the total before the rest is split equally. `nil` = 0 (older entries).
+    var ownAmount: Double? = nil
 }
 
 extension Participant: Equatable {
