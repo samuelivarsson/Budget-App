@@ -68,9 +68,8 @@ struct TransactionsView: View {
     private func spentIn(_ cats: [TransactionCategory]) -> Double {
         cats.reduce(0) { $0 + transactionsViewModel.getSpent(user: user, transactionCategory: $1) }
     }
-    private var spentThisMonth: Double { spentIn(expenseCategories) }
-    private var savingsPart: Double { spentIn(sepCats) }
-    private var mainSpent: Double { spentIn(mainCats) }
+    private var savingsPart: Double { spentIn(sepCats) }       // categories drawing from separate accounts
+    private var mainSpent: Double { spentIn(mainCats) }         // main-account categories only
     private var mainTak: Double { mainCats.reduce(0) { $0 + $1.getRealAmount(budget: budget) } }
 
     private var daysElapsed: Int {
@@ -78,16 +77,23 @@ struct TransactionsView: View {
         let end = min(Date(), to)
         return max(1, Calendar.current.dateComponents([.day], from: from, to: end).day ?? 1)
     }
-    private var prevSpent: Double {
+    /// Previous period's spend up to the same number of days into the cycle,
+    /// split into main-account vs separate-account categories.
+    private var prevSplit: (main: Double, separate: Double) {
         let from1 = period(1).0
         let prevEnd = Calendar.current.date(byAdding: .day, value: daysElapsed, to: from1) ?? from1
-        return transactionsViewModel.getTransactions(from: from1, to: prevEnd)
-            .filter { $0.type == .expense }
-            .reduce(0) { $0 + $1.getShare(userId: user.id) }
+        var main = 0.0, separate = 0.0
+        for tx in transactionsViewModel.getTransactions(from: from1, to: prevEnd) where tx.type == .expense {
+            let cat = tx.categoryForUser(userId: user.id, budget: budget)
+            let share = tx.getShare(userId: user.id)
+            if mainCats.contains(where: { $0.id == cat.id }) { main += share }
+            else if sepCats.contains(where: { $0.id == cat.id }) { separate += share }
+        }
+        return (main, separate)
     }
-    private var deltaPct: Int? {
-        guard prevSpent > 0 else { return nil }
-        return Int(((spentThisMonth - prevSpent) / prevSpent * 100).rounded())
+    private func deltaPct(_ current: Double, _ previous: Double) -> Int? {
+        guard previous > 0 else { return nil }
+        return Int(((current - previous) / previous * 100).rounded())
     }
     private var avgPerDay: Double { mainSpent / Double(daysElapsed) }
     private var forecast: Double { avgPerDay * 30 }
@@ -104,6 +110,11 @@ struct TransactionsView: View {
         return f.string(from: v.rounded() as NSNumber) ?? "\(Int(v.rounded()))"
     }
     private var mainAccountName: String { budget.getAccount(id: mainAccountId).name }
+
+    private func savingsDeltaText(_ delta: Int?) -> Text {
+        guard let delta = delta else { return Text("") }
+        return Text("  \(delta <= 0 ? "−" : "+")\(abs(delta)) %").foregroundColor(delta <= 0 ? .green : .red).fontWeight(.bold)
+    }
 
     // MARK: Body
 
@@ -173,17 +184,19 @@ struct TransactionsView: View {
 
     private var summaryRow: some View {
         HStack(alignment: .top, spacing: 10) {
+            let prev = prevSplit
             VStack(alignment: .leading, spacing: 3) {
                 Text(String(format: "spentInMonth".localizeString(), monthName(0)))
                     .font(.system(size: 11, weight: .semibold)).foregroundColor(.secondary)
-                Text(money(spentThisMonth)).font(.system(size: 17.5, weight: .bold)).monospacedDigit()
-                if let delta = deltaPct {
+                Text(money(mainSpent)).font(.system(size: 17.5, weight: .bold)).monospacedDigit()
+                if let delta = deltaPct(mainSpent, prev.main) {
                     (Text(delta <= 0 ? "−\(abs(delta)) %" : "+\(delta) %").foregroundColor(delta <= 0 ? .green : .red).fontWeight(.bold)
                      + Text(" " + String(format: "vsLastMonthSameDay".localizeString(), monthName(1))).foregroundColor(.secondary))
                         .font(.system(size: 10.5, weight: .medium))
                 }
                 (Text("savings".localizeString() + " ").foregroundColor(.secondary)
-                 + Text(money(savingsPart)).foregroundColor(.primary).fontWeight(.bold))
+                 + Text(money(savingsPart)).foregroundColor(.primary).fontWeight(.bold)
+                 + savingsDeltaText(deltaPct(savingsPart, prev.separate)))
                     .font(.system(size: 10.5)).monospacedDigit()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
