@@ -68,6 +68,7 @@ struct EditFriendGroupView: View {
                 Spacer()
             }
         }
+        .iosFormBackground()
         .navigationTitle("editFriendGroup")
         .navigationBarTitleDisplayMode(.inline)
     }

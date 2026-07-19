@@ -67,6 +67,7 @@ struct OverheadsView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("overheads")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

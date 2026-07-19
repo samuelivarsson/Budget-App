@@ -47,6 +47,7 @@ struct FriendsView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("friends")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

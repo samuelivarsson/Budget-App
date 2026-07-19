@@ -22,6 +22,7 @@ struct GeneralSettingsView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("general")
         .navigationBarTitleDisplayMode(.inline)
     }

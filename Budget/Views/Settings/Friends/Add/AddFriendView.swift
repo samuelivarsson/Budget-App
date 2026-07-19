@@ -41,6 +41,7 @@ struct AddFriendView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
             }
         }
+        .iosFormBackground()
         .navigationTitle("addFriend")
         .navigationBarTitleDisplayMode(.inline)
     }

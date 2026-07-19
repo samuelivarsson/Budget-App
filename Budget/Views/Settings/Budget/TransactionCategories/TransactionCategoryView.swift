@@ -138,6 +138,7 @@ struct TransactionCategoryView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("transactionCategory")
         .navigationBarTitleDisplayMode(.inline)
         .onLoad {

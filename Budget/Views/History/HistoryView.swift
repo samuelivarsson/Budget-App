@@ -56,6 +56,7 @@ struct HistoryView: View {
                     }
                 }
             }
+            .iosFormBackground()
             .navigationTitle("history")
             .navigationBarItems(trailing:
                 Button {

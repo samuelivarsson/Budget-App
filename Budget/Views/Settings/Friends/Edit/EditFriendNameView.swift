@@ -42,6 +42,7 @@ struct EditFriendNameView: View {
                 Spacer()
             }
         }
+        .iosFormBackground()
         .navigationTitle("editFriendName")
         .navigationBarTitleDisplayMode(.inline)
     }

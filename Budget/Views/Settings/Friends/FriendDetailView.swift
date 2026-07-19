@@ -95,6 +95,7 @@ struct FriendDetailView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("editFriend")
         .navigationBarTitleDisplayMode(.inline)
         .onLoad {

@@ -35,6 +35,7 @@ struct SeeAllFriendsView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("chooseFriends")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

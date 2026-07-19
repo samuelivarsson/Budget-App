@@ -122,6 +122,7 @@ struct QuickBalanceAccountView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("quickBalanceAccount")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

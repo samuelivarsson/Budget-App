@@ -26,6 +26,7 @@ struct QuickBalanceView: View {
                 Text("accounts")
             }
         }
+        .iosFormBackground()
         .navigationTitle("quickBalance")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

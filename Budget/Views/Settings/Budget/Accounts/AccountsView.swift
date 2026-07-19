@@ -37,6 +37,7 @@ struct AccountsView: View {
                 }
             }
         }
+        .iosFormBackground()
         .navigationTitle("budgetAccounts")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

@@ -23,6 +23,15 @@ extension Color {
         : UIColor(white: 0, alpha: 0.06) })
 }
 
+extension View {
+    /// Replaces a Form/List's default grouped background with the app background
+    /// so un-redesigned screens match the iOS-26 redesign.
+    func iosFormBackground() -> some View {
+        self.scrollContentBackground(.hidden)
+            .background(Color.iosBG.ignoresSafeArea())
+    }
+}
+
 // MARK: - Glass card
 
 struct GlassCard<Content: View>: View {

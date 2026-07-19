@@ -54,6 +54,7 @@ struct StandingsView: View {
                     }
                 }
             }
+            .iosFormBackground()
             .navigationTitle("standings")
         }
         .alert("sendReminder?", isPresented: self.$showSendReminderAlert) {
