@@ -47,10 +47,12 @@ struct TransactionsView: View {
         transactions(level).filter { filter.matches($0.type) }
     }
     private func monthName(_ level: Int) -> String {
+        // The month we're currently in for level 0, one month back per level.
+        let date = Calendar.current.date(byAdding: .month, value: -level, to: Date()) ?? Date()
         let f = DateFormatter()
         f.locale = Locale(identifier: Locale.preferredLanguages.first ?? "sv")
         f.dateFormat = "LLLL"
-        return f.string(from: period(level).0.addingTimeInterval(60 * 60 * 24 * 3)).capitalized
+        return f.string(from: date).capitalized
     }
     private func dayLabel(_ date: Date) -> String {
         let f = DateFormatter()
@@ -94,6 +96,14 @@ struct TransactionsView: View {
     private var forecastRatio: Double { forecastState == .over ? 1 : (mainTak <= 0 ? 0 : min(forecast / mainTak, 1)) }
 
     private func money(_ v: Double) -> String { Utility.doubleToLocalCurrency(value: v) }
+    private func moneyNoDec(_ v: Double) -> String {
+        let f = NumberFormatter()
+        f.numberStyle = .decimal
+        f.maximumFractionDigits = 0
+        f.locale = Locale.current
+        let n = f.string(from: v.rounded() as NSNumber) ?? "\(Int(v.rounded()))"
+        return "\(n) \(Utility.currencyFormatter.currencySymbol)"
+    }
     private var mainAccountName: String { budget.getAccount(id: mainAccountId).name }
 
     // MARK: Body
@@ -131,7 +141,7 @@ struct TransactionsView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 120)
             }
-            .background(Color(.systemBackground).ignoresSafeArea())
+            .background(Color.iosBG.ignoresSafeArea())
             .navigationBarHidden(true)
             .onLoad {
                 if let url = tabRouter.appStartFromUrl {
@@ -164,7 +174,7 @@ struct TransactionsView: View {
                 } label: {
                     Image(systemName: "plus").font(.system(size: 18, weight: .semibold)).foregroundColor(.primary)
                         .frame(width: 42, height: 42)
-                        .background(Color(.secondarySystemBackground), in: Circle())
+                        .background(Color.iosCardFill, in: Circle())
                         .overlay(Circle().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
                 }
                 .disabled(user.id.isEmpty)
@@ -172,7 +182,7 @@ struct TransactionsView: View {
                     Text(editing ? "done" : "edit")
                         .font(.system(size: 15, weight: .semibold)).foregroundColor(.accentColor)
                         .frame(height: 42).padding(.horizontal, 16)
-                        .background(Color(.secondarySystemBackground), in: Capsule())
+                        .background(Color.iosCardFill, in: Capsule())
                         .overlay(Capsule().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
                 }
                 .buttonStyle(.plain)
@@ -185,7 +195,7 @@ struct TransactionsView: View {
     // MARK: Summary
 
     private var summaryRow: some View {
-        HStack(spacing: 10) {
+        HStack(alignment: .top, spacing: 10) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(String(format: "spentInMonth".localizeString(), monthName(0)))
                     .font(.system(size: 11, weight: .semibold)).foregroundColor(.secondary)
@@ -195,30 +205,33 @@ struct TransactionsView: View {
                      + Text(" " + String(format: "vsLastMonthSameDay".localizeString(), monthName(1))).foregroundColor(.secondary))
                         .font(.system(size: 10.5, weight: .medium))
                 }
+                Spacer(minLength: 0)
                 (Text("savings".localizeString() + " ").foregroundColor(.secondary)
                  + Text(money(savingsPart)).foregroundColor(.primary).fontWeight(.bold))
                     .font(.system(size: 10.5)).monospacedDigit()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, minHeight: 96, alignment: .topLeading)
             .padding(13).iosCard(22)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(String(format: "avgPerDay".localizeString(), mainAccountName))
                     .font(.system(size: 11, weight: .semibold)).foregroundColor(.secondary).lineLimit(1)
                 Text(money(avgPerDay)).font(.system(size: 17.5, weight: .bold)).monospacedDigit()
+                Spacer(minLength: 0)
                 ZStack(alignment: .leading) {
                     Capsule().fill(Color.primary.opacity(0.12))
                     Rectangle().fill(forecastState.tint).scaleEffect(x: forecastRatio, y: 1, anchor: .leading)
                 }
-                .frame(height: 5).clipShape(Capsule()).padding(.vertical, 5)
+                .frame(height: 5).clipShape(Capsule()).padding(.bottom, 6)
                 (Text("forecast".localizeString() + " ~").foregroundColor(.secondary)
-                 + Text(money(forecast)).foregroundColor(.primary).fontWeight(.bold)
-                 + Text(" / \(money(mainTak))").foregroundColor(.secondary))
+                 + Text(moneyNoDec(forecast)).foregroundColor(.primary).fontWeight(.bold)
+                 + Text(" / \(moneyNoDec(mainTak))").foregroundColor(.secondary))
                     .font(.system(size: 10.5)).monospacedDigit()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, minHeight: 96, alignment: .topLeading)
             .padding(13).iosCard(22)
         }
+        .fixedSize(horizontal: false, vertical: true)
         .padding(.top, 14)
     }
 
@@ -265,7 +278,7 @@ struct TransactionsView: View {
             Text("loadMore")
                 .font(.system(size: 15, weight: .semibold)).foregroundColor(.accentColor)
                 .frame(maxWidth: .infinity).frame(height: 44)
-                .background(Color(.secondarySystemBackground), in: Capsule())
+                .background(Color.iosCardFill, in: Capsule())
                 .overlay(Capsule().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
         }
         .buttonStyle(.plain)

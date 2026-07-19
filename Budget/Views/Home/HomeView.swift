@@ -96,7 +96,7 @@ struct HomeView: View {
     }
 
     private var backgroundView: some View {
-        Color(.systemBackground).ignoresSafeArea()
+        Color.iosBG.ignoresSafeArea()
     }
 
     private var navRow: some View {
@@ -107,7 +107,7 @@ struct HomeView: View {
                 Image(systemName: "bell")
                     .font(.system(size: 18, weight: .medium)).foregroundColor(.primary)
                     .frame(width: 42, height: 42)
-                    .background(Color(.secondarySystemBackground), in: Circle())
+                    .background(Color.iosCardFill, in: Circle())
                     .overlay(Circle().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
                     .myBadge(count: notificationsViewModel.getNumberOfUnreadNotifications())
             }

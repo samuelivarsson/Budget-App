@@ -8,6 +8,21 @@
 
 import SwiftUI
 
+// MARK: - iOS surface tokens
+// Darker, closer to the mockup than the system grays. Translucent card fills are
+// cheap (alpha compositing, no blur) so they don't affect scroll performance.
+extension Color {
+    static let iosBG = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark
+        ? UIColor(white: 0.02, alpha: 1)                                   // ~#050507
+        : UIColor(red: 0.957, green: 0.957, blue: 0.972, alpha: 1) })      // ~#f4f4f8
+    static let iosCardFill = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark
+        ? UIColor(white: 1, alpha: 0.055)
+        : UIColor.white })
+    static let iosBorder = Color(uiColor: UIColor { $0.userInterfaceStyle == .dark
+        ? UIColor(white: 1, alpha: 0.09)
+        : UIColor(white: 0, alpha: 0.06) })
+}
+
 // MARK: - Glass card
 
 struct GlassCard<Content: View>: View {
@@ -18,7 +33,7 @@ struct GlassCard<Content: View>: View {
             // re-composites on every scroll frame and was the source of the
             // scroll lag on this screen. The solid secondary-system-background
             // reads almost identically while scrolling smoothly.
-            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 26, style: .continuous))
+            .background(Color.iosCardFill, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 26, style: .continuous)
                     .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)

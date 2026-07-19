@@ -12,7 +12,7 @@ extension View {
     /// Solid rounded "card" surface (no material, no shadow) for smooth scrolling.
     func iosCard(_ radius: CGFloat = 22) -> some View {
         self
-            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .background(Color.iosCardFill, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous).strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
     }
 }
@@ -24,9 +24,9 @@ enum TxFilter: CaseIterable {
     var title: String {
         switch self {
         case .all: return "all"
-        case .expense: return "expenses"
-        case .income: return "topUps"
-        case .transfer: return "transfers"
+        case .expense: return "expense"   // TransactionType names
+        case .income: return "income"
+        case .transfer: return "saving"
         }
     }
     var dot: Color? {
@@ -59,9 +59,9 @@ struct IOSFilterBar: View {
                             if let dot = f.dot { Circle().fill(dot).frame(width: 7, height: 7) }
                             Text(LocalizedStringKey(f.title)).font(.system(size: 13, weight: .semibold))
                         }
-                        .foregroundColor(active ? Color(.systemBackground) : .secondary)
+                        .foregroundColor(active ? Color.iosBG : .secondary)
                         .padding(.horizontal, 14).padding(.vertical, 8)
-                        .background(active ? Color.primary : Color(.secondarySystemBackground))
+                        .background(active ? Color.primary : Color.iosCardFill)
                         .overlay(Capsule().strokeBorder(Color.primary.opacity(active ? 0 : 0.06), lineWidth: 1))
                         .clipShape(Capsule())
                     }
@@ -95,7 +95,7 @@ struct TxAvatar: View {
                 .frame(width: 18, height: 18)
                 .background(LinearGradient(colors: badge.colors, startPoint: .topLeading, endPoint: .bottomTrailing))
                 .clipShape(Circle())
-                .overlay(Circle().strokeBorder(Color(.systemBackground), lineWidth: 2))
+                .overlay(Circle().strokeBorder(Color.iosBG, lineWidth: 2))
                 .offset(x: 4, y: 4)
         }
     }
