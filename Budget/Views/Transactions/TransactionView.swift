@@ -73,7 +73,7 @@ struct TransactionView: View {
         ScrollView {
             VStack(spacing: 0) {
                 if action != .view {
-                    IOSTypeSegment(selection: $transaction.type).padding(.bottom, 4)
+                    IOSTypeSegment(selection: $transaction.type).padding(.bottom, 16)
                 }
                 amountCard
                 sectionLabel("details"); detailsCard
@@ -174,10 +174,20 @@ struct TransactionView: View {
                 Text(Utility.currencyFormatter.currencySymbol)
                     .font(.system(size: 24, weight: .semibold)).foregroundColor(.secondary)
             }
-            DatePicker("", selection: $transaction.date, displayedComponents: [.date, .hourAndMinute])
-                .labelsHidden().disabled(action == .view)
-                .padding(.top, 6)
-                .onLoad { if action == .add { transaction.date = Date() } }
+            HStack(spacing: 10) {
+                HStack(spacing: 6) {
+                    Image(systemName: "calendar").font(.system(size: 13)).foregroundColor(.secondary)
+                    DatePicker("", selection: $transaction.date, displayedComponents: .date)
+                        .labelsHidden().disabled(action == .view)
+                }
+                HStack(spacing: 6) {
+                    Image(systemName: "clock").font(.system(size: 13)).foregroundColor(.secondary)
+                    DatePicker("", selection: $transaction.date, displayedComponents: .hourAndMinute)
+                        .labelsHidden().disabled(action == .view)
+                }
+            }
+            .padding(.top, 8)
+            .onLoad { if action == .add { transaction.date = Date() } }
         }
         .frame(maxWidth: .infinity)
         .padding(20)
@@ -328,14 +338,15 @@ struct TransactionView: View {
                             .onTapGesture { if action != .view { transaction.payerId = participant.userId } }
                         }
                     }
-                    .padding(.vertical, 12)
+                    .padding(.vertical, 12).padding(.horizontal, 6)
                 }
             }
 
             Divider().overlay(Color.iosBorder)
 
-            VStack(alignment: .leading, spacing: 0) {
-                Text("distribution").font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary).padding(.top, 13)
+            HStack(spacing: 8) {
+                Text("distribution").font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary)
+                Spacer(minLength: 8)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         ForEach(SplitOption.allCases, id: \.self) { option in
@@ -344,7 +355,7 @@ struct TransactionView: View {
                                 Button { if action != .view { transaction.splitOption = option } } label: {
                                     Text(option.description()).font(.system(size: 13, weight: .semibold))
                                         .foregroundColor(active ? Color.iosBG : .secondary)
-                                        .padding(.horizontal, 13).padding(.vertical, 8)
+                                        .padding(.horizontal, 13).padding(.vertical, 7)
                                         .background(active ? Color.primary : Color.primary.opacity(0.08))
                                         .clipShape(Capsule())
                                 }
@@ -352,8 +363,16 @@ struct TransactionView: View {
                             }
                         }
                     }
-                    .padding(.vertical, 12)
                 }
+            }
+            .padding(.vertical, 11)
+
+            if transaction.splitOption == .ownItems {
+                let rest = transaction.totalAmount - transaction.participants.reduce(0) { $0 + ($1.ownAmount ?? 0) }
+                Text(String(format: "ownItemsNote".localizeString(), money(rest)))
+                    .font(.system(size: 12)).foregroundColor(.secondary).monospacedDigit()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.bottom, 8)
             }
 
             Divider().overlay(Color.iosBorder)

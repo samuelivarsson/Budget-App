@@ -16,7 +16,6 @@ struct TransactionsView: View {
 
     @State private var level: Int = 2
     @State private var openPeriods: Set<Int> = [0]
-    @State private var editing: Bool = false
     @State private var filter: TxFilter = .all
     @State private var transactionFromUrl: Transaction?
     @State private var urlSchemeNavigation = false
@@ -108,41 +107,59 @@ struct TransactionsView: View {
 
     // MARK: Body
 
+    private func clearRow<V: View>(_ insets: EdgeInsets, @ViewBuilder _ content: () -> V) -> some View {
+        content()
+            .listRowInsets(insets).listRowSeparator(.hidden).listRowBackground(Color.clear)
+    }
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 0) {
-                    navRow
-                    summaryRow
-                    IOSFilterBar(selection: $filter).padding(.top, 12)
+            List {
+                clearRow(EdgeInsets(top: 6, leading: 20, bottom: 0, trailing: 20)) { summaryRow }
+                clearRow(EdgeInsets(top: 12, leading: 20, bottom: 0, trailing: 20)) { IOSFilterBar(selection: $filter) }
 
-                    let curr = filtered(0)
+                let curr = filtered(0)
+                clearRow(EdgeInsets(top: 4, leading: 20, bottom: 0, trailing: 20)) {
                     IOSPeriodHead(range: rangeText(0), count: curr.count, isOpen: openPeriods.contains(0)) { toggle(0) }
-                    if openPeriods.contains(0) {
-                        if curr.isEmpty {
-                            Text("noTransactionsThisPeriod").font(.footnote).foregroundColor(.secondary)
-                                .padding(.horizontal, 6).padding(.vertical, 8)
-                        } else {
-                            dayGroups(curr)
-                        }
-                    }
-
-                    ForEach(1 ..< level, id: \.self) { lvl in
-                        if openPeriods.contains(lvl) {
-                            IOSPeriodHead(range: rangeText(lvl), count: filtered(lvl).count, isOpen: true) { toggle(lvl) }
-                            dayGroups(filtered(lvl))
-                        } else {
-                            IOSCollapsedPeriod(range: rangeText(lvl)) { toggle(lvl) }.padding(.top, 16)
-                        }
-                    }
-
-                    loadMoreButton
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 120)
+                if openPeriods.contains(0) {
+                    if curr.isEmpty {
+                        clearRow(EdgeInsets(top: 4, leading: 26, bottom: 4, trailing: 20)) {
+                            Text("noTransactionsThisPeriod").font(.footnote).foregroundColor(.secondary)
+                        }
+                    } else {
+                        dayGroups(curr)
+                    }
+                }
+
+                ForEach(1 ..< level, id: \.self) { lvl in
+                    if openPeriods.contains(lvl) {
+                        clearRow(EdgeInsets(top: 4, leading: 20, bottom: 0, trailing: 20)) {
+                            IOSPeriodHead(range: rangeText(lvl), count: filtered(lvl).count, isOpen: true) { toggle(lvl) }
+                        }
+                        dayGroups(filtered(lvl))
+                    } else {
+                        clearRow(EdgeInsets(top: 16, leading: 20, bottom: 0, trailing: 20)) {
+                            IOSCollapsedPeriod(range: rangeText(lvl)) { toggle(lvl) }
+                        }
+                    }
+                }
+
+                clearRow(EdgeInsets(top: 16, leading: 20, bottom: 40, trailing: 20)) { loadMoreButton }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
             .background(Color.iosBG.ignoresSafeArea())
-            .navigationBarHidden(true)
+            .navigationTitle("transactions")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) { EditButton().disabled(user.id.isEmpty) }
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        TransactionView(action: .add, firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
+                    } label: { Image(systemName: "plus") }
+                    .disabled(user.id.isEmpty)
+                }
+            }
             .onLoad {
                 if let url = tabRouter.appStartFromUrl {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -159,37 +176,6 @@ struct TransactionsView: View {
                 }
             }
         }
-    }
-
-    // MARK: Nav row
-
-    private var navRow: some View {
-        HStack {
-            Text("transactions").font(.system(size: 34, weight: .bold)).foregroundColor(.primary)
-                .lineLimit(1).minimumScaleFactor(0.6)
-            Spacer(minLength: 8)
-            HStack(spacing: 8) {
-                NavigationLink {
-                    TransactionView(action: .add, firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
-                } label: {
-                    Image(systemName: "plus").font(.system(size: 18, weight: .semibold)).foregroundColor(.primary)
-                        .frame(width: 42, height: 42)
-                        .background(Color.iosCardFill, in: Circle())
-                        .overlay(Circle().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
-                }
-                .disabled(user.id.isEmpty)
-                Button { withAnimation { editing.toggle() } } label: {
-                    Text(editing ? "done" : "edit")
-                        .font(.system(size: 15, weight: .semibold)).foregroundColor(.accentColor)
-                        .frame(height: 42).padding(.horizontal, 16)
-                        .background(Color.iosCardFill, in: Capsule())
-                        .overlay(Capsule().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
-                }
-                .buttonStyle(.plain)
-                .disabled(user.id.isEmpty)
-            }
-        }
-        .padding(.top, 4)
     }
 
     // MARK: Summary
@@ -240,32 +226,30 @@ struct TransactionsView: View {
     @ViewBuilder
     private func dayGroups(_ txs: [Transaction]) -> some View {
         ForEach(groupTransactionsByDay(txs), id: \.day) { group in
-            Text(dayLabel(group.day)).textCase(.uppercase)
-                .font(.system(size: 11, weight: .bold)).kerning(0.7).foregroundColor(.secondary)
-                .padding(.horizontal, 6).padding(.top, 14).padding(.bottom, 8)
-            VStack(spacing: 9) {
-                ForEach(group.items, id: \.id) { transaction in
-                    txRow(transaction)
-                }
+            clearRow(EdgeInsets(top: 14, leading: 26, bottom: 8, trailing: 20)) {
+                Text(dayLabel(group.day)).textCase(.uppercase)
+                    .font(.system(size: 11, weight: .bold)).kerning(0.7).foregroundColor(.secondary)
             }
+            ForEach(group.items, id: \.id) { transaction in
+                txRow(transaction)
+                    .listRowInsets(EdgeInsets(top: 4.5, leading: 20, bottom: 4.5, trailing: 20))
+                    .listRowSeparator(.hidden).listRowBackground(Color.clear)
+            }
+            .onDelete { offsets in deleteTransactions(offsets, in: group.items) }
         }
     }
 
-    @ViewBuilder
+    // NavigationLink lives in the background so the List row shows no disclosure
+    // chevron; swipe-to-delete still comes from `.onDelete` on the ForEach.
     private func txRow(_ transaction: Transaction) -> some View {
-        if editing {
-            IOSTxCard(transaction: transaction, userId: user.id, editing: true) {
-                deleteTransaction(transaction)
-            }
-        } else {
-            NavigationLink {
-                TransactionView(transaction: transaction, user: user,
-                                action: Utility.getTransactionAction(transaction: transaction, userId: user.id, role: user.role))
-            } label: {
-                IOSTxCard(transaction: transaction, userId: user.id)
-            }
-            .buttonStyle(.plain)
-        }
+        IOSTxCard(transaction: transaction, userId: user.id)
+            .background(
+                NavigationLink {
+                    TransactionView(transaction: transaction, user: user,
+                                    action: Utility.getTransactionAction(transaction: transaction, userId: user.id, role: user.role))
+                } label: { EmptyView() }
+                .opacity(0)
+            )
     }
 
     private var loadMoreButton: some View {
@@ -282,13 +266,16 @@ struct TransactionsView: View {
                 .overlay(Capsule().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
         }
         .buttonStyle(.plain)
-        .padding(.top, 16)
     }
 
     // MARK: Actions
 
     private func toggle(_ lvl: Int) {
         withAnimation { if openPeriods.contains(lvl) { openPeriods.remove(lvl) } else { openPeriods.insert(lvl) } }
+    }
+
+    private func deleteTransactions(_ offsets: IndexSet, in items: [Transaction]) {
+        offsets.map { items[$0] }.forEach { deleteTransaction($0) }
     }
 
     private func deleteTransaction(_ transaction: Transaction) {

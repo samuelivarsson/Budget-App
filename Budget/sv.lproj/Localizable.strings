@@ -355,3 +355,5 @@
 "ownLabel" = "Eget";
 "splitShared" = "delat";
 "splitOwn" = "eget";
+
+"ownItemsNote" = "Egna köp dras av först · resten %@ delas lika";

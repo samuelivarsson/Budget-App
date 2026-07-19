@@ -248,43 +248,58 @@ struct IOSFriendSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    HStack(spacing: 9) {
-                        Image(systemName: "magnifyingglass").foregroundColor(.secondary)
-                        TextField("searchFriendOrGroup".localizeString(), text: $query)
-                            .autocorrectionDisabled()
-                    }
-                    .padding(.horizontal, 14).frame(height: 44)
-                    .background(Color.primary.opacity(0.06), in: Capsule())
+        VStack(spacing: 0) {
+            // Fixed header
+            HStack {
+                Text("allFriends").font(.system(size: 20, weight: .bold)).foregroundColor(.primary)
+                Spacer()
+                Button { dismiss() } label: {
+                    Image(systemName: "xmark").font(.system(size: 13, weight: .bold)).foregroundColor(.secondary)
+                        .frame(width: 32, height: 32).background(Color.primary.opacity(0.08)).clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 18).padding(.top, 14).padding(.bottom, 10)
 
-                    if !selectedIds.isEmpty {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                ForEach(participants.filter { $0.userId != userViewModel.user.id }, id: \.userId) { p in
-                                    Button { participants.removeAll { $0.userId == p.userId } } label: {
-                                        HStack(spacing: 6) {
-                                            IOSPersonAvatar(name: p.userName, id: p.userId, size: 22)
-                                            Text(p.userName.split(separator: " ").first.map(String.init) ?? p.userName)
-                                                .font(.system(size: 13, weight: .semibold))
-                                            Image(systemName: "xmark").font(.system(size: 9, weight: .bold))
-                                        }
-                                        .foregroundColor(.accentColor)
-                                        .padding(.leading, 5).padding(.trailing, 8).padding(.vertical, 5)
-                                        .background(Color.accentColor.opacity(0.12)).clipShape(Capsule())
-                                    }
-                                    .buttonStyle(.plain)
+            // Fixed search
+            HStack(spacing: 9) {
+                Image(systemName: "magnifyingglass").foregroundColor(.secondary)
+                TextField("searchFriendOrGroup".localizeString(), text: $query).autocorrectionDisabled()
+            }
+            .padding(.horizontal, 14).frame(height: 44)
+            .background(Color.primary.opacity(0.06), in: Capsule())
+            .padding(.horizontal, 18)
+
+            // Fixed selected chips
+            if !selectedIds.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(participants.filter { $0.userId != userViewModel.user.id }, id: \.userId) { p in
+                            Button { participants.removeAll { $0.userId == p.userId } } label: {
+                                HStack(spacing: 6) {
+                                    IOSPersonAvatar(name: p.userName, id: p.userId, size: 22)
+                                    Text(p.userName.split(separator: " ").first.map(String.init) ?? p.userName)
+                                        .font(.system(size: 13, weight: .semibold))
+                                    Image(systemName: "xmark").font(.system(size: 9, weight: .bold))
                                 }
+                                .foregroundColor(.accentColor)
+                                .padding(.leading, 5).padding(.trailing, 8).padding(.vertical, 5)
+                                .background(Color.accentColor.opacity(0.12)).clipShape(Capsule())
                             }
-                            .padding(.vertical, 12)
+                            .buttonStyle(.plain)
                         }
                     }
+                    .padding(.horizontal, 18).padding(.vertical, 10)
+                }
+            }
 
+            // Scrolling list
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
                     let favs = favourites.filter(matches)
                     if !favs.isEmpty {
                         groupHeader("favourites".localizeString(), members: favourites)
-                        VStack(spacing: 0) { ForEach(favs, id: \.id) { friendRow($0) } }.padding(.horizontal, 14).iosCard(22)
+                        friendListCard(shown: favs, showMore: false, moreCount: 0, groupName: "")
                     }
                     ForEach(groups, id: \.name) { group in
                         let visible = group.members.filter(matches)
@@ -292,39 +307,53 @@ struct IOSFriendSheet: View {
                             let expanded = !query.isEmpty || expandedGroups.contains(group.name)
                             let shown = expanded ? visible : Array(visible.prefix(collapseLimit))
                             groupHeader("\(group.name) · \(group.members.count) \(("friends").localizeString().lowercased())", members: group.members)
-                            VStack(spacing: 0) {
-                                ForEach(shown, id: \.id) { friendRow($0) }
-                                if !expanded && visible.count > collapseLimit {
-                                    Button { expandedGroups.insert(group.name) } label: {
-                                        HStack(spacing: 6) {
-                                            Text(String(format: "showMoreCount".localizeString(), visible.count - collapseLimit))
-                                            Image(systemName: "chevron.down")
-                                        }
-                                        .font(.system(size: 13.5, weight: .semibold)).foregroundColor(.accentColor)
-                                        .frame(maxWidth: .infinity).padding(.vertical, 12)
-                                        .overlay(Divider().overlay(Color.iosBorder), alignment: .top)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
-                            .padding(.horizontal, 14).iosCard(22)
+                            friendListCard(shown: shown,
+                                           showMore: !expanded && visible.count > collapseLimit,
+                                           moreCount: visible.count - collapseLimit,
+                                           groupName: group.name)
                         }
                     }
                 }
-                .padding(.horizontal, 18).padding(.top, 8).padding(.bottom, 100)
-            }
-            .background(Color.iosBG.ignoresSafeArea())
-            .navigationTitle("allFriends")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button { dismiss() } label: {
-                        Text(selectedIds.isEmpty ? "done".localizeString() : "\("done".localizeString()) · \(selectedIds.count)")
-                            .fontWeight(.semibold)
-                    }
-                }
+                .padding(.horizontal, 18).padding(.top, 2).padding(.bottom, 24)
             }
         }
+        .background(Color.iosBG.ignoresSafeArea())
+        .safeAreaInset(edge: .bottom) {
+            Button { dismiss() } label: {
+                Text(selectedIds.isEmpty ? "done".localizeString() : "\("done".localizeString()) · \(selectedIds.count)")
+                    .font(.system(size: 16.5, weight: .bold)).foregroundColor(.white)
+                    .frame(maxWidth: .infinity).frame(height: 54)
+                    .background(Color.accentColor).clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 16).padding(.top, 8).padding(.bottom, 6)
+            .background(Color.iosBG)
+        }
+        .presentationDetents([.large])
+        .presentationDragIndicator(.visible)
+    }
+
+    @ViewBuilder
+    private func friendListCard(shown: [any Named], showMore: Bool, moreCount: Int, groupName: String) -> some View {
+        VStack(spacing: 0) {
+            ForEach(Array(shown.enumerated()), id: \.element.id) { i, f in
+                if i > 0 { Divider().overlay(Color.iosBorder).padding(.leading, 50) }
+                friendRow(f)
+            }
+            if showMore {
+                Divider().overlay(Color.iosBorder).padding(.leading, 50)
+                Button { expandedGroups.insert(groupName) } label: {
+                    HStack(spacing: 6) {
+                        Text(String(format: "showMoreCount".localizeString(), moreCount))
+                        Image(systemName: "chevron.down")
+                    }
+                    .font(.system(size: 13.5, weight: .semibold)).foregroundColor(.accentColor)
+                    .frame(maxWidth: .infinity).padding(.vertical, 12)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 14).iosCard(22)
     }
 
     @ViewBuilder

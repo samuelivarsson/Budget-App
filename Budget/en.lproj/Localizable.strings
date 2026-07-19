@@ -355,3 +355,5 @@
 "ownLabel" = "Own";
 "splitShared" = "shared";
 "splitOwn" = "own";
+
+"ownItemsNote" = "Own purchases deducted first · the rest %@ split equally";
