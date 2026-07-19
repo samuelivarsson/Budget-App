@@ -96,12 +96,7 @@ struct HomeView: View {
     }
 
     private var backgroundView: some View {
-        ZStack {
-            Color(.systemBackground)
-            RadialGradient(colors: [Color.accentColor.opacity(0.10), .clear], center: .topLeading, startRadius: 0, endRadius: 360)
-            RadialGradient(colors: [Color.green.opacity(0.09), .clear], center: .topTrailing, startRadius: 0, endRadius: 360)
-        }
-        .ignoresSafeArea()
+        Color(.systemBackground).ignoresSafeArea()
     }
 
     private var navRow: some View {
