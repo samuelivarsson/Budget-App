@@ -126,6 +126,25 @@ struct Transaction: Identifiable, Codable {
         }
     }
     
+    /// The effective category for a given user, resolved against their budget.
+    ///
+    /// Priority:
+    /// 1. The user's own participant category, if they've set one.
+    /// 2. Otherwise the creator's category (`self.category`) mapped by NAME to the
+    ///    user's own budget category (the historical default behavior).
+    /// 3. Otherwise the raw `self.category` (e.g. old entries with no name match).
+    func categoryForUser(userId: String, budget: Budget) -> TransactionCategory {
+        if let participant = participants.first(where: { $0.userId == userId }),
+           let ownCategory = participant.category {
+            // Re-resolve against the user's budget so a stale stored copy still
+            // points at their current category definition when possible.
+            return budget.transactionCategories.first(where: { $0.id == ownCategory.id })
+                ?? budget.transactionCategories.first(where: { $0.name == ownCategory.name })
+                ?? ownCategory
+        }
+        return budget.transactionCategories.first(where: { $0.name == self.category.name }) ?? self.category
+    }
+
     func getShare(userId: String) -> Double {
         for participant in participants {
             if participant.userId == userId {

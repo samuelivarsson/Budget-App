@@ -12,6 +12,10 @@ struct Participant: Identifiable, Codable {
     var amount: Double = 0
     var userId: String
     var userName: String
+    /// This participant's own category for the transaction. `nil` for older
+    /// entries and for participants who haven't overridden the creator's choice;
+    /// in that case the creator's category (resolved by name) is used as default.
+    var category: TransactionCategory? = nil
 }
 
 extension Participant: Equatable {

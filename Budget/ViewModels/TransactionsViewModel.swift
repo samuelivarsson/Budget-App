@@ -98,14 +98,25 @@ class TransactionsViewModel: ObservableObject {
             }
     }
     
+    /// Stores the transaction's category on the creator's participant so each
+    /// participant can later override their own category. The top-level
+    /// `category` is kept as the default that other participants inherit by name.
+    private func stampCreatorCategory(_ transaction: Transaction) -> Transaction {
+        var tx = transaction
+        if let index = tx.participants.firstIndex(where: { $0.userId == tx.creatorId }) {
+            tx.participants[index].category = tx.category
+        }
+        return tx
+    }
+
     func addTransaction(transaction: Transaction, completion: @escaping (Error?) -> Void) {
         do {
-            try self.db.collection("Transactions").addDocument(from: transaction, completion: completion)
+            try self.db.collection("Transactions").addDocument(from: self.stampCreatorCategory(transaction), completion: completion)
         } catch {
             completion(error)
         }
     }
-    
+
     func editTransaction(transaction: Transaction, completion: @escaping (Error?) -> Void) {
         guard let documentId = transaction.documentId else {
             let info = "Found nil when extracting documentId in editTransaction in TransactionsViewModel"
@@ -113,7 +124,7 @@ class TransactionsViewModel: ObservableObject {
             return
         }
         do {
-            try self.db.collection("Transactions").document(documentId).setData(from: transaction, completion: completion)
+            try self.db.collection("Transactions").document(documentId).setData(from: self.stampCreatorCategory(transaction), completion: completion)
         } catch {
             completion(error)
         }
@@ -124,16 +135,17 @@ class TransactionsViewModel: ObservableObject {
         let (from, to) = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: user.budget.monthStartsOn)
         let thisMonthsTransactions = self.getTransactions(from: from, to: to)
         thisMonthsTransactions.forEach { transaction in
+            // The category as this user sees it (their own participant override,
+            // else the creator's category resolved by name to this user's budget).
+            let effectiveCategory = transaction.categoryForUser(userId: user.id, budget: user.budget)
             if let transactionCategory = transactionCategory {
-                // Check if it's the correct transaction by id, could also be a friends category with same name
-                let isNotMineButSameName = transaction.category.isNotMineButSameName(sameNameAs: transactionCategory, budget: user.budget)
-                if transaction.category.id == transactionCategory.id || isNotMineButSameName {
+                if effectiveCategory.id == transactionCategory.id {
                     total += transaction.getShare(userId: user.id)
                 }
             } else if let accountId = accountId {
-                // TODO: If category with same name exists, get that and use the takeFromAccount to decide
-                let isNotMineButMainAccount = !transaction.isMine(userId: user.id) && !transaction.isMyCategory(user: user) && user.budget.getMainAccountId(type: .transaction) == accountId
-                if transaction.category.takesFromAccount == accountId || isNotMineButMainAccount {
+                let isMineCategory = user.budget.transactionCategories.contains { $0.id == effectiveCategory.id }
+                let isNotMineButMainAccount = !isMineCategory && user.budget.getMainAccountId(type: .transaction) == accountId
+                if effectiveCategory.takesFromAccount == accountId || isNotMineButMainAccount {
                     total += transaction.getShare(userId: user.id)
                 }
             }
