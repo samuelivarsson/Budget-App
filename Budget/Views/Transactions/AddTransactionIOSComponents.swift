@@ -65,6 +65,15 @@ struct IOSTypeSegment: View {
     }
 }
 
+// Shared focus identity so amount / description / per-participant fields can be
+// focused across TransactionView and IOSShareRow (enables prev/next navigation).
+enum AddTxField: Hashable {
+    case amount
+    case description
+    case share(String)   // participant userId
+    case own(String)     // participant userId
+}
+
 // MARK: - Editable per-participant share row
 
 struct IOSShareRow: View {
@@ -78,13 +87,17 @@ struct IOSShareRow: View {
     @Binding var hasWritten: [String]
     var action: TransactionAction
     var showsTopDivider: Bool = true
+    var focus: FocusState<AddTxField?>.Binding
+    var order: [AddTxField]
+    var onMove: (Int) -> Void
 
     @State private var amountString: String = ""
     @State private var ownString: String = ""
     @State private var amountSelected: Bool = false
     @State private var ownSelected: Bool = false
-    @FocusState private var focus: Field?
-    private enum Field { case amount, own }
+
+    private var shareFieldId: AddTxField { .share(participant.userId) }
+    private var ownFieldId: AddTxField { .own(participant.userId) }
 
     private var isYou: Bool { participant.userId == userViewModel.user.id }
     private var isOwnItems: Bool { splitOption == .ownItems }
@@ -140,6 +153,13 @@ struct IOSShareRow: View {
         }
     }
 
+    @ViewBuilder
+    private func chevrons(_ field: AddTxField) -> some View {
+        let idx = order.firstIndex(of: field) ?? 0
+        Button { onMove(-1) } label: { Image(systemName: "chevron.up") }.disabled(idx <= 0)
+        Button { onMove(1) } label: { Image(systemName: "chevron.down") }.disabled(idx >= order.count - 1)
+    }
+
     // Read-only amount (auto-computed splits, or when this participant's amount
     // isn't editable for the chosen Fördelning). Plain text — no input pill — so
     // it's clearly not tappable, unlike the editable pill/dashed fields.
@@ -157,13 +177,14 @@ struct IOSShareRow: View {
             })
             .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
             .font(.system(size: 14.5, weight: .bold)).monospacedDigit().fixedSize()
-            .focused($focus, equals: .amount)
+            .focused(focus, equals: shareFieldId)
             .toolbar {
-                if amountSelected {
+                if focus.wrappedValue == shareFieldId {
                     ToolbarItemGroup(placement: .keyboard) {
+                        chevrons(shareFieldId)
                         CalculatorToolbarView(amountString: $amountString)
                         Spacer()
-                        Button("done".localizeString()) { focus = nil }
+                        Button("done".localizeString()) { focus.wrappedValue = nil }
                     }
                 }
             }
@@ -171,7 +192,9 @@ struct IOSShareRow: View {
         }
         .foregroundColor(.primary)
         .padding(.horizontal, 12).padding(.vertical, 5)
-        .background(Color.primary.opacity(0.06)).clipShape(Capsule())
+        .background(Color.primary.opacity(0.06), in: Capsule())
+        .contentShape(Capsule())
+        .onTapGesture { focus.wrappedValue = shareFieldId }
     }
 
     private var ownField: some View {
@@ -183,13 +206,14 @@ struct IOSShareRow: View {
             })
             .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
             .font(.system(size: 12.5, weight: .semibold)).monospacedDigit().fixedSize()
-            .focused($focus, equals: .own)
+            .focused(focus, equals: ownFieldId)
             .toolbar {
-                if ownSelected {
+                if focus.wrappedValue == ownFieldId {
                     ToolbarItemGroup(placement: .keyboard) {
+                        chevrons(ownFieldId)
                         CalculatorToolbarView(amountString: $ownString)
                         Spacer()
-                        Button("done".localizeString()) { focus = nil }
+                        Button("done".localizeString()) { focus.wrappedValue = nil }
                     }
                 }
             }
@@ -201,6 +225,8 @@ struct IOSShareRow: View {
                 .foregroundColor(Color.primary.opacity(0.28))
                 .allowsHitTesting(false)   // don't steal taps from the text field
         )
+        .contentShape(Capsule())
+        .onTapGesture { focus.wrappedValue = ownFieldId }
     }
 
     private func commit(_ string: String, _ assign: @escaping (Double) -> Void) {

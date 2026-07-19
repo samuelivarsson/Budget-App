@@ -22,12 +22,11 @@ struct TransactionView: View {
 
     @State private var transaction: Transaction
     @State private var totalAmountString: String = ""
-    @State private var selection: Int?
     @State private var hasWritten: [String] = .init()
     @State private var applyLoading: Bool = false
     @State private var showFriendPicker: Bool = false
     @State private var keyboardUp: Bool = false
-    @FocusState var isInputActive: Bool
+    @FocusState private var focus: AddTxField?
 
     private var oldTransaction: Transaction? = nil
     private var action: TransactionAction
@@ -70,19 +69,47 @@ struct TransactionView: View {
 
     // MARK: - Body
 
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                if action != .view {
-                    IOSTypeSegment(selection: $transaction.type).padding(.bottom, 16)
-                }
-                amountCard
-                sectionLabel("details"); detailsCard
-                sectionLabel("participants"); participantsCard
-                sectionLabel("splitting"); splittingCard
-                creatorFooter
+    // Ordered focusable fields, top to bottom, for prev/next navigation.
+    private var focusOrder: [AddTxField] {
+        guard action != .view else { return [] }
+        var order: [AddTxField] = [.amount, .description]
+        for p in transaction.participants {
+            if transaction.splitOption == .ownItems {
+                order.append(.own(p.userId))
+            } else if transaction.splitOption != .meEverything && transaction.splitOption != .heSheEverything {
+                order.append(.share(p.userId))
             }
-            .padding(.horizontal, 20).padding(.top, 8).padding(.bottom, 24)
+        }
+        return order
+    }
+    private func moveFocus(_ delta: Int) {
+        guard let current = focus, let idx = focusOrder.firstIndex(of: current) else { return }
+        let next = idx + delta
+        guard focusOrder.indices.contains(next) else { return }
+        focus = focusOrder[next]
+    }
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 0) {
+                    if action != .view {
+                        IOSTypeSegment(selection: $transaction.type).padding(.bottom, 16)
+                    }
+                    amountCard
+                    sectionLabel("details"); detailsCard
+                    sectionLabel("participants"); participantsCard
+                    sectionLabel("splitting"); splittingCard
+                    creatorFooter
+                }
+                .padding(.horizontal, 20).padding(.top, 8).padding(.bottom, 24)
+            }
+            .onChange(of: focus) { newValue in
+                guard let field = newValue else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    withAnimation(.easeInOut(duration: 0.2)) { proxy.scrollTo(field, anchor: .center) }
+                }
+            }
         }
         .background(Color.iosBG.ignoresSafeArea())
         .navigationTitle(navTitle)
@@ -149,7 +176,6 @@ struct TransactionView: View {
                         .font(.system(size: 44, weight: .bold)).monospacedDigit().foregroundColor(.primary)
                 } else {
                     TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", text: $totalAmountString, onEditingChanged: { isEditing in
-                        selection = isEditing ? 1 : nil
                         if !isEditing {
                             let expression = totalAmountString
                                 .components(separatedBy: .whitespaces).joined()
@@ -168,13 +194,14 @@ struct TransactionView: View {
                     .font(.system(size: 44, weight: .bold)).monospacedDigit()
                     .foregroundColor(.primary).tint(.accentColor)
                     .fixedSize()
-                    .focused($isInputActive)
+                    .focused($focus, equals: .amount)
                     .toolbar {
-                        if selection == 1 {
+                        if focus == .amount {
                             ToolbarItemGroup(placement: .keyboard) {
+                                chevrons(.amount)
                                 CalculatorToolbarView(amountString: $totalAmountString)
                                 Spacer()
-                                Button("done".localizeString()) { isInputActive = false }
+                                Button("done".localizeString()) { focus = nil }
                             }
                         }
                     }
@@ -200,6 +227,14 @@ struct TransactionView: View {
         .frame(maxWidth: .infinity)
         .padding(20)
         .iosCard(26)
+        .id(AddTxField.amount)
+    }
+
+    @ViewBuilder
+    private func chevrons(_ field: AddTxField) -> some View {
+        let idx = focusOrder.firstIndex(of: field) ?? 0
+        Button { moveFocus(-1) } label: { Image(systemName: "chevron.up") }.disabled(idx <= 0)
+        Button { moveFocus(1) } label: { Image(systemName: "chevron.down") }.disabled(idx >= focusOrder.count - 1)
     }
 
     // MARK: - Details
@@ -237,22 +272,27 @@ struct TransactionView: View {
                 if action == .view {
                     Text(transaction.desc).font(.system(size: 15.5)).foregroundColor(.secondary)
                 } else {
-                    TextField("shortDescription", text: $transaction.desc, onEditingChanged: { editing in selection = editing ? 0 : nil })
+                    TextField("shortDescription", text: $transaction.desc)
                         .multilineTextAlignment(.trailing).font(.system(size: 15.5)).foregroundColor(.primary)
-                        .focused($isInputActive)
+                        .focused($focus, equals: .description)
                         .toolbar {
-                            if selection == 0 {
+                            if focus == .description {
                                 ToolbarItemGroup(placement: .keyboard) {
-                                    Spacer(); Button("done".localizeString()) { isInputActive = false }
+                                    chevrons(.description)
+                                    Spacer()
+                                    Button("done".localizeString()) { focus = nil }
                                 }
                             }
                         }
                 }
             }
             .padding(.vertical, 13)
+            .contentShape(Rectangle())
+            .onTapGesture { if action != .view { focus = .description } }
         }
         .padding(.horizontal, 16)
         .iosCard(26)
+        .id(AddTxField.description)
     }
 
     // MARK: - Participants (favorites + all friends)
@@ -389,7 +429,9 @@ struct TransactionView: View {
                 ForEach(Array($transaction.participants.enumerated()), id: \.element.id) { index, $participant in
                     IOSShareRow(participant: $participant, splitOption: $transaction.splitOption,
                                 participants: $transaction.participants, totalAmount: $transaction.totalAmount,
-                                hasWritten: $hasWritten, action: action, showsTopDivider: index > 0)
+                                hasWritten: $hasWritten, action: action, showsTopDivider: index > 0,
+                                focus: $focus, order: focusOrder, onMove: moveFocus)
+                        .id(transaction.splitOption == .ownItems ? AddTxField.own(participant.userId) : AddTxField.share(participant.userId))
                 }
             }
             .padding(.bottom, 4)
