@@ -75,7 +75,6 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    navRow
                     Text(dateSub).font(.system(size: 14, weight: .medium)).foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 2).padding(.top, 2).padding(.bottom, 16)
@@ -90,29 +89,22 @@ struct HomeView: View {
                 .padding(.bottom, 120)
             }
             .background(backgroundView)
-            .navigationBarHidden(true)
+            .navigationTitle("home")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink { NotificationsView() } label: {
+                        Image(systemName: "bell")
+                            .foregroundColor(.primary)
+                            .myBadge(count: notificationsViewModel.getNumberOfUnreadNotifications())
+                    }
+                }
+            }
         }
         .redacted(when: userViewModel.user.id.isEmpty)
     }
 
     private var backgroundView: some View {
         Color.iosBG.ignoresSafeArea()
-    }
-
-    private var navRow: some View {
-        HStack {
-            Text("home").font(.system(size: 34, weight: .bold)).foregroundColor(.primary)
-            Spacer()
-            NavigationLink { NotificationsView() } label: {
-                Image(systemName: "bell")
-                    .font(.system(size: 18, weight: .medium)).foregroundColor(.primary)
-                    .frame(width: 42, height: 42)
-                    .background(Color.iosCardFill, in: Circle())
-                    .overlay(Circle().strokeBorder(Color.primary.opacity(0.06), lineWidth: 1))
-                    .myBadge(count: notificationsViewModel.getNumberOfUnreadNotifications())
-            }
-        }
-        .padding(.top, 4)
     }
 
     // MARK: Hero

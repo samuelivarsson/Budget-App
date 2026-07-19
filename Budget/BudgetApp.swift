@@ -28,6 +28,7 @@ struct BudgetApp: App {
 
     init() {
         setUpFirebase()
+        setUpAppearance()
     }
 
     var body: some Scene {
@@ -52,6 +53,19 @@ struct BudgetApp: App {
 extension BudgetApp {
     private func setUpFirebase() {
         FirebaseApp.configure()
+    }
+
+    /// Unifies the background of all Form/List (grouped) screens with the iOS-26
+    /// redesign background so the un-redesigned views (Settings, History,
+    /// Notifications, …) match the rest of the app.
+    private func setUpAppearance() {
+        let bg = UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor(white: 0.02, alpha: 1)
+                : UIColor(red: 0.957, green: 0.957, blue: 0.972, alpha: 1)
+        }
+        UICollectionView.appearance().backgroundColor = bg
+        UITableView.appearance().backgroundColor = bg
     }
 }
 
