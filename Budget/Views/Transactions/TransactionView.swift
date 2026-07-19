@@ -280,6 +280,7 @@ struct TransactionView: View {
                         self.selection = isEditing ? 1 : nil
                         if !isEditing {
                             let expression = self.totalAmountString
+                                .components(separatedBy: .whitespaces).joined() // strip thousands separators (incl. non-breaking spaces)
                                 .replacingOccurrences(of: ",", with: ".")
                                 .replacingOccurrences(of: "÷", with: "/")
                                 .replacingOccurrences(of: "×", with: "*")

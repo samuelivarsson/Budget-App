@@ -38,6 +38,7 @@ struct ParticipantView: View {
                         self.amountSelected = isEditing
                         if !isEditing {
                             let expression = self.amountString
+                                .components(separatedBy: .whitespaces).joined() // strip thousands separators (incl. non-breaking spaces)
                                 .replacingOccurrences(of: ",", with: ".")
                                 .replacingOccurrences(of: "÷", with: "/")
                                 .replacingOccurrences(of: "×", with: "*")
