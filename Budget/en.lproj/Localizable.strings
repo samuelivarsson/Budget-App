@@ -80,11 +80,32 @@
 "standings" = "Standings";
 "favourites" = "Favourites";
 "otherFriends" = "Other friends";
+"youGetBack" = "You get back";
+"toSettle" = "To settle";
+"settleUp" = "Settle up";
+"remindButton" = "Remind";
+"regulate" = "Settle";
+"even" = "Even";
+"withoutAccount" = "no account";
+"owesYou" = "owes you";
+"youAreOwingShort" = "you owe";
 
 // History View
 "averageSpent" = "Transaction cateogries - Average amount you spend in each category\n\nAccounts - What the account balance was at the end of last budget month";
 "info" = "Info";
 "ok" = "Ok";
+"net" = "Net";
+"saved" = "Saved";
+"thisMonth" = "This month";
+"threeMonths" = "3 mo";
+"thisYear" = "This year";
+"allTime" = "All";
+"savingsAccountPurchases" = "Savings acc. purchases";
+"depositedToSavings" = "deposited to savings";
+"fixedCostsEstimated" = "fixed costs estimated";
+"monthlyIncome" = "Monthly income";
+"scheduledSaving" = "Scheduled saving";
+"estimatedNote" = "Income, fixed costs and scheduled saving are estimated for months without saved data";
 
 // Years, months etc abbreviations
 "shortYears" = "y";

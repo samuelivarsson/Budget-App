@@ -114,7 +114,6 @@ struct TransactionView: View {
         .background(Color.iosBG.ignoresSafeArea())
         .navigationTitle(navTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar(.hidden, for: .tabBar)
         .safeAreaInset(edge: .bottom) {
             // Hidden while typing so it doesn't collide with the keyboard toolbar.
             if action != .view && !keyboardUp { ctaBar }
@@ -198,9 +197,9 @@ struct TransactionView: View {
                     .toolbar {
                         if focus == .amount {
                             ToolbarItemGroup(placement: .keyboard) {
-                                chevrons(.amount)
                                 CalculatorToolbarView(amountString: $totalAmountString)
                                 Spacer()
+                                chevrons(.amount)
                                 Button("done".localizeString()) { focus = nil }
                             }
                         }
@@ -278,8 +277,8 @@ struct TransactionView: View {
                         .toolbar {
                             if focus == .description {
                                 ToolbarItemGroup(placement: .keyboard) {
-                                    chevrons(.description)
                                     Spacer()
+                                    chevrons(.description)
                                     Button("done".localizeString()) { focus = nil }
                                 }
                             }
@@ -485,7 +484,7 @@ struct TransactionView: View {
             .clipShape(Capsule())
         }
         .buttonStyle(.plain)
-        .padding(.horizontal, 16).padding(.top, 8).padding(.bottom, 4)
+        .padding(.horizontal, 16).padding(.top, 8).padding(.bottom, 12)
     }
 
     @ViewBuilder

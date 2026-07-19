@@ -181,9 +181,9 @@ struct IOSShareRow: View {
             .toolbar {
                 if focus.wrappedValue == shareFieldId {
                     ToolbarItemGroup(placement: .keyboard) {
-                        chevrons(shareFieldId)
                         CalculatorToolbarView(amountString: $amountString)
                         Spacer()
+                        chevrons(shareFieldId)
                         Button("done".localizeString()) { focus.wrappedValue = nil }
                     }
                 }
@@ -210,9 +210,9 @@ struct IOSShareRow: View {
             .toolbar {
                 if focus.wrappedValue == ownFieldId {
                     ToolbarItemGroup(placement: .keyboard) {
-                        chevrons(ownFieldId)
                         CalculatorToolbarView(amountString: $ownString)
                         Spacer()
+                        chevrons(ownFieldId)
                         Button("done".localizeString()) { focus.wrappedValue = nil }
                     }
                 }
@@ -281,6 +281,12 @@ struct IOSFriendSheet: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            // Custom grabber (system indicator hidden) for controlled spacing
+            Capsule()
+                .fill(Color.primary.opacity(0.22))
+                .frame(width: 36, height: 5)
+                .padding(.top, 10).padding(.bottom, 18)
+
             // Fixed header
             HStack {
                 Text("allFriends").font(.system(size: 20, weight: .bold)).foregroundColor(.primary)
@@ -291,7 +297,7 @@ struct IOSFriendSheet: View {
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.horizontal, 18).padding(.top, 14).padding(.bottom, 10)
+            .padding(.horizontal, 18).padding(.bottom, 12)
 
             // Fixed search
             HStack(spacing: 9) {
@@ -352,7 +358,7 @@ struct IOSFriendSheet: View {
         .background(Color.iosBG.ignoresSafeArea())
         .safeAreaInset(edge: .bottom) {
             Button { dismiss() } label: {
-                Text(selectedIds.isEmpty ? "done".localizeString() : "\("done".localizeString()) · \(selectedIds.count)")
+                Text(selectedIds.isEmpty ? "done".localizeString() : "\("done".localizeString()) · \(String(format: "selectedCount".localizeString(), selectedIds.count))")
                     .font(.system(size: 16.5, weight: .bold)).foregroundColor(.white)
                     .frame(maxWidth: .infinity).frame(height: 54)
                     .background(Color.accentColor).clipShape(Capsule())
@@ -361,8 +367,8 @@ struct IOSFriendSheet: View {
             .padding(.horizontal, 16).padding(.top, 8).padding(.bottom, 6)
             .background(Color.iosBG)
         }
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
+        .presentationDetents([.fraction(0.92)])
+        .presentationDragIndicator(.hidden)
     }
 
     @ViewBuilder

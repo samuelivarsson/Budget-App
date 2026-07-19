@@ -80,11 +80,32 @@
 "standings" = "Ställningar";
 "favourites" = "Favoriter";
 "otherFriends" = "Andra vänner";
+"youGetBack" = "Du får tillbaka";
+"toSettle" = "Att göra upp";
+"settleUp" = "Gör upp";
+"remindButton" = "Påminn";
+"regulate" = "Reglera";
+"even" = "Kvitt";
+"withoutAccount" = "utan konto";
+"owesYou" = "är skyldig dig";
+"youAreOwingShort" = "du är skyldig";
 
 // History View
 "averageSpent" = "Transaktionskategorier - Genomsnittlig summa spenderat inom varje kategori\n\nKonton - Vad saldot var i slutet av förra budgetmånaden";
 "info" = "Info";
 "ok" = "Ok";
+"net" = "Netto";
+"saved" = "Sparat";
+"thisMonth" = "Denna månad";
+"threeMonths" = "3 mån";
+"thisYear" = "I år";
+"allTime" = "Allt";
+"savingsAccountPurchases" = "Sparkonto köp";
+"depositedToSavings" = "insatt på sparkonton";
+"fixedCostsEstimated" = "fasta kostnader uppskattade";
+"monthlyIncome" = "Månadsinkomst";
+"scheduledSaving" = "Planerat sparande";
+"estimatedNote" = "Inkomst, fasta kostnader och planerat sparande är uppskattade för månader utan sparad data";
 
 // Years, months etc abbreviations
 "shortYears" = "å";
@@ -349,7 +370,7 @@
 "allFriends" = "Alla vänner";
 "showMoreCount" = "Visa %d till";
 "splitting" = "Delning";
-"selectedCount" = "%d vald";
+"selectedCount" = "%d valda";
 
 // Egna köp (own items split)
 "ownLabel" = "Eget";

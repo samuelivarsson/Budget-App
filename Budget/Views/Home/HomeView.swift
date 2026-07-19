@@ -100,7 +100,7 @@ struct HomeView: View {
                 }
             }
         }
-        .redacted(when: userViewModel.user.id.isEmpty)
+        .redacted(when: userViewModel.user.id.isEmpty || !transactionsViewModel.hasLoaded)
     }
 
     private var backgroundView: some View {

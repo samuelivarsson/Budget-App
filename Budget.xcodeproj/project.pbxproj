@@ -153,6 +153,7 @@
 		4D6626DE29C7B9EB00C0F4D5 /* SavingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626DD29C7B9EB00C0F4D5 /* SavingsView.swift */; };
 		4D6626E129C7C01B00C0F4D5 /* SavingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E029C7C01B00C0F4D5 /* SavingView.swift */; };
 		4D6626E329C8199300C0F4D5 /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E229C8199300C0F4D5 /* StandingsView.swift */; };
+		A1B2C3D40000000000000002 /* StandingsIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000001 /* StandingsIOSComponents.swift */; };
 		4D6626E829CB823900C0F4D5 /* CategoryHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E729CB823900C0F4D5 /* CategoryHistory.swift */; };
 		4D6626EA29CBB21400C0F4D5 /* AccountHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E929CBB21400C0F4D5 /* AccountHistory.swift */; };
 		4D6626EC29CBB55300C0F4D5 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626EB29CBB55300C0F4D5 /* HistoryViewModel.swift */; };
@@ -261,6 +262,8 @@
 		4DFD3DAA2807406800D5FFB4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DA92807406800D5FFB4 /* HomeView.swift */; };
 		4DFD3DAC2807407D00D5FFB4 /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DAB2807407D00D5FFB4 /* TransactionsView.swift */; };
 		4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DAD2807409D00D5FFB4 /* HistoryView.swift */; };
+		A1B2C3D40000000000000011 /* MonthlySummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000010 /* MonthlySummary.swift */; };
+		A1B2C3D40000000000000013 /* HistoryIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000012 /* HistoryIOSComponents.swift */; };
 		4DFD3DB4280740E000D5FFB4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */; };
 		4DFD3DB6280740F300D5FFB4 /* QuickBalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */; };
 		4DFD3DBE2807414500D5FFB4 /* TransactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */; };
@@ -397,6 +400,7 @@
 		4D6626DD29C7B9EB00C0F4D5 /* SavingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsView.swift; sourceTree = "<group>"; };
 		4D6626E029C7C01B00C0F4D5 /* SavingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingView.swift; sourceTree = "<group>"; };
 		4D6626E229C8199300C0F4D5 /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000001 /* StandingsIOSComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsIOSComponents.swift; sourceTree = "<group>"; };
 		4D6626E729CB823900C0F4D5 /* CategoryHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryHistory.swift; sourceTree = "<group>"; };
 		4D6626E929CBB21400C0F4D5 /* AccountHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHistory.swift; sourceTree = "<group>"; };
 		4D6626EB29CBB55300C0F4D5 /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
@@ -465,6 +469,8 @@
 		4DFD3DA92807406800D5FFB4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4DFD3DAB2807407D00D5FFB4 /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
 		4DFD3DAD2807409D00D5FFB4 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000010 /* MonthlySummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlySummary.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000012 /* HistoryIOSComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryIOSComponents.swift; sourceTree = "<group>"; };
 		4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceView.swift; sourceTree = "<group>"; };
 		4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionType.swift; sourceTree = "<group>"; };
@@ -586,6 +592,7 @@
 			children = (
 				4D6626E929CBB21400C0F4D5 /* AccountHistory.swift */,
 				4D6626E729CB823900C0F4D5 /* CategoryHistory.swift */,
+				A1B2C3D40000000000000010 /* MonthlySummary.swift */,
 			);
 			path = History;
 			sourceTree = "<group>";
@@ -719,6 +726,7 @@
 			isa = PBXGroup;
 			children = (
 				4D6626E229C8199300C0F4D5 /* StandingsView.swift */,
+				A1B2C3D40000000000000001 /* StandingsIOSComponents.swift */,
 			);
 			path = Standings;
 			sourceTree = "<group>";
@@ -964,6 +972,7 @@
 			isa = PBXGroup;
 			children = (
 				4DFD3DAD2807409D00D5FFB4 /* HistoryView.swift */,
+				A1B2C3D40000000000000012 /* HistoryIOSComponents.swift */,
 			);
 			path = History;
 			sourceTree = "<group>";
@@ -1454,6 +1463,8 @@
 				4D1E41222AD1AB1000086E75 /* EditFriendGroupView.swift in Sources */,
 				4D68FC39280E3B3C00B9C5E4 /* FriendsView.swift in Sources */,
 				4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */,
+				A1B2C3D40000000000000011 /* MonthlySummary.swift in Sources */,
+				A1B2C3D40000000000000013 /* HistoryIOSComponents.swift in Sources */,
 				4D65306A281B60BA00641570 /* ImagePicker.swift in Sources */,
 				4D12984B28E4A33900BDCAA8 /* TransactionsViewModel.swift in Sources */,
 				4D0F05CB280793FA0030AB5B /* TransactionView.swift in Sources */,
@@ -1525,6 +1536,7 @@
 				4D028909280B16E30053D15D /* AuthViewModel.swift in Sources */,
 				4D6CA59D29B2CCA500487669 /* Account.swift in Sources */,
 				4D6626E329C8199300C0F4D5 /* StandingsView.swift in Sources */,
+				A1B2C3D40000000000000002 /* StandingsIOSComponents.swift in Sources */,
 				4D008F4329CE6C4000B3C3FE /* Extensions.swift in Sources */,
 				4D40510828E8B3950043D844 /* TransactionCategory.swift in Sources */,
 				4D6579B029CFCB2000EBCF6A /* QuickBalanceErrorResponse.swift in Sources */,
