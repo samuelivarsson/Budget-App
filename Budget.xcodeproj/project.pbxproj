@@ -153,7 +153,6 @@
 		4D6626DE29C7B9EB00C0F4D5 /* SavingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626DD29C7B9EB00C0F4D5 /* SavingsView.swift */; };
 		4D6626E129C7C01B00C0F4D5 /* SavingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E029C7C01B00C0F4D5 /* SavingView.swift */; };
 		4D6626E329C8199300C0F4D5 /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E229C8199300C0F4D5 /* StandingsView.swift */; };
-		A1B2C3D40000000000000002 /* StandingsIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000001 /* StandingsIOSComponents.swift */; };
 		4D6626E829CB823900C0F4D5 /* CategoryHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E729CB823900C0F4D5 /* CategoryHistory.swift */; };
 		4D6626EA29CBB21400C0F4D5 /* AccountHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626E929CBB21400C0F4D5 /* AccountHistory.swift */; };
 		4D6626EC29CBB55300C0F4D5 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6626EB29CBB55300C0F4D5 /* HistoryViewModel.swift */; };
@@ -262,8 +261,6 @@
 		4DFD3DAA2807406800D5FFB4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DA92807406800D5FFB4 /* HomeView.swift */; };
 		4DFD3DAC2807407D00D5FFB4 /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DAB2807407D00D5FFB4 /* TransactionsView.swift */; };
 		4DFD3DAE2807409D00D5FFB4 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DAD2807409D00D5FFB4 /* HistoryView.swift */; };
-		A1B2C3D40000000000000011 /* MonthlySummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000010 /* MonthlySummary.swift */; };
-		A1B2C3D40000000000000013 /* HistoryIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000012 /* HistoryIOSComponents.swift */; };
 		4DFD3DB4280740E000D5FFB4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */; };
 		4DFD3DB6280740F300D5FFB4 /* QuickBalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */; };
 		4DFD3DBE2807414500D5FFB4 /* TransactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */; };
@@ -281,6 +278,9 @@
 		8CA09EE524F77F7AEC222321 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8C7F1FE720279F2123C566 /* Theme.swift */; };
 		8E2756D3950E45BACD4D78CA /* HomeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD9BE8DDF348000B3F7C06E /* HomeComponents.swift */; };
 		8EE85FCD5E0292C675A23B11 /* AddTransactionComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5DF7CA11747939E17B1E1B /* AddTransactionComponents.swift */; };
+		A1B2C3D40000000000000002 /* StandingsIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000001 /* StandingsIOSComponents.swift */; };
+		A1B2C3D40000000000000011 /* MonthlySummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000010 /* MonthlySummary.swift */; };
+		A1B2C3D40000000000000013 /* HistoryIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40000000000000012 /* HistoryIOSComponents.swift */; };
 		A40E21595A0F67B7489A91BF /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15181CB6E03C749977FED0A0 /* SharedComponents.swift */; };
 		CFA1848BA8F95FCD59F87E96 /* TransactionComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B634ACD249C9411FC7567A1F /* TransactionComponents.swift */; };
 		DF3B27134C8A3F3BD87DA378 /* AddTransactionIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D5328C19FDC858A68B4D07 /* AddTransactionIOSComponents.swift */; };
@@ -400,7 +400,6 @@
 		4D6626DD29C7B9EB00C0F4D5 /* SavingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsView.swift; sourceTree = "<group>"; };
 		4D6626E029C7C01B00C0F4D5 /* SavingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingView.swift; sourceTree = "<group>"; };
 		4D6626E229C8199300C0F4D5 /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
-		A1B2C3D40000000000000001 /* StandingsIOSComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsIOSComponents.swift; sourceTree = "<group>"; };
 		4D6626E729CB823900C0F4D5 /* CategoryHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryHistory.swift; sourceTree = "<group>"; };
 		4D6626E929CBB21400C0F4D5 /* AccountHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHistory.swift; sourceTree = "<group>"; };
 		4D6626EB29CBB55300C0F4D5 /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
@@ -469,8 +468,6 @@
 		4DFD3DA92807406800D5FFB4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4DFD3DAB2807407D00D5FFB4 /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
 		4DFD3DAD2807409D00D5FFB4 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
-		A1B2C3D40000000000000010 /* MonthlySummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlySummary.swift; sourceTree = "<group>"; };
-		A1B2C3D40000000000000012 /* HistoryIOSComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryIOSComponents.swift; sourceTree = "<group>"; };
 		4DFD3DB3280740E000D5FFB4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		4DFD3DB5280740F300D5FFB4 /* QuickBalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBalanceView.swift; sourceTree = "<group>"; };
 		4DFD3DBD2807414500D5FFB4 /* TransactionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionType.swift; sourceTree = "<group>"; };
@@ -481,12 +478,15 @@
 		4DFF75B02810739E00C40FF6 /* EditFriendNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendNameView.swift; sourceTree = "<group>"; };
 		4DFF75B22810772B00C40FF6 /* EditFriendPhoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendPhoneView.swift; sourceTree = "<group>"; };
 		4DFF75B4281077E500C40FF6 /* FriendDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendDetailView.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000001 /* StandingsIOSComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsIOSComponents.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000010 /* MonthlySummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlySummary.swift; sourceTree = "<group>"; };
+		A1B2C3D40000000000000012 /* HistoryIOSComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryIOSComponents.swift; sourceTree = "<group>"; };
 		A8B626F977D1DC366CFB8B60 /* HomeIOSComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeIOSComponents.swift; sourceTree = "<group>"; };
 		AAD9BE8DDF348000B3F7C06E /* HomeComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeComponents.swift; path = Budget/Views/Components/HomeComponents.swift; sourceTree = "<group>"; };
 		B634ACD249C9411FC7567A1F /* TransactionComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TransactionComponents.swift; path = Budget/Views/Components/TransactionComponents.swift; sourceTree = "<group>"; };
 		CB5DF7CA11747939E17B1E1B /* AddTransactionComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AddTransactionComponents.swift; sourceTree = "<group>"; };
 		E4D5328C19FDC858A68B4D07 /* AddTransactionIOSComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AddTransactionIOSComponents.swift; sourceTree = "<group>"; };
-		F436EFBB91364893DFDD5FE1 /* RedesignLogicTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RedesignLogicTests.swift; path = RedesignLogicTests.swift; sourceTree = "<group>"; };
+		F436EFBB91364893DFDD5FE1 /* RedesignLogicTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RedesignLogicTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1633,7 +1633,7 @@
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.BudgetTests;
@@ -1657,7 +1657,7 @@
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.BudgetTests;
@@ -1675,19 +1675,19 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BudgetWidgetIntentExtensionUI/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BudgetWidgetIntentExtensionUI;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget.BudgetWidgetIntentExtensionUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1704,19 +1704,19 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BudgetWidgetIntentExtensionUI/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BudgetWidgetIntentExtensionUI;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget.BudgetWidgetIntentExtensionUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1734,19 +1734,19 @@
 				CODE_SIGN_ENTITLEMENTS = BudgetWidgetIntentExtension/BudgetWidgetIntentExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BudgetWidgetIntentExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BudgetWidgetIntentExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget.BudgetWidgetIntentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1765,19 +1765,19 @@
 				CODE_SIGN_ENTITLEMENTS = BudgetWidgetIntentExtension/BudgetWidgetIntentExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BudgetWidgetIntentExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BudgetWidgetIntentExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget.BudgetWidgetIntentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1798,19 +1798,19 @@
 				CODE_SIGN_ENTITLEMENTS = BudgetWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BudgetWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BudgetWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 2.0;
 				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget.BudgetWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1831,19 +1831,19 @@
 				CODE_SIGN_ENTITLEMENTS = BudgetWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BudgetWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BudgetWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 2.0;
 				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget.BudgetWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1911,7 +1911,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1973,7 +1973,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1997,7 +1997,7 @@
 				CODE_SIGN_ENTITLEMENTS = Budget/Budget.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"Budget/Preview Content\"";
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				ENABLE_PREVIEWS = YES;
@@ -2013,12 +2013,12 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2040,7 +2040,7 @@
 				CODE_SIGN_ENTITLEMENTS = Budget/Budget.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"Budget/Preview Content\"";
 				DEVELOPMENT_TEAM = NNPX5ZKT2A;
 				ENABLE_PREVIEWS = YES;
@@ -2056,12 +2056,12 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samuelivarsson.Budget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
