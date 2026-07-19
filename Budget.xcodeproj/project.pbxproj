@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		23D03DBA7BC1DD2E138671A5 /* HomeIOSComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B626F977D1DC366CFB8B60 /* HomeIOSComponents.swift */; };
 		267BEA6B8063F38E7322188B /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
 		43032194065CBED6E9E6B0B2 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5B44829C6162D002340A2 /* StandingsViewModel.swift */; };
 		4D008F3C29CE63D000B3C3FE /* QuickBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D008F3B29CE63D000B3C3FE /* QuickBalanceViewModel.swift */; };
@@ -471,6 +472,7 @@
 		4DFF75B02810739E00C40FF6 /* EditFriendNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendNameView.swift; sourceTree = "<group>"; };
 		4DFF75B22810772B00C40FF6 /* EditFriendPhoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendPhoneView.swift; sourceTree = "<group>"; };
 		4DFF75B4281077E500C40FF6 /* FriendDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendDetailView.swift; sourceTree = "<group>"; };
+		A8B626F977D1DC366CFB8B60 /* HomeIOSComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeIOSComponents.swift; sourceTree = "<group>"; };
 		AAD9BE8DDF348000B3F7C06E /* HomeComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeComponents.swift; path = Budget/Views/Components/HomeComponents.swift; sourceTree = "<group>"; };
 		B634ACD249C9411FC7567A1F /* TransactionComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TransactionComponents.swift; path = Budget/Views/Components/TransactionComponents.swift; sourceTree = "<group>"; };
 		CB5DF7CA11747939E17B1E1B /* AddTransactionComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AddTransactionComponents.swift; sourceTree = "<group>"; };
@@ -931,6 +933,7 @@
 			children = (
 				4D28F0D72919B46C006E2AAF /* Notifications */,
 				4DFD3DA92807406800D5FFB4 /* HomeView.swift */,
+				A8B626F977D1DC366CFB8B60 /* HomeIOSComponents.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -1540,6 +1543,7 @@
 				8E2756D3950E45BACD4D78CA /* HomeComponents.swift in Sources */,
 				CFA1848BA8F95FCD59F87E96 /* TransactionComponents.swift in Sources */,
 				8EE85FCD5E0292C675A23B11 /* AddTransactionComponents.swift in Sources */,
+				23D03DBA7BC1DD2E138671A5 /* HomeIOSComponents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

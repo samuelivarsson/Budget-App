@@ -317,3 +317,17 @@
 "addAll" = "Add all";
 "removeAll" = "Remove all";
 "noMatches" = "No matches";
+
+// Home v3 (iOS)
+"monthlyBudget" = "Monthly budget";
+"overBudget" = "over budget";
+"budgetLeftTag" = "left";
+"categoriesOverCeiling" = "%d categories over budget";
+"allWithinCeiling" = "All within budget";
+"totalBalance" = "Total balance";
+"snabbsaldo" = "Quick balance";
+"updatedAt" = "Updated";
+"mainAccount" = "Main account";
+"separateAccounts" = "Separate accounts";
+"overCeiling" = "Over";
+"categoriesOverOfTotal" = "%d of %d categories over budget";

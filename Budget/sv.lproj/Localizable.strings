@@ -317,3 +317,17 @@
 "addAll" = "Lägg till alla";
 "removeAll" = "Ta bort alla";
 "noMatches" = "Inga träffar";
+
+// Home v3 (iOS)
+"monthlyBudget" = "Månadsbudget";
+"overBudget" = "över budget";
+"budgetLeftTag" = "kvar";
+"categoriesOverCeiling" = "%d kategorier över tak";
+"allWithinCeiling" = "Allt inom tak";
+"totalBalance" = "Totalt saldo";
+"snabbsaldo" = "Snabbsaldo";
+"updatedAt" = "Uppdaterad";
+"mainAccount" = "Huvudkonto";
+"separateAccounts" = "Separata konton";
+"overCeiling" = "Över tak";
+"categoriesOverOfTotal" = "%d av %d kategorier över tak";
