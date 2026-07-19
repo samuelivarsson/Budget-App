@@ -231,7 +231,8 @@ struct IOSQuickBalanceRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {
                         Text(account.name).font(.system(size: 16, weight: .semibold)).foregroundColor(.primary)
-                        if isMain { mainBadge }
+                            .lineLimit(1).minimumScaleFactor(0.6)
+                        if isMain { mainBadge.layoutPriority(1) }
                     }
                     Text("\("snabbsaldo".localizeString()) \(Utility.doubleToLocalCurrency(value: quickBalance))")
                         .font(.system(size: 12)).foregroundColor(.secondary).monospacedDigit()
@@ -260,6 +261,7 @@ struct IOSQuickBalanceRow: View {
         Text("mainAccount")
             .font(.system(size: 9.5, weight: .bold)).kerning(0.5).textCase(.uppercase)
             .foregroundColor(.accentColor)
+            .lineLimit(1).fixedSize()
             .padding(.horizontal, 7).padding(.vertical, 2)
             .background(Color.accentColor.opacity(0.12)).clipShape(Capsule())
     }
