@@ -133,32 +133,23 @@ struct TransactionsView: View {
                 }
 
                 ForEach(1 ..< level, id: \.self) { lvl in
+                    clearRow(EdgeInsets(top: 4, leading: 20, bottom: 0, trailing: 20)) {
+                        IOSPeriodHead(range: rangeText(lvl), count: filtered(lvl).count, isOpen: openPeriods.contains(lvl)) { toggle(lvl) }
+                    }
                     if openPeriods.contains(lvl) {
-                        clearRow(EdgeInsets(top: 4, leading: 20, bottom: 0, trailing: 20)) {
-                            IOSPeriodHead(range: rangeText(lvl), count: filtered(lvl).count, isOpen: true) { toggle(lvl) }
-                        }
                         dayGroups(filtered(lvl))
-                    } else {
-                        clearRow(EdgeInsets(top: 16, leading: 20, bottom: 0, trailing: 20)) {
-                            IOSCollapsedPeriod(range: rangeText(lvl)) { toggle(lvl) }
-                        }
                     }
                 }
 
-                clearRow(EdgeInsets(top: 16, leading: 20, bottom: 40, trailing: 20)) { loadMoreButton }
+                clearRow(EdgeInsets(top: 16, leading: 20, bottom: 90, trailing: 20)) { loadMoreButton }
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .background(Color.iosBG.ignoresSafeArea())
+            .overlay(alignment: .bottomTrailing) { addFab }
             .navigationTitle("transactions")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) { EditButton().disabled(user.id.isEmpty) }
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        TransactionView(action: .add, firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
-                    } label: { Image(systemName: "plus") }
-                    .disabled(user.id.isEmpty)
-                }
+                ToolbarItem(placement: .topBarTrailing) { EditButton().disabled(user.id.isEmpty) }
             }
             .onLoad {
                 if let url = tabRouter.appStartFromUrl {
@@ -191,30 +182,28 @@ struct TransactionsView: View {
                      + Text(" " + String(format: "vsLastMonthSameDay".localizeString(), monthName(1))).foregroundColor(.secondary))
                         .font(.system(size: 10.5, weight: .medium))
                 }
-                Spacer(minLength: 0)
                 (Text("savings".localizeString() + " ").foregroundColor(.secondary)
                  + Text(money(savingsPart)).foregroundColor(.primary).fontWeight(.bold))
                     .font(.system(size: 10.5)).monospacedDigit()
             }
-            .frame(maxWidth: .infinity, minHeight: 96, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(13).iosCard(22)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(String(format: "avgPerDay".localizeString(), mainAccountName))
                     .font(.system(size: 11, weight: .semibold)).foregroundColor(.secondary).lineLimit(1)
                 Text(money(avgPerDay)).font(.system(size: 17.5, weight: .bold)).monospacedDigit()
-                Spacer(minLength: 0)
                 ZStack(alignment: .leading) {
                     Capsule().fill(Color.primary.opacity(0.12))
                     Rectangle().fill(forecastState.tint).scaleEffect(x: forecastRatio, y: 1, anchor: .leading)
                 }
-                .frame(height: 5).clipShape(Capsule()).padding(.bottom, 6)
+                .frame(height: 5).clipShape(Capsule()).padding(.vertical, 5)
                 (Text("forecast".localizeString() + " ~").foregroundColor(.secondary)
                  + Text(moneyNoDec(forecast)).foregroundColor(.primary).fontWeight(.bold)
                  + Text(" / \(moneyNoDec(mainTak))").foregroundColor(.secondary))
                     .font(.system(size: 10.5)).monospacedDigit()
             }
-            .frame(maxWidth: .infinity, minHeight: 96, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(13).iosCard(22)
         }
         .fixedSize(horizontal: false, vertical: true)
@@ -250,6 +239,20 @@ struct TransactionsView: View {
                 } label: { EmptyView() }
                 .opacity(0)
             )
+    }
+
+    private var addFab: some View {
+        NavigationLink {
+            TransactionView(action: .add, firstCategory: userViewModel.getFirstTransactionCategory(type: .expense))
+        } label: {
+            Image(systemName: "plus")
+                .font(.system(size: 24, weight: .semibold)).foregroundColor(.white)
+                .frame(width: 58, height: 58)
+                .background(Color.accentColor, in: Circle())
+                .shadow(color: Color.accentColor.opacity(0.45), radius: 10, y: 5)
+        }
+        .disabled(user.id.isEmpty)
+        .padding(.trailing, 20).padding(.bottom, 20)
     }
 
     private var loadMoreButton: some View {
