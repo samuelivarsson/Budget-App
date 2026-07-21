@@ -160,6 +160,12 @@ struct TransactionsView: View {
             .scrollContentBackground(.hidden)
             .background(Color.iosBG.ignoresSafeArea())
             .overlay(alignment: .bottomTrailing) { addFab }
+            // Applied AFTER the overlay so the FAB itself ignores the keyboard inset.
+            // A pushed view's keyboard-accessory toolbar (the +/- bar) otherwise
+            // leaves a stuck bottom inset that parks the + button too high after
+            // navigating back. Verified in an isolated repro: this placement fixes it,
+            // whereas the same modifier before/around the overlay does not.
+            .ignoresSafeArea(.keyboard, edges: .bottom)
             .navigationTitle("transactions")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { EditButton().disabled(user.id.isEmpty) }

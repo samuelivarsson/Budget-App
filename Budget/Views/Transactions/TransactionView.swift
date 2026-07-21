@@ -112,6 +112,11 @@ struct TransactionView: View {
             // Hidden while typing so it doesn't collide with the keyboard toolbar.
             if action != .view && !keyboardUp { ctaBar }
         }
+        // Applied AFTER the safeAreaInset so the CTA ignores a stuck keyboard inset.
+        // The keyboard-accessory toolbar can leave the bottom inset stuck after a
+        // round trip, which otherwise floats the CTA up mid-screen on re-entry.
+        // Verified in an isolated repro (same fix as the Transactions FAB).
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
             keyboardUp = true
         }
