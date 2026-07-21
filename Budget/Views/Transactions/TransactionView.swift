@@ -39,18 +39,12 @@ struct TransactionView: View {
 
     init(transaction: Transaction, user: User, action: TransactionAction, fromUrl: Bool = false) {
         var newTransaction = transaction
-        if !transaction.isMyCategory(user: user) {
-            var changed = false
-            for category in user.budget.transactionCategories {
-                if !changed && category.name == transaction.category.name {
-                    newTransaction.category = category
-                    changed = true
-                }
-            }
-            if !changed {
-                newTransaction.category = user.budget.transactionCategories.first ?? TransactionCategory.getDummyCategory()
-            }
-        }
+        // Preselect the category as THIS user sees it — their own participant
+        // override, or the creator's category mapped to the user's budget (by id,
+        // then trimmed/normalized name, then the "uses the rest"/first fallback).
+        // So the picker shows the right chip when a friend added you to their
+        // transaction, robust to Unicode/whitespace differences in the name.
+        newTransaction.category = transaction.categoryForUser(userId: user.id, budget: user.budget)
         self._transaction = State(initialValue: newTransaction)
         self._totalAmountString = State(initialValue: Utility.currencyFormatterNoSymbol.string(from: transaction.totalAmount as NSNumber) ?? "")
         self.action = action

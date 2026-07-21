@@ -120,4 +120,51 @@ final class RedesignLogicTests: XCTestCase {
                     tx("z", 130, now, type: .expense, myShare: 65)]
         XCTAssertEqual(sumMyShare(list, userId: "me"), 194, accuracy: 0.0001)
     }
+
+    // MARK: - categoryForUser
+
+    private func budget(_ categories: [TransactionCategory], rest: String = "") -> Budget {
+        Budget(accounts: [], income: 0, savingsPercentage: 50,
+               transactionCategories: categories, transactionCategoryThatUsesRest: rest, overheads: [])
+    }
+    private func foreignTx(category: TransactionCategory) -> Transaction {
+        Transaction(totalAmount: 100, category: category, date: Date(), desc: "",
+                    creatorId: "friend", creatorName: "Friend", payerId: "friend", payerName: "Friend",
+                    participants: [Participant(amount: 50, userId: "me", userName: "Me")], type: category.type)
+    }
+
+    /// "Övrigt" must match even when the friend's copy uses a different Unicode
+    /// form for "Ö" (precomposed U+00D6 vs "O" + combining diaeresis U+0308).
+    func testCategoryForUserMatchesOvrigtAcrossUnicodeForms() {
+        let mine = TransactionCategory(id: "mine-ovrigt", name: "\u{00D6}vrigt", type: .expense)
+        let b = budget([TransactionCategory(id: "mat", name: "Mat", type: .expense), mine])
+        let friend = TransactionCategory(id: "friend-ovrigt", name: "O\u{0308}vrigt", type: .expense)
+        XCTAssertEqual(foreignTx(category: friend).categoryForUser(userId: "me", budget: b).id, "mine-ovrigt")
+    }
+
+    /// A name shared by two types must resolve to the SAME type. A friend's income
+    /// "Övrigt" must map to my income "Övrigt", not my expense "Övrigt".
+    func testCategoryForUserMatchesSameTypeWhenNameSharedAcrossTypes() {
+        let expenseOvrigt = TransactionCategory(id: "exp-ovrigt", name: "Övrigt", type: .expense)
+        let incomeOvrigt = TransactionCategory(id: "inc-ovrigt", name: "Övrigt", type: .income)
+        // Expense one first in the array, so a name-only match would wrongly pick it.
+        let b = budget([expenseOvrigt, incomeOvrigt])
+        let friendIncome = TransactionCategory(id: "friend-inc", name: "Övrigt", type: .income)
+        XCTAssertEqual(foreignTx(category: friendIncome).categoryForUser(userId: "me", budget: b).id, "inc-ovrigt")
+    }
+
+    func testCategoryForUserFallsBackToUsesRest() {
+        let rest = TransactionCategory(id: "rest", name: "Rest", type: .expense)
+        let b = budget([TransactionCategory(id: "mat", name: "Mat", type: .expense), rest], rest: "rest")
+        let unknown = TransactionCategory(id: "x", name: "Nonexistent", type: .expense)
+        XCTAssertEqual(foreignTx(category: unknown).categoryForUser(userId: "me", budget: b).id, "rest")
+    }
+
+    func testCategoryForUserFallsBackToFirstOfTypeWhenNoRest() {
+        let b = budget([TransactionCategory(id: "mat", name: "Mat", type: .expense),
+                        TransactionCategory(id: "lon", name: "Lön", type: .income)])
+        let unknown = TransactionCategory(id: "x", name: "Nonexistent", type: .income)
+        // No name/id match and no "uses rest" → first category of the SAME type.
+        XCTAssertEqual(foreignTx(category: unknown).categoryForUser(userId: "me", budget: b).id, "lon")
+    }
 }

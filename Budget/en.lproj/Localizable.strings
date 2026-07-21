@@ -154,7 +154,7 @@
 "choosePicture" = "Choose picture";
 "remaining" = "Remaining";
 "categoryThatUsesRest" = "Category that uses the rest";
-"categoryThatUsesRestOfMainTransactionAccount" = "Choose which category that should use what gets left over from the remaining money in the main transaction account";
+"categoryThatUsesRestOfMainTransactionAccount" = "Choose which category should use what gets left over from the remaining money in the main transaction account. This category is also used as a fallback when a transaction has a category you don't have (matched on the same type).";
 "custom" = "Custom";
 "percentageOfRemaining" = "Percentage of remaining";
 "transactionCategoryAmountNote" = "This allows you to choose what ceiling you want for each category in your budget. Choosing custom allows you to pick a percentage of your remaining money for this category. The remaining money is the money remaining after all overheads, your savings included. Choosing use rest allows this category to use the rest of the remaining money, that is, the money that is left after the other categories has been taken into account.";

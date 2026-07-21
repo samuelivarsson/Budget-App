@@ -129,26 +129,44 @@ struct Transaction: Identifiable, Codable {
     /// The effective category for a given user, resolved against their budget.
     ///
     /// Priority:
-    /// 1. The user's own participant category, if they've set one.
-    /// 2. Otherwise the creator's category (`self.category`) mapped by NAME to the
-    ///    user's own budget category (the historical default behavior).
-    /// 3. Otherwise the raw `self.category` (e.g. old entries with no name match).
+    /// 1. The user's own participant category, if they've set one; else the
+    ///    transaction's (creator's) category.
+    /// 2. Match it to the user's budget by id, then by name.
+    /// 3. If nothing matches, fall back to the category marked as "uses the rest"
+    ///    (of the same type), else the first category of that type — so a friend's
+    ///    category that the user doesn't have still gets counted somewhere.
     func categoryForUser(userId: String, budget: Budget) -> TransactionCategory {
+        let target: TransactionCategory
         if let participant = participants.first(where: { $0.userId == userId }),
            let ownCategory = participant.category {
-            // Re-resolve against the user's budget so a stale stored copy still
-            // points at their current category definition when possible.
-            return budget.transactionCategories.first(where: { $0.id == ownCategory.id })
-                ?? budget.transactionCategories.first(where: { $0.name == ownCategory.name })
-                ?? ownCategory
+            target = ownCategory
+        } else {
+            target = self.category
         }
-        // No participant override: if the stored category is already this user's
-        // own (matches by id), use it directly — robust to two categories sharing
-        // a name (e.g. "Övrigt"). Otherwise map by name (the historical default).
-        if let mine = budget.transactionCategories.first(where: { $0.id == self.category.id }) {
-            return mine
+
+        // 1. Exact id match — robust to two categories sharing a name.
+        if let byId = budget.transactionCategories.first(where: { $0.id == target.id }) {
+            return byId
         }
-        return budget.transactionCategories.first(where: { $0.name == self.category.name }) ?? self.category
+        // 2. Name match of the SAME type, whitespace/Unicode/case-insensitive.
+        //    The type check matters when a name exists for more than one type
+        //    (e.g. both an expense and an income "Övrigt") — otherwise a friend's
+        //    income "Övrigt" could resolve to your expense "Övrigt".
+        if let byName = budget.transactionCategories.first(where: {
+            $0.type == target.type && $0.name.matchesCategoryName(target.name)
+        }) {
+            return byName
+        }
+        // 3. No match: use the "uses the rest" category (same type), else the first
+        //    category of that type.
+        let sameType = budget.transactionCategories.filter { $0.type == target.type }
+        if let rest = sameType.first(where: { $0.id == budget.transactionCategoryThatUsesRest }) {
+            return rest
+        }
+        if let first = sameType.first {
+            return first
+        }
+        return target
     }
 
     func getShare(userId: String) -> Double {
@@ -177,5 +195,17 @@ struct Transaction: Identifiable, Codable {
     
     func isMyCategory(user: User) -> Bool {
         return user.budget.transactionCategories.contains(where: { $0.id == self.category.id })
+    }
+}
+
+private extension String {
+    /// Compares category names ignoring surrounding whitespace, Unicode
+    /// normalization form and case — so a name like "Övrigt" matches regardless of
+    /// stray spaces or whether the "Ö" is precomposed or "O" + combining diaeresis.
+    func matchesCategoryName(_ other: String) -> Bool {
+        func normalized(_ s: String) -> String {
+            s.trimmingCharacters(in: .whitespacesAndNewlines).precomposedStringWithCanonicalMapping
+        }
+        return normalized(self).caseInsensitiveCompare(normalized(other)) == .orderedSame
     }
 }

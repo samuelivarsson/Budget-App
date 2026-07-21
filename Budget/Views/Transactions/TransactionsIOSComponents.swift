@@ -119,6 +119,11 @@ struct IOSTxCard: View {
     var editing: Bool = false
     var onDelete: (() -> Void)? = nil
 
+    /// Shown as the row title and used for the avatar letter — falls back to the
+    /// category name when there's no description (common on others' transactions).
+    private var title: String {
+        transaction.desc.isEmpty ? transaction.category.name : transaction.desc
+    }
     private var isSplit: Bool { transaction.participants.count > 1 }
     private var iPaid: Bool { transaction.payerId == userId }
     private var myShare: Double { transaction.getShare(userId: userId) }
@@ -149,9 +154,9 @@ struct IOSTxCard: View {
                 }
                 .buttonStyle(.plain)
             }
-            TxAvatar(letter: String(transaction.desc.prefix(1)).uppercased(), type: transaction.type)
+            TxAvatar(letter: String(title.prefix(1)).uppercased(), type: transaction.type)
             VStack(alignment: .leading, spacing: 3) {
-                Text(transaction.desc.isEmpty ? transaction.category.name : transaction.desc)
+                Text(title)
                     .font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary).lineLimit(1)
                 HStack(spacing: 6) {
                     Circle().fill(dotColor).frame(width: 7, height: 7)

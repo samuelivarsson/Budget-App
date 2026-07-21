@@ -154,7 +154,7 @@
 "choosePicture" = "Välj bild";
 "remaining" = "Resterande";
 "categoryThatUsesRest" = "Kategori som använder resten";
-"categoryThatUsesRestOfMainTransactionAccount" = "Välj vilket konto som ska använda det som blir över från de resterande pengarna på huvudkontot för transaktioner";
+"categoryThatUsesRestOfMainTransactionAccount" = "Välj vilken kategori som ska använda det som blir över av de resterande pengarna på huvudkontot för transaktioner. Denna kategori används också som reserv när en transaktion har en kategori som du inte har (matchad på samma typ).";
 "custom" = "Anpassad";
 "percentageOfRemaining" = "Procent av resterande";
 "transactionCategoryAmountNote" = "Här kan du välja vad varje kategori ska ha för tak i din budget. Om du väljer anpassad så kan du välja hur många procent av dina resterande pengar som ska gå till kategorin. De resterande pengarna är de pengar som blir över efter alla fasta kostnader, inklusive ditt sparande. Om du väljer använd resten så låter du denna kategorin använda de pengar som blir över efter de andra kategorierna har räknats med.";

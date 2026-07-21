@@ -147,6 +147,12 @@ struct IOSShareRow: View {
         .onChange(of: participant.amount) { newValue in
             DispatchQueue.main.async { amountString = fmt(newValue) }
         }
+        .onChange(of: participant.ownAmount) { _ in
+            // Re-sync the field after a commit so an entered expression (e.g. 100+50)
+            // is shown as its evaluated value, and isn't overwritten while editing.
+            guard !ownSelected else { return }
+            DispatchQueue.main.async { ownString = fmt(ownAmount) }
+        }
         .onAppear {
             amountString = fmt(participant.amount)
             ownString = fmt(ownAmount)
@@ -200,9 +206,18 @@ struct IOSShareRow: View {
     private var ownField: some View {
         HStack(spacing: 4) {
             Text("ownLabel").font(.system(size: 12.5, weight: .semibold)).foregroundColor(.secondary)
+                .lineLimit(1).fixedSize()
             TextField("0", text: $ownString, onEditingChanged: { editing in
                 ownSelected = editing
-                if !editing { commit(ownString) { participant.ownAmount = $0 } }
+                if !editing {
+                    // Own amounts can't exceed what's left of the total after the
+                    // other participants' own amounts (so alone or combined ≤ total).
+                    let othersOwn = participants
+                        .filter { $0.userId != participant.userId }
+                        .reduce(0.0) { $0 + ($1.ownAmount ?? 0) }
+                    let cap = Swift.max(0, totalAmount - othersOwn)
+                    commit(ownString, cap: cap) { participant.ownAmount = $0 }
+                }
             })
             .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
             .font(.system(size: 12.5, weight: .semibold)).monospacedDigit().fixedSize()
@@ -229,7 +244,7 @@ struct IOSShareRow: View {
         .onTapGesture { focus.wrappedValue = ownFieldId }
     }
 
-    private func commit(_ string: String, _ assign: @escaping (Double) -> Void) {
+    private func commit(_ string: String, cap: Double? = nil, _ assign: @escaping (Double) -> Void) {
         let expression = string
             .components(separatedBy: .whitespaces).joined()
             .replacingOccurrences(of: ",", with: ".")
@@ -237,7 +252,9 @@ struct IOSShareRow: View {
             .replacingOccurrences(of: "×", with: "*")
         if let value = try? expression.evaluate() {
             DispatchQueue.main.async {
-                assign(Utility.doubleToTwoDecimals(value: value))
+                var amount = Utility.doubleToTwoDecimals(value: value)
+                if let cap = cap { amount = Swift.min(Swift.max(amount, 0), cap) }
+                assign(amount)
                 if let errorString = Utility.setAmountPerParticipant(splitOption: splitOption, participants: $participants, totalAmount: totalAmount, hasWritten: hasWritten, myUserId: userViewModel.user.id) {
                     errorHandling.handle(error: ApplicationError.unexpectedNil(errorString))
                 }
