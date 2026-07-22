@@ -223,18 +223,21 @@ struct ContentView: View {
         let saveDate = Date.now
         self.userViewModel.user.lastSaveDate = saveDate
 
-        // Save this months category amounts and accumulate the realised totals per type
+        // Save this months category amounts and accumulate the realised totals per
+        // effective flow. Store the flow (not the declared type) so history stays
+        // correctly classified even if the category is later edited or deleted.
         var categoryHistories: [CategoryHistory] = .init()
         var actualIncome: Double = 0
         var actualExpenses: Double = 0
         var actualSavings: Double = 0
         for transactionCategory in self.userViewModel.user.budget.transactionCategories {
             let totalAmount = self.transactionsViewModel.getSpent(user: self.userViewModel.user, transactionCategory: transactionCategory, monthsBack: 1)
-            categoryHistories.append(CategoryHistory(categoryId: transactionCategory.id, categoryName: transactionCategory.name, totalAmount: totalAmount, saveDate: saveDate, userId: self.userViewModel.user.id, categoryType: transactionCategory.type))
-            switch transactionCategory.type {
+            let flow = transactionCategory.moneyFlow
+            categoryHistories.append(CategoryHistory(categoryId: transactionCategory.id, categoryName: transactionCategory.name, totalAmount: totalAmount, saveDate: saveDate, userId: self.userViewModel.user.id, categoryType: flow))
+            switch flow {
             case .income: actualIncome += totalAmount
             case .expense: actualExpenses += totalAmount
-            case .saving: actualSavings += totalAmount
+            case .transfer: actualSavings += totalAmount
             }
         }
 

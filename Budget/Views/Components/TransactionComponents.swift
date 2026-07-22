@@ -32,7 +32,7 @@ struct Avatar: View {
         switch type {
         case .expense: return ("arrow.down", .appRed)
         case .income:  return ("arrow.up", .appPine)
-        case .saving:  return ("arrow.left.arrow.right", .appInfo)
+        case .transfer:  return ("arrow.left.arrow.right", .appInfo)
         }
     }
     var body: some View {
@@ -60,7 +60,7 @@ struct TransactionCard: View {
         transaction.totalAmount == 0 ? 0 : myShare / transaction.totalAmount * 100
     }
     private var amountColor: Color {
-        switch transaction.type { case .income: return .appPine; case .saving: return .appInfo; case .expense: return .appInk }
+        switch transaction.type { case .income: return .appPine; case .transfer: return .appInfo; case .expense: return .appInk }
     }
     private func money(_ v: Double) -> String { Utility.doubleToLocalCurrency(value: v) }
     private var payerFirstName: String { String(transaction.payerName.split(separator: " ").first ?? "") }

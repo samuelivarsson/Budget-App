@@ -23,6 +23,29 @@ struct TransactionCategory: Identifiable, Codable, Hashable {
         return TransactionCategory(name: "", type: .expense)
     }
 
+    private var takesFromAnAccount: Bool { !takesFromAccount.isEmpty }
+    private var givesToAnAccount: Bool { !givesToAccount.isEmpty }
+
+    /// The effective money flow, derived from structure rather than the
+    /// (historically misused) `type` field:
+    ///   - gives to an account only  → income   (money in from outside)
+    ///   - takes from an account only → expense (money out to outside)
+    ///   - both                       → transfer (internal movement)
+    /// When neither is configured, falls back to the declared `type`. This means a
+    /// legacy "income" category that also draws from an account (e.g. Påfyllning)
+    /// correctly reads as a transfer, with no data migration.
+    var moneyFlow: TransactionType {
+        if takesFromAnAccount && givesToAnAccount { return .transfer }
+        if givesToAnAccount { return .income }
+        if takesFromAnAccount { return .expense }
+        return type
+    }
+
+    /// True if this category moves money into the given savings account (a deposit).
+    func depositsInto(accountId: String) -> Bool { givesToAccount == accountId }
+    /// True if this category draws money out of the given account (a withdrawal).
+    func withdrawsFrom(accountId: String) -> Bool { takesFromAccount == accountId }
+
     func getCustomAmount(budget: Budget) -> Double {
         return self.customCeilingPercentage * 0.01 * budget.getRemaining(accountId: self.takesFromAccount)
     }

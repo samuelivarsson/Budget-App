@@ -167,4 +167,18 @@ final class RedesignLogicTests: XCTestCase {
         // No name/id match and no "uses rest" → first category of the SAME type.
         XCTAssertEqual(foreignTx(category: unknown).categoryForUser(userId: "me", budget: b).id, "lon")
     }
+
+    // MARK: - MoneyFlow classifier
+
+    func testMoneyFlowFromStructure() {
+        // gives only → income
+        XCTAssertEqual(TransactionCategory(name: "in", type: .expense, givesToAccount: "a").moneyFlow, .income)
+        // takes only → expense
+        XCTAssertEqual(TransactionCategory(name: "ex", type: .income, takesFromAccount: "a").moneyFlow, .expense)
+        // both → transfer, even when declared income (legacy Påfyllning)
+        XCTAssertEqual(TransactionCategory(name: "pf", type: .income, takesFromAccount: "s", givesToAccount: "a").moneyFlow, .transfer)
+        // neither configured → falls back to declared type
+        XCTAssertEqual(TransactionCategory(name: "x", type: .transfer).moneyFlow, .transfer)
+    }
+
 }

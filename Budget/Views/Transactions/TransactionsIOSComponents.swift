@@ -42,7 +42,7 @@ enum TxFilter: CaseIterable {
         case .all: return true
         case .expense: return type == .expense
         case .income: return type == .income
-        case .transfer: return type == .saving
+        case .transfer: return type == .transfer
         }
     }
 }
@@ -83,7 +83,7 @@ struct TxAvatar: View {
         switch type {
         case .expense: return ("arrow.down", [Color(red: 1.0, green: 0.36, blue: 0.32), Color(red: 1.0, green: 0.54, blue: 0.36)])
         case .income:  return ("arrow.up", [Color(red: 0.18, green: 0.71, blue: 0.42), Color(red: 0.20, green: 0.78, blue: 0.35)])
-        case .saving:  return ("arrow.left.arrow.right", [Color(red: 0.06, green: 0.71, blue: 0.79), Color(red: 0.22, green: 0.82, blue: 0.88)])
+        case .transfer:  return ("arrow.left.arrow.right", [Color(red: 0.06, green: 0.71, blue: 0.79), Color(red: 0.22, green: 0.82, blue: 0.88)])
         }
     }
     var body: some View {
@@ -134,14 +134,14 @@ struct IOSTxCard: View {
     private var amountColor: Color {
         switch transaction.type {
         case .income: return .green
-        case .saving: return transfer
+        case .transfer: return transfer
         case .expense: return .primary
         }
     }
     private var dotColor: Color {
         switch transaction.type {
         case .income: return .green
-        case .saving: return transfer
+        case .transfer: return transfer
         case .expense: return Color.forCategory(transaction.category.name)
         }
     }

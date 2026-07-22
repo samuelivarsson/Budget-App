@@ -97,7 +97,7 @@ struct SegmentedTypePicker: View {
         HStack(spacing: 2) {
             segment(.expense)
             segment(.income)
-            segment(.saving)
+            segment(.transfer)
         }
         .padding(4)
         .background(Color.appChipBg)

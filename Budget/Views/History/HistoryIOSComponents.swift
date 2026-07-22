@@ -44,7 +44,7 @@ enum HistoryColors {
         switch type {
         case .expense: return expense
         case .income:  return income
-        case .saving:  return saving
+        case .transfer:  return saving
         }
     }
 }
@@ -84,6 +84,14 @@ struct IOSHistorySummary: View {
     var subtitleLabel: String? = nil    // e.g. "Sparkonto köp"
     var subtitleValue: String? = nil    // bold amount after the label
     var subtitlePlain: String? = nil    // plain trailing note (e.g. "insatt på sparkonton")
+    // Optional second subtitle line.
+    var line2Label: String? = nil
+    var line2Value: String? = nil
+    var line2ValueColor: Color = .primary
+
+    private func subLine<L: View>(@ViewBuilder _ content: () -> L) -> some View {
+        content().lineLimit(1).minimumScaleFactor(0.7)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -93,20 +101,35 @@ struct IOSHistorySummary: View {
             Text(value)
                 .font(.system(size: 17.5, weight: .bold)).foregroundColor(valueColor)
                 .monospacedDigit().lineLimit(1).minimumScaleFactor(0.6)
-            HStack(spacing: 4) {
-                if let subtitleLabel {
-                    Text(LocalizedStringKey(subtitleLabel)).font(.system(size: 10.5)).foregroundColor(.secondary)
-                }
-                if let subtitleValue {
-                    Text(subtitleValue).font(.system(size: 10.5, weight: .bold)).foregroundColor(.primary).monospacedDigit()
-                }
-                if let subtitlePlain {
-                    Text(LocalizedStringKey(subtitlePlain)).font(.system(size: 10.5)).foregroundColor(.secondary)
+            subLine {
+                HStack(spacing: 4) {
+                    if let subtitleLabel {
+                        Text(LocalizedStringKey(subtitleLabel)).font(.system(size: 10.5)).foregroundColor(.secondary)
+                    }
+                    if let subtitleValue {
+                        Text(subtitleValue).font(.system(size: 10.5, weight: .bold)).foregroundColor(.primary).monospacedDigit()
+                    }
+                    if let subtitlePlain {
+                        Text(LocalizedStringKey(subtitlePlain)).font(.system(size: 10.5)).foregroundColor(.secondary)
+                    }
                 }
             }
-            .lineLimit(1).minimumScaleFactor(0.7)
+            if line2Label != nil || line2Value != nil {
+                subLine {
+                    HStack(spacing: 4) {
+                        if let line2Label {
+                            Text(LocalizedStringKey(line2Label)).font(.system(size: 10.5)).foregroundColor(.secondary)
+                        }
+                        if let line2Value {
+                            Text(line2Value).font(.system(size: 10.5, weight: .bold)).foregroundColor(line2ValueColor).monospacedDigit()
+                        }
+                    }
+                }
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        // maxHeight: .infinity so both cards stretch to the taller one (in an HStack
+        // the height resolves to the tallest sibling, keeping the boxes equal).
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(.horizontal, 13).padding(.vertical, 12)
         .iosCard(22)
     }

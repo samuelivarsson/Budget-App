@@ -58,8 +58,10 @@ struct TransactionCategoryView: View {
                         }
                 }
                 
-                self.takesFrom
-                
+                // income = gives only, expense = takes only, transfer = both.
+                if self.transactionCategory.type != .income {
+                    self.takesFrom
+                }
                 if self.transactionCategory.type != .expense {
                     self.givesTo
                 }
@@ -147,38 +149,31 @@ struct TransactionCategoryView: View {
                 self.presentationMode.wrappedValue.dismiss()
                 return
             }
+            // Reflect the true structure so a legacy mislabeled category (e.g. an
+            // income that also draws from an account) opens as its effective type.
+            if !self.add {
+                self.transactionCategory.type = self.transactionCategory.moneyFlow
+            }
+            self.normalizeAccounts()
+        }
+        .onChange(of: self.transactionCategory.type) { _ in
+            self.normalizeAccounts()
         }
     }
     
     private var takesFrom: some View {
         Picker("takesFrom", selection: self.$transactionCategory.takesFromAccount) {
-            if self.transactionCategory.type != .expense {
-                Text("none").tag("")
-            }
             ForEach(self.userViewModel.getAccounts()) { account in
                 Text(account.name).tag(account.id)
             }
-        }
-        .onLoad {
-            self.setFirstTakesFromAccount()
-        }
-        .onChange(of: self.transactionCategory.type) { _ in
-            self.setFirstTakesFromAccount()
         }
     }
-    
+
     private var givesTo: some View {
         Picker("givesTo", selection: self.$transactionCategory.givesToAccount) {
-            Text("none").tag("")
             ForEach(self.userViewModel.getAccounts()) { account in
                 Text(account.name).tag(account.id)
             }
-        }
-        .onLoad {
-            self.setFirstGivesToAccount()
-        }
-        .onChange(of: self.transactionCategory.type) { _ in
-            self.setFirstGivesToAccount()
         }
     }
     
@@ -216,25 +211,24 @@ struct TransactionCategoryView: View {
         }
     }
     
-    private func setFirstTakesFromAccount() {
-        if self.add {
-            guard let first = self.userViewModel.getAccounts().first else {
-                self.errorHandling.handle(error: UserError.noAccountsYet)
-                return
-            }
-            
-            self.transactionCategory.takesFromAccount = first.id
+    /// Keeps the account fields consistent with the selected type:
+    /// income clears takesFrom, expense clears givesTo, transfer needs both.
+    /// Visible-but-empty fields default to the first account.
+    private func normalizeAccounts() {
+        guard let first = self.userViewModel.getAccounts().first else {
+            self.errorHandling.handle(error: UserError.noAccountsYet)
+            return
         }
-    }
-    
-    private func setFirstGivesToAccount() {
-        if self.add {
-            guard let first = self.userViewModel.getAccounts().first else {
-                self.errorHandling.handle(error: UserError.noAccountsYet)
-                return
-            }
-            
-            self.transactionCategory.givesToAccount = first.id
+        switch self.transactionCategory.type {
+        case .income:
+            self.transactionCategory.takesFromAccount = ""
+            if self.transactionCategory.givesToAccount.isEmpty { self.transactionCategory.givesToAccount = first.id }
+        case .expense:
+            self.transactionCategory.givesToAccount = ""
+            if self.transactionCategory.takesFromAccount.isEmpty { self.transactionCategory.takesFromAccount = first.id }
+        case .transfer:
+            if self.transactionCategory.takesFromAccount.isEmpty { self.transactionCategory.takesFromAccount = first.id }
+            if self.transactionCategory.givesToAccount.isEmpty { self.transactionCategory.givesToAccount = first.id }
         }
     }
 }

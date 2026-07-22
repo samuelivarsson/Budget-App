@@ -91,7 +91,7 @@
 "youAreOwingShort" = "du är skyldig";
 
 // History View
-"averageSpent" = "Perioden överst väljer vilka månader som visas. Total/Snitt växlar mellan summa och genomsnitt per månad (per dag för Denna månad).\n\nNetto = inkomst − fasta kostnader − planerat sparande − utgifter, alltså hur mycket som sparades utöver det planerade sparandet.\n\nSparat = det som satts in på sparkonton.\n\nInkomst, fasta kostnader och planerat sparande kommer från inställningarna och uppskattas för månader utan sparad data.\n\nKonton visar nuvarande saldon.";
+"averageSpent" = "Perioden överst väljer vilka månader som visas. Total/Snitt växlar mellan summa och genomsnitt per månad (per dag för Denna månad).\n\nNetto = inkomst − fasta kostnader − planerat sparande − utgifter, alltså hur mycket som sparades utöver det planerade sparandet. Överföringar och allt som rör ett sparkonto räknas inte in i Netto.\n\nSparat = planerat sparande plus insättningar minus uttag på dina sparkonton (t.ex. Påfyllning och Sparkonto köp räknas som uttag).\n\nInkomst, fasta kostnader och planerat sparande kommer från inställningarna och uppskattas för månader utan sparad data.\n\nKonton visar nuvarande saldon.";
 "info" = "Info";
 "ok" = "Ok";
 "net" = "Netto";
@@ -101,6 +101,8 @@
 "thisYear" = "I år";
 "allTime" = "Allt";
 "savingsAccountPurchases" = "Sparkonto köp";
+"savingsWithdrawals" = "Uttag från sparkonto";
+"savingsRate" = "Sparkvot";
 "depositedToSavings" = "insatt på sparkonton";
 "fixedCostsEstimated" = "fasta kostnader uppskattade";
 "monthlyIncome" = "Månadsinkomst";
@@ -249,6 +251,7 @@
 "expense" = "Utgift";
 "income" = "Inkomst";
 "saving" = "Sparande";
+"transfer" = "Överföring";
 
 // Errors
 "error" = "Error";

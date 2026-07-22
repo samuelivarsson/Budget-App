@@ -39,7 +39,7 @@ struct IOSTypeSegment: View {
         switch t {
         case .expense: return Color(red: 1.0, green: 0.36, blue: 0.32)
         case .income:  return .green
-        case .saving:  return Color(red: 0.22, green: 0.82, blue: 0.88)
+        case .transfer:  return Color(red: 0.22, green: 0.82, blue: 0.88)
         }
     }
     var body: some View {

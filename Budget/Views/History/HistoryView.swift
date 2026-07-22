@@ -70,7 +70,7 @@ struct HistoryView: View {
                     categorySection(.expense)
                     fixedCostsSection
                     categorySection(.income)
-                    categorySection(.saving)
+                    categorySection(.transfer)
 
                     accountSection(.transaction, key: "transaction")
                     accountSection(.saving, key: "saving")
@@ -100,24 +100,60 @@ struct HistoryView: View {
     // MARK: Summary cards
 
     private var summaryRow: some View {
-        let netInfo = self.netInfo()
-        let saved = self.categoryStats(.saving).reduce(0) { $0 + $1.total }
+        let net = self.netInfo()
+        let sparat = self.sparatInfo()
         let suffix = showAverage ? " " + averageSuffix : ""
+        let hasWithdrawals = sparat.withdrawals > 0.005
+        let netSubtitle = "+\(avgMoney(net.income)) / −\(avgMoney(net.expenses))"
+        let sparkonto = self.mainSavingsNet()
         return HStack(spacing: 10) {
             IOSHistorySummary(
                 title: "net",
-                value: avgMoney(netInfo.net) + suffix,
-                valueColor: netInfo.net < 0 ? HistoryColors.negative : .primary,
-                subtitleLabel: netInfo.purchases > 0.005 ? "savingsAccountPurchases" : nil,
-                subtitleValue: netInfo.purchases > 0.005 ? avgMoney(netInfo.purchases) : nil
+                value: avgMoney(net.net) + suffix,
+                valueColor: net.net < 0 ? HistoryColors.negative : .primary,
+                subtitleValue: netSubtitle,
+                line2Label: "savingsRate",
+                line2Value: savingsRateText(net: net.net, income: net.income),
+                line2ValueColor: net.net < 0 ? HistoryColors.negative : .primary
             )
             IOSHistorySummary(
                 title: "saved",
-                value: avgMoney(saved) + suffix,
+                value: avgMoney(sparat.net) + suffix,
                 valueColor: HistoryColors.transfer,
-                subtitlePlain: "depositedToSavings"
+                subtitleLabel: hasWithdrawals ? "savingsWithdrawals" : nil,
+                subtitleValue: hasWithdrawals ? avgMoney(sparat.withdrawals) : nil,
+                subtitlePlain: hasWithdrawals ? nil : "depositedToSavings",
+                line2Label: sparkonto.name,
+                line2Value: signedAvg(sparkonto.net) + suffix,
+                line2ValueColor: sparkonto.net < 0 ? HistoryColors.negative : HistoryColors.transfer
             )
         }
+    }
+
+    private func savingsRateText(net: Double, income: Double) -> String {
+        guard income > 0.005 else { return "–" }
+        return "\(Int((net / income * 100).rounded())) %"
+    }
+    private func signedAvg(_ v: Double) -> String { (v >= 0 ? "+" : "") + avgMoney(v) }
+
+    /// Net movement of the main savings account over the period, including its
+    /// scheduled saving: scheduled(main) + deposits(main) − withdrawals(main).
+    private func mainSavingsNet() -> (name: String, net: Double) {
+        let id = budget.getMainAccountId(type: .saving)
+        guard !id.isEmpty else { return ("", 0) }
+        let name = budget.getAccount(id: id).name
+        if period == .month {
+            let scheduled = budget.getSavingAmount(accountId: id)
+            let deposits = budget.transactionCategories.filter { $0.givesToAccount == id }.reduce(0) { $0 + liveSpent($1) }
+            let withdrawals = budget.transactionCategories.filter { $0.takesFromAccount == id }.reduce(0) { $0 + liveSpent($1) }
+            return (name, scheduled + deposits - withdrawals)
+        }
+        // Saved periods: scheduled isn't stored per-account, so scale today's
+        // per-account scheduled by the number of months (like other planned figures).
+        let months = historyViewModel.monthCount(period: period, budget: budget)
+        let scheduled = budget.getSavingAmount(accountId: id) * Double(months)
+        let s = historyViewModel.savingsStats(period: period, budget: budget, accountId: id)
+        return (name, scheduled + s.deposits - s.withdrawals)
     }
 
     // MARK: Category sections
@@ -193,7 +229,7 @@ struct HistoryView: View {
         switch type {
         case .expense: return "expenses"
         case .income:  return "incomes"
-        case .saving:  return "savings"
+        case .transfer:  return "transfer"
         }
     }
 
@@ -226,34 +262,51 @@ struct HistoryView: View {
 
     // MARK: Data assembly (live for "this month", saved history otherwise)
 
-    private func categoryStats(_ type: TransactionType) -> [CategoryStat] {
+    /// Sections are grouped by effective FLOW (income/expense/transfer), not the
+    /// declared type — so e.g. a Påfyllning (income that also draws from an account)
+    /// lands under Transfer.
+    private func categoryStats(_ flow: TransactionType) -> [CategoryStat] {
         var stats: [CategoryStat]
         if period == .month {
-            stats = userViewModel.getTransactionCategoriesSorted(type: type).compactMap { category in
-                let total = transactionsViewModel.getSpent(user: userViewModel.user, transactionCategory: category, monthsBack: 0)
-                guard abs(total) > 0.005 else { return nil }
-                return CategoryStat(id: category.id, name: category.name, type: type, total: total)
-            }
+            stats = budget.transactionCategories
+                .filter { $0.moneyFlow == flow }
+                .compactMap { category in
+                    let total = liveSpent(category)
+                    guard abs(total) > 0.005 else { return nil }
+                    return CategoryStat(id: category.id, name: category.name, type: flow, total: total)
+                }
         } else {
-            stats = historyViewModel.categoryStats(period: period, type: type, budget: budget)
+            stats = historyViewModel.categoryStats(period: period, type: flow, budget: budget)
         }
 
-        // The income / fixed costs / saving you configure in settings are not
-        // transactions, but are part of what came in / went out / was set aside —
-        // include each as a row in its section.
-        if type == .income {
+        // The income / saving you configure in settings are not transactions, but
+        // are part of what came in / was set aside — include each as a row.
+        if flow == .income {
             let configured = configuredIncome()
             if configured > 0.005 {
                 stats.append(CategoryStat(id: "__configuredIncome", name: "monthlyIncome".localizeString(), type: .income, total: configured))
             }
-        } else if type == .saving {
+        } else if flow == .transfer {
             let scheduled = scheduledSavings()
             if scheduled > 0.005 {
-                stats.append(CategoryStat(id: "__scheduledSaving", name: "scheduledSaving".localizeString(), type: .saving, total: scheduled))
+                stats.append(CategoryStat(id: "__scheduledSaving", name: "scheduledSaving".localizeString(), type: .transfer, total: scheduled))
             }
         }
 
         return stats.sorted { $0.total > $1.total }
+    }
+
+    // MARK: Savings-account helpers (live month)
+
+    private func savingsAccountIds() -> Set<String> {
+        Set(budget.accounts.filter { $0.type == .saving }.map { $0.id })
+    }
+    private func touchesSavings(_ c: TransactionCategory) -> Bool {
+        let ids = savingsAccountIds()
+        return ids.contains(c.takesFromAccount) || ids.contains(c.givesToAccount)
+    }
+    private func liveSpent(_ c: TransactionCategory) -> Double {
+        transactionsViewModel.getSpent(user: userViewModel.user, transactionCategory: c, monthsBack: 0)
     }
 
     private func configuredIncome() -> Double {
@@ -272,24 +325,39 @@ struct HistoryView: View {
         period != .month && historyViewModel.hasEstimatedMonths(period: period, budget: budget)
     }
 
-    private func netInfo() -> (net: Double, purchases: Double, estimatedFixed: Bool) {
+    /// Net = planned income + operational income − fixed − scheduled − operational
+    /// expenses. "Operational" excludes anything touching a savings account (that's
+    /// savings activity, tracked by `sparatInfo`). Transfers are excluded too.
+    private func netInfo() -> (net: Double, income: Double, expenses: Double) {
         if period == .month {
-            let incomeTransactions = userViewModel.getTransactionCategoriesSorted(type: .income)
-                .reduce(0) { $0 + transactionsViewModel.getSpent(user: userViewModel.user, transactionCategory: $1, monthsBack: 0) }
-            let income = budget.income + incomeTransactions
-            let fixed = budget.getOverheadsAmount()
-            let scheduled = budget.getSavings()
-            // Transaction expenses only — `fixed` is subtracted separately below.
-            let expenses = userViewModel.getTransactionCategoriesSorted(type: .expense)
-                .reduce(0) { $0 + transactionsViewModel.getSpent(user: userViewModel.user, transactionCategory: $1, monthsBack: 0) }
-            let savingAccountIds = Set(budget.accounts.filter { $0.type == .saving }.map { $0.id })
-            let purchases = userViewModel.getTransactionCategoriesSorted(type: .expense)
-                .filter { savingAccountIds.contains($0.takesFromAccount) }
-                .reduce(0) { $0 + transactionsViewModel.getSpent(user: userViewModel.user, transactionCategory: $1, monthsBack: 0) }
-            return (income - fixed - scheduled - expenses, purchases, false)
+            let cats = budget.transactionCategories
+            let income = budget.income + cats
+                .filter { $0.moneyFlow == .income && !touchesSavings($0) }
+                .reduce(0) { $0 + liveSpent($1) }
+            let expenses = cats
+                .filter { $0.moneyFlow == .expense && !touchesSavings($0) }
+                .reduce(0) { $0 + liveSpent($1) }
+            let net = income - budget.getOverheadsAmount() - budget.getSavings() - expenses
+            return (net, income, expenses)
         }
-        let stats = historyViewModel.netStats(period: period, budget: budget)
-        return (stats.net, stats.savingsAccountPurchases, stats.estimated)
+        let s = historyViewModel.netStats(period: period, budget: budget)
+        return (s.net, s.income, s.expenses)
+    }
+
+    /// Net change in savings accounts = scheduled + deposits − withdrawals.
+    /// `withdrawals` (money drawn out of savings — Påfyllning, Sparkonto köp) is
+    /// surfaced as the "Uttag" breakdown on the Sparat card.
+    private func sparatInfo() -> (net: Double, withdrawals: Double) {
+        let scheduled = scheduledSavings()
+        if period == .month {
+            let ids = savingsAccountIds()
+            let cats = budget.transactionCategories
+            let deposits = cats.filter { ids.contains($0.givesToAccount) }.reduce(0) { $0 + liveSpent($1) }
+            let withdrawals = cats.filter { ids.contains($0.takesFromAccount) }.reduce(0) { $0 + liveSpent($1) }
+            return (scheduled + deposits - withdrawals, withdrawals)
+        }
+        let s = historyViewModel.savingsStats(period: period, budget: budget)
+        return (scheduled + s.deposits - s.withdrawals, s.withdrawals)
     }
 
     private var estimateHint: some View {

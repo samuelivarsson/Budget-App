@@ -263,55 +263,84 @@ class HistoryViewModel: ObservableObject {
         self.plannedTotals(period: period, budget: budget).estimatedMonths > 0
     }
 
-    private func resolvedType(_ history: CategoryHistory, budget: Budget) -> TransactionType? {
-        history.categoryType ?? budget.transactionCategories.first(where: { $0.id == history.categoryId })?.type
+    private func resolvedCategory(_ history: CategoryHistory, budget: Budget) -> TransactionCategory? {
+        budget.transactionCategories.first { $0.id == history.categoryId }
     }
 
-    /// Per-category totals for a type over a saved period, largest first.
-    func categoryStats(period: HistoryPeriod, type: TransactionType, budget: Budget) -> [CategoryStat] {
+    /// The effective money flow of a saved history row: the current category's
+    /// structural flow if it still exists, else the stored declared type.
+    private func resolvedFlow(_ history: CategoryHistory, budget: Budget) -> TransactionType {
+        if let category = self.resolvedCategory(history, budget: budget) { return category.moneyFlow }
+        return history.categoryType ?? .expense
+    }
+
+    private func savingsAccountIds(_ budget: Budget) -> Set<String> {
+        Set(budget.accounts.filter { $0.type == .saving }.map { $0.id })
+    }
+
+    /// True if the history's category moves money into or out of a savings account
+    /// — i.e. it's savings activity (counted in Sparat), not operational (Net).
+    private func touchesSavings(_ history: CategoryHistory, budget: Budget) -> Bool {
+        guard let category = self.resolvedCategory(history, budget: budget) else { return false }
+        let ids = self.savingsAccountIds(budget)
+        return ids.contains(category.takesFromAccount) || ids.contains(category.givesToAccount)
+    }
+
+    /// Per-category totals for an effective FLOW over a saved period, largest first.
+    func categoryStats(period: HistoryPeriod, type flow: TransactionType, budget: Budget) -> [CategoryStat] {
         var names: [String: String] = [:]
         var totals: [String: Double] = [:]
         for history in self.savedCategoryHistories(period: period, monthStartsOn: budget.monthStartsOn) {
-            guard self.resolvedType(history, budget: budget) == type else { continue }
+            guard self.resolvedFlow(history, budget: budget) == flow else { continue }
             totals[history.categoryId, default: 0] += history.totalAmount
             names[history.categoryId] = history.categoryName
         }
         return totals.compactMap { id, total -> CategoryStat? in
             guard abs(total) > 0.005 else { return nil }
-            return CategoryStat(id: id, name: names[id] ?? "", type: type, total: total)
+            return CategoryStat(id: id, name: names[id] ?? "", type: flow, total: total)
         }
         .sorted { $0.total > $1.total }
     }
 
-    /// Netto over a period: planned income − fixed costs − scheduled saving −
-    /// actual expenses, plus actual income transactions. Planned figures come from
-    /// `plannedTotals` (stored where available, estimated from today's config
-    /// otherwise — flagged via `estimated`). Actuals are summed from the saved
-    /// category histories (which every completed month has).
-    func netStats(period: HistoryPeriod, budget: Budget) -> (net: Double, savingsAccountPurchases: Double, estimated: Bool) {
+    /// Netto over a period = planned income + operational income − fixed − scheduled
+    /// − operational expenses. "Operational" excludes anything touching a savings
+    /// account (those are savings activity, see `savingsStats`). Planned figures come
+    /// from `plannedTotals` (stored where available, estimated otherwise → `estimated`).
+    func netStats(period: HistoryPeriod, budget: Budget) -> (net: Double, income: Double, expenses: Double, estimated: Bool) {
         let histories = self.savedCategoryHistories(period: period, monthStartsOn: budget.monthStartsOn)
         let planned = self.plannedTotals(period: period, budget: budget)
 
-        func typeTotal(_ type: TransactionType) -> Double {
-            histories.reduce(0) { acc, history in
-                self.resolvedType(history, budget: budget) == type ? acc + history.totalAmount : acc
-            }
-        }
-
-        let actualIncome = typeTotal(.income)
-        let actualExpenses = typeTotal(.expense)
-        let net = planned.income + actualIncome - planned.fixedCosts - planned.scheduledSavings - actualExpenses
-
-        // Purchases drawn from a savings account (expense categories whose account is a saving account)
-        let savingAccountIds = Set(budget.accounts.filter { $0.type == .saving }.map { $0.id })
-        var savingsAccountPurchases: Double = 0
+        var opIncome = 0.0, expenses = 0.0
         for history in histories {
-            guard let category = budget.transactionCategories.first(where: { $0.id == history.categoryId }) else { continue }
-            if category.type == .expense && savingAccountIds.contains(category.takesFromAccount) {
-                savingsAccountPurchases += history.totalAmount
+            if self.touchesSavings(history, budget: budget) { continue }
+            switch self.resolvedFlow(history, budget: budget) {
+            case .income: opIncome += history.totalAmount
+            case .expense: expenses += history.totalAmount
+            case .transfer: break   // internal movement, not part of Net
             }
         }
+        // `income` = configured/planned income + operational income transactions.
+        let income = planned.income + opIncome
+        let net = income - planned.fixedCosts - planned.scheduledSavings - expenses
+        return (net, income, expenses, planned.estimatedMonths > 0)
+    }
 
-        return (net, savingsAccountPurchases, planned.estimatedMonths > 0)
+    /// Deposits into / withdrawals from savings accounts over a saved period.
+    /// Pass `accountId` to restrict to a single savings account.
+    func savingsStats(period: HistoryPeriod, budget: Budget, accountId: String? = nil) -> (deposits: Double, withdrawals: Double) {
+        let ids: Set<String> = accountId.map { [$0] } ?? self.savingsAccountIds(budget)
+        var deposits = 0.0, withdrawals = 0.0
+        for history in self.savedCategoryHistories(period: period, monthStartsOn: budget.monthStartsOn) {
+            guard let category = self.resolvedCategory(history, budget: budget) else { continue }
+            if ids.contains(category.givesToAccount) { deposits += history.totalAmount }
+            if ids.contains(category.takesFromAccount) { withdrawals += history.totalAmount }
+        }
+        return (deposits, withdrawals)
+    }
+
+    /// Number of budget months spanned by a saved period (for scaling per-month
+    /// config figures like the main account's scheduled saving).
+    func monthCount(period: HistoryPeriod, budget: Budget) -> Int {
+        max(1, self.plannedTotals(period: period, budget: budget).monthCount)
     }
 }

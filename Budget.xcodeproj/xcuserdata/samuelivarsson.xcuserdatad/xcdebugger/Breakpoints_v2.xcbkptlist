@@ -80,7 +80,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "129"
             endingLineNumber = "129"
-            landmarkName = "getSpent(user:transactionCategory:accountId:monthsBack:)"
+            landmarkName = "editTransaction(transaction:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -96,7 +96,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "119"
             endingLineNumber = "119"
-            landmarkName = "getSpent(user:transactionCategory:accountId:monthsBack:)"
+            landmarkName = "addTransaction(transaction:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

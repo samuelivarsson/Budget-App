@@ -161,7 +161,7 @@ class FirestoreViewModel: ObservableObject {
 
         let extraSaving = TransactionCategory(
             name: "extraSaving",
-            type: .saving
+            type: .transfer
         )
         
         let savingsAccount = TransactionCategory(

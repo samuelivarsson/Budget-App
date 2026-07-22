@@ -91,7 +91,7 @@
 "youAreOwingShort" = "you owe";
 
 // History View
-"averageSpent" = "The period at the top selects which months are shown. Total/Average toggles between the sum and the per-month average (per day for This month).\n\nNet = income − fixed costs − scheduled saving − expenses, i.e. how much was saved beyond the scheduled saving.\n\nSaved = what was deposited into savings accounts.\n\nIncome, fixed costs and scheduled saving come from settings and are estimated for months without saved data.\n\nAccounts show current balances.";
+"averageSpent" = "The period at the top selects which months are shown. Total/Average toggles between the sum and the per-month average (per day for This month).\n\nNet = income − fixed costs − scheduled saving − expenses, i.e. how much was saved beyond the scheduled saving. Transfers and anything involving a savings account are excluded from Net.\n\nSaved = scheduled saving plus deposits minus withdrawals on your savings accounts (e.g. Påfyllning and savings-account purchases count as withdrawals).\n\nIncome, fixed costs and scheduled saving come from settings and are estimated for months without saved data.\n\nAccounts show current balances.";
 "info" = "Info";
 "ok" = "Ok";
 "net" = "Net";
@@ -101,6 +101,8 @@
 "thisYear" = "This year";
 "allTime" = "All";
 "savingsAccountPurchases" = "Savings acc. purchases";
+"savingsWithdrawals" = "Savings withdrawals";
+"savingsRate" = "Savings rate";
 "depositedToSavings" = "deposited to savings";
 "fixedCostsEstimated" = "fixed costs estimated";
 "monthlyIncome" = "Monthly income";
@@ -249,6 +251,7 @@
 "expense" = "Expense";
 "income" = "Income";
 "saving" = "Saving";
+"transfer" = "Transfer";
 
 // Errors
 "error" = "Error";

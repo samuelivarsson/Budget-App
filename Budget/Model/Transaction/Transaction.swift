@@ -92,7 +92,7 @@ struct Transaction: Identifiable, Codable {
             return "arrow.down.square.fill"
         case .income:
             return "arrow.up.square.fill"
-        case .saving:
+        case .transfer:
             return "circle.circle"
         }
     }
@@ -103,7 +103,7 @@ struct Transaction: Identifiable, Codable {
             return .red
         case .income:
             return .green
-        case .saving:
+        case .transfer:
             return .accentColor
         }
     }
