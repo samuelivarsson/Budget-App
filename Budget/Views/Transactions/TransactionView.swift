@@ -26,7 +26,9 @@ struct TransactionView: View {
     @State private var applyLoading: Bool = false
     @State private var showFriendPicker: Bool = false
     @State private var keyboardUp: Bool = false
-    @FocusState private var focus: AddTxField?
+    // Plain focus state (not @FocusState) — the fields are UIKit CalcTextFields that
+    // bridge focus through this binding, avoiding SwiftUI's keyboard-toolbar inset bug.
+    @State private var focus: AddTxField?
 
     private var oldTransaction: Transaction? = nil
     private var action: TransactionAction
@@ -76,12 +78,6 @@ struct TransactionView: View {
         }
         return order
     }
-    private func moveFocus(_ delta: Int) {
-        guard let current = focus, let idx = focusOrder.firstIndex(of: current) else { return }
-        let next = idx + delta
-        guard focusOrder.indices.contains(next) else { return }
-        focus = focusOrder[next]
-    }
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -109,14 +105,9 @@ struct TransactionView: View {
         .navigationTitle(navTitle)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
-            // Hidden while typing so it doesn't collide with the keyboard toolbar.
+            // Hidden while typing so it doesn't sit on top of the keyboard.
             if action != .view && !keyboardUp { ctaBar }
         }
-        // Applied AFTER the safeAreaInset so the CTA ignores a stuck keyboard inset.
-        // The keyboard-accessory toolbar can leave the bottom inset stuck after a
-        // round trip, which otherwise floats the CTA up mid-screen on re-entry.
-        // Verified in an isolated repro (same fix as the Transactions FAB).
-        .ignoresSafeArea(.keyboard, edges: .bottom)
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
             keyboardUp = true
         }
@@ -173,7 +164,11 @@ struct TransactionView: View {
                     Text(Utility.currencyFormatterNoSymbolNoZeroSymbol.string(from: transaction.totalAmount as NSNumber) ?? "0")
                         .font(.system(size: 44, weight: .bold)).monospacedDigit().foregroundColor(.primary)
                 } else {
-                    TextField(Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0", text: $totalAmountString, onEditingChanged: { isEditing in
+                    CalcTextField(text: $totalAmountString, field: .amount, focus: $focus, order: focusOrder,
+                                  alignment: .center,
+                                  font: .monospacedDigitSystemFont(ofSize: 44, weight: .bold),
+                                  placeholder: Utility.currencyFormatterNoSymbol.string(from: 0.0) ?? "0",
+                                  onEditingChanged: { isEditing in
                         if !isEditing {
                             let expression = totalAmountString
                                 .components(separatedBy: .whitespaces).joined()
@@ -188,21 +183,7 @@ struct TransactionView: View {
                             }
                         }
                     })
-                    .keyboardType(.decimalPad).multilineTextAlignment(.center)
-                    .font(.system(size: 44, weight: .bold)).monospacedDigit()
-                    .foregroundColor(.primary).tint(.accentColor)
                     .fixedSize()
-                    .focused($focus, equals: .amount)
-                    .toolbar {
-                        if focus == .amount {
-                            ToolbarItemGroup(placement: .keyboard) {
-                                CalculatorToolbarView(amountString: $totalAmountString)
-                                Spacer()
-                                chevrons(.amount)
-                                Button("done".localizeString()) { focus = nil }
-                            }
-                        }
-                    }
                 }
                 Text(Utility.currencyFormatter.currencySymbol)
                     .font(.system(size: 24, weight: .semibold)).foregroundColor(.secondary)
@@ -226,13 +207,6 @@ struct TransactionView: View {
         .padding(20)
         .iosCard(26)
         .id(AddTxField.amount)
-    }
-
-    @ViewBuilder
-    private func chevrons(_ field: AddTxField) -> some View {
-        let idx = focusOrder.firstIndex(of: field) ?? 0
-        Button { moveFocus(-1) } label: { Image(systemName: "chevron.up") }.disabled(idx <= 0)
-        Button { moveFocus(1) } label: { Image(systemName: "chevron.down") }.disabled(idx >= focusOrder.count - 1)
     }
 
     // MARK: - Details
@@ -270,18 +244,12 @@ struct TransactionView: View {
                 if action == .view {
                     Text(transaction.desc).font(.system(size: 15.5)).foregroundColor(.secondary)
                 } else {
-                    TextField("shortDescription", text: $transaction.desc)
-                        .multilineTextAlignment(.trailing).font(.system(size: 15.5)).foregroundColor(.primary)
-                        .focused($focus, equals: .description)
-                        .toolbar {
-                            if focus == .description {
-                                ToolbarItemGroup(placement: .keyboard) {
-                                    Spacer()
-                                    chevrons(.description)
-                                    Button("done".localizeString()) { focus = nil }
-                                }
-                            }
-                        }
+                    CalcTextField(text: $transaction.desc, field: .description, focus: $focus, order: focusOrder,
+                                  keyboard: .default, showsCalculator: false,
+                                  font: .systemFont(ofSize: 15.5),
+                                  placeholder: "shortDescription".localizeString(),
+                                  hugsContent: false)
+                        .frame(maxWidth: .infinity)
                 }
             }
             .padding(.vertical, 13)
@@ -428,7 +396,7 @@ struct TransactionView: View {
                     IOSShareRow(participant: $participant, splitOption: $transaction.splitOption,
                                 participants: $transaction.participants, totalAmount: $transaction.totalAmount,
                                 hasWritten: $hasWritten, action: action, showsTopDivider: index > 0,
-                                focus: $focus, order: focusOrder, onMove: moveFocus)
+                                focus: $focus, order: focusOrder)
                         .id(transaction.splitOption == .ownItems ? AddTxField.own(participant.userId) : AddTxField.share(participant.userId))
                 }
             }

@@ -8,6 +8,156 @@
 
 import SwiftUI
 import MathParser
+import UIKit
+
+// MARK: - Calculator text field (UIKit)
+//
+// A UITextField whose keyboard carries a UIKit inputAccessoryView (scrollable
+// calculator + prev/next chevrons + Done). Using a UIKit accessory instead of
+// SwiftUI's `ToolbarItemGroup(placement:.keyboard)` avoids the stuck bottom
+// safe-area inset SwiftUI leaves behind — the cause of the drifting Transactions
+// + button and this screen's CTA. Focus is bridged through a plain `AddTxField?`
+// binding shared with the parent so prev/next navigation still works.
+
+struct CalcTextField: UIViewRepresentable {
+    @Binding var text: String
+    let field: AddTxField
+    @Binding var focus: AddTxField?
+    var order: [AddTxField]
+    var keyboard: UIKeyboardType = .decimalPad
+    var showsCalculator: Bool = true
+    var alignment: NSTextAlignment = .right
+    var font: UIFont
+    var placeholder: String = ""
+    /// true → hugs its text (use with .fixedSize()); false → fills available width.
+    var hugsContent: Bool = true
+    /// Mirrors SwiftUI TextField's onEditingChanged: true on begin, false on end.
+    var onEditingChanged: (Bool) -> Void = { _ in }
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    func makeUIView(context: Context) -> UITextField {
+        let tf = UITextField()
+        tf.delegate = context.coordinator
+        tf.keyboardType = keyboard
+        tf.textAlignment = alignment
+        tf.font = font
+        tf.tintColor = .tintColor
+        tf.placeholder = placeholder
+        tf.text = text
+        tf.addTarget(context.coordinator, action: #selector(Coordinator.editingChanged(_:)), for: .editingChanged)
+        tf.setContentHuggingPriority(hugsContent ? .required : .defaultLow, for: .horizontal)
+        tf.setContentCompressionResistancePriority(hugsContent ? .required : .defaultLow, for: .horizontal)
+        tf.inputAccessoryView = context.coordinator.makeAccessory()
+        return tf
+    }
+
+    func updateUIView(_ tf: UITextField, context: Context) {
+        context.coordinator.parent = self
+        if tf.text != text { tf.text = text }
+        DispatchQueue.main.async {
+            if focus == field {
+                if !tf.isFirstResponder { tf.becomeFirstResponder() }
+            } else if focus == nil, tf.isFirstResponder {
+                // Only resign when focus is cleared (Done). When focus moves to
+                // ANOTHER field, that field's becomeFirstResponder transfers control
+                // directly — so we must NOT resign here, or the keyboard would
+                // dismiss and re-open between fields (flicker when using chevrons).
+                tf.resignFirstResponder()
+            }
+            context.coordinator.updateChevrons()
+        }
+    }
+
+    final class Coordinator: NSObject, UITextFieldDelegate {
+        var parent: CalcTextField
+        weak var textField: UITextField?
+        private weak var prevItem: UIBarButtonItem?
+        private weak var nextItem: UIBarButtonItem?
+
+        init(_ parent: CalcTextField) { self.parent = parent }
+
+        private static let symbolConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .regular)
+
+        // Two UIToolbars using the system's own (auto-adapting, "liquid glass" on
+        // iOS 26) bar-button styling — no hand-drawn look. The chevrons + Done group
+        // is pinned to the trailing margin in its own toolbar, so Done sits in the
+        // same place whether or not the calculator group is present. The calculator
+        // (four compact icon buttons, one group) is a separate leading toolbar.
+        // Both are inset to the layout margins so the rounded corners aren't clipped.
+        private func clearToolbar(_ items: [UIBarButtonItem]) -> UIToolbar {
+            let bar = UIToolbar()
+            bar.items = items
+            bar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
+            bar.setShadowImage(UIImage(), forToolbarPosition: .any)
+            bar.translatesAutoresizingMaskIntoConstraints = false
+            return bar
+        }
+
+        func makeAccessory() -> UIView {
+            let container = UIInputView(frame: CGRect(x: 0, y: 0, width: 390, height: 50), inputViewStyle: .keyboard)
+            container.autoresizingMask = [.flexibleWidth]
+            let m = container.layoutMarginsGuide
+
+            let prev = UIBarButtonItem(image: UIImage(systemName: "chevron.up", withConfiguration: Self.symbolConfig), primaryAction: UIAction { [weak self] _ in self?.move(-1) })
+            let next = UIBarButtonItem(image: UIImage(systemName: "chevron.down", withConfiguration: Self.symbolConfig), primaryAction: UIAction { [weak self] _ in self?.move(1) })
+            self.prevItem = prev; self.nextItem = next
+            let gap = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil); gap.width = 8
+            let done = UIBarButtonItem(title: "done".localizeString(), style: .done, target: self, action: #selector(doneTapped))
+
+            let rightBar = clearToolbar([prev, next, gap, done])
+            container.addSubview(rightBar)
+            NSLayoutConstraint.activate([
+                rightBar.trailingAnchor.constraint(equalTo: m.trailingAnchor),
+                rightBar.topAnchor.constraint(equalTo: container.topAnchor),
+                rightBar.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+                rightBar.widthAnchor.constraint(equalToConstant: 176),
+            ])
+
+            if parent.showsCalculator {
+                let ops: [(String, String)] = [("plus", "+"), ("minus", "-"), ("divide", "÷"), ("multiply", "×")]
+                let calcBar = clearToolbar(ops.map { symbol, inserted in
+                    UIBarButtonItem(image: UIImage(systemName: symbol, withConfiguration: Self.symbolConfig),
+                                    primaryAction: UIAction { [weak self] _ in self?.textField?.insertText(inserted) })
+                })
+                container.addSubview(calcBar)
+                NSLayoutConstraint.activate([
+                    calcBar.leadingAnchor.constraint(equalTo: m.leadingAnchor),
+                    calcBar.topAnchor.constraint(equalTo: container.topAnchor),
+                    calcBar.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+                    calcBar.widthAnchor.constraint(equalToConstant: 184),
+                ])
+            }
+            return container
+        }
+
+        @objc private func doneTapped() { parent.focus = nil }
+
+        func updateChevrons() {
+            let idx = parent.order.firstIndex(of: parent.field) ?? 0
+            prevItem?.isEnabled = idx > 0
+            nextItem?.isEnabled = idx < parent.order.count - 1
+        }
+
+        private func move(_ delta: Int) {
+            guard let idx = parent.order.firstIndex(of: parent.field) else { return }
+            let n = idx + delta
+            guard parent.order.indices.contains(n) else { return }
+            parent.focus = parent.order[n]
+        }
+
+        @objc func editingChanged(_ tf: UITextField) { parent.text = tf.text ?? "" }
+        func textFieldDidBeginEditing(_ tf: UITextField) {
+            textField = tf
+            if parent.focus != parent.field { parent.focus = parent.field }
+            parent.onEditingChanged(true)
+            updateChevrons()
+        }
+        func textFieldDidEndEditing(_ tf: UITextField) {
+            parent.onEditingChanged(false)
+        }
+    }
+}
 
 // MARK: - Person avatar (iOS)
 
@@ -87,9 +237,8 @@ struct IOSShareRow: View {
     @Binding var hasWritten: [String]
     var action: TransactionAction
     var showsTopDivider: Bool = true
-    var focus: FocusState<AddTxField?>.Binding
+    @Binding var focus: AddTxField?
     var order: [AddTxField]
-    var onMove: (Int) -> Void
 
     @State private var amountString: String = ""
     @State private var ownString: String = ""
@@ -159,13 +308,6 @@ struct IOSShareRow: View {
         }
     }
 
-    @ViewBuilder
-    private func chevrons(_ field: AddTxField) -> some View {
-        let idx = order.firstIndex(of: field) ?? 0
-        Button { onMove(-1) } label: { Image(systemName: "chevron.up") }.disabled(idx <= 0)
-        Button { onMove(1) } label: { Image(systemName: "chevron.down") }.disabled(idx >= order.count - 1)
-    }
-
     // Read-only amount (auto-computed splits, or when this participant's amount
     // isn't editable for the chosen Fördelning). Plain text — no input pill — so
     // it's clearly not tappable, unlike the editable pill/dashed fields.
@@ -177,61 +319,43 @@ struct IOSShareRow: View {
 
     private var totalField: some View {
         HStack(spacing: 3) {
-            TextField("0", text: $amountString, onEditingChanged: { editing in
-                amountSelected = editing
-                if !editing { commit(amountString) { participant.amount = $0 } }
-            })
-            .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
-            .font(.system(size: 14.5, weight: .bold)).monospacedDigit().fixedSize()
-            .focused(focus, equals: shareFieldId)
-            .toolbar {
-                if focus.wrappedValue == shareFieldId {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        CalculatorToolbarView(amountString: $amountString)
-                        Spacer()
-                        chevrons(shareFieldId)
-                        Button("done".localizeString()) { focus.wrappedValue = nil }
-                    }
-                }
-            }
+            CalcTextField(text: $amountString, field: shareFieldId, focus: $focus, order: order,
+                          font: .monospacedDigitSystemFont(ofSize: 14.5, weight: .bold),
+                          placeholder: "0",
+                          onEditingChanged: { editing in
+                              amountSelected = editing
+                              if !editing { commit(amountString) { participant.amount = $0 } }
+                          })
+                .fixedSize()
             Text(Utility.currencyFormatter.currencySymbol).font(.system(size: 14.5, weight: .bold)).foregroundColor(.secondary)
         }
         .foregroundColor(.primary)
         .padding(.horizontal, 12).padding(.vertical, 5)
         .background(Color.primary.opacity(0.06), in: Capsule())
         .contentShape(Capsule())
-        .onTapGesture { focus.wrappedValue = shareFieldId }
+        .onTapGesture { focus = shareFieldId }
     }
 
     private var ownField: some View {
         HStack(spacing: 4) {
             Text("ownLabel").font(.system(size: 12.5, weight: .semibold)).foregroundColor(.secondary)
                 .lineLimit(1).fixedSize()
-            TextField("0", text: $ownString, onEditingChanged: { editing in
-                ownSelected = editing
-                if !editing {
-                    // Own amounts can't exceed what's left of the total after the
-                    // other participants' own amounts (so alone or combined ≤ total).
-                    let othersOwn = participants
-                        .filter { $0.userId != participant.userId }
-                        .reduce(0.0) { $0 + ($1.ownAmount ?? 0) }
-                    let cap = Swift.max(0, totalAmount - othersOwn)
-                    commit(ownString, cap: cap) { participant.ownAmount = $0 }
-                }
-            })
-            .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
-            .font(.system(size: 12.5, weight: .semibold)).monospacedDigit().fixedSize()
-            .focused(focus, equals: ownFieldId)
-            .toolbar {
-                if focus.wrappedValue == ownFieldId {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        CalculatorToolbarView(amountString: $ownString)
-                        Spacer()
-                        chevrons(ownFieldId)
-                        Button("done".localizeString()) { focus.wrappedValue = nil }
-                    }
-                }
-            }
+            CalcTextField(text: $ownString, field: ownFieldId, focus: $focus, order: order,
+                          font: .monospacedDigitSystemFont(ofSize: 12.5, weight: .semibold),
+                          placeholder: "0",
+                          onEditingChanged: { editing in
+                              ownSelected = editing
+                              if !editing {
+                                  // Own amounts can't exceed what's left of the total after the
+                                  // other participants' own amounts (so alone or combined ≤ total).
+                                  let othersOwn = participants
+                                      .filter { $0.userId != participant.userId }
+                                      .reduce(0.0) { $0 + ($1.ownAmount ?? 0) }
+                                  let cap = Swift.max(0, totalAmount - othersOwn)
+                                  commit(ownString, cap: cap) { participant.ownAmount = $0 }
+                              }
+                          })
+                .fixedSize()
         }
         .foregroundColor(.primary)
         .padding(.horizontal, 11).padding(.vertical, 5)
@@ -241,7 +365,7 @@ struct IOSShareRow: View {
                 .allowsHitTesting(false)   // don't steal taps from the text field
         )
         .contentShape(Capsule())
-        .onTapGesture { focus.wrappedValue = ownFieldId }
+        .onTapGesture { focus = ownFieldId }
     }
 
     private func commit(_ string: String, cap: Double? = nil, _ assign: @escaping (Double) -> Void) {
