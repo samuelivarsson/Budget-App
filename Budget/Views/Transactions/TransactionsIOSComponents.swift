@@ -116,13 +116,19 @@ struct TxAvatar: View {
 struct IOSTxCard: View {
     let transaction: Transaction
     let userId: String
+    let budget: Budget
     var editing: Bool = false
     var onDelete: (() -> Void)? = nil
 
+    /// The category as THIS user sees it (their participant override, else the
+    /// creator's mapped to their budget) — so the row shows your own category.
+    private var effectiveCategory: TransactionCategory {
+        transaction.categoryForUser(userId: userId, budget: budget)
+    }
     /// Shown as the row title and used for the avatar letter — falls back to the
     /// category name when there's no description (common on others' transactions).
     private var title: String {
-        transaction.desc.isEmpty ? transaction.category.name : transaction.desc
+        transaction.desc.isEmpty ? effectiveCategory.name : transaction.desc
     }
     private var isSplit: Bool { transaction.participants.count > 1 }
     private var iPaid: Bool { transaction.payerId == userId }
@@ -142,7 +148,7 @@ struct IOSTxCard: View {
         switch transaction.type {
         case .income: return .green
         case .transfer: return transfer
-        case .expense: return Color.forCategory(transaction.category.name)
+        case .expense: return Color.forCategory(effectiveCategory.name)
         }
     }
 
@@ -160,7 +166,7 @@ struct IOSTxCard: View {
                     .font(.system(size: 15.5, weight: .semibold)).foregroundColor(.primary).lineLimit(1)
                 HStack(spacing: 6) {
                     Circle().fill(dotColor).frame(width: 7, height: 7)
-                    Text(transaction.category.name).font(.system(size: 12.5)).foregroundColor(.secondary).lineLimit(1)
+                    Text(effectiveCategory.name).font(.system(size: 12.5)).foregroundColor(.secondary).lineLimit(1)
                 }
                 if isSplit {
                     HStack(spacing: 4) {

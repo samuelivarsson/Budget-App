@@ -104,13 +104,19 @@ class TransactionsViewModel: ObservableObject {
     }
     
     /// Stores the transaction's category on the creator's participant so each
-    /// participant can later override their own category. The top-level
-    /// `category` is kept as the default that other participants inherit by name.
+    /// participant can later override their own category. The top-level `category`
+    /// is kept as the default that other participants inherit by name.
+    ///
+    /// Only stamps when the CURRENT user is the creator — otherwise a participant
+    /// editing a transaction they were added to would overwrite the creator's
+    /// category (each participant only ever changes their own participant entry).
     private func stampCreatorCategory(_ transaction: Transaction) -> Transaction {
         var tx = transaction
-        if let index = tx.participants.firstIndex(where: { $0.userId == tx.creatorId }) {
-            tx.participants[index].category = tx.category
+        guard tx.creatorId == Auth.auth().currentUser?.uid,
+              let index = tx.participants.firstIndex(where: { $0.userId == tx.creatorId }) else {
+            return tx
         }
+        tx.participants[index].category = tx.category
         return tx
     }
 
@@ -164,11 +170,15 @@ class TransactionsViewModel: ObservableObject {
         let (from, to) = Utility.getBudgetPeriod(monthsBack: monthsBack, monthStartsOn: user.budget.monthStartsOn)
         let thisMonthsTransactions = self.getTransactions(from: from, to: to)
         thisMonthsTransactions.forEach { transaction in
-            if transaction.category.givesToAccount == accountId {
+            // Use the category as THIS user sees it (their own participant override,
+            // else the creator's mapped to their budget) — same as getSpent — so
+            // income attribution follows the participant's category, not the creator's.
+            let effectiveCategory = transaction.categoryForUser(userId: user.id, budget: user.budget)
+            if effectiveCategory.givesToAccount == accountId {
                 total += transaction.getShare(userId: user.id)
             }
         }
-        
+
         return total
     }
     

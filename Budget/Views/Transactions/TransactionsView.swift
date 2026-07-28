@@ -246,7 +246,7 @@ struct TransactionsView: View {
     // NavigationLink lives in the background so the List row shows no disclosure
     // chevron; swipe-to-delete still comes from `.onDelete` on the ForEach.
     private func txRow(_ transaction: Transaction) -> some View {
-        IOSTxCard(transaction: transaction, userId: user.id)
+        IOSTxCard(transaction: transaction, userId: user.id, budget: budget)
             .background(
                 NavigationLink {
                     TransactionView(transaction: transaction, user: user,

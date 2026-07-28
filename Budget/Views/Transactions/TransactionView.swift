@@ -40,14 +40,11 @@ struct TransactionView: View {
     }
 
     init(transaction: Transaction, user: User, action: TransactionAction, fromUrl: Bool = false) {
-        var newTransaction = transaction
-        // Preselect the category as THIS user sees it — their own participant
-        // override, or the creator's category mapped to the user's budget (by id,
-        // then trimmed/normalized name, then the "uses the rest"/first fallback).
-        // So the picker shows the right chip when a friend added you to their
-        // transaction, robust to Unicode/whitespace differences in the name.
-        newTransaction.category = transaction.categoryForUser(userId: user.id, budget: user.budget)
-        self._transaction = State(initialValue: newTransaction)
+        // Keep the transaction's top-level category (the creator's) untouched — the
+        // picker shows/edits THIS user's effective category via `myCategory` /
+        // `selectCategory`, so editing as a non-creator never mutates the shared
+        // top-level category or another participant's category.
+        self._transaction = State(initialValue: transaction)
         self._totalAmountString = State(initialValue: Utility.currencyFormatterNoSymbol.string(from: transaction.totalAmount as NSNumber) ?? "")
         self.action = action
         self.oldTransaction = transaction
@@ -59,6 +56,27 @@ struct TransactionView: View {
     }
     private func getFirstCategory(type: TransactionType) -> TransactionCategory {
         userViewModel.getTransactionCategoriesSorted(type: type).first ?? TransactionCategory.getDummyCategory()
+    }
+
+    /// True when the current user owns the transaction (adding it, or its creator).
+    private var isCreator: Bool {
+        action == .add || transaction.creatorId == userViewModel.user.id
+    }
+    /// The category as THIS user sees it (their participant override, else the
+    /// creator's category mapped to their budget) — used for the picker highlight.
+    private var myCategory: TransactionCategory {
+        transaction.categoryForUser(userId: userViewModel.user.id, budget: userViewModel.user.budget)
+    }
+    /// Selecting a category only ever changes what belongs to the current user:
+    /// their own participant override always; the transaction's top-level (default)
+    /// category ONLY when they're the creator. A non-creator never touches the
+    /// top-level category or any other participant's category.
+    private func selectCategory(_ category: TransactionCategory) {
+        guard action != .view else { return }
+        if isCreator { transaction.category = category }
+        if let i = transaction.participants.firstIndex(where: { $0.userId == userViewModel.user.id }) {
+            transaction.participants[i].category = category
+        }
     }
     private func firstName(_ name: String) -> String { name.split(separator: " ").first.map(String.init) ?? name }
     private func money(_ v: Double) -> String { Utility.doubleToLocalCurrency(value: v) }
@@ -140,7 +158,7 @@ struct TransactionView: View {
             }
         }
         .onChange(of: transaction.type) { newValue in
-            transaction.category = getFirstCategory(type: newValue)
+            selectCategory(getFirstCategory(type: newValue))
         }
     }
 
@@ -219,8 +237,8 @@ struct TransactionView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         ForEach(userViewModel.getTransactionCategoriesSorted(type: transaction.type), id: \.self) { category in
-                            let active = transaction.category.id == category.id
-                            Button { if action != .view { transaction.category = category } } label: {
+                            let active = myCategory.id == category.id
+                            Button { selectCategory(category) } label: {
                                 HStack(spacing: 6) {
                                     Circle().fill(Color.forCategory(category.name)).frame(width: 7, height: 7)
                                     Text(LocalizedStringKey(category.name)).font(.system(size: 13, weight: .semibold))
