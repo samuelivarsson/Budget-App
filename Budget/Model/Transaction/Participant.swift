@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Participant: Identifiable, Codable {
+struct Participant: Identifiable, Codable, Equatable {
     var id: String = UUID().uuidString
     var amount: Double = 0
     var userId: String
@@ -19,10 +19,10 @@ struct Participant: Identifiable, Codable {
     /// Amount this participant bought only for themselves (the "Egna köp" split).
     /// Deducted from the total before the rest is split equally. `nil` = 0 (older entries).
     var ownAmount: Double? = nil
-}
 
-extension Participant: Equatable {
-    static func == (lhs: Participant, rhs: Participant) -> Bool {
-        return lhs.id == rhs.id && lhs.amount == rhs.amount
-    }
+    // Equatable is synthesized over ALL fields (including `category` and
+    // `ownAmount`). A previous hand-written `==` compared only `id` + `amount`,
+    // which made SwiftUI's field-by-field view diffing treat a category-only
+    // change as "no change" — so an edited category didn't refresh the list row
+    // or the picker until the app was restarted (a full refetch).
 }
