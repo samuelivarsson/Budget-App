@@ -139,6 +139,7 @@ enum InputError: Error {
     case participantNegativeAmount
     case participantAmountLargerThanTotal
     case transactionCategoryAmountsAddsUpToMoreThanRemaining
+    case savingsLeaveTooLittleForTransactionCategories
     case deleteTransactionCreatedBySomeoneElse
 }
 
@@ -167,6 +168,8 @@ extension InputError: LocalizedError {
             return NSLocalizedString("participantAmountLargerThanTotal", comment: "Input Error")
         case .transactionCategoryAmountsAddsUpToMoreThanRemaining:
             return NSLocalizedString("transactionCategoryAmountsAddsUpToMoreThanRemaining", comment: "Input Error")
+        case .savingsLeaveTooLittleForTransactionCategories:
+            return NSLocalizedString("savingsLeaveTooLittleForTransactionCategories", comment: "Input Error")
         case .deleteTransactionCreatedBySomeoneElse:
             return NSLocalizedString("deleteTransactionCreatedBySomeoneElse", comment: "Input Error")
         }

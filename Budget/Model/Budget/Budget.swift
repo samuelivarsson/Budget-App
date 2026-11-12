@@ -68,9 +68,10 @@ struct Budget: Identifiable, Codable, Hashable {
         return total
     }
     
+    /// Savings are a share of what is left after fixed costs. Fixed-amount categories are spending estimates, so they are paid from what remains after saving and do not lower the savings.
     func getSavings() -> Double {
         let mainTransactionAccount = self.getAccount(id: self.getMainAccountId(type: .transaction))
-        let rawValue = self.savingsPercentage * 0.01 * (mainTransactionAccount.baseAmount + self.income - self.getOverheadsAmount() - self.getFixedCeilings(accountId: mainTransactionAccount.id))
+        let rawValue = self.savingsPercentage * 0.01 * (mainTransactionAccount.baseAmount + self.income - self.getOverheadsAmount())
         return round(rawValue / 100) * 100
     }
     
@@ -153,7 +154,29 @@ struct Budget: Identifiable, Codable, Hashable {
     }
     
     /// Returns true if all transaction category amounts sums up to less than the remaining money. Is used to check that there is money left for the category that uses the rest.
+    /// The check runs on a copy where `updated` replaces the stored category, so an edited category's old amount is not counted next to its new one.
     func transactionCategoriesAreLowerThanRemaining(updated: TransactionCategory) -> Bool {
-        return self.getCustomCeilings(accountId: updated.takesFromAccount, exceptFor: updated) + updated.getRealAmount(budget: self) <= self.getRemaining(accountId: updated.takesFromAccount)
+        var budget = self
+        if let index = budget.transactionCategories.firstIndex(where: { $0.id == updated.id }) {
+            budget.transactionCategories[index] = updated
+        } else {
+            budget.transactionCategories.append(updated)
+        }
+        return budget.categoriesFitWithinRemaining(accountId: updated.takesFromAccount)
+    }
+
+    /// Returns true if, with the given savings percentage, the main transaction account still has room for every transaction category, so the category that uses the rest does not go negative.
+    func savingsPercentageLeavesRoomForCategories(_ percentage: Double) -> Bool {
+        var budget = self
+        budget.savingsPercentage = percentage
+        return budget.categoriesFitWithinRemaining(accountId: budget.getMainAccountId(type: .transaction))
+    }
+
+    private func categoriesFitWithinRemaining(accountId: String) -> Bool {
+        let account = self.getAccount(id: accountId)
+        // getRemaining already subtracts the fixed-amount categories on the main transaction account.
+        let fixedCeilings = account.type == .transaction && account.main ? 0 : self.getFixedCeilings(accountId: accountId)
+        let remaining = self.getRemaining(accountId: accountId)
+        return remaining >= 0 && fixedCeilings + self.getCustomCeilings(accountId: accountId) <= remaining
     }
 }

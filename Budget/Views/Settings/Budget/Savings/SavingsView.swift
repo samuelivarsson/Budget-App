@@ -87,6 +87,11 @@ struct SavingsView: View {
     }
 
     private func applySavingsPercentage() {
+        guard self.userViewModel.user.budget.savingsPercentageLeavesRoomForCategories(self.savingsPercentage) else {
+            self.errorHandling.handle(error: InputError.savingsLeaveTooLittleForTransactionCategories)
+            return
+        }
+
         self.userViewModel.setSavingsPercentage(savingsPercentage: self.savingsPercentage) { error in
             if let error = error {
                 self.errorHandling.handle(error: error)

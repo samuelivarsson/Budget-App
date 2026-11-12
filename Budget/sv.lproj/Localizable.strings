@@ -279,6 +279,7 @@
 "documentNotExist" = "Dokumentet som du försökte hämta finns inte";
 "noPhotoURL" = "Hittade nil vid extrahering av profilbilden, detta kan ignoreras om användaren inte har laddat up en profilbild än";
 "transactionCategoryAmountsAddsUpToMoreThanRemaining" = "Transaktionskategoribeloppen summerar upp till mer än vad som är över";
+"savingsLeaveTooLittleForTransactionCategories" = "Sparandet lämnar för lite pengar kvar till transaktionskategorierna";
 "deleteTransactionCreatedBySomeoneElse" = "Du kan inte ta bort en transaktion som du inte skapade";
 "httpError" = "HTTP Error";
 "unexpectedCode" = "En oväntad HTTP kod dök upp";

@@ -279,6 +279,7 @@
 "documentNotExist" = "The document does not exist";
 "noPhotoURL" = "Found nil when extracting url in setProfilePicture in AuthViewModel, this can be ignored if the user hasn't uploaded a profile picture yet";
 "transactionCategoryAmountsAddsUpToMoreThanRemaining" = "The transaction category amounts adds up to more money than remaining";
+"savingsLeaveTooLittleForTransactionCategories" = "The savings leave too little money for the transaction categories";
 "deleteTransactionCreatedBySomeoneElse" = "You can not delete a transaction that you did not create";
 "httpError" = "HTTP Error";
 "unexpectedCode" = "An unexpected HTTP code turned up";
