@@ -181,4 +181,57 @@ final class RedesignLogicTests: XCTestCase {
         XCTAssertEqual(TransactionCategory(name: "x", type: .transfer).moneyFlow, .transfer)
     }
 
+    // MARK: - Savings vs fixed-amount categories
+
+    private func savingsBudget(percentage: Double, fixed: Double, includeFixed: Bool = true) -> Budget {
+        let main = Account(id: "main", name: "Main", type: .transaction, main: true)
+        var categories = [TransactionCategory(id: "rest", name: "Rest", type: .expense, takesFromAccount: "main")]
+        if includeFixed {
+            categories.append(TransactionCategory(id: "fixed", name: "Fixed", type: .expense,
+                                                  takesFromAccount: "main", ceilingAmount: fixed))
+        }
+        return Budget(accounts: [main], income: 10000, savingsPercentage: percentage,
+                      transactionCategories: categories, transactionCategoryThatUsesRest: "rest", overheads: [])
+    }
+
+    /// Savings are a share of income minus fixed costs only; fixed-amount
+    /// categories are spending estimates and come out of what is left.
+    func testSavingsIgnoreFixedAmountCategories() {
+        XCTAssertEqual(savingsBudget(percentage: 70, fixed: 400).getSavings(), 7000)
+    }
+
+    /// Removing a fixed-amount category hands its whole amount to the rest category.
+    func testRemovingFixedCategoryGivesWholeAmountToRest() {
+        let with = savingsBudget(percentage: 70, fixed: 400)
+        let without = savingsBudget(percentage: 70, fixed: 400, includeFixed: false)
+        XCTAssertEqual(without.getRestOfRemaining(accountId: "main") - with.getRestOfRemaining(accountId: "main"), 400)
+    }
+
+    func testSavingsPercentageMustLeaveRoomForCategories() {
+        let b = savingsBudget(percentage: 70, fixed: 2000)
+        XCTAssertTrue(b.savingsPercentageLeavesRoomForCategories(70))
+        XCTAssertTrue(b.savingsPercentageLeavesRoomForCategories(80))
+        XCTAssertFalse(b.savingsPercentageLeavesRoomForCategories(90))
+    }
+
+    /// 3000 left after 70 % savings. Editing the 2000 fixed category must be checked
+    /// against those 3000, not against what is left after its old amount (1000).
+    func testEditingFixedCategoryDoesNotCountItsOldAmount() {
+        let b = savingsBudget(percentage: 70, fixed: 2000)
+        var edited = b.transactionCategories.first { $0.id == "fixed" }!
+        XCTAssertTrue(b.transactionCategoriesAreLowerThanRemaining(updated: edited))
+        edited.ceilingAmount = 2500
+        XCTAssertTrue(b.transactionCategoriesAreLowerThanRemaining(updated: edited))
+        edited.ceilingAmount = 3500
+        XCTAssertFalse(b.transactionCategoriesAreLowerThanRemaining(updated: edited))
+    }
+
+    func testAddingFixedCategoryCountsExistingOnes() {
+        let b = savingsBudget(percentage: 70, fixed: 2000)
+        var added = TransactionCategory(id: "new", name: "New", type: .expense, takesFromAccount: "main", ceilingAmount: 1000)
+        XCTAssertTrue(b.transactionCategoriesAreLowerThanRemaining(updated: added))
+        added.ceilingAmount = 1500
+        XCTAssertFalse(b.transactionCategoriesAreLowerThanRemaining(updated: added))
+    }
+
 }
